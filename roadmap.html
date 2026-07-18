@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MTG Board Layout — Roadmap</title>
+<style>
+  :root {
+    --bg: #0d1117;
+    --card: #161b22;
+    --border: #30363d;
+    --text: #e6edf3;
+    --muted: #8b949e;
+    --accent: #58a6ff;
+    --green: #3fb950;
+    --yellow: #d29922;
+    --purple: #bc8cff;
+    --red: #f85149;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.6;
+    padding: 2rem 1rem;
+  }
+  .container { max-width: 800px; margin: 0 auto; }
+  h1 { font-size: 2rem; margin-bottom: 0.25rem; display: flex; align-items: center; gap: 0.5rem; }
+  .subtitle { color: var(--muted); margin-bottom: 2rem; font-size: 1.1rem; }
+  h2 {
+    font-size: 1.25rem;
+    margin: 2rem 0 1rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid var(--border);
+  }
+  h3 { font-size: 1rem; margin: 1.5rem 0 0.5rem; color: var(--accent); }
+
+  .meta { display: flex; gap: 1.5rem; flex-wrap: wrap; margin-bottom: 2rem; }
+  .meta-item { font-size: 0.875rem; }
+  .meta-item span { color: var(--muted); }
+
+  .phase { display: none; }
+  .phase.active { display: block; }
+  .phase-header {
+    display: flex; align-items: center; gap: 0.75rem;
+    padding: 0.75rem 1rem;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    cursor: pointer;
+    user-select: none;
+  }
+  .phase-header:hover { border-color: var(--accent); }
+  .phase-badge {
+    font-size: 0.75rem; font-weight: 600; padding: 0.15rem 0.5rem;
+    border-radius: 999px; flex-shrink: 0;
+  }
+  .badge-done { background: var(--green); color: #000; }
+  .badge-now { background: var(--yellow); color: #000; }
+  .badge-next { background: var(--border); color: var(--muted); }
+
+  .status-tag {
+    display: inline-block; font-size: 0.75rem; font-weight: 600;
+    padding: 0.1rem 0.5rem; border-radius: 999px;
+  }
+  .status-done { background: #0d4f1f; color: var(--green); }
+  .status-wip { background: #4d3400; color: var(--yellow); }
+  .status-todo { background: var(--border); color: var(--muted); }
+
+  ul { list-style: none; padding: 0; }
+  ul li { padding: 0.35rem 0; padding-left: 1.25rem; position: relative; }
+  ul li::before {
+    content: '—'; position: absolute; left: 0; color: var(--muted);
+  }
+  .task-grid {
+    display: flex; flex-direction: column; gap: 0.35rem;
+    margin-top: 0.75rem;
+  }
+  .task {
+    display: flex; align-items: center; gap: 0.75rem;
+    padding: 0.4rem 0.75rem;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    font-size: 0.9rem;
+  }
+
+  .features { margin-top: 2rem; }
+  .feature-row {
+    display: flex; align-items: center; padding: 0.6rem 0;
+    border-bottom: 1px solid var(--border);
+    font-size: 0.9rem;
+  }
+  .feature-row .name { flex: 1; }
+  .feature-row .phases { display: flex; gap: 0.35rem; }
+
+  .dot { width: 10px; height: 10px; border-radius: 50%; display: inline-block; }
+  .dot-fill { background: var(--accent); }
+  .dot-empty { background: var(--border); }
+  .dot-wip { background: var(--yellow); }
+
+  .footer { margin-top: 3rem; color: var(--muted); font-size: 0.8rem; text-align: center; }
+</style>
+</head>
+<body>
+<div class="container">
+  <h1>🧙 MTG Board Layout</h1>
+  <div class="subtitle">A web-based SpellTable board — deck builder, hand management, life tracker, & tools</div>
+
+  <div class="meta">
+    <div class="meta-item"><span>Stack</span> React + Vite + TypeScript</div>
+    <div class="meta-item"><span>Cards</span> Scryfall API</div>
+    <div class="meta-item"><span>Storage</span> LocalStorage / IndexedDB</div>
+    <div class="meta-item"><span>Updated</span> <span id="updated-date"></span></div>
+  </div>
+
+  <h2>🗺️ Roadmap</h2>
+
+  <!-- Phase 1 -->
+  <div class="phase-header" onclick="toggle(this)">
+    <span class="phase-badge badge-now">Now</span>
+    <strong>Phase 1 — Foundation</strong>
+    <span class="status-tag status-todo" style="margin-left:auto;">Not started</span>
+  </div>
+  <div class="phase active" id="phase1">
+    <ul>
+      <li>Scaffold Vite + React + TS project with linting & type checking</li>
+      <li>Set up Zustand for state management + React Router</li>
+      <li>Scryfall API integration (card search, image fetching)</li>
+      <li>Background image upload & storage</li>
+      <li>Core layout shell: sidebar nav, board viewport</li>
+    </ul>
+    <div class="task-grid">
+      <div class="task"><span class="status-tag status-todo">TODO</span> Project scaffolding</div>
+      <div class="task"><span class="status-tag status-todo">TODO</span> Scryfall service</div>
+      <div class="task"><span class="status-tag status-todo">TODO</span> Background picker</div>
+      <div class="task"><span class="status-tag status-todo">TODO</span> Layout shell</div>
+    </div>
+  </div>
+
+  <!-- Phase 2 -->
+  <div class="phase-header" onclick="toggle(this)">
+    <span class="phase-badge badge-next">Next</span>
+    <strong>Phase 2 — Deck Builder</strong>
+    <span class="status-tag status-todo" style="margin-left:auto;">Not started</span>
+  </div>
+  <div class="phase" id="phase2">
+    <ul>
+      <li>Deck list CRUD (create, rename, delete, clone)</li>
+      <li>Import from Moxfield / Archidekt URL</li>
+      <li>Card search with Scryfall autocomplete</li>
+      <li>Add/remove cards, sideboard, categories</li>
+      <li>Deck statistics (mana curve, color pie, type counts)</li>
+    </ul>
+  </div>
+
+  <!-- Phase 3 -->
+  <div class="phase-header" onclick="toggle(this)">
+    <span class="phase-badge badge-next">Next</span>
+    <strong>Phase 3 — Board View</strong>
+    <span class="status-tag status-todo" style="margin-left:auto;">Not started</span>
+  </div>
+  <div class="phase" id="phase3">
+    <ul>
+      <li>Load a deck onto the board (shuffle + draw opening hand)</li>
+      <li>Hand zone: private by default, right-click to reveal/peek</li>
+      <li>Battlefield zone: drag cards from hand, tap/untap, counters</li>
+      <li>Opponent zone: face-down cards with optional reveal</li>
+      <li>Graveyard & exile zones as drop targets</li>
+      <li>Deal / draw / mulligan mechanics</li>
+    </ul>
+  </div>
+
+  <!-- Phase 4 -->
+  <div class="phase-header" onclick="toggle(this)">
+    <span class="phase-badge badge-next">Next</span>
+    <strong>Phase 4 — Life & Tools</strong>
+    <span class="status-tag status-todo" style="margin-left:auto;">Not started</span>
+  </div>
+  <div class="phase" id="phase4">
+    <ul>
+      <li>Life total tracker with +/- buttons and delta history</li>
+      <li>Commander damage per opponent (21-tracker)</li>
+      <li>Dice roller: d4, d6, d8, d10, d12, d20, d100</li>
+      <li>Coin flip with heads/tails display</li>
+      <li>Roll history log</li>
+    </ul>
+  </div>
+
+  <!-- Phase 5 -->
+  <div class="phase-header" onclick="toggle(this)">
+    <span class="phase-badge badge-next">Next</span>
+    <strong>Phase 5 — Polish</strong>
+    <span class="status-tag status-todo" style="margin-left:auto;">Not started</span>
+  </div>
+  <div class="phase" id="phase5">
+    <ul>
+      <li>Custom background image upload (file picker, stored in IndexedDB)</li>
+      <li>Keyboard shortcuts (undo, draw, tap all)</li>
+      <li>Save/load game snapshots</li>
+      <li>Responsive layout for tablets</li>
+      <li>80%+ test coverage on core logic</li>
+      <li>Accessibility & screen reader support</li>
+    </ul>
+  </div>
+
+  <h2>📋 Feature Overview</h2>
+  <div class="features">
+    <div class="feature-row">
+      <span class="name">Board with zones</span>
+      <span class="phases">
+        <span class="dot dot-empty"></span>
+        <span class="dot dot-empty"></span>
+        <span class="dot dot-fill"></span>
+        <span class="dot dot-empty"></span>
+        <span class="dot dot-empty"></span>
+      </span>
+    </div>
+    <div class="feature-row">
+      <span class="name">Deck builder</span>
+      <span class="phases">
+        <span class="dot dot-empty"></span>
+        <span class="dot dot-fill"></span>
+        <span class="dot dot-empty"></span>
+        <span class="dot dot-empty"></span>
+        <span class="dot dot-empty"></span>
+      </span>
+    </div>
+    <div class="feature-row">
+      <span class="name">Hand management (private/reveal)</span>
+      <span class="phases">
+        <span class="dot dot-empty"></span>
+        <span class="dot dot-empty"></span>
+        <span class="dot dot-fill"></span>
+        <span class="dot dot-empty"></span>
+        <span class="dot dot-empty"></span>
+      </span>
+    </div>
+    <div class="feature-row">
+      <span class="name">Life total + commander damage</span>
+      <span class="phases">
+        <span class="dot dot-empty"></span>
+        <span class="dot dot-empty"></span>
+        <span class="dot dot-empty"></span>
+        <span class="dot dot-fill"></span>
+        <span class="dot dot-empty"></span>
+      </span>
+    </div>
+    <div class="feature-row">
+      <span class="name">Dice, coin, tools</span>
+      <span class="phases">
+        <span class="dot dot-empty"></span>
+        <span class="dot dot-empty"></span>
+        <span class="dot dot-empty"></span>
+        <span class="dot dot-fill"></span>
+        <span class="dot dot-empty"></span>
+      </span>
+    </div>
+    <div class="feature-row">
+      <span class="name">Custom backgrounds</span>
+      <span class="phases">
+        <span class="dot dot-empty"></span>
+        <span class="dot dot-empty"></span>
+        <span class="dot dot-empty"></span>
+        <span class="dot dot-empty"></span>
+        <span class="dot dot-fill"></span>
+      </span>
+    </div>
+    <div class="feature-row">
+      <span class="name">Save/load game state</span>
+      <span class="phases">
+        <span class="dot dot-empty"></span>
+        <span class="dot dot-empty"></span>
+        <span class="dot dot-empty"></span>
+        <span class="dot dot-empty"></span>
+        <span class="dot dot-fill"></span>
+      </span>
+    </div>
+  </div>
+
+  <h2>📐 Architecture</h2>
+  <ul>
+    <li><strong>State:</strong> Zustand stores (game, deck, hand, settings)</li>
+    <li><strong>Routing:</strong> React Router — <code>/decks</code>, <code>/board/:deckId</code>, <code>/tools</code>, <code>/settings</code></li>
+    <li><strong>Cards:</strong> Scryfall API for search + image URIs; card data stored locally in IndexedDB</li>
+    <li><strong>Storage:</strong> LocalStorage for settings/prefs; IndexedDB for decks and game snapshots</li>
+    <li><strong>Drag & drop:</strong> <code>@dnd-kit</code> for moving cards between zones</li>
+  </ul>
+
+  <div class="footer">
+    <span id="updated-text"></span> &mdash; <a href="#" style="color:var(--accent);" onclick="alert('Open roadmap.html in a browser to edit and re-save.')">How to update</a>
+  </div>
+</div>
+
+<script>
+function toggle(header) {
+  const phase = header.nextElementSibling;
+  phase.classList.toggle('active');
+}
+const now = new Date();
+document.getElementById('updated-date').textContent = now.toLocaleDateString('en-US', {
+  year: 'numeric', month: 'short', day: 'numeric'
+});
+</script>
+</body>
+</html>
