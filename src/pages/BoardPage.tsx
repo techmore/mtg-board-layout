@@ -1,5 +1,6 @@
 import { useState, useRef, useCallback, useEffect } from 'react'
 import { useGameStore } from '../stores/gameStore'
+import { useDeckStore } from '../stores/deckStore'
 import CardZoom from '../components/Board/CardZoom'
 import DiceCoinOverlay from '../components/Board/DiceCoinOverlay'
 import type { BoardCard } from '../types/card'
@@ -10,10 +11,19 @@ function isLand(type: string) {
 
 export default function BoardPage() {
   const cards = useGameStore((s) => s.cards)
+  const activeDeckId = useGameStore((s) => s.activeDeckId)
+  const turn = useGameStore((s) => s.turn)
   const backgroundImage = useGameStore((s) => s.backgroundImage)
   const showOpponent = useGameStore((s) => s.showOpponent)
   const broadcasting = useGameStore((s) => s.broadcasting)
   const lifeTotal = useGameStore((s) => s.lifeTotal)
+  const drawNotice = useGameStore((s) => s.drawNotice)
+  const turnAnnouncement = useGameStore((s) => s.turnAnnouncement)
+  const turnPrompt = useGameStore((s) => s.turnPrompt)
+  const clearDrawNotice = useGameStore((s) => s.clearDrawNotice)
+  const clearTurnAnnouncement = useGameStore((s) => s.clearTurnAnnouncement)
+  const cancelTurnPrompt = useGameStore((s) => s.cancelTurnPrompt)
+  const discardForTurn = useGameStore((s) => s.discardForTurn)
   const setOverlay = useGameStore((s) => s.setOverlay)
   const toggleTap = useGameStore((s) => s.toggleTap)
   const toggleOpponent = useGameStore((s) => s.toggleOpponent)
@@ -21,6 +31,9 @@ export default function BoardPage() {
   const addCounter = useGameStore((s) => s.addCounter)
   const removeCounter = useGameStore((s) => s.removeCounter)
   const moveCard = useGameStore((s) => s.moveCard)
+  const reorderBattlefield = useGameStore((s) => s.reorderBattlefield)
+  const loadDeck = useGameStore((s) => s.loadDeck)
+  const decks = useDeckStore((s) => s.decks)
 
   const dragCardId = useRef<string | null>(null)
 
@@ -38,12 +51,30 @@ export default function BoardPage() {
   }
 
   const handCards = cards.filter((c) => c.zone === 'hand')
+  const handStacks = Array.from(
+    handCards.reduce((stacks, card) => {
+      const key = card.scryfallId || card.name.toLowerCase()
+      const stack = stacks.get(key)
+      if (stack) stack.count += 1
+      else stacks.set(key, { card, count: 1 })
+      return stacks
+    }, new Map<string, { card: BoardCard; count: number }>()),
+  )
   const creatureCards = cards.filter((c) => c.zone === 'battlefield' && c.type === 'creature')
   const planeswalkerCards = cards.filter((c) => c.zone === 'battlefield' && c.type === 'planeswalker')
   const battleCards = cards.filter((c) => c.zone === 'battlefield' && c.type === 'battle')
   const artifactCards = cards.filter((c) => c.zone === 'battlefield' && c.type === 'artifact')
   const enchantmentCards = cards.filter((c) => c.zone === 'battlefield' && c.type === 'enchantment')
   const landCards = cards.filter((c) => c.zone === 'battlefield' && isLand(c.type))
+  const landStacks = Array.from(
+    landCards.reduce((stacks, card) => {
+      const key = card.name.toLowerCase()
+      const stack = stacks.get(key)
+      if (stack) stack.push(card)
+      else stacks.set(key, [card])
+      return stacks
+    }, new Map<string, BoardCard[]>()),
+  )
   const otherPermanents = cards.filter((c) =>
     c.zone === 'battlefield' && !['creature','planeswalker','battle','artifact','enchantment','land'].includes(c.type)
   )
@@ -59,7 +90,15 @@ export default function BoardPage() {
   } | null>(null)
   const [altHeld, setAltHeld] = useState(false)
   const [handExpanded, setHandExpanded] = useState(true)
+  const [selectedDiscardId, setSelectedDiscardId] = useState<string | null>(null)
   const handBig = altHeld || handExpanded
+  const handCardHeight = handBig ? 390 : 138
+  const handStackOffset = handBig ? 26 : 18
+  const maxHandStackCount = Math.max(1, ...handStacks.map(([, stack]) => stack.count))
+  const handHeight = Math.max(
+    handBig ? 440 : 175,
+    handCardHeight + (maxHandStackCount - 1) * handStackOffset + (handBig ? 44 : 36),
+  )
   const handExpandedRef = useRef(handExpanded)
   handExpandedRef.current = handExpanded
   const lastAltRef = useRef(0)
@@ -91,9 +130,34 @@ export default function BoardPage() {
     return () => { removeEventListener('keydown', down); removeEventListener('keyup', up) }
   }, [])
 
+  useEffect(() => {
+    if (!drawNotice) return
+    const noticeId = drawNotice.id
+    const timeout = window.setTimeout(() => clearDrawNotice(noticeId), 2200)
+    return () => window.clearTimeout(timeout)
+  }, [clearDrawNotice, drawNotice])
+
+  useEffect(() => {
+    if (!turnAnnouncement) return
+    const announcementId = turnAnnouncement.id
+    const timeout = window.setTimeout(() => clearTurnAnnouncement(announcementId), 2800)
+    return () => window.clearTimeout(timeout)
+  }, [clearTurnAnnouncement, turnAnnouncement])
+
+  useEffect(() => {
+    setSelectedDiscardId(null)
+  }, [turnPrompt])
+
   const handleRightClick = (e: React.MouseEvent, cardId: string) => {
     e.preventDefault()
     setContextMenu({ cardId, x: e.clientX, y: e.clientY })
+  }
+
+  const handleDeckChange = (deckId: string) => {
+    const deck = decks.find((candidate) => candidate.id === deckId)
+    if (!deck) return
+    loadDeck(deck.commanderNames, deck.cards, deck.id)
+    useGameStore.getState().drawCards(7)
   }
 
   return (
@@ -103,9 +167,7 @@ export default function BoardPage() {
         display: 'flex',
         flexDirection: 'column',
         position: 'relative',
-        background: backgroundImage
-          ? `url(${backgroundImage}) center/cover no-repeat`
-          : 'url(/unofficial_magic_the_gathering.webp) center/cover no-repeat',
+        overflow: 'hidden',
         color: '#fff',
         minHeight: 0,
       }}
@@ -131,7 +193,181 @@ export default function BoardPage() {
           ● BROADCASTING
         </div>
       )}
-      <div style={{ flex: 1, display: 'flex', minHeight: 0 }}>
+      {(drawNotice || turnAnnouncement) && (
+        <div
+          style={{
+            position: 'absolute',
+            top: '50%',
+            left: '50%',
+            transform: 'translate(-50%, -50%)',
+            zIndex: 30,
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            gap: 12,
+            maxWidth: 'calc(100% - 32px)',
+            pointerEvents: 'none',
+          }}
+        >
+          {drawNotice && (
+            <div
+              role="status"
+              style={{
+                padding: '18px 32px',
+                borderRadius: 999,
+                background: 'rgba(13,17,23,0.94)',
+                border: '2px solid rgba(255,211,61,0.7)',
+                color: '#ffd33d',
+                fontSize: '2.25rem',
+                fontWeight: 900,
+                letterSpacing: '1.5px',
+                whiteSpace: 'nowrap',
+                boxShadow: '0 6px 24px rgba(0,0,0,0.5)',
+              }}
+            >
+              ✦ {drawNotice.count === 1 ? 'CARD DRAWN' : `${drawNotice.count} CARDS DRAWN`}
+            </div>
+          )}
+      {turnAnnouncement && (
+            <div
+              role="status"
+              style={{
+                padding: '18px 32px',
+                borderRadius: 999,
+                background: 'rgba(13,17,23,0.94)',
+                border: '2px solid rgba(88,166,255,0.7)',
+                color: '#79c0ff',
+                fontSize: '2.25rem',
+                fontWeight: 900,
+                letterSpacing: '1.5px',
+                whiteSpace: 'nowrap',
+                boxShadow: '0 6px 24px rgba(0,0,0,0.5)',
+              }}
+            >
+              {turnAnnouncement.text}
+            </div>
+          )}
+        </div>
+      )}
+      {turnPrompt && (
+        <div
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="turn-prompt-title"
+          style={{
+            position: 'fixed',
+            inset: 0,
+            zIndex: 80,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            padding: 20,
+            background: 'rgba(0,0,0,0.72)',
+          }}
+        >
+          <div
+            style={{
+              width: 'min(620px, 100%)',
+              maxHeight: 'calc(100vh - 40px)',
+              overflow: 'auto',
+              padding: 22,
+              borderRadius: 12,
+              background: '#161b22',
+              border: '1px solid rgba(255,211,61,0.65)',
+              boxShadow: '0 12px 40px rgba(0,0,0,0.6)',
+            }}
+          >
+            <h2 id="turn-prompt-title" style={{ margin: '0 0 8px', color: '#ffd33d', fontSize: '1.1rem' }}>
+              Discard before ending turn
+            </h2>
+            <p style={{ margin: '0 0 16px', color: '#d0d7de', fontSize: '0.85rem', lineHeight: 1.45 }}>
+              You have {handCards.length} cards in hand. Choose one card to discard, or cancel to keep the turn open.
+              {turnPrompt.action === 'advance' && ' Next Turn + Draw will continue after the discard.'}
+            </p>
+
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: 10, justifyContent: 'center', marginBottom: 20 }}>
+              {handCards.map((card) => {
+                const selected = selectedDiscardId === card.id
+                return (
+                  <button
+                    key={card.id}
+                    type="button"
+                    aria-pressed={selected}
+                    title={`Select ${card.name} to discard`}
+                    onClick={() => setSelectedDiscardId(card.id)}
+                    style={{
+                      width: 82,
+                      padding: 3,
+                      borderRadius: 7,
+                      border: selected ? '3px solid #ffd33d' : '2px solid rgba(255,255,255,0.18)',
+                      background: selected ? 'rgba(255,211,61,0.14)' : 'rgba(255,255,255,0.04)',
+                      color: '#e6edf3',
+                      cursor: 'pointer',
+                      textAlign: 'left',
+                    }}
+                  >
+                    <img
+                      src={card.imageUri}
+                      alt={card.name}
+                      style={{ width: '100%', aspectRatio: '5 / 7', objectFit: 'cover', display: 'block', borderRadius: 4 }}
+                    />
+                    <span style={{ display: 'block', marginTop: 4, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', fontSize: '0.62rem' }}>
+                      {card.name}
+                    </span>
+                  </button>
+                )
+              })}
+            </div>
+
+            <div style={{ display: 'flex', justifyContent: 'flex-end', gap: 8 }}>
+              <button
+                type="button"
+                onClick={cancelTurnPrompt}
+                style={{
+                  padding: '9px 14px',
+                  borderRadius: 6,
+                  border: '1px solid #484f58',
+                  background: 'transparent',
+                  color: '#d0d7de',
+                  cursor: 'pointer',
+                  fontWeight: 700,
+                }}
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                disabled={!selectedDiscardId}
+                onClick={() => { if (selectedDiscardId) discardForTurn(selectedDiscardId) }}
+                style={{
+                  padding: '9px 14px',
+                  borderRadius: 6,
+                  border: '1px solid rgba(255,211,61,0.7)',
+                  background: selectedDiscardId ? '#d29922' : 'rgba(210,153,34,0.25)',
+                  color: selectedDiscardId ? '#000' : '#8b949e',
+                  cursor: selectedDiscardId ? 'pointer' : 'not-allowed',
+                  fontWeight: 800,
+                }}
+              >
+                Discard Selected
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+      {/* The background is limited to the board surface; the private hand is below it. */}
+      <div
+        style={{
+          flex: 1,
+          display: 'flex',
+          minHeight: 0,
+          position: 'relative',
+          overflow: 'hidden',
+          background: backgroundImage
+            ? `url(${backgroundImage}) center/cover no-repeat`
+            : 'url(/unofficial_magic_the_gathering.webp) center/cover no-repeat',
+        }}
+      >
         <div style={{ flex: 1, display: 'flex', flexDirection: 'column', position: 'relative' }}>
           {showOpponent && (
             <div
@@ -162,13 +398,52 @@ export default function BoardPage() {
               flexShrink: 0,
             }}
           >
+            <label style={{ display: 'flex', alignItems: 'center', gap: 5, color: '#8b949e', fontSize: '0.7rem' }}>
+              Deck
+              <select
+                value={activeDeckId ?? ''}
+                onChange={(e) => handleDeckChange(e.target.value)}
+                aria-label="Active deck"
+                style={{
+                  maxWidth: 190,
+                  padding: '4px 6px',
+                  borderRadius: 4,
+                  border: '1px solid rgba(255,255,255,0.15)',
+                  background: 'rgba(0,0,0,0.45)',
+                  color: '#e6edf3',
+                  fontSize: '0.75rem',
+                }}
+              >
+                {decks.length === 0 && <option value="">No decks imported</option>}
+                {decks.length > 0 && !activeDeckId && <option value="">Select a deck</option>}
+                {decks.map((deck) => (
+                  <option key={deck.id} value={deck.id}>{deck.name}</option>
+                ))}
+              </select>
+            </label>
             <BoardBtn onClick={() => useGameStore.getState().drawCards(7)}>Draw 7</BoardBtn>
             <BoardBtn onClick={() => useGameStore.getState().drawCards(1)}>Draw 1</BoardBtn>
-            <BoardBtn onClick={() => useGameStore.getState().reshuffle()}>
-              Reshuffle
+            <BoardBtn onClick={() => useGameStore.getState().redeal(7)}>
+              Redeal 7
             </BoardBtn>
 
             <div style={{ flex: 1 }} />
+
+            <div
+              aria-label={`Turn ${turn}`}
+              style={{
+                padding: '4px 9px',
+                borderRadius: 999,
+                background: 'rgba(88,166,255,0.14)',
+                border: '1px solid rgba(88,166,255,0.3)',
+                color: '#79c0ff',
+                fontSize: '0.75rem',
+                fontWeight: 700,
+                whiteSpace: 'nowrap',
+              }}
+            >
+              Turn {turn}
+            </div>
 
             {/* Life counter — top center */}
             <div
@@ -277,7 +552,7 @@ export default function BoardPage() {
             <div
               style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: 8, overflow: 'auto', minHeight: 0 }}
             >
-              {BattlefieldSection('Creatures', creatureCards, toggleTap, handleRightClick, setOverlay)}
+              {BattlefieldSection('Creatures', creatureCards, toggleTap, handleRightClick, setOverlay, true, reorderBattlefield)}
               {BattlefieldSection('Planeswalkers', planeswalkerCards, toggleTap, handleRightClick, setOverlay)}
               {BattlefieldSection('Battles', battleCards, toggleTap, handleRightClick, setOverlay)}
               {BattlefieldSection('Artifacts', artifactCards, toggleTap, handleRightClick, setOverlay)}
@@ -293,7 +568,7 @@ export default function BoardPage() {
               )}
             </div>
 
-            {/* Lands stacked — bottom left, peek-top so you can count */}
+            {/* Lands stack only with the same land name; different land types stay side by side. */}
             {landCards.length > 0 && (
               <div
                 style={{
@@ -301,121 +576,87 @@ export default function BoardPage() {
                   paddingTop: 8,
                   alignSelf: 'flex-start',
                   flexShrink: 0,
+                  display: 'flex',
+                  // The Commander zone is on the right, so the first land stack stays nearest to it.
+                  flexDirection: 'row-reverse',
+                  alignItems: 'flex-start',
+                  gap: 8,
+                  flexWrap: 'wrap',
                 }}
               >
-                {landCards.map((card, idx) => (
+                {landStacks.map(([landName, stack]) => (
                   <div
-                    key={card.id}
+                    key={landName}
                     style={{
                       width: 180,
-                      height: 252,
-                      marginTop: idx > 0 ? -200 : 0,
+                      height: 252 + Math.max(0, stack.length - 1) * 26,
+                      flexShrink: 0,
                       position: 'relative',
-                      cursor: 'pointer',
-                      zIndex: idx,
                     }}
-                    onClick={() => setOverlay({ type: 'zoom', cardId: card.id })}
-                    onContextMenu={(e) => handleRightClick(e, card.id)}
                   >
-                    <img
-                      src={card.imageUri}
-                      alt={card.name}
-                      style={{
-                        width: '100%',
-                        height: '100%',
-                        objectFit: 'cover',
-                        borderRadius: 6,
-                        border: '2px solid rgba(255,255,255,0.15)',
-                        transform: card.tapped ? 'rotate(90deg)' : 'none',
-                        transition: 'transform 0.15s',
-                      }}
-                    />
-                    {card.counters > 0 && (
-                      <div style={counterBadgeStyle}>{card.counters}</div>
-                    )}
-                    <button
-                      type="button"
-                      aria-label={card.tapped ? `Untap ${card.name}` : `Tap ${card.name}`}
-                      onClick={(e) => { e.stopPropagation(); toggleTap(card.id) }}
-                      style={{
-                        position: 'absolute',
-                        top: 4,
-                        right: 4,
-                        width: 22,
-                        height: 22,
-                        borderRadius: '50%',
-                        background: 'rgba(0,0,0,0.55)',
-                        border: '1px solid rgba(255,255,255,0.2)',
-                        display: 'flex',
-                        alignItems: 'center',
-              justifyContent: handBig ? 'flex-start' : 'center',
-                        cursor: 'pointer',
-                        fontSize: '0.7rem',
-                        color: card.tapped ? '#58a6ff' : '#8b949e',
-                        padding: 0,
-                      }}
-                      title="Tap / Untap"
-                    >
-                      ↻
-                    </button>
+                    <BattlefieldOrderControls cardId={stack[0].id} reorderBattlefield={reorderBattlefield} />
+                    {stack.map((card, idx) => (
+                      <div
+                        key={card.id}
+                        title={cardRuleSummary(card)}
+                        style={{
+                          position: 'absolute',
+                          top: idx * 26,
+                          left: 0,
+                          width: 180,
+                          height: 252,
+                          cursor: 'pointer',
+                          zIndex: idx,
+                        }}
+                        onClick={() => setOverlay({ type: 'zoom', cardId: card.id })}
+                        onContextMenu={(e) => handleRightClick(e, card.id)}
+                      >
+                        <img
+                          src={card.imageUri}
+                          alt={card.name}
+                          style={{
+                            width: '100%',
+                            height: '100%',
+                            objectFit: 'cover',
+                            borderRadius: 6,
+                            border: '2px solid rgba(255,255,255,0.15)',
+                            transform: card.tapped ? 'rotate(90deg)' : 'none',
+                            transition: 'transform 0.15s',
+                          }}
+                        />
+                        {card.counters > 0 && (
+                          <div style={counterBadgeStyle}>{card.counters}</div>
+                        )}
+                        <button
+                          type="button"
+                          aria-label={card.tapped ? `Untap ${card.name}` : `Tap ${card.name}`}
+                          onClick={(e) => { e.stopPropagation(); toggleTap(card.id) }}
+                          style={{
+                            position: 'absolute',
+                            top: 4,
+                            right: 4,
+                            width: 22,
+                            height: 22,
+                            borderRadius: '50%',
+                            background: 'rgba(0,0,0,0.55)',
+                            border: '1px solid rgba(255,255,255,0.2)',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            cursor: 'pointer',
+                            fontSize: '0.7rem',
+                            color: card.tapped ? '#58a6ff' : '#8b949e',
+                            padding: 0,
+                          }}
+                          title="Tap / Untap"
+                        >
+                          ↻
+                        </button>
+                      </div>
+                    ))}
                   </div>
                 ))}
               </div>
-            )}
-          </div>
-
-          {/* Hand (private area) */}
-          <div
-            style={{
-              height: handBig ? 560 : 140,
-              flexShrink: 0,
-              background: 'rgba(0,0,0,0.4)',
-              borderTop: '2px solid rgba(255,255,255,0.08)',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: handBig ? 'flex-start' : 'center',
-              gap: handBig ? 12 : 4,
-              padding: '8px 16px',
-              overflowX: handBig ? 'scroll' : 'hidden',
-              overflowY: 'hidden',
-              flexWrap: 'nowrap',
-              position: 'relative',
-              transition: 'height 0.12s, gap 0.12s',
-            }}
-          >
-            <button
-              type="button"
-              aria-label={handExpanded ? 'Collapse hand' : 'Expand hand'}
-              onClick={() => setHandExpanded(!handExpanded)}
-              style={{
-                position: 'absolute',
-                left: 4,
-                top: 2,
-                width: 22,
-                height: 22,
-                borderRadius: 4,
-                background: handExpanded ? 'rgba(88,166,255,0.2)' : 'rgba(255,255,255,0.06)',
-                border: '1px solid rgba(255,255,255,0.15)',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                cursor: 'pointer',
-                fontSize: '0.75rem',
-                color: handExpanded ? '#58a6ff' : '#8b949e',
-                transition: 'background 0.12s, color 0.12s',
-                zIndex: 10,
-                padding: 0,
-              }}
-              title={handExpanded ? 'Collapse hand' : 'Expand hand'}
-            >
-              ▲
-            </button>
-            {handCards.length === 0 ? (
-              <span style={{ opacity: 0.3, fontSize: '0.85rem' }}>Your Hand (private)</span>
-            ) : (
-              handCards.map((card) => (
-                <HoverZoomCard key={card.id} card={card} setOverlay={setOverlay} handleRightClick={handleRightClick} setDragCardId={dragCardId} handBig={handBig} />
-              ))
             )}
           </div>
 
@@ -423,15 +664,14 @@ export default function BoardPage() {
           <div
             style={{
               position: 'absolute',
-              bottom: handBig ? 576 : 148,
+              bottom: 8,
               right: 8,
               display: 'flex',
               gap: 4,
-              padding: 6,
-              background: 'rgba(0,0,0,0.55)',
-              backdropFilter: 'blur(6px)',
-              borderRadius: 10,
-              border: '1px solid rgba(255,255,255,0.08)',
+              padding: 0,
+              background: 'transparent',
+              borderRadius: 0,
+              border: 'none',
             }}
           >
             <SmallZoneBox label="Cmd" count={null}>
@@ -448,10 +688,49 @@ export default function BoardPage() {
                 <div style={emptySlotStyle} />
               )}
             </SmallZoneBox>
-            <SmallZoneBox label="Lib" count={libraryCards.length}>
-              <CardBack />
-            </SmallZoneBox>
-            <SmallZoneBox label="GY" count={graveyardCards.length}>
+            <div style={{ position: 'relative', width: 172, flexShrink: 0 }}>
+              <div
+                aria-label={`Hand: ${handCards.length} cards`}
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'space-between',
+                  gap: 8,
+                  width: '100%',
+                  boxSizing: 'border-box',
+                  padding: '5px 8px',
+                  marginBottom: 4,
+                  background: 'rgba(13,17,23,0.72)',
+                  borderRadius: 6,
+                  border: '1px solid rgba(255,255,255,0.2)',
+                  color: '#e6edf3',
+                  fontSize: '0.75rem',
+                }}
+              >
+                <span>Hand</span>
+                <span
+                  style={{
+                    background: '#d29922',
+                    color: '#000',
+                    fontSize: '0.8rem',
+                    fontWeight: 700,
+                    borderRadius: 999,
+                    minWidth: 22,
+                    height: 22,
+                    padding: '0 5px',
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                  }}
+                >
+                  {handCards.length}
+                </span>
+              </div>
+              <SmallZoneBox label="Lib" count={libraryCards.length}>
+                <CardBack />
+              </SmallZoneBox>
+            </div>
+            <SmallZoneBox label="GY" count={graveyardCards.length} transparent>
               {graveyardCards.slice(0, 1).map((card) => (
                 <MiniCard
                   key={card.id}
@@ -460,9 +739,8 @@ export default function BoardPage() {
                   onContextMenu={(e) => handleRightClick(e, card.id)}
                 />
               ))}
-              {graveyardCards.length === 0 && <div style={emptySlotStyle} />}
             </SmallZoneBox>
-            <SmallZoneBox label="Ex" count={exileCards.length}>
+            <SmallZoneBox label="Ex" count={exileCards.length} transparent>
               {exileCards.slice(0, 1).map((card) => (
                 <MiniCard
                   key={card.id}
@@ -471,10 +749,73 @@ export default function BoardPage() {
                   onContextMenu={(e) => handleRightClick(e, card.id)}
                 />
               ))}
-              {exileCards.length === 0 && <div style={emptySlotStyle} />}
             </SmallZoneBox>
           </div>
         </div>
+      </div>
+
+      {/* Private hand: cards beyond the viewport are clipped and horizontally scrollable. */}
+      <div
+        style={{
+          height: handHeight,
+          flexShrink: 0,
+          minHeight: 0,
+          background: '#10151d',
+          borderTop: '2px solid rgba(255,255,255,0.12)',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'flex-start',
+          gap: handBig ? 24 : 10,
+          padding: handBig ? '34px 16px 10px' : '28px 16px 8px',
+          overflowX: 'auto',
+          overflowY: 'hidden',
+          flexWrap: 'nowrap',
+          position: 'relative',
+          transition: 'height 0.12s, gap 0.12s',
+        }}
+      >
+        <button
+          type="button"
+          aria-label={handExpanded ? 'Collapse hand' : 'Expand hand'}
+          onClick={() => setHandExpanded(!handExpanded)}
+          style={{
+            position: 'absolute',
+            left: 4,
+            top: 2,
+            width: 22,
+            height: 22,
+            borderRadius: 4,
+            background: handExpanded ? 'rgba(88,166,255,0.2)' : 'rgba(255,255,255,0.06)',
+            border: '1px solid rgba(255,255,255,0.15)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            cursor: 'pointer',
+            fontSize: '0.75rem',
+            color: handExpanded ? '#58a6ff' : '#8b949e',
+            transition: 'background 0.12s, color 0.12s',
+            zIndex: 10,
+            padding: 0,
+          }}
+          title={handExpanded ? 'Collapse hand' : 'Expand hand'}
+        >
+          {handExpanded ? '▼' : '▲'}
+        </button>
+        {handCards.length === 0 ? (
+          <span style={{ opacity: 0.3, fontSize: '0.85rem' }}>Your Hand (private)</span>
+        ) : (
+          handStacks.map(([key, stack]) => (
+            <HoverZoomCard
+              key={key}
+              card={stack.card}
+              count={stack.count}
+              setOverlay={setOverlay}
+              handleRightClick={handleRightClick}
+              setDragCardId={dragCardId}
+              handBig={handBig}
+            />
+          ))
+        )}
       </div>
 
       <CardZoom />
@@ -777,17 +1118,19 @@ function SmallZoneBox({
   label,
   count,
   children,
+  transparent = false,
 }: {
   label: string
   count: number | null
   children: React.ReactNode
+  transparent?: boolean
 }) {
   return (
     <div
       style={{
-        background: 'rgba(0,0,0,0.25)',
+        background: transparent ? 'transparent' : 'rgba(0,0,0,0.25)',
         borderRadius: 10,
-        border: '1px solid rgba(255,255,255,0.06)',
+        border: transparent ? '1px solid transparent' : '1px solid rgba(255,255,255,0.06)',
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
@@ -890,6 +1233,8 @@ function BattlefieldSection(
   toggleTap: (id: string) => void,
   handleRightClick: (e: React.MouseEvent, cardId: string) => void,
   setOverlay: (o: { type: 'zoom' | null; cardId?: string }) => void,
+  commanderFacing = false,
+  reorderBattlefield?: (cardId: string, direction: 'closer' | 'farther') => void,
 ) {
   if (cards.length === 0) return null
   return (
@@ -897,7 +1242,15 @@ function BattlefieldSection(
       <div style={{ fontSize: '0.65rem', color: '#8b949e', marginBottom: 4, textTransform: 'uppercase', letterSpacing: 1, fontWeight: 600 }}>
         {label} ({cards.length})
       </div>
-      <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
+      <div
+        style={{
+          display: 'flex',
+          // The first creature play is nearest the Commander, with later plays extending outward.
+          flexDirection: commanderFacing ? 'row-reverse' : 'row',
+          flexWrap: 'wrap',
+          gap: 6,
+        }}
+      >
         {cards.map((card) => (
           <BoardCardComponent
             key={card.id}
@@ -905,9 +1258,69 @@ function BattlefieldSection(
             onClick={() => setOverlay({ type: 'zoom', cardId: card.id })}
             onContextMenu={(e) => handleRightClick(e, card.id)}
             toggleTap={() => toggleTap(card.id)}
+            reorderBattlefield={reorderBattlefield}
           />
         ))}
       </div>
+    </div>
+  )
+}
+
+function BattlefieldOrderControls({
+  cardId,
+  reorderBattlefield,
+}: {
+  cardId: string
+  reorderBattlefield: (cardId: string, direction: 'closer' | 'farther') => void
+}) {
+  const buttonStyle: React.CSSProperties = {
+    width: 24,
+    height: 24,
+    padding: 0,
+    borderRadius: 4,
+    border: '1px solid rgba(255,255,255,0.3)',
+    background: 'rgba(13,17,23,0.85)',
+    color: '#e6edf3',
+    cursor: 'pointer',
+    fontSize: '1rem',
+    lineHeight: 1,
+  }
+
+  return (
+    <div
+      style={{
+        position: 'absolute',
+        top: 4,
+        left: 4,
+        zIndex: 20,
+        display: 'flex',
+        gap: 3,
+      }}
+    >
+      <button
+        type="button"
+        aria-label="Move closer to Commander"
+        title="Move closer to Commander"
+        onClick={(event) => {
+          event.stopPropagation()
+          reorderBattlefield(cardId, 'closer')
+        }}
+        style={buttonStyle}
+      >
+        →
+      </button>
+      <button
+        type="button"
+        aria-label="Move farther from Commander"
+        title="Move farther from Commander"
+        onClick={(event) => {
+          event.stopPropagation()
+          reorderBattlefield(cardId, 'farther')
+        }}
+        style={buttonStyle}
+      >
+        ←
+      </button>
     </div>
   )
 }
@@ -917,14 +1330,17 @@ function BoardCardComponent({
   onClick,
   onContextMenu,
   toggleTap,
+  reorderBattlefield,
 }: {
   card: BoardCard
   onClick: () => void
   onContextMenu: (e: React.MouseEvent) => void
   toggleTap: () => void
+  reorderBattlefield?: (cardId: string, direction: 'closer' | 'farther') => void
 }) {
   return (
     <div
+      title={cardRuleSummary(card)}
       style={{
         width: 320,
         position: 'relative',
@@ -944,6 +1360,9 @@ function BoardCardComponent({
           transition: 'transform 0.15s',
         }}
       />
+      {reorderBattlefield && (
+        <BattlefieldOrderControls cardId={card.id} reorderBattlefield={reorderBattlefield} />
+      )}
       {card.counters > 0 && (
         <div style={counterBadgeStyle}>{card.counters}</div>
       )}
@@ -1032,46 +1451,96 @@ function BoardBtn({ onClick, children }: { onClick: () => void; children: React.
 
 function HoverZoomCard({
   card,
+  count = 1,
   setOverlay,
   handleRightClick,
   setDragCardId,
   handBig,
 }: {
-  card: { id: string; imageUri: string; name: string }
+  card: { id: string; imageUri: string; name: string; manaCost?: string; manaValue?: number; entersTapped?: boolean }
+  count?: number
   setOverlay: (o: { type: 'zoom' | null; cardId?: string }) => void
   handleRightClick: (e: React.MouseEvent, cardId: string) => void
   setDragCardId: React.MutableRefObject<string | null>
   handBig: boolean
 }) {
+  const cardHeight = handBig ? 390 : 138
+  const stackOffset = handBig ? 26 : 18
+  const stackHeight = cardHeight + Math.max(0, count - 1) * stackOffset
+
   return (
     <div
       draggable
+      title={cardRuleSummary(card)}
       style={{
-        height: '100%',
-        aspectRatio: '5/7',
-        maxHeight: handBig ? 496 : 124,
+        position: 'relative',
+        height: stackHeight,
+        width: cardHeight * (5 / 7),
         cursor: 'grab',
         flexShrink: 0,
-        transition: 'max-height 0.12s',
+        transition: 'height 0.12s, width 0.12s',
       }}
       onDragStart={() => { setDragCardId.current = card.id }}
       onClick={() => setOverlay({ type: 'zoom', cardId: card.id })}
       onContextMenu={(e) => handleRightClick(e, card.id)}
     >
-      <img
-        src={card.imageUri}
-        alt={card.name}
-        style={{
-          width: '100%',
-          height: '100%',
-          objectFit: 'cover',
-          borderRadius: 6,
-          border: '2px solid rgba(255,255,255,0.15)',
-          boxShadow: '0 2px 8px rgba(0,0,0,0.4)',
-        }}
-      />
+      {Array.from({ length: count }, (_, index) => (
+        <img
+          key={`${card.id}-${index}`}
+          src={card.imageUri}
+          alt={index === count - 1 ? card.name : ''}
+          aria-hidden={index !== count - 1}
+          style={{
+            position: 'absolute',
+            top: index * stackOffset,
+            left: 0,
+            zIndex: index + 1,
+            width: '100%',
+            height: cardHeight,
+            objectFit: 'cover',
+            borderRadius: 6,
+            border: '2px solid rgba(255,255,255,0.15)',
+            boxShadow: '0 2px 8px rgba(0,0,0,0.4)',
+          }}
+        />
+      ))}
+      {count > 1 && (
+        <div
+          aria-label={`${count} copies`}
+          style={{
+            position: 'absolute',
+            right: -6,
+            bottom: -6,
+            zIndex: 2,
+            minWidth: 24,
+            height: 24,
+            padding: '0 6px',
+            borderRadius: 999,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            background: '#58a6ff',
+            color: '#0d1117',
+            border: '2px solid #10151d',
+            fontSize: '0.75rem',
+            fontWeight: 800,
+          }}
+        >
+          ×{count}
+        </div>
+      )}
     </div>
   )
+}
+
+function cardRuleSummary(card: {
+  name: string
+  manaCost?: string
+  manaValue?: number
+  entersTapped?: boolean
+}) {
+  const mana = card.manaCost ? `Mana cost: ${card.manaCost}` : card.manaValue !== undefined ? `Mana value: ${card.manaValue}` : 'Mana cost unknown'
+  return `${card.name} · ${mana}${card.entersTapped ? ' · Enters battlefield tapped' : ''}`
 }
 
 

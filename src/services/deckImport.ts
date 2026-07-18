@@ -1,5 +1,6 @@
 import type { DeckCard } from '../types/card'
-import type { PrebuiltDeck } from '../data/prebuiltDecks'
+import type { DeckImportDefinition } from '../types/card'
+import { resolveCardRules } from '../data/cardRules'
 
 interface ScryfallIdentifier {
   name: string
@@ -10,13 +11,16 @@ interface ScryfallCollectionResponse {
     id: string
     name: string
     mana_cost: string
+    cmc: number
     type_line: string
+    oracle_text?: string
     image_uris?: {
       normal: string
     }
     card_faces?: {
       name: string
       mana_cost: string
+      oracle_text: string
       type_line: string
       image_uris: {
         normal: string
@@ -29,18 +33,20 @@ interface ScryfallCollectionResponse {
 const REQUEST_TIMEOUT_MS = 15_000
 
 export async function fetchDeckCards(
-  deck: PrebuiltDeck
+  deck: DeckImportDefinition
 ): Promise<{ cards: DeckCard[]; notFound: string[] }> {
-  const allNames = [...deck.cards, deck.commander, ...(deck.partners ?? [])]
+  const allEntries = [
+    ...deck.cards,
+    ...deck.commanderNames.map((name) => ({ name, quantity: 1 })),
+  ]
 
-  // Count quantities per card name
   const nameCounts = new Map<string, number>()
-  for (const name of allNames) {
-    nameCounts.set(name, (nameCounts.get(name) ?? 0) + 1)
+  for (const entry of allEntries) {
+    nameCounts.set(entry.name, (nameCounts.get(entry.name) ?? 0) + entry.quantity)
   }
 
-  // Collect unique names to query (send each name only once)
-  const uniqueNames = [...new Set(allNames)]
+  // Collect unique names to query (send each name only once).
+  const uniqueNames = [...new Set(allEntries.map((entry) => entry.name))]
   const identifiers: ScryfallIdentifier[] = uniqueNames.map((name) => ({ name }))
 
   const results: DeckCard[] = []
@@ -71,11 +77,22 @@ export async function fetchDeckCards(
 
     for (const card of data.data) {
       const imageUri = card.image_uris?.normal ?? card.card_faces?.[0]?.image_uris?.normal ?? ''
-      results.push({
+      const oracleText = card.oracle_text ?? card.card_faces?.[0]?.oracle_text ?? ''
+      const rules = resolveCardRules({
         scryfallId: card.id,
         name: card.name,
         manaCost: card.mana_cost,
+        manaValue: card.cmc,
+        oracleText,
+      })
+      results.push({
+        scryfallId: card.id,
+        name: card.name,
+        manaCost: rules.manaCost,
+        manaValue: rules.manaValue,
         typeLine: card.type_line,
+        oracleText,
+        entersTapped: rules.entersTapped,
         imageUri,
         quantity: nameCounts.get(card.name) ?? 1,
       })

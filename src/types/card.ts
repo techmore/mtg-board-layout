@@ -37,11 +37,19 @@ export interface ScryfallCard {
 
 export type Zone = 'hand' | 'battlefield' | 'graveyard' | 'exile' | 'library' | 'command'
 
+export type ManaColor = 'W' | 'U' | 'B' | 'R' | 'G' | 'C'
+
+export type ManaPool = Record<ManaColor, number>
+
 export interface BoardCard {
   id: string
   scryfallId: string
   name: string
   imageUri: string
+  manaCost?: string
+  manaValue?: number
+  oracleText?: string
+  entersTapped?: boolean
   zone: Zone
   tapped: boolean
   counters: number
@@ -64,6 +72,7 @@ export interface Deck {
   commanderNames: string[]
   cards: DeckCard[]
   complete: boolean
+  source?: DeckSource
   createdAt: number
   updatedAt: number
 }
@@ -72,7 +81,37 @@ export interface DeckCard {
   scryfallId: string
   name: string
   manaCost: string
+  manaValue?: number
   typeLine: string
+  oracleText?: string
+  entersTapped?: boolean
   imageUri: string
   quantity: number
+}
+
+export interface DeckListEntry {
+  name: string
+  quantity: number
+}
+
+export interface DeckSource {
+  type: 'builtin' | 'url' | 'text'
+  url?: string
+}
+
+/** Human-editable deck data before card details are resolved from Scryfall. */
+export interface DeckImportDefinition {
+  id?: string
+  name: string
+  format: string
+  commanderNames: string[]
+  cards: DeckListEntry[]
+  complete?: boolean
+  source?: DeckSource
+}
+
+export interface BackgroundOption {
+  id: string
+  name: string
+  dataUrl: string
 }
