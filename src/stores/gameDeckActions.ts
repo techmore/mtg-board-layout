@@ -116,6 +116,13 @@ export function createDeckActions(set: SetFn, get: () => GameState): Pick<GameSt
           drawNotice: { id: Date.now(), count: cards.filter((card) => card.zone === 'hand').length, cardNames: cards.filter((card) => card.zone === 'hand').map((c) => c.name) },
           turnAnnouncement: null,
           turnPrompt: null,
+          gameOver: null,
+          activePlayer: 'player' as const,
+          currentPhase: 'beginning' as const,
+          opponentLifeTotal: 40,
+          opponentManaPool: emptyManaPool(),
+          opponentPotentialMana: [],
+          opponentLandPlaysThisTurn: 0,
         }
       }),
 

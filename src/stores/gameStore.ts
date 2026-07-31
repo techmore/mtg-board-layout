@@ -86,6 +86,7 @@ export interface GameState {
   triggerStack: TriggerInstance[]
   combatState: CombatState
   currentPhase: Phase
+  gameOver: { winner: 'player' | 'opponent' } | null
 
   setLife: (n: number) => void
   setBackground: (url: string | null) => void
@@ -95,6 +96,7 @@ export interface GameState {
   addRoll: (result: string) => void
   setOverlay: (overlay: OverlayState) => void
   setBroadcasting: (active: boolean) => void
+  setGameOver: (gameOver: { winner: 'player' | 'opponent' } | null) => void
   toggleOpponent: () => void
   setOpponentLife: (n: number) => void
   loadOpponentDeck: (commanderNames: string[], deckCards: DeckCard[], opponentName?: string) => void
@@ -173,6 +175,7 @@ export const useGameStore = create<GameState>((set, get) => {
     opponentManaPool: { W: 0, U: 0, B: 0, R: 0, G: 0, C: 0 } as ManaPool,
     opponentPotentialMana: [] as PotentialManaSource[],
     opponentLandPlaysThisTurn: 0,
+    gameOver: null,
 
     ...createTurnPhases(set, get),
     ...createOpponentAI(set, get),
@@ -211,9 +214,15 @@ export const useGameStore = create<GameState>((set, get) => {
       set((state) => ({ rollHistory: [...state.rollHistory, result] })),
     setOverlay: (overlay) => set({ overlay }),
     setBroadcasting: (active) => set({ broadcasting: active }),
+    setGameOver: (gameOver) => set({ gameOver }),
     toggleOpponent: () =>
       set((state) => ({ showOpponent: !state.showOpponent })),
-    setOpponentLife: (n) => set({ opponentLifeTotal: n }),
+    setOpponentLife: (n) => set(() => ({
+      opponentLifeTotal: n,
+      ...(n <= 0
+        ? { turnAnnouncement: { id: Date.now(), text: 'OPPONENT DEFEATED' }, turnPrompt: null, gameOver: { winner: 'player' } }
+        : {}),
+    })),
 
     // Trigger stack actions
     emitGameEvent: (event) =>

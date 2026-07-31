@@ -14,6 +14,7 @@ type SetFn = (partial: GameState | Partial<GameState> | ((state: GameState) => P
 export function createOpponentAI(set: SetFn, get: () => GameState): Pick<GameState, 'runOpponentTurn' | 'loadOpponentDeck'> {
   return {
     runOpponentTurn: () => {
+      if (get().gameOver) return
       set((prev) => {
         const cards = prev.cards.map((c) =>
           (c.owner ?? 'player') === 'opponent' && c.zone === 'battlefield'

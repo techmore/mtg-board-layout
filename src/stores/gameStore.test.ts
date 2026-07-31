@@ -58,10 +58,54 @@ function resetStore() {
     triggerStack: [],
     undoStack: [],
     redoStack: [],
+    gameOver: null,
   })
 }
 
 afterEach(resetStore)
+
+describe('game over', () => {
+  it('marks the opponent as winner when player life reaches zero', () => {
+    useGameStore.getState().setLife(0)
+    expect(useGameStore.getState().gameOver).toEqual({ winner: 'opponent' })
+  })
+
+  it('marks the player as winner when opponent life reaches zero', () => {
+    useGameStore.getState().setOpponentLife(0)
+    expect(useGameStore.getState().gameOver).toEqual({ winner: 'player' })
+  })
+
+  it('does not set game over for life above zero', () => {
+    useGameStore.getState().setLife(5)
+    useGameStore.getState().setOpponentLife(12)
+    expect(useGameStore.getState().gameOver).toBeNull()
+  })
+
+  it('clears game over and resets life on redeal', () => {
+    useGameStore.getState().setLife(0)
+    expect(useGameStore.getState().gameOver).toEqual({ winner: 'opponent' })
+
+    useGameStore.getState().redeal(7)
+    const state = useGameStore.getState()
+    expect(state.gameOver).toBeNull()
+    expect(state.lifeTotal).toBe(40)
+    expect(state.opponentLifeTotal).toBe(40)
+    expect(state.activePlayer).toBe('player')
+  })
+
+  it('sets game over when combat defeats the opponent', () => {
+    useGameStore.setState({
+      cards: [card({ id: 'attacker', typeLine: '10/10', type: 'creature', zone: 'battlefield', tapped: true })],
+      opponentLifeTotal: 5,
+      combatState: { active: true, attackers: ['attacker'], blockers: {} },
+    })
+
+    useGameStore.getState().resolveCombat()
+
+    expect(useGameStore.getState().opponentLifeTotal).toBe(-5)
+    expect(useGameStore.getState().gameOver).toEqual({ winner: 'player' })
+  })
+})
 
 describe('loadOpponentDeck', () => {
   it('loads a simple commander deck with the commander in the command zone', () => {

@@ -89,7 +89,7 @@ export function createCombatActions(set: SetFn, get: () => GameState): Pick<Game
           const newLife = state.lifeTotal - power
           state.setLife(newLife)
           if (newLife <= 0) {
-            set({ turnAnnouncement: { id: Date.now(), text: 'YOU DEFEATED' }, turnPrompt: null })
+            set({ turnAnnouncement: { id: Date.now(), text: 'YOU DEFEATED' }, turnPrompt: null, gameOver: { winner: 'opponent' } })
           }
           state.emitGameEvent({
             type: 'combat_damage',
@@ -101,7 +101,7 @@ export function createCombatActions(set: SetFn, get: () => GameState): Pick<Game
           const newOppLife = state.opponentLifeTotal - power
           set({ opponentLifeTotal: newOppLife })
           if (newOppLife <= 0) {
-            set({ turnAnnouncement: { id: Date.now(), text: 'OPPONENT DEFEATED' }, turnPrompt: null })
+            set({ turnAnnouncement: { id: Date.now(), text: 'OPPONENT DEFEATED' }, turnPrompt: null, gameOver: { winner: 'player' } })
           }
           state.emitGameEvent({
             type: 'combat_damage',

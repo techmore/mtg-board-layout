@@ -13,7 +13,7 @@ export function createManaActions(set: SetFn, get: () => GameState): Pick<GameSt
       if (n > old) get().emitGameEvent({ type: 'life_gain', amount: n - old })
       if (n < old) get().emitGameEvent({ type: 'life_loss', amount: old - n })
       if (n <= 0) {
-        set({ turnAnnouncement: { id: Date.now(), text: 'DEFEATED — Life reached 0' }, turnPrompt: null })
+        set({ turnAnnouncement: { id: Date.now(), text: 'DEFEATED — Life reached 0' }, turnPrompt: null, gameOver: { winner: 'opponent' } })
       }
     },
 

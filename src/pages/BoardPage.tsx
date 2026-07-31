@@ -7,6 +7,7 @@ import { TriggerStack } from '../components/Board/TriggerStack'
 import { CardContextMenu } from '../components/Board/CardContextMenu'
 import { BoardControls } from '../components/Board/BoardControls'
 import { BoardZonesPanel } from '../components/Board/BoardZonesPanel'
+import { GameOverOverlay } from '../components/Board/GameOverOverlay'
 import { useBoardInteractions } from './useBoardInteractions'
 import { BoardTurnPrompt } from './BoardTurnPrompt'
 import { BoardOpponentZone } from './BoardOpponentZone'
@@ -284,6 +285,7 @@ export default function BoardPage() {
       <TriggerStack />
       <DiceCoinOverlay />
       <GraveyardOverlay />
+      <GameOverOverlay />
 
       {contextMenu && (
         <CardContextMenu
