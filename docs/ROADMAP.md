@@ -1,45 +1,67 @@
 # Roadmap: Any Card / Feature Functional
 
-Goal: Any Magic card loaded into the app behaves correctly — enters-tapped rules, mana abilities, triggers, and state-based actions — without hardcoding per-card exceptions.
+Execution tracker for the saved roadmap in `LOOPS.md` ("Universal Card Rules Roadmap", saved 2026-07-24). The saved loop is the canonical source of truth; this file tracks execution status and evidence.
 
-Status legend: [ ] not started · [~] in progress · [x] done
+Status legend: [x] done · [~] partial · [ ] not started
 
-## Phase 1: Card Rules Engine (solo board)
+## Phase 1: Universal Card Data Resolution
 
-| Step | What | Why | Status |
-|------|------|-----|--------|
-| 1.1 | Populate `CARD_RULE_OVERRIDES` in `src/data/cardRules.ts` (currently an empty placeholder) | Mechanism exists, no entries — every card falls back to regex inference | [ ] |
-| 1.2 | Extend `CARD_DATABASE` in `cardDatabase.ts` beyond the 19 lands (fetch lands, DFCs, stun-counter cards) | Fallback when Scryfall is unreachable | [ ] |
-| 1.3 | Wire `stores/cardRulesLoader.ts` + `stores/triggerEngine.ts` into the game store (they exist but nothing consumes them) | The types `CardAbilityDef`/`TriggerInstance`/`GameEvent` in `types/card.ts` imply a parser that is unused | [ ] |
-| 1.4 | Add trigger resolution UI (trigger stack, "whenever" prompt) once the engine is wired | Core MTG mechanic missing entirely | [ ] |
-| 1.5 | Expand `parseManaCost` (utils/misc) for hybrid/phyrexian/`{X}` costs | Only `{W}`-style and `{N}` supported today | [ ] |
-| 1.6 | Show full Oracle text + parsed rules in card tooltip / rule panel | `cardRuleSummary` is minimal | [ ] |
+| # | Step | Status | Evidence |
+|---|------|--------|----------|
+| 1.1 | Oracle text via Scryfall collection endpoint | [x] | `scripts/parse-card-rules.mjs`, outputs for all 16 decks in `scripts/rules-output/` |
+| 1.2 | Expand `inferEntryTapRule` for all "enters tapped" variants | [~] | `src/data/cardRules.ts` covers common variants; parser adds ETB rules per card |
+| 1.3 | Expand `evaluateConditionalEntryTap` beyond 2 patterns | [~] | `src/data/cardFeatures.ts`; conditional ETB prompt exists in `BoardTurnPrompt` |
+| 1.4 | `inferManaAbility` beyond simple `{T}: Add {W}` | [~] | Parser extracts manaProduction per card into deck JSON |
+| 1.5 | Rule override UI backed by `cardRuleStore` | [x] | SettingsPage "Card Rule Database" editor |
+| 1.6 | Migrate rule cache to IndexedDB | [~] | Backgrounds migrated; card images via `cardImageCache.ts` (IndexedDB) |
 
-## Phase 2: Multiplayer parity with solo
+## Phase 2: Game Engine — Stack, Triggers, State-Based Actions
 
-| Step | What | Why | Status |
-|------|------|-----|--------|
-| 2.1 | Implement `overrideLandPlay` server handler in `GameRoom.ts` | Action exists in protocol + docs but is silently dropped | [ ] |
-| 2.2 | Emit `gameEnded` + win condition (life ≤ 0), set `status: 'finished'` | `GameEndedEvent` exists in protocol, never emitted | [ ] |
-| 2.3 | Enforce land-drop limit + commander tax in `playCard` | Server ignores both; `landPlaysThisTurn` field is only reset | [ ] |
-| 2.4 | Honor `usage`/`label` in server `spendMana` | Client sends them, server discards | [ ] |
-| 2.5 | De-duplicate `evaluateConditionalEntryTap` (client) vs `entersTappedOnBattlefield` (server) | Identical regexes in two codebases — will drift | [ ] |
-| 2.6 | Replace hardcoded `'Player'` name and `decks[0]` pick in `MultiplayerBoardPage` with real deck/name selection | Currently unplayable with a specific deck | [ ] |
-| 2.7 | Add chat UI (event already wired in `useRoom`) | Feature exists server-side, invisible client-side | [ ] |
+| # | Step | Status | Evidence |
+|---|------|--------|----------|
+| 2.1 | `TriggeredAbility` model | [x] | `TriggerInstance`/`CardAbilityDef` in `src/types/card.ts` |
+| 2.2 | Trigger stack UI | [x] | `TriggerStack.tsx`/`TriggerItem.tsx`, wired via `gameStore` |
+| 2.3 | State-based actions loop | [ ] | No SBA loop found (lethal damage / 0-toughness deaths) |
+| 2.4 | Continuous/temporary effects | [~] | `EffectHistoryEntry` exists; temporary effects not modeled |
 
-## Phase 3: Card / deck completeness
+## Phase 3: Combat
 
-| Step | What | Why | Status |
-|------|------|-----|--------|
-| 3.1 | Complete the 15 placeholder prebuilt decks (only Blight Curse has 100 cards) | README known issue | [ ] |
-| 3.2 | Build the deck builder UI (`src/components/DeckBuilder/` exists but is empty) | No way to construct decks in-app | [ ] |
-| 3.3 | Cache Scryfall data in IndexedDB so offline play works | localStorage ~5 MB limit; backgrounds already migrated | [ ] |
+| # | Step | Status | Evidence |
+|---|------|--------|----------|
+| 3.1 | Combat phase in turn model | [~] | `gameTurnPhases.ts` exists; verify combat steps present |
+| 3.2 | Attack/block declaration UI | [ ] | Not found |
+| 3.3 | Combat damage + SBA cleanup | [ ] | Not found |
 
-## Phase 4: Hygiene (quick wins)
+## Phase 4: Advanced Abilities
 
-| Step | What | Why | Status |
-|------|------|-----|--------|
-| 4.1 | Extract duplicated `handlePlay` flow from `DecksPage` + `DeckDetailPage` | Rule-hydration → loadDeck → drawCards(7) → navigate duplicated | [ ] |
-| 4.2 | Delete dead code: `services/scryfall.ts`, `THEME` constant, server `booleanField` | Verified unused by grep | [ ] |
-| 4.3 | Add test suite (README: "No test suite yet") | No regression protection | [ ] |
-| 4.4 | Remove redundant `turnOrder` loop in `GameRoom.startGame` (lines 68-70) | Set twice, second overwrites first | [ ] |
+| # | Step | Status | Evidence |
+|---|------|--------|----------|
+| 4.1 | Targeting model | [ ] | `TargetCard.tsx` exists — verify wiring |
+| 4.2 | Keyword resolution (flying, trample, etc.) | [ ] | Display only |
+| 4.3 | Token generation from abilities | [ ] | Manual tokens only |
+| 4.4 | Modal/cost choices (kicker, choose one) | [ ] | Not found |
+
+## Phase 5: Priority & Turn Structure
+
+| # | Step | Status | Evidence |
+|---|------|--------|----------|
+| 5.1 | Priority system | [ ] | Not found |
+| 5.2 | Instant-speed play | [ ] | Not found |
+| 5.3 | Full turn structure | [~] | `gameTurnPhases.ts` + `PhaseBar.tsx`/`PhaseSidebar.tsx` |
+
+## Phase 6: Broadcaster & Multiplayer Rules Sync
+
+| # | Step | Status | Evidence |
+|---|------|--------|----------|
+| 6.1 | Rules engine to shared protocol package | [ ] | Still duplicated client/server |
+| 6.2 | Server-authoritative resolution | [ ] | `GameRoom.ts` lacks `overrideLandPlay` handler, `gameEnded` emission, land-limit enforcement, commander tax |
+
+## Additional hygiene (from refactor loop)
+
+- [x] Split BoardPage.tsx (1231 -> 446 lines) — components extracted, committed
+- [x] Test suite started (`vitest`, `src/stores/gameStore.test.ts`, 5 tests, green)
+- [ ] Code-split >500 KB production bundle (dynamic import pages)
+- [ ] Complete 15 placeholder prebuilt decks
+- [ ] Deck builder UI (`src/components/DeckBuilder/` empty)
+- [ ] Multiplayer name/deck selection (hardcoded `'Player'`/`decks[0]`)
+- [ ] Chat UI (server event wired, no client UI)
