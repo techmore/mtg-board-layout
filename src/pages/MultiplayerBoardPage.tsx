@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react'
 import { useSearchParams } from 'react-router-dom'
-import type { CardData, ChatMessageEvent, RoomJoinOptions, RoomPlayerInfo } from 'mtg-protocol'
+import type { CardData, ChatMessageEvent, GameEndedEvent, RoomJoinOptions, RoomPlayerInfo } from 'mtg-protocol'
 import { deckToRoomCards } from '../multiplayer/roomCards'
 import { useRoomSession } from '../multiplayer/useRoom'
 import { getServerUrlFromSearchParams } from '../multiplayer/serverUrl'
@@ -20,6 +20,7 @@ export default function MultiplayerBoardPage() {
   const { state, privateState, lastEvent, error, isConnecting, connect, sendAction, leave } = useRoomSession()
   const [chatInput, setChatInput] = useState('')
   const [messages, setMessages] = useState<ChatEntry[]>([])
+  const [gameWinnerId, setGameWinnerId] = useState<string | null>(null)
 
   const requestedServerUrl = getServerUrlFromSearchParams(searchParams)
   const initialName = searchParams.get('name') ?? ''
@@ -46,6 +47,11 @@ export default function MultiplayerBoardPage() {
     setMessages((current) => [...current, { id: Date.now() + current.length, playerName: event.playerName, text: event.text }])
   }, [lastEvent])
 
+  useEffect(() => {
+    if (!lastEvent || lastEvent.type !== 'gameEnded') return
+    setGameWinnerId((lastEvent as GameEndedEvent).winnerId ?? null)
+  }, [lastEvent])
+
   if (isConnecting || !state) return <main style={pageStyle}><div>Connecting to multiplayer board…{error ? ` ${error}` : ''}</div></main>
 
   const me = state.players.find((player) => player.sessionId === state.myPlayerId)
@@ -53,6 +59,9 @@ export default function MultiplayerBoardPage() {
 
   const opponents = state.players.filter((player) => player.sessionId !== state.myPlayerId)
   const isMyTurn = state.activePlayerId === me.id
+  const finished = state.status === 'finished'
+  const winnerId = finished ? (gameWinnerId ?? state.players[0]?.id ?? null) : null
+  const winnerName = winnerId ? state.players.find((player) => player.id === winnerId)?.name : undefined
   const adjustLife = (amount: number) => sendAction({ type: 'setLife', value: me.lifeTotal + amount })
   const moveSeat = (x: number, y: number) => sendAction({ type: 'setPosition', x: me.positionX + x, y: me.positionY + y })
   const sendChat = () => {
@@ -64,6 +73,25 @@ export default function MultiplayerBoardPage() {
 
   return (
     <main style={pageStyle}>
+      {finished && (
+        <div
+          role="status"
+          style={{
+            marginBottom: 14,
+            padding: '12px 18px',
+            borderRadius: 10,
+            background: 'rgba(210,153,34,0.14)',
+            border: '1px solid rgba(210,153,34,0.5)',
+            color: '#ffd33d',
+            fontSize: '0.9rem',
+            fontWeight: 800,
+            textAlign: 'center',
+            letterSpacing: '0.5px',
+          }}
+        >
+          GAME OVER — {winnerName ? `${winnerName} wins` : 'The game has ended'}
+        </div>
+      )}
       <header style={headerStyle}>
         <div><strong>Multiplayer Board</strong><span style={mutedStyle}> Room {state.roomId} · Turn {state.turn}</span></div>
         <div style={{ display: 'flex', gap: 8 }}>
@@ -99,8 +127,8 @@ export default function MultiplayerBoardPage() {
           <button onClick={() => sendAction({ type: 'clearManaPool' })} style={smallButtonStyle}>Clear</button>
         </div>
         <div style={controlGroupStyle}>
-          <button onClick={() => sendAction({ type: 'drawCards', count: 1 })} disabled={!isMyTurn} style={smallButtonStyle}>Draw</button>
-          <button onClick={() => sendAction({ type: 'endTurn' })} disabled={!isMyTurn} style={primaryButtonStyle}>{isMyTurn ? 'End Turn' : 'Opponent Turn'}</button>
+          <button onClick={() => sendAction({ type: 'drawCards', count: 1 })} disabled={!isMyTurn || finished} style={smallButtonStyle}>Draw</button>
+          <button onClick={() => sendAction({ type: 'endTurn' })} disabled={!isMyTurn || finished} style={primaryButtonStyle}>{isMyTurn ? 'End Turn' : 'Opponent Turn'}</button>
         </div>
         <div style={controlGroupStyle}>
           <strong>Seat</strong>
