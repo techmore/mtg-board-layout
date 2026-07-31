@@ -1,7 +1,8 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
-import { NavLink, Outlet, useNavigate } from 'react-router-dom'
+import { NavLink, Outlet, useLocation, useNavigate } from 'react-router-dom'
 import { prebuiltDecks } from '../data/prebuiltDecks'
 import { fetchDeckCards } from '../services/deckImport'
+import { prebuiltToDeckDefinition } from '../services/deckList'
 import { useDeckStore } from '../stores/deckStore'
 import { useGameStore } from '../stores/gameStore'
 
@@ -14,6 +15,7 @@ const links = [
 
 export default function Layout() {
   const navigate = useNavigate()
+  const location = useLocation()
   const decks = useDeckStore((s) => s.decks)
   const importDeck = useDeckStore((s) => s.importDeck)
   const setImporting = useDeckStore((s) => s.setImporting)
@@ -21,7 +23,10 @@ export default function Layout() {
   const loadDeck = useGameStore((s) => s.loadDeck)
   const drawCards = useGameStore((s) => s.drawCards)
   const setOverlay = useGameStore((s) => s.setOverlay)
-  const advanceTurn = useGameStore((s) => s.advanceTurn)
+  const undo = useGameStore((s) => s.undo)
+  const redo = useGameStore((s) => s.redo)
+  const undoStack = useGameStore((s) => s.undoStack)
+  const redoStack = useGameStore((s) => s.redoStack)
   const broadcasting = useGameStore((s) => s.broadcasting)
   const setBroadcasting = useGameStore((s) => s.setBroadcasting)
   const autoImportStarted = useRef(false)
@@ -56,6 +61,10 @@ export default function Layout() {
       setBroadcastError('The public broadcast window was blocked. Allow pop-ups and try again.')
       return
     }
+    if (publicWindow.closed) {
+      setBroadcastError('The public broadcast window could not be opened. Allow pop-ups and try again.')
+      return
+    }
     broadcastWindow.current = publicWindow
     publicWindow.focus()
     setBroadcasting(true)
@@ -65,8 +74,17 @@ export default function Layout() {
   }
 
   useEffect(() => {
+    if (new URLSearchParams(location.search).has('roomId')) return
     if (boardCards.length > 0 || autoImportStarted.current) return
     if (decks.some((deck) => deck.id === 'blight-curse')) return
+    // Don't auto-import if there's an existing saved game state
+    const savedState = localStorage.getItem('mtg-board-state')
+    if (savedState) {
+      try {
+        const parsed = JSON.parse(savedState)
+        if (parsed.state?.cards?.length > 0) return
+      } catch { /* ignore parse errors */ }
+    }
     const blight = prebuiltDecks.find((d) => d.id === 'blight-curse')
     if (!blight) return
 
@@ -75,11 +93,11 @@ export default function Layout() {
     setImporting(blight.id)
     ;(async () => {
       try {
-        const { cards, notFound } = await fetchDeckCards(blight)
+        const definition = prebuiltToDeckDefinition(blight)
+        const { cards, notFound } = await fetchDeckCards(definition)
         if (notFound.length > 0) console.warn('Cards not found:', notFound)
-        const commanders = [blight.commander, ...(blight.partners ?? [])]
-        importDeck(blight.name, cards, blight.format, commanders, notFound.length === 0 && blight.complete, blight.id)
-        loadDeck(commanders, cards)
+        importDeck(definition.name, cards, definition.format, definition.commanderNames, notFound.length === 0 && definition.complete, definition.id, definition.source)
+        loadDeck(definition.commanderNames, cards, definition.id)
         drawCards(7)
         navigate('/board', { replace: true })
       } catch (error) {
@@ -89,7 +107,7 @@ export default function Layout() {
         setImporting(null)
       }
     })()
-  }, [boardCards.length, decks, drawCards, importDeck, loadDeck, navigate, setImporting])
+  }, [boardCards.length, decks, drawCards, importDeck, loadDeck, location.search, navigate, setImporting])
 
   return (
     <div
@@ -163,7 +181,7 @@ export default function Layout() {
 
         <button
           onClick={toggleBroadcast}
-          title={broadcasting ? 'Close the public broadcast window' : 'Open the public board window for streaming'}
+          title={broadcasting ? 'Close the MTG Stream window' : 'Open the MTG Stream window for OBS'}
           style={{
             margin: '0 8px 8px',
             padding: '9px 8px',
@@ -176,7 +194,7 @@ export default function Layout() {
             fontWeight: 700,
           }}
         >
-          {broadcasting ? '● Close Public View' : '○ Open Public View'}
+          {broadcasting ? '● Close MTG Stream' : '○ Open MTG Stream'}
         </button>
 
         {(broadcasting || broadcastError) && (
@@ -189,7 +207,7 @@ export default function Layout() {
               lineHeight: 1.3,
             }}
           >
-            {broadcastError ?? 'Public window active. Add it to OBS as Window Capture, then use OBS Virtual Camera in SpellTable.'}
+            {broadcastError ?? 'MTG Stream window active. Add it to OBS as Window Capture, then use OBS Virtual Camera in SpellTable.'}
           </div>
         )}
 
@@ -230,25 +248,44 @@ export default function Layout() {
           </button>
         </div>
 
-        <button
-          title="Next Turn"
-          onClick={advanceTurn}
-          style={{
-            margin: '0 8px',
-            padding: '10px 0',
-            background: '#238636',
-            border: 'none',
-            borderRadius: 6,
-            color: '#fff',
-            cursor: 'pointer',
-            fontSize: '0.75rem',
-            fontWeight: 700,
-            letterSpacing: '0.5px',
-            textTransform: 'uppercase',
-          }}
-        >
-          Next Turn
-        </button>
+        <div style={{ display: 'flex', gap: 4, padding: '0 8px', marginBottom: 8 }}>
+          <button
+            title="Undo"
+            onClick={undo}
+            disabled={undoStack.length === 0}
+            style={{
+              flex: 1,
+              background: 'none',
+              border: `1px solid ${undoStack.length > 0 ? '#30363d' : '#21262d'}`,
+              borderRadius: 6,
+              color: undoStack.length > 0 ? '#e6edf3' : '#484f58',
+              cursor: undoStack.length > 0 ? 'pointer' : 'default',
+              padding: '8px 0',
+              fontSize: '0.75rem',
+              fontWeight: 600,
+            }}
+          >
+            ↩ Undo
+          </button>
+          <button
+            title="Redo"
+            onClick={redo}
+            disabled={redoStack.length === 0}
+            style={{
+              flex: 1,
+              background: 'none',
+              border: `1px solid ${redoStack.length > 0 ? '#30363d' : '#21262d'}`,
+              borderRadius: 6,
+              color: redoStack.length > 0 ? '#e6edf3' : '#484f58',
+              cursor: redoStack.length > 0 ? 'pointer' : 'default',
+              padding: '8px 0',
+              fontSize: '0.75rem',
+              fontWeight: 600,
+            }}
+          >
+            Redo ↪
+          </button>
+        </div>
       </nav>
       <Outlet />
     </div>

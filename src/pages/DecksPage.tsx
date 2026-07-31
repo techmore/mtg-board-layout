@@ -3,7 +3,8 @@ import { useNavigate } from 'react-router-dom'
 import { useDeckStore } from '../stores/deckStore'
 import { useGameStore } from '../stores/gameStore'
 import { prebuiltDecks } from '../data/prebuiltDecks'
-import { fetchDeckCards } from '../services/deckImport'
+import { deckNeedsRuleHydration, fetchDeckCards, hydrateDeckRules } from '../services/deckImport'
+import { fetchDeckList, parseDeckList, prebuiltToDeckDefinition } from '../services/deckList'
 
 type Filter = 'all' | 'complete' | 'incomplete'
 
@@ -17,19 +18,20 @@ export default function DecksPage() {
   const loadDeck = useGameStore((s) => s.loadDeck)
   const [error, setError] = useState<string | null>(null)
   const [filter, setFilter] = useState<Filter>('all')
+  const [deckListUrl, setDeckListUrl] = useState('')
 
   const handleImport = async (id: string) => {
     const deck = prebuiltDecks.find((d) => d.id === id)
     if (!deck) return
+    const definition = prebuiltToDeckDefinition(deck)
     setImporting(id)
     setError(null)
     try {
-      const { cards, notFound } = await fetchDeckCards(deck)
+      const { cards, notFound } = await fetchDeckCards(definition)
       if (notFound.length > 0) {
         setError(`Could not find: ${notFound.join(', ')}`)
       }
-      const commanders = [deck.commander, ...(deck.partners ?? [])]
-      importDeck(deck.name, cards, deck.format, commanders, notFound.length === 0 && deck.complete, id)
+      importDeck(definition.name, cards, definition.format, definition.commanderNames, notFound.length === 0 && definition.complete, id, definition.source)
       navigate(`/decks/${id}`)
     } catch {
       setError('Failed to import deck. Check your connection.')
@@ -38,13 +40,46 @@ export default function DecksPage() {
     }
   }
 
-  const handlePlay = (deckId: string) => {
+  const handleUrlImport = async () => {
+    const url = deckListUrl.trim()
+    if (!url || importing) return
+    setImporting('url-import')
+    setError(null)
+    try {
+      const text = await fetchDeckList(url)
+      const parsed = parseDeckList(text, { name: new URL(url).hostname })
+      const { cards, notFound } = await fetchDeckCards({
+        ...parsed,
+        source: { type: 'url', url },
+      })
+      const id = importDeck(parsed.name, cards, parsed.format, parsed.commanderNames, notFound.length === 0 && parsed.complete, undefined, { type: 'url', url })
+      setDeckListUrl('')
+      if (notFound.length > 0) setError(`Imported with missing cards: ${notFound.join(', ')}`)
+      navigate(`/decks/${id}`)
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to import deck list URL.')
+    } finally {
+      setImporting(null)
+    }
+  }
+
+  const handlePlay = async (deckId: string) => {
     const deck = decks.find((d) => d.id === deckId)
     if (!deck) return
-    const commanders = deck.commanderNames.length > 0
-      ? deck.commanderNames
-      : deck.cards.length > 0 ? [deck.cards[0].name] : []
-    loadDeck(commanders, deck.cards)
+    let cards = deck.cards
+    if (deckNeedsRuleHydration(deck)) {
+      setImporting(`rules:${deck.id}`)
+      try {
+        const hydrated = await hydrateDeckRules(deck)
+        cards = hydrated.cards
+        importDeck(deck.name, cards, deck.format, deck.commanderNames, hydrated.notFound.length === 0 && deck.complete, deck.id, deck.source)
+      } catch {
+        setError('Could not refresh card rules; playing with the saved card data.')
+      } finally {
+        setImporting(null)
+      }
+    }
+    loadDeck(deck.commanderNames, cards, deck.id)
     useGameStore.getState().drawCards(7)
     navigate('/board')
   }
@@ -58,6 +93,32 @@ export default function DecksPage() {
   return (
     <div style={{ flex: 1, padding: 24, color: '#e6edf3', minHeight: 0, overflow: 'auto' }}>
       <h2 style={{ marginBottom: 16 }}>My Decks</h2>
+
+      <section style={{ marginBottom: 24, padding: 16, background: '#161b22', border: '1px solid #30363d', borderRadius: 10 }}>
+        <h3 style={{ margin: '0 0 8px', color: '#8b949e', fontSize: '0.9rem', textTransform: 'uppercase', letterSpacing: 1 }}>
+          Import a deck list
+        </h3>
+        <p style={{ margin: '0 0 10px', color: '#8b949e', fontSize: '0.8rem' }}>
+          Use a raw text URL with lines like <code>1 Sol Ring</code>. Add a <code>Commander:</code> section when applicable.
+        </p>
+        <div style={{ display: 'flex', gap: 8 }}>
+          <input
+            value={deckListUrl}
+            onChange={(e) => setDeckListUrl(e.target.value)}
+            onKeyDown={(e) => { if (e.key === 'Enter') void handleUrlImport() }}
+            placeholder="https://example.com/my-deck.txt"
+            aria-label="Deck list URL"
+            style={{ flex: 1, minWidth: 0, padding: '8px 10px', borderRadius: 6, border: '1px solid #30363d', background: '#0d1117', color: '#e6edf3' }}
+          />
+          <button
+            onClick={() => void handleUrlImport()}
+            disabled={!deckListUrl.trim() || importing !== null}
+            style={{ padding: '8px 14px', border: 'none', borderRadius: 6, background: !deckListUrl.trim() || importing ? '#30363d' : '#238636', color: '#fff', cursor: !deckListUrl.trim() || importing ? 'not-allowed' : 'pointer', fontWeight: 600 }}
+          >
+            {importing === 'url-import' ? 'Importing...' : 'Import URL'}
+          </button>
+        </div>
+      </section>
 
       <section style={{ marginBottom: 32 }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 12 }}>

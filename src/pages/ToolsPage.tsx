@@ -1,9 +1,6 @@
 import { useState } from 'react'
 import { useGameStore } from '../stores/gameStore'
-
-function rollDie(sides: number) {
-  return Math.floor(Math.random() * sides) + 1
-}
+import { rollDie } from '../utils/misc'
 
 export default function ToolsPage() {
   const [diceResult, setDiceResult] = useState<number | null>(null)

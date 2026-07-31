@@ -1,104 +1,117 @@
 import { create } from 'zustand'
-import type { BackgroundOption, BoardCard, Token, Zone, DeckCard } from '../types/card'
-import { resolveCardRules } from '../data/cardRules'
+import type { BackgroundOption, BoardCard, CardScale, EffectHistoryEntry, ManaColor, ManaLogEntry, ManaPool, ManaUsageKind, PotentialManaSource, Token, Zone, DeckCard, TriggerInstance } from '../types/card'
+import { hydratePersistedBackgroundState, loadPersistedGameState, persistGameState, STORAGE_KEY } from './gamePersistence'
+import { reindexTriggers, buildTriggerInstances } from './triggerEngine'
+import { getCachedCardRules } from './cardRulesLoader'
+import { resolveTrigger as resolveTriggerImpl, selectTarget as selectTargetImpl } from './triggerActions'
+import { createUndoContext, createUndoActions, runUndoableAction } from './gameHistory'
+import { createTurnPhases } from './gameTurnPhases'
+import { createOpponentAI } from './gameOpponentAI'
+import { createDeckActions } from './gameDeckActions'
+import { createCardMovement } from './gameCardMovement'
+import { createTokenActions } from './gameTokenActions'
+import { createManaActions } from './gameManaActions'
+import { createCombatActions } from './gameCombatActions'
 
-interface OverlayState {
-  type: 'dice' | 'coin' | 'zoom' | null
+export interface OverlayState {
+  type: 'dice' | 'coin' | 'zoom' | 'graveyard' | null
   cardId?: string
 }
 
-interface DrawNotice {
+export interface DrawNotice {
   id: number
   count: number
+  cardNames?: string[]
 }
 
-interface TurnAnnouncement {
+export interface TurnAnnouncement {
   id: number
   text: string
 }
 
 type TurnAction = 'end' | 'advance'
+type TurnPromptReason = 'discard' | 'land' | 'etb'
 
-interface TurnPrompt {
-  id: number
+export const PHASES = ['beginning', 'precombat_main', 'combat', 'postcombat_main', 'ending'] as const
+export type Phase = typeof PHASES[number]
+
+export interface TurnPrompt {
   action: TurnAction
+  reason: TurnPromptReason
+  cardId?: string
 }
 
-function classifyType(typeLine: string): BoardCard['type'] {
-  const tl = typeLine.toLowerCase()
-  if (tl.includes('land')) return 'land'
-  if (tl.includes('creature')) return 'creature'
-  if (tl.includes('instant')) return 'instant'
-  if (tl.includes('sorcery')) return 'sorcery'
-  if (tl.includes('enchantment')) return 'enchantment'
-  if (tl.includes('artifact')) return 'artifact'
-  if (tl.includes('planeswalker')) return 'planeswalker'
-  if (tl.includes('battle')) return 'battle'
-  return 'other'
+export interface CombatState {
+  active: boolean
+  attackers: string[]
+  blockers: Record<string, string[]>
 }
 
-function shuffle<T>(arr: T[]): T[] {
-  const a = [...arr]
-  for (let i = a.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1))
-    ;[a[i], a[j]] = [a[j], a[i]]
-  }
-  return a
-}
+export type ActivePlayer = 'player' | 'opponent'
 
-function resetAndDealCards(sourceCards: BoardCard[], openingHandSize = 0): BoardCard[] {
-  const commanders = new Set(sourceCards.filter((card) => card.zone === 'command').map((card) => card.id))
-  const resetCards = sourceCards.map((card) => {
-    const isCommander = commanders.has(card.id)
-    return {
-      ...card,
-      zone: isCommander ? 'command' as const : 'library' as const,
-      tapped: false,
-      counters: 0,
-      revealed: isCommander,
-    }
-  })
+export type GameSnapshot = Pick<
+  GameState,
+  'cards' | 'manaPool' | 'potentialMana' | 'manaLog' | 'effectHistory' | 'tokens' | 'lifeTotal' | 'opponentLifeTotal' | 'turn' | 'landPlaysThisTurn' | 'drawNotice' | 'turnAnnouncement' | 'turnPrompt' | 'combatState' | 'currentPhase' | 'activePlayer' | 'opponentManaPool' | 'opponentPotentialMana' | 'opponentLandPlaysThisTurn'
+>
 
-  let remaining = Math.max(0, Math.floor(openingHandSize))
-  return shuffle(resetCards).map((card) => {
-    if (remaining > 0 && card.zone === 'library') {
-      remaining--
-      return { ...card, zone: 'hand' as const, revealed: false }
-    }
-    return card
-  })
-}
-
-interface GameState {
+export interface GameState {
   activeDeckId: string | null
   lifeTotal: number
   cards: BoardCard[]
+  cardScale: CardScale
+  manaPool: ManaPool
+  potentialMana: PotentialManaSource[]
+  manaLog: ManaLogEntry[]
+  effectHistory: EffectHistoryEntry[]
   tokens: Token[]
   backgroundImage: string | null
   backgrounds: BackgroundOption[]
   rollHistory: string[]
   overlay: OverlayState
   showOpponent: boolean
+  opponentLifeTotal: number
+  activePlayer: ActivePlayer
+  opponentManaPool: ManaPool
+  opponentPotentialMana: PotentialManaSource[]
+  opponentLandPlaysThisTurn: number
   turn: number
+  landPlaysThisTurn: number
   drawNotice: DrawNotice | null
   turnAnnouncement: TurnAnnouncement | null
   turnPrompt: TurnPrompt | null
   broadcasting: boolean
+  undoStack: GameSnapshot[]
+  redoStack: GameSnapshot[]
+  triggerStack: TriggerInstance[]
+  combatState: CombatState
+  currentPhase: Phase
 
   setLife: (n: number) => void
   setBackground: (url: string | null) => void
+  setCardScale: (scale: CardScale) => void
   saveBackground: (name: string, dataUrl: string) => void
   removeBackground: (id: string) => void
   addRoll: (result: string) => void
   setOverlay: (overlay: OverlayState) => void
   setBroadcasting: (active: boolean) => void
   toggleOpponent: () => void
+  setOpponentLife: (n: number) => void
+  loadOpponentDeck: (commanderNames: string[], deckCards: DeckCard[]) => void
+  runOpponentTurn: () => void
   advanceTurn: () => void
+  advancePhase: () => void
+  castSpell: (cardId: string) => boolean
   announceEndTurn: () => void
   cancelTurnPrompt: () => void
+  overrideLandPlay: (cardId: string) => void
+  resolveConditionalEntry: (cardId: string, tapped: boolean) => void
   discardForTurn: (cardId: string) => void
   clearDrawNotice: (id?: number) => void
   clearTurnAnnouncement: (id?: number) => void
+  addMana: (color: ManaColor, source?: { cardId: string; cardName: string }) => void
+  spendMana: (color: ManaColor, usage?: ManaUsageKind, label?: string) => void
+  spendManaCost: (costSymbols: string, label?: string) => boolean
+  clearManaPool: () => void
 
   loadDeck: (commanderNames: string[], deckCards: DeckCard[], deckId?: string) => void
   reshuffle: () => void
@@ -114,428 +127,259 @@ interface GameState {
   revealCard: (cardId: string) => void
 
   addToken: (token: Token) => void
+  addTokenToCard: (cardId: string) => void
   toggleTokenTap: (tokenId: string) => void
   addTokenCounter: (tokenId: string) => void
   removeTokenCounter: (tokenId: string) => void
   removeToken: (tokenId: string) => void
-}
 
-const STORAGE_KEY = 'mtg-board-state'
+  undo: () => void
+  redo: () => void
 
-type PersistedGameState = Pick<
-  GameState,
-  'activeDeckId' | 'lifeTotal' | 'cards' | 'tokens' | 'backgroundImage' | 'backgrounds' | 'rollHistory' | 'overlay' | 'showOpponent' | 'turn' | 'turnAnnouncement'
->
-
-const defaultGameState: PersistedGameState = {
-  activeDeckId: null,
-  lifeTotal: 40,
-  cards: [],
-  tokens: [],
-  backgroundImage: null,
-  backgrounds: [],
-  rollHistory: [],
-  overlay: { type: null },
-  showOpponent: false,
-  turn: 1,
-  turnAnnouncement: null,
-}
-
-function advanceTurnState(state: GameState): Partial<GameState> {
-  let drewCard = false
-  const cards = state.cards.map((card) => {
-    const untapped = card.zone === 'battlefield' ? { ...card, tapped: false } : card
-    if (!drewCard && untapped.zone === 'library') {
-      drewCard = true
-      return { ...untapped, zone: 'hand' as const, revealed: false }
-    }
-    return untapped
-  })
-  return {
-    turn: state.turn + 1,
-    cards,
-    drawNotice: drewCard ? { id: Date.now(), count: 1 } : null,
-    turnAnnouncement: null,
-    turnPrompt: null,
-  }
-}
-
-const validZones: Zone[] = ['hand', 'battlefield', 'graveyard', 'exile', 'library', 'command']
-const validTypes: BoardCard['type'][] = ['land', 'creature', 'instant', 'sorcery', 'enchantment', 'artifact', 'planeswalker', 'battle', 'other']
-
-function isBoardCard(value: unknown): value is BoardCard {
-  if (!value || typeof value !== 'object') return false
-  const card = value as Record<string, unknown>
-  return typeof card.id === 'string' && typeof card.scryfallId === 'string' &&
-    typeof card.name === 'string' && typeof card.imageUri === 'string' &&
-    typeof card.zone === 'string' && validZones.includes(card.zone as Zone) &&
-    typeof card.tapped === 'boolean' && typeof card.counters === 'number' &&
-    Number.isFinite(card.counters) && typeof card.type === 'string' &&
-    validTypes.includes(card.type as BoardCard['type']) && typeof card.revealed === 'boolean'
-}
-
-function isToken(value: unknown): value is Token {
-  if (!value || typeof value !== 'object') return false
-  const token = value as Record<string, unknown>
-  return typeof token.id === 'string' && typeof token.name === 'string' &&
-    typeof token.imageUri === 'string' && typeof token.counters === 'number' &&
-    Number.isFinite(token.counters) && typeof token.tapped === 'boolean'
-}
-
-function isBackgroundOption(value: unknown): value is BackgroundOption {
-  if (!value || typeof value !== 'object') return false
-  const background = value as Record<string, unknown>
-  return typeof background.id === 'string' && typeof background.name === 'string' &&
-    typeof background.dataUrl === 'string' && background.dataUrl.startsWith('data:image/')
-}
-
-function isOverlayState(value: unknown): value is OverlayState {
-  if (!value || typeof value !== 'object') return false
-  const overlay = value as Record<string, unknown>
-  return overlay.type === null || overlay.type === 'dice' || overlay.type === 'coin' || overlay.type === 'zoom'
-}
-
-function isTurnAnnouncement(value: unknown): value is TurnAnnouncement | null {
-  if (value === null) return true
-  if (!value || typeof value !== 'object') return false
-  const announcement = value as Record<string, unknown>
-  return typeof announcement.id === 'number' && Number.isFinite(announcement.id) &&
-    typeof announcement.text === 'string'
-}
-
-function loadPersistedGameState(): PersistedGameState {
-  try {
-    if (typeof localStorage === 'undefined') return defaultGameState
-    const raw = localStorage.getItem(STORAGE_KEY)
-    if (!raw) return defaultGameState
-    const parsed = JSON.parse(raw) as Partial<PersistedGameState>
-    if (!parsed || typeof parsed !== 'object') return defaultGameState
-    const backgroundImage = typeof parsed.backgroundImage === 'string' ? parsed.backgroundImage : null
-    const savedBackgrounds = Array.isArray(parsed.backgrounds) ? parsed.backgrounds.filter(isBackgroundOption) : []
-    const backgrounds = backgroundImage && !savedBackgrounds.some((background) => background.dataUrl === backgroundImage)
-      ? [{ id: 'current-background', name: 'Current background', dataUrl: backgroundImage }, ...savedBackgrounds]
-      : savedBackgrounds
-    return {
-      activeDeckId: typeof parsed.activeDeckId === 'string' ? parsed.activeDeckId : null,
-      lifeTotal: Number.isFinite(parsed.lifeTotal) ? parsed.lifeTotal! : defaultGameState.lifeTotal,
-      cards: Array.isArray(parsed.cards) ? parsed.cards.filter(isBoardCard) : defaultGameState.cards,
-      tokens: Array.isArray(parsed.tokens) ? parsed.tokens.filter(isToken) : defaultGameState.tokens,
-      backgroundImage,
-      backgrounds,
-      rollHistory: Array.isArray(parsed.rollHistory) ? parsed.rollHistory.filter((entry): entry is string => typeof entry === 'string') : defaultGameState.rollHistory,
-      overlay: isOverlayState(parsed.overlay) ? parsed.overlay : defaultGameState.overlay,
-      showOpponent: typeof parsed.showOpponent === 'boolean' ? parsed.showOpponent : defaultGameState.showOpponent,
-      turn: Number.isFinite(parsed.turn) ? Math.max(1, parsed.turn!) : defaultGameState.turn,
-      turnAnnouncement: isTurnAnnouncement(parsed.turnAnnouncement) ? parsed.turnAnnouncement : null,
-    }
-  } catch {
-    return defaultGameState
-  }
-}
-
-function persistGameState(state: GameState) {
-  try {
-    if (typeof localStorage === 'undefined') return
-    const persisted: PersistedGameState = {
-      activeDeckId: state.activeDeckId,
-      lifeTotal: state.lifeTotal,
-      cards: state.cards,
-      tokens: state.tokens,
-      backgroundImage: state.backgroundImage,
-      backgrounds: state.backgrounds,
-      rollHistory: state.rollHistory,
-      overlay: state.overlay,
-      showOpponent: state.showOpponent,
-      turn: state.turn,
-      turnAnnouncement: state.turnAnnouncement,
-    }
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(persisted))
-  } catch { /* ignore storage quota and privacy-mode failures */ }
+  emitGameEvent: (event: import('../types/card').GameEvent) => void
+  resolveTrigger: (triggerId: string) => void
+  selectTarget: (triggerId: string, cardId: string) => void
+  toggleProliferateTarget: (triggerId: string, cardId: string) => void
+  confirmProliferate: (triggerId: string) => void
+  toggleScryTarget: (triggerId: string, cardId: string) => void
+  confirmScry: (triggerId: string) => void
+  confirmSearchLibrary: (triggerId: string) => void
+  selectSearchLibraryTarget: (triggerId: string, cardId: string) => void
+  clearTriggerStack: () => void
+  toggleCombat: () => void
+  toggleAttacker: (cardId: string) => void
+  assignBlocker: (attackerId: string, blockerId: string) => void
+  resolveCombat: () => void
 }
 
 const persistedGameState = loadPersistedGameState()
 
-export const useGameStore = create<GameState>((set) => ({
-  ...persistedGameState,
-  drawNotice: null,
-  turnPrompt: null,
-  broadcasting: false,
+export const useGameStore = create<GameState>((set, get) => {
+  const undoContext = createUndoContext()
 
-  advanceTurn: () =>
-    set((state) => state.cards.filter((card) => card.zone === 'hand').length > 7
-      ? { turnPrompt: { id: Date.now(), action: 'advance' } }
-      : advanceTurnState(state)),
+  const store: GameState = {
+    ...persistedGameState,
+    drawNotice: null,
+    turnPrompt: null,
+    broadcasting: false,
+    undoStack: [],
+    redoStack: [],
+    triggerStack: [],
+    combatState: { active: false, attackers: [], blockers: {} },
+    currentPhase: 'beginning' as Phase,
+    opponentLifeTotal: 40,
+    activePlayer: 'player' as ActivePlayer,
+    opponentManaPool: { W: 0, U: 0, B: 0, R: 0, G: 0, C: 0 } as ManaPool,
+    opponentPotentialMana: [] as PotentialManaSource[],
+    opponentLandPlaysThisTurn: 0,
 
-  setLife: (n) => set({ lifeTotal: n }),
-  setBackground: (url) => set({ backgroundImage: url }),
-  saveBackground: (name, dataUrl) =>
-    set((state) => {
-      const existing = state.backgrounds.find((background) => background.dataUrl === dataUrl)
-      const background = existing ?? {
-        id: crypto.randomUUID(),
-        name: name.trim() || 'Background',
-        dataUrl,
-      }
-      return {
-        backgroundImage: dataUrl,
-        backgrounds: existing ? state.backgrounds : [...state.backgrounds, background],
-      }
-    }),
-  removeBackground: (id) =>
-    set((state) => {
-      const removed = state.backgrounds.find((background) => background.id === id)
-      return {
-        backgrounds: state.backgrounds.filter((background) => background.id !== id),
-        backgroundImage: removed?.dataUrl === state.backgroundImage ? null : state.backgroundImage,
-      }
-    }),
-  addRoll: (result) =>
-    set((state) => ({ rollHistory: [...state.rollHistory, result] })),
-  setOverlay: (overlay) => set({ overlay }),
-  setBroadcasting: (active) => set({ broadcasting: active }),
-  toggleOpponent: () =>
-    set((state) => ({ showOpponent: !state.showOpponent })),
-  announceEndTurn: () =>
-    set((state) => state.cards.filter((card) => card.zone === 'hand').length > 7
-      ? { turnPrompt: { id: Date.now(), action: 'end' } }
-      : { turnAnnouncement: { id: Date.now(), text: 'END TURN' }, turnPrompt: null }),
-  cancelTurnPrompt: () => set({ turnPrompt: null }),
-  discardForTurn: (cardId) =>
-    set((state) => {
-      if (!state.turnPrompt) return {}
-      const card = state.cards.find((candidate) => candidate.id === cardId && candidate.zone === 'hand')
-      if (!card) return {}
-      const cards = state.cards.map((candidate) =>
-        candidate.id === cardId
-          ? { ...candidate, zone: 'graveyard' as const, tapped: false, revealed: true }
-          : candidate,
-      )
-      const nextState = { ...state, cards }
-      if (cards.filter((candidate) => candidate.zone === 'hand').length > 7) {
-        return { cards, turnPrompt: { id: Date.now(), action: state.turnPrompt.action } }
-      }
-      return state.turnPrompt.action === 'advance'
-        ? advanceTurnState(nextState)
-        : { cards, turnPrompt: null, turnAnnouncement: { id: Date.now(), text: 'END TURN' } }
-    }),
-  clearDrawNotice: (id) =>
-    set((state) => state.drawNotice && (id === undefined || state.drawNotice.id === id) ? { drawNotice: null } : {}),
-  clearTurnAnnouncement: (id) =>
-    set((state) => state.turnAnnouncement && (id === undefined || state.turnAnnouncement.id === id) ? { turnAnnouncement: null } : {}),
+    ...createTurnPhases(set, get),
+    ...createOpponentAI(set, get),
+    ...createDeckActions(set, get),
+    ...createCardMovement(set, get),
+    ...createTokenActions(set, get),
+    ...createManaActions(set, get),
+    ...createCombatActions(set, get),
+    ...createUndoActions(set),
 
-  loadDeck: (commanderNames, deckCards, deckId) => {
-    const cards: BoardCard[] = []
-
-    // Commanders in command zone
-    for (const name of commanderNames) {
-      const match = deckCards.find((c) => c.name === name)
-      if (match) {
-        const rules = resolveCardRules(match)
-        cards.push({
+    // Simple setters kept inline
+    setBackground: (url) => set({ backgroundImage: url }),
+    setCardScale: (scale) => set({ cardScale: scale }),
+    saveBackground: (name, dataUrl) =>
+      set((state) => {
+        const existing = state.backgrounds.find((background) => background.dataUrl === dataUrl)
+        const background = existing ?? {
           id: crypto.randomUUID(),
-          scryfallId: match.scryfallId,
-          name: match.name,
-          imageUri: match.imageUri,
-          manaCost: rules.manaCost,
-          manaValue: rules.manaValue,
-          oracleText: match.oracleText,
-          entersTapped: rules.entersTapped,
-          zone: 'command',
-          tapped: false,
-          counters: 0,
-          type: classifyType(match.typeLine),
-          revealed: true,
-        })
-      }
-    }
-
-    // Rest in library
-    for (const dc of deckCards) {
-      if (commanderNames.includes(dc.name)) continue
-      const rules = resolveCardRules(dc)
-      for (let i = 0; i < dc.quantity; i++) {
-        cards.push({
-          id: crypto.randomUUID(),
-          scryfallId: dc.scryfallId,
-          name: dc.name,
-          imageUri: dc.imageUri,
-          manaCost: rules.manaCost,
-          manaValue: rules.manaValue,
-          oracleText: dc.oracleText,
-          entersTapped: rules.entersTapped,
-          zone: 'library',
-          tapped: false,
-          counters: 0,
-          type: classifyType(dc.typeLine),
-          revealed: false,
-        })
-      }
-    }
-
-    set({ activeDeckId: deckId ?? null, cards: shuffle(cards), lifeTotal: 40, tokens: [], rollHistory: [], overlay: { type: null }, turn: 1, drawNotice: null, turnAnnouncement: null, turnPrompt: null })
-  },
-
-  reshuffle: () =>
-    set((state) => {
-      return {
-        cards: resetAndDealCards(state.cards),
-        lifeTotal: 40,
-        tokens: [],
-        rollHistory: [],
-        overlay: { type: null },
-        turn: 1,
-        drawNotice: null,
-        turnAnnouncement: null,
-        turnPrompt: null,
-      }
-    }),
-
-  redeal: (openingHandSize = 7) =>
-    set((state) => {
-      const cards = resetAndDealCards(state.cards, openingHandSize)
-      return {
-        cards,
-        lifeTotal: 40,
-        tokens: [],
-        rollHistory: [],
-        overlay: { type: null },
-        turn: 1,
-        drawNotice: { id: Date.now(), count: cards.filter((card) => card.zone === 'hand').length },
-        turnAnnouncement: null,
-        turnPrompt: null,
-      }
-    }),
-
-  drawCards: (count = 1) =>
-    set((state) => {
-      let remaining = Math.max(0, Math.floor(count))
-      let drawnCount = 0
-      const cards = state.cards.map((card) => {
-        if (remaining > 0 && card.zone === 'library') {
-          remaining--
-          drawnCount++
-          return { ...card, zone: 'hand' as const, revealed: false }
+          name: name.trim() || 'Background',
+          dataUrl,
         }
-        return card
+        return {
+          backgroundImage: dataUrl,
+          backgrounds: existing ? state.backgrounds : [...state.backgrounds, background],
+        }
+      }),
+    removeBackground: (id) =>
+      set((state) => {
+        const removed = state.backgrounds.find((background) => background.id === id)
+        return {
+          backgrounds: state.backgrounds.filter((background) => background.id !== id),
+          backgroundImage: removed?.dataUrl === state.backgroundImage ? null : state.backgroundImage,
+        }
+      }),
+    addRoll: (result) =>
+      set((state) => ({ rollHistory: [...state.rollHistory, result] })),
+    setOverlay: (overlay) => set({ overlay }),
+    setBroadcasting: (active) => set({ broadcasting: active }),
+    toggleOpponent: () =>
+      set((state) => ({ showOpponent: !state.showOpponent })),
+    setOpponentLife: (n) => set({ opponentLifeTotal: n }),
+
+    // Trigger stack actions
+    emitGameEvent: (event) =>
+      set((state) => {
+        const rules = getCachedCardRules()
+        if (rules) reindexTriggers(state.cards, rules)
+        const { stack, newTriggers } = buildTriggerInstances(event, state.triggerStack)
+        if (newTriggers === 0) return {}
+        return { triggerStack: stack }
+      }),
+
+    resolveTrigger: (triggerId) => resolveTriggerImpl(get, set, triggerId),
+
+    selectTarget: (triggerId, cardId) => selectTargetImpl(get, set, triggerId, cardId),
+
+    toggleProliferateTarget: (triggerId, cardId) => {
+      const state = get()
+      const trigger = state.triggerStack.find((t) => t.id === triggerId)
+      if (!trigger) return
+      const selected = trigger.selectedTargets ?? []
+      const next = selected.includes(cardId)
+        ? selected.filter((id) => id !== cardId)
+        : [...selected, cardId]
+      set({
+        triggerStack: state.triggerStack.map((t) =>
+          t.id === triggerId ? { ...t, selectedTargets: next } : t,
+        ),
       })
-      return {
-        cards,
-        drawNotice: drawnCount > 0 ? { id: Date.now(), count: drawnCount } : state.drawNotice,
+    },
+
+    confirmProliferate: (triggerId) => {
+      const state = get()
+      const trigger = state.triggerStack.find((t) => t.id === triggerId)
+      if (!trigger) return
+      const targets = trigger.selectedTargets ?? []
+      for (const cardId of targets) {
+        const card = state.cards.find((c) => c.id === cardId)
+        if (card) state.addCounter(cardId)
       }
-    }),
+      set({
+        triggerStack: state.triggerStack.filter((t) => t.id !== triggerId),
+      })
+    },
 
-  addCard: (card) =>
-    set((state) => ({ cards: [...state.cards, card] })),
-  moveCard: (cardId, zone) =>
-    set((state) => {
-      const current = state.cards.find((card) => card.id === cardId)
-      if (!current) return {}
-      const entersBattlefield = zone === 'battlefield' && current.zone !== 'battlefield'
-      const updated = {
-        ...current,
-        zone,
-        tapped: entersBattlefield ? Boolean(current.entersTapped) : false,
-        revealed: zone === 'hand',
+    toggleScryTarget: (triggerId, cardId) => {
+      const state = get()
+      const trigger = state.triggerStack.find((t) => t.id === triggerId)
+      if (!trigger) return
+      const selected = trigger.selectedTargets ?? []
+      const next = selected.includes(cardId)
+        ? selected.filter((id) => id !== cardId)
+        : [...selected, cardId]
+      set({
+        triggerStack: state.triggerStack.map((t) =>
+          t.id === triggerId ? { ...t, selectedTargets: next } : t,
+        ),
+      })
+    },
+
+    confirmScry: (triggerId) => {
+      const state = get()
+      const trigger = state.triggerStack.find((t) => t.id === triggerId)
+      if (!trigger) return
+      const params = trigger.ability.effect.params as Record<string, unknown>
+      const scryAmount = (params.amount as number) ?? 1
+      const bottomIds = trigger.selectedTargets ?? []
+
+      const libraryCards = state.cards.filter((c) => c.zone === 'library')
+      const topIds = libraryCards.slice(0, scryAmount).map((c) => c.id)
+      const keepIds = topIds.filter((id) => !bottomIds.includes(id))
+
+      const bottomCards = bottomIds.length > 0
+        ? state.cards.filter((c) => bottomIds.includes(c.id))
+        : []
+
+      const bottomIdsSet = new Set(bottomIds)
+      const keepIdsSet = new Set(keepIds)
+      const skipIds = new Set([...topIds])
+
+      const reordered = state.cards.flatMap((card) => {
+        if (card.zone !== 'library') return [card]
+        if (bottomIdsSet.has(card.id)) return []
+        if (skipIds.has(card.id) && keepIdsSet.has(card.id)) return [card]
+        if (skipIds.has(card.id)) return []
+        return [card]
+      })
+
+      const result = [...reordered, ...bottomCards]
+
+      set({
+        cards: result,
+        triggerStack: state.triggerStack.filter((t) => t.id !== triggerId),
+      })
+    },
+
+    confirmSearchLibrary: (triggerId) => {
+      const state = get()
+      const trigger = state.triggerStack.find((t) => t.id === triggerId)
+      if (!trigger) return
+      const targets = trigger.selectedTargets ?? []
+      if (targets.length === 0) {
+        set({ triggerStack: state.triggerStack.filter((t) => t.id !== triggerId) })
+        return
       }
-
-      // New battlefield cards are appended after existing battlefield cards so the
-      // Commander-facing layout reflects the order in which permanents were played.
-      if (zone === 'battlefield' && current.zone !== 'battlefield') {
-        return { cards: [...state.cards.filter((card) => card.id !== cardId), updated] }
+      const cardId = targets[0]
+      const card = state.cards.find((c) => c.id === cardId)
+      if (card) {
+        state.moveCard(cardId, 'battlefield')
+        state.emitGameEvent({ type: 'etb', cardId, cardName: card.name })
       }
+      set({
+        triggerStack: state.triggerStack.filter((t) => t.id !== triggerId),
+      })
+    },
 
-      return { cards: state.cards.map((card) => card.id === cardId ? updated : card) }
-    }),
-  reorderBattlefield: (cardId, direction) =>
-    set((state) => {
-      const target = state.cards.find((card) => card.id === cardId && card.zone === 'battlefield')
-      if (!target) return {}
+    selectSearchLibraryTarget: (triggerId, cardId) => {
+      const state = get()
+      set({
+        triggerStack: state.triggerStack.map((t) =>
+          t.id === triggerId ? { ...t, selectedTargets: [cardId] } : t,
+        ),
+      })
+    },
 
-      const category = target.type === 'land' || target.type === 'creature' ? target.type : null
-      if (!category) return {}
-      const groupKey = (card: BoardCard) => card.type === 'land'
-        ? `land:${card.name.toLowerCase()}`
-        : `card:${card.id}`
-      const groups = new Map<string, BoardCard[]>()
-      state.cards
-        .filter((card) => card.zone === 'battlefield' && card.type === category)
-        .forEach((card) => {
-          const key = groupKey(card)
-          const group = groups.get(key)
-          if (group) group.push(card)
-          else groups.set(key, [card])
-        })
+    clearTriggerStack: () => set({ triggerStack: [] }),
+  }
 
-      const orderedGroups = Array.from(groups.values())
-      const targetGroupIndex = orderedGroups.findIndex((group) => group.some((card) => card.id === target.id))
-      const nextGroupIndex = direction === 'closer' ? targetGroupIndex - 1 : targetGroupIndex + 1
-      if (targetGroupIndex < 0 || nextGroupIndex < 0 || nextGroupIndex >= orderedGroups.length) return {}
+  // Wrap undoable actions with undo history tracking
+  const undoableActions = [
+    'advanceTurn', 'setLife', 'setOpponentLife', 'loadOpponentDeck', 'advancePhase', 'castSpell',
+    'announceEndTurn', 'overrideLandPlay', 'resolveConditionalEntry', 'discardForTurn',
+    'addMana', 'spendMana', 'spendManaCost', 'clearManaPool', 'loadDeck', 'reshuffle', 'redeal',
+    'drawCards', 'addCard', 'moveCard', 'reorderBattlefield', 'toggleTap', 'addCounter',
+    'removeCounter', 'removeCard', 'revealCard', 'addToken', 'addTokenToCard', 'toggleTokenTap',
+    'addTokenCounter', 'removeTokenCounter', 'removeToken', 'confirmProliferate', 'confirmScry',
+    'confirmSearchLibrary', 'toggleCombat', 'toggleAttacker', 'assignBlocker', 'resolveCombat',
+  ] as const
 
-      ;[orderedGroups[targetGroupIndex], orderedGroups[nextGroupIndex]] = [orderedGroups[nextGroupIndex], orderedGroups[targetGroupIndex]]
-      const orderedCategory = orderedGroups.flat()
-      let categoryIndex = 0
-      return {
-        cards: state.cards.map((card) => card.zone === 'battlefield' && card.type === category
-          ? orderedCategory[categoryIndex++]
-          : card),
-      }
-    }),
-  toggleTap: (cardId) =>
-    set((state) => ({
-      cards: state.cards.map((c) =>
-        c.id === cardId ? { ...c, tapped: !c.tapped } : c
-      ),
-    })),
-  addCounter: (cardId) =>
-    set((state) => ({
-      cards: state.cards.map((c) =>
-        c.id === cardId ? { ...c, counters: c.counters + 1 } : c
-      ),
-    })),
-  removeCounter: (cardId) =>
-    set((state) => ({
-      cards: state.cards.map((c) =>
-        c.id === cardId ? { ...c, counters: Math.max(0, c.counters - 1) } : c
-      ),
-    })),
-  removeCard: (cardId) =>
-    set((state) => ({ cards: state.cards.filter((c) => c.id !== cardId) })),
-  revealCard: (cardId) =>
-    set((state) => ({
-      cards: state.cards.map((c) =>
-        c.id === cardId ? { ...c, revealed: !c.revealed } : c
-      ),
-    })),
+  for (const actionName of undoableActions) {
+    const action = store[actionName] as unknown as (...args: unknown[]) => unknown
+    ;(store as unknown as Record<string, unknown>)[actionName] = (...args: unknown[]) =>
+      runUndoableAction(undoContext, set, get, () => action(...args))
+  }
 
-  addToken: (token) =>
-    set((state) => ({ tokens: [...state.tokens, token] })),
-  toggleTokenTap: (tokenId) =>
-    set((state) => ({
-      tokens: state.tokens.map((t) =>
-        t.id === tokenId ? { ...t, tapped: !t.tapped } : t
-      ),
-    })),
-  addTokenCounter: (tokenId) =>
-    set((state) => ({
-      tokens: state.tokens.map((t) =>
-        t.id === tokenId ? { ...t, counters: t.counters + 1 } : t
-      ),
-    })),
-  removeTokenCounter: (tokenId) =>
-    set((state) => ({
-      tokens: state.tokens.map((t) =>
-        t.id === tokenId ? { ...t, counters: Math.max(0, t.counters - 1) } : t
-      ),
-    })),
-  removeToken: (tokenId) =>
-    set((state) => ({ tokens: state.tokens.filter((t) => t.id !== tokenId) })),
-}))
+  return store
+})
 
 let applyingExternalState = false
 
 useGameStore.subscribe((state) => {
   if (!applyingExternalState) persistGameState(state)
 })
+
+void hydratePersistedBackgroundState().then((hydrated) => {
+  if (!hydrated) return
+  const current = useGameStore.getState()
+  const hasIndexedDbReferences = current.backgrounds.some((background) => isIndexedDbReference(background.dataUrl))
+  const hasInlineBackgrounds = current.backgrounds.some((background) => !isIndexedDbReference(background.dataUrl))
+  if (hasIndexedDbReferences && !hasInlineBackgrounds) {
+    useGameStore.setState(hydrated)
+  }
+  persistGameState(useGameStore.getState())
+})
+
+function isIndexedDbReference(value: string): boolean {
+  return value.startsWith('indexeddb:')
+}
 
 if (typeof window !== 'undefined') {
   window.addEventListener('storage', (event) => {

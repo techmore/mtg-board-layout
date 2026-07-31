@@ -1,0 +1,140 @@
+import type { CardData, GameMode, Zone } from 'mtg-protocol'
+import { CardState } from './schema/GameState.js'
+
+export const MAX_DECK_SIZE = 250
+export const OPENING_HAND_SIZE = 7
+export const MAX_CHAT_LENGTH = 500
+export const VALID_MANA = new Set(['W', 'U', 'B', 'R', 'G', 'C'])
+export const LETTERS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
+
+export interface PrivateZones {
+  hand: CardData[]
+  library: CardData[]
+}
+
+export type Message = Record<string, unknown>
+
+export function generateRoomIdSingle(): string {
+  let result = ''
+  for (let i = 0; i < 4; i++) result += LETTERS.charAt(Math.floor(Math.random() * LETTERS.length))
+  return result
+}
+
+export function shuffleArray<T>(arr: T[]): T[] {
+  const a = [...arr]
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1))
+    ;[a[i], a[j]] = [a[j], a[i]]
+  }
+  return a
+}
+
+export function isRecord(value: unknown): value is Message {
+  return typeof value === 'object' && value !== null
+}
+
+export function stringField(message: unknown, field: string): string | undefined {
+  if (!isRecord(message) || typeof message[field] !== 'string') return undefined
+  return message[field] as string
+}
+
+export function numberField(message: unknown, field: string): number | undefined {
+  if (!isRecord(message) || typeof message[field] !== 'number' || !Number.isFinite(message[field])) return undefined
+  return message[field] as number
+}
+
+export function booleanField(message: unknown, field: string): boolean | undefined {
+  if (!isRecord(message) || typeof message[field] !== 'boolean') return undefined
+  return message[field] as boolean
+}
+
+export function validMode(value: unknown): value is GameMode {
+  return value === '1v1' || value === '2v2' || value === '4ffa'
+}
+
+export function validZone(value: unknown): value is Zone {
+  return value === 'hand' || value === 'battlefield' || value === 'graveyard' || value === 'exile' || value === 'library' || value === 'command'
+}
+
+export function sanitizeText(value: unknown, fallback: string, maxLength: number): string {
+  return typeof value === 'string' && value.trim() ? value.trim().slice(0, maxLength) : fallback
+}
+
+export function isCardData(value: unknown): value is CardData {
+  if (!isRecord(value)) return false
+  return typeof value.id === 'string' && value.id.length <= 120 &&
+    typeof value.scryfallId === 'string' && value.scryfallId.length <= 120 &&
+    typeof value.name === 'string' && value.name.length <= 200 &&
+    typeof value.imageUri === 'string' && value.imageUri.length <= 2_000 &&
+    typeof value.oracleText === 'string' && value.oracleText.length <= 4_000 &&
+    validZone(value.zone) && typeof value.tapped === 'boolean' &&
+    typeof value.counters === 'number' && Number.isInteger(value.counters) && value.counters >= 0 && value.counters <= 999 &&
+    typeof value.type === 'string' && value.type.length <= 40 &&
+    typeof value.typeLine === 'string' && value.typeLine.length <= 200 &&
+    Array.isArray(value.subtypes) && value.subtypes.length <= 8 && value.subtypes.every((subtype) => typeof subtype === 'string' && subtype.length <= 40) &&
+    typeof value.isBasicLand === 'boolean' &&
+    typeof value.commanderTax === 'number' && Number.isInteger(value.commanderTax) && value.commanderTax >= 0 &&
+    typeof value.revealed === 'boolean'
+}
+
+export function normalizeCards(value: unknown): CardData[] {
+  if (!Array.isArray(value)) return []
+  return value.filter(isCardData).slice(0, MAX_DECK_SIZE).map((card) => ({ ...card }))
+}
+
+export function modeToStartingLife(mode: GameMode): number {
+  return mode === '1v1' ? 20 : mode === '2v2' ? 30 : 40
+}
+
+export function modeToMaxPlayers(mode: GameMode): number {
+  return mode === '1v1' ? 2 : 4
+}
+
+export function cardToState(card: CardData, zone: Zone): CardState {
+  return new CardState({ ...card, zone })
+}
+
+export function stateToCard(card: CardState, zone: Zone = card.zone as Zone): CardData {
+  return {
+    id: card.id,
+    scryfallId: card.scryfallId,
+    name: card.name,
+    imageUri: card.imageUri,
+    oracleText: card.oracleText,
+    zone,
+    tapped: card.tapped,
+    counters: card.counters,
+    type: card.type,
+    typeLine: card.typeLine,
+    subtypes: [...card.subtypes],
+    isBasicLand: card.isBasicLand,
+    commanderTax: card.commanderTax,
+    revealed: card.revealed,
+  }
+}
+
+type BattlefieldCardFeatures = {
+  zone: string
+  type: string
+  subtypes: Iterable<string>
+  isBasicLand: boolean
+}
+
+/** Server-side counterpart to the client's conditional land-entry evaluator. */
+export function entersTappedOnBattlefield(
+  card: BattlefieldCardFeatures & { oracleText: string },
+  battlefield: Iterable<BattlefieldCardFeatures>,
+): boolean {
+  if (card.type !== 'land') return false
+  const text = card.oracleText ?? ''
+  const controlled = Array.from(battlefield).filter((candidate) => candidate.zone === 'battlefield')
+  if (/(?:two or more|at least two) basic lands/i.test(text)) {
+    return controlled.filter((candidate) => candidate.type === 'land' && candidate.isBasicLand).length < 2
+  }
+  const landTypes = [...text.matchAll(/\b(?:a|an)\s+(Plains|Island|Swamp|Mountain|Forest)\b/gi)].map((match) => match[1].toLowerCase())
+  if (landTypes.length > 0) {
+    return !controlled.some((candidate) => candidate.type === 'land' &&
+      Array.from(candidate.subtypes).some((subtype) => landTypes.includes(subtype.toLowerCase())))
+  }
+  return /\b(?:enters|comes into play)(?: the battlefield)?\s+tapped\b/i.test(text)
+}

@@ -31,8 +31,11 @@ export default function CardZoom() {
         inset: 0,
         background: 'rgba(0,0,0,0.75)',
         display: 'flex',
-        alignItems: 'center',
+        alignItems: 'flex-start',
         justifyContent: 'center',
+        padding: 16,
+        boxSizing: 'border-box',
+        overflowY: 'auto',
         zIndex: 1000,
         cursor: 'zoom-out',
       }}

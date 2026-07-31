@@ -3,7 +3,8 @@ import { useParams, useNavigate } from 'react-router-dom'
 import { useDeckStore } from '../stores/deckStore'
 import { useGameStore } from '../stores/gameStore'
 import { prebuiltDecks } from '../data/prebuiltDecks'
-import { fetchDeckCards } from '../services/deckImport'
+import { deckNeedsRuleHydration, fetchDeckCards, hydrateDeckRules } from '../services/deckImport'
+import { prebuiltToDeckDefinition } from '../services/deckList'
 
 function classifyCard(typeLine: string): string {
   const tl = typeLine.toLowerCase()
@@ -46,10 +47,10 @@ export default function DeckDetailPage() {
       setImporting(deckId!)
       setImportError(null)
       try {
-        const { cards, notFound } = await fetchDeckCards(prebuilt)
+        const definition = prebuiltToDeckDefinition(prebuilt)
+        const { cards, notFound } = await fetchDeckCards(definition)
         if (notFound.length > 0) setImportError(`Could not find: ${notFound.join(', ')}`)
-        const commanders = [prebuilt.commander, ...(prebuilt.partners ?? [])]
-        importDeck(prebuilt.name, cards, prebuilt.format, commanders, notFound.length === 0 && prebuilt.complete, prebuilt.id)
+        importDeck(definition.name, cards, definition.format, definition.commanderNames, notFound.length === 0 && definition.complete, definition.id, definition.source)
       } catch {
         setImportError('Failed to import deck.')
       } finally {
@@ -88,8 +89,21 @@ export default function DeckDetailPage() {
     grouped[cat].push(card)
   }
 
-  const handlePlay = () => {
-    loadDeck(deck.commanderNames, deck.cards)
+  const handlePlay = async () => {
+    let cards = deck.cards
+    if (deckNeedsRuleHydration(deck)) {
+      setImporting(`rules:${deck.id}`)
+      try {
+        const hydrated = await hydrateDeckRules(deck)
+        cards = hydrated.cards
+        importDeck(deck.name, cards, deck.format, deck.commanderNames, hydrated.notFound.length === 0 && deck.complete, deck.id, deck.source)
+      } catch {
+        setImportError('Could not refresh card rules; playing with the saved card data.')
+      } finally {
+        setImporting(null)
+      }
+    }
+    loadDeck(deck.commanderNames, cards, deck.id)
     useGameStore.getState().drawCards(7)
     navigate('/board')
   }
@@ -112,6 +126,25 @@ export default function DeckDetailPage() {
           {deck.complete ? 'Complete' : 'Partial'}
         </span>
         <span style={{ fontSize: '0.85rem', color: '#8b949e' }}>{totalCards} cards</span>
+        {deck.source?.publisher && deck.source.product && (
+          <a
+            href={deck.source.url}
+            target="_blank"
+            rel="noreferrer"
+            title={`Official release: ${deck.source.product}`}
+            style={{
+              fontSize: '0.7rem',
+              padding: '3px 8px',
+              borderRadius: 999,
+              border: '1px solid rgba(63,185,80,0.55)',
+              color: '#56d364',
+              textDecoration: 'none',
+              whiteSpace: 'nowrap',
+            }}
+          >
+            Official release · {deck.source.releaseDate ?? deck.source.publisher}
+          </a>
+        )}
         <div style={{ flex: 1 }} />
         <button onClick={handlePlay} style={{
           ...btnStyle, background: '#238636', border: 'none', color: '#fff', fontWeight: 600,

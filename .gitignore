@@ -11,6 +11,10 @@ node_modules
 dist
 dist-ssr
 *.local
+.mtg-board.pid
+.env
+.env.*
+!.env.example
 
 # Editor directories and files
 .vscode/*

@@ -57,7 +57,6 @@
     border-radius: 999px; flex-shrink: 0;
   }
   .badge-done { background: var(--green); color: #000; }
-  .badge-now { background: var(--yellow); color: #000; }
   .badge-next { background: var(--border); color: var(--muted); }
 
   .status-tag {
@@ -93,12 +92,7 @@
     font-size: 0.9rem;
   }
   .feature-row .name { flex: 1; }
-  .feature-row .phases { display: flex; gap: 0.35rem; }
-
-  .dot { width: 10px; height: 10px; border-radius: 50%; display: inline-block; }
-  .dot-fill { background: var(--accent); }
-  .dot-empty { background: var(--border); }
-  .dot-wip { background: var(--yellow); }
+  .feature-row .status { flex-shrink: 0; }
 
   .footer { margin-top: 3rem; color: var(--muted); font-size: 0.8rem; text-align: center; }
 </style>
@@ -111,185 +105,213 @@
   <div class="meta">
     <div class="meta-item"><span>Stack</span> React + Vite + TypeScript</div>
     <div class="meta-item"><span>Cards</span> Scryfall API</div>
-    <div class="meta-item"><span>Storage</span> LocalStorage / IndexedDB</div>
+    <div class="meta-item"><span>Storage</span> LocalStorage</div>
     <div class="meta-item"><span>Updated</span> <span id="updated-date"></span></div>
   </div>
 
-  <h2>🗺️ Roadmap</h2>
+  <h2>🗺️ Implementation Status</h2>
 
-  <!-- Phase 1 -->
+  <!-- Phase 1 — Foundation (DONE) -->
   <div class="phase-header" onclick="toggle(this)">
-    <span class="phase-badge badge-now">Now</span>
+    <span class="phase-badge badge-done">Done</span>
     <strong>Phase 1 — Foundation</strong>
-    <span class="status-tag status-todo" style="margin-left:auto;">Not started</span>
+    <span class="status-tag status-done" style="margin-left:auto;">Complete</span>
   </div>
   <div class="phase active" id="phase1">
     <ul>
-      <li>Scaffold Vite + React + TS project with linting & type checking</li>
-      <li>Set up Zustand for state management + React Router</li>
-      <li>Scryfall API integration (card search, image fetching)</li>
-      <li>Background image upload & storage</li>
-      <li>Core layout shell: sidebar nav, board viewport</li>
+      <li>✔ React 19 + Vite 8 + TypeScript 6 project with linting</li>
+      <li>✔ Zustand state management + React Router 7</li>
+      <li>✔ Scryfall API integration (card search, collection import, image fetching)</li>
+      <li>✔ Background image upload, select, delete (localStorage)</li>
+      <li>✔ Sidebar navigation (Board, Decks, Tools, Settings) + Broadcast popup</li>
+      <li>✔ Card rule resolution engine (ETB, mana production from Oracle text)</li>
     </ul>
-    <div class="task-grid">
-      <div class="task"><span class="status-tag status-todo">TODO</span> Project scaffolding</div>
-      <div class="task"><span class="status-tag status-todo">TODO</span> Scryfall service</div>
-      <div class="task"><span class="status-tag status-todo">TODO</span> Background picker</div>
-      <div class="task"><span class="status-tag status-todo">TODO</span> Layout shell</div>
-    </div>
   </div>
 
-  <!-- Phase 2 -->
+  <!-- Phase 2 — Deck Builder (DONE) -->
   <div class="phase-header" onclick="toggle(this)">
-    <span class="phase-badge badge-next">Next</span>
+    <span class="phase-badge badge-done">Done</span>
     <strong>Phase 2 — Deck Builder</strong>
-    <span class="status-tag status-todo" style="margin-left:auto;">Not started</span>
+    <span class="status-tag status-done" style="margin-left:auto;">Complete</span>
   </div>
   <div class="phase" id="phase2">
     <ul>
-      <li>Deck list CRUD (create, rename, delete, clone)</li>
-      <li>Import from Moxfield / Archidekt URL</li>
-      <li>Card search with Scryfall autocomplete</li>
-      <li>Add/remove cards, sideboard, categories</li>
-      <li>Deck statistics (mana curve, color pie, type counts)</li>
+      <li>✔ Deck CRUD (import, rename, delete)</li>
+      <li>✔ Import from Moxfield / Archidekt URL + plain text deck lists</li>
+      <li>✔ 16 prebuilt Commander decks (Blight Curse complete, others placeholder)</li>
+      <li>✔ Moxfield-style deck detail page with commander art, categories, hover preview</li>
+      <li>✔ Deck card rules database (per-card enters-tapped override)</li>
     </ul>
+    <div class="task-grid">
+      <div class="task"><span class="status-tag status-todo">TODO</span> Card search & add-to-deck from Scryfall</div>
+      <div class="task"><span class="status-tag status-todo">TODO</span> Remove cards from imported decks</div>
+      <div class="task"><span class="status-tag status-todo">TODO</span> Deck statistics (mana curve, color pie)</div>
+    </div>
   </div>
 
-  <!-- Phase 3 -->
+  <!-- Phase 3 — Board View (DONE) -->
   <div class="phase-header" onclick="toggle(this)">
-    <span class="phase-badge badge-next">Next</span>
+    <span class="phase-badge badge-done">Done</span>
     <strong>Phase 3 — Board View</strong>
-    <span class="status-tag status-todo" style="margin-left:auto;">Not started</span>
+    <span class="status-tag status-done" style="margin-left:auto;">Complete</span>
   </div>
   <div class="phase" id="phase3">
     <ul>
-      <li>Load a deck onto the board (shuffle + draw opening hand)</li>
-      <li>Hand zone: private by default, right-click to reveal/peek</li>
-      <li>Battlefield zone: drag cards from hand, tap/untap, counters</li>
-      <li>Opponent zone: face-down cards with optional reveal</li>
-      <li>Graveyard & exile zones as drop targets</li>
-      <li>Deal / draw / mulligan mechanics</li>
+      <li>✔ Load deck onto board (shuffle + draw opening hand)</li>
+      <li>✔ Hand zone: private, Alt-key expand (hold, double-tap to lock), drag to battlefield</li>
+      <li>✔ Battlefield: sectioned by card type (Creatures, Artifacts, Enchantments, etc.), lands stacked at bottom-left</li>
+      <li>✔ Tap/untap (double-click, right-click menu, inline ↻ badge), +1/−1 counters</li>
+      <li>✔ Graveyard & exile zones as drop targets</li>
+      <li>✔ Draw / deal / reshuffle / mulligan mechanics</li>
+      <li>✔ Turn management: untap, draw, discard prompt, second-land override, conditional ETB</li>
     </ul>
   </div>
 
-  <!-- Phase 4 -->
+  <!-- Phase 4 — Life & Tools (DONE) -->
   <div class="phase-header" onclick="toggle(this)">
-    <span class="phase-badge badge-next">Next</span>
+    <span class="phase-badge badge-done">Done</span>
     <strong>Phase 4 — Life & Tools</strong>
-    <span class="status-tag status-todo" style="margin-left:auto;">Not started</span>
+    <span class="status-tag status-done" style="margin-left:auto;">Complete</span>
   </div>
   <div class="phase" id="phase4">
     <ul>
-      <li>Life total tracker with +/- buttons and delta history</li>
-      <li>Commander damage per opponent (21-tracker)</li>
-      <li>Dice roller: d4, d6, d8, d10, d12, d20, d100</li>
-      <li>Coin flip with heads/tails display</li>
-      <li>Roll history log</li>
+      <li>✔ Life total tracker with ± buttons, color-coded thresholds</li>
+      <li>✔ Dice roller: d4, d6, d8, d10, d12, d20, d100</li>
+      <li>✔ Coin flip with heads/tails display</li>
+      <li>✔ Roll history log in game store</li>
+      <li>✔ Mana pool: multi-color land tapping, manual add/spend, usage log</li>
+      <li>✔ Camera widget: draggable, resizable, croppable, persisted</li>
+      <li>✔ Broadcast window: OBS-capture-ready public board (no hand)</li>
     </ul>
+    <div class="task-grid">
+      <div class="task"><span class="status-tag status-todo">TODO</span> Commander damage tracking (21-tracker)</div>
+    </div>
   </div>
 
-  <!-- Phase 5 -->
+  <!-- Phase 5 — Polish (PARTIAL) -->
   <div class="phase-header" onclick="toggle(this)">
     <span class="phase-badge badge-next">Next</span>
     <strong>Phase 5 — Polish</strong>
-    <span class="status-tag status-todo" style="margin-left:auto;">Not started</span>
+    <span class="status-tag status-wip" style="margin-left:auto;">Partial</span>
   </div>
   <div class="phase" id="phase5">
     <ul>
-      <li>Custom background image upload (file picker, stored in IndexedDB)</li>
-      <li>Keyboard shortcuts (undo, draw, tap all)</li>
-      <li>Save/load game snapshots</li>
-      <li>Responsive layout for tablets</li>
-      <li>80%+ test coverage on core logic</li>
-      <li>Accessibility & screen reader support</li>
+      <li>✔ Custom background image upload (file picker, stored in localStorage — needs IndexedDB)</li>
+      <li>✔ Card scaling (1× to 2× via cardSizing.ts)</li>
+      <li>☐ IndexedDB for large data (backgrounds, game snapshots)</li>
+      <li>☐ Keyboard shortcuts (undo, draw, tap all)</li>
+      <li>☐ Save/load game snapshots</li>
+      <li>☐ Responsive layout for tablets</li>
+      <li>☐ Test suite on core game logic</li>
+      <li>☐ Accessibility & screen reader refinement</li>
     </ul>
   </div>
 
   <h2>📋 Feature Overview</h2>
   <div class="features">
     <div class="feature-row">
-      <span class="name">Board with zones</span>
-      <span class="phases">
-        <span class="dot dot-empty"></span>
-        <span class="dot dot-empty"></span>
-        <span class="dot dot-fill"></span>
-        <span class="dot dot-empty"></span>
-        <span class="dot dot-empty"></span>
-      </span>
+      <span class="name">Board with zones (battlefield, hand, GY, exile, library, command)</span>
+      <span class="status"><span class="status-tag status-done">Done</span></span>
     </div>
     <div class="feature-row">
-      <span class="name">Deck builder</span>
-      <span class="phases">
-        <span class="dot dot-empty"></span>
-        <span class="dot dot-fill"></span>
-        <span class="dot dot-empty"></span>
-        <span class="dot dot-empty"></span>
-        <span class="dot dot-empty"></span>
-      </span>
+      <span class="name">Deck builder & import (Scryfall, Moxfield, Archidekt)</span>
+      <span class="status"><span class="status-tag status-done">Done</span></span>
     </div>
     <div class="feature-row">
-      <span class="name">Hand management (private/reveal)</span>
-      <span class="phases">
-        <span class="dot dot-empty"></span>
-        <span class="dot dot-empty"></span>
-        <span class="dot dot-fill"></span>
-        <span class="dot dot-empty"></span>
-        <span class="dot dot-empty"></span>
-      </span>
+      <span class="name">Prebuilt Commander decks (16 decks, Blight Curse full)</span>
+      <span class="status"><span class="status-tag status-wip">Partial</span></span>
     </div>
     <div class="feature-row">
-      <span class="name">Life total + commander damage</span>
-      <span class="phases">
-        <span class="dot dot-empty"></span>
-        <span class="dot dot-empty"></span>
-        <span class="dot dot-empty"></span>
-        <span class="dot dot-fill"></span>
-        <span class="dot dot-empty"></span>
-      </span>
+      <span class="name">Hand management (private, Alt-expand, hover-zoom, drag to field)</span>
+      <span class="status"><span class="status-tag status-done">Done</span></span>
     </div>
     <div class="feature-row">
-      <span class="name">Dice, coin, tools</span>
-      <span class="phases">
-        <span class="dot dot-empty"></span>
-        <span class="dot dot-empty"></span>
-        <span class="dot dot-empty"></span>
-        <span class="dot dot-fill"></span>
-        <span class="dot dot-empty"></span>
-      </span>
+      <span class="name">Tap/untap, counters, context menu</span>
+      <span class="status"><span class="status-tag status-done">Done</span></span>
     </div>
     <div class="feature-row">
-      <span class="name">Custom backgrounds</span>
-      <span class="phases">
-        <span class="dot dot-empty"></span>
-        <span class="dot dot-empty"></span>
-        <span class="dot dot-empty"></span>
-        <span class="dot dot-empty"></span>
-        <span class="dot dot-fill"></span>
-      </span>
+      <span class="name">Turn management (untap, draw, discard, land, ETB prompts)</span>
+      <span class="status"><span class="status-tag status-done">Done</span></span>
     </div>
     <div class="feature-row">
-      <span class="name">Save/load game state</span>
-      <span class="phases">
-        <span class="dot dot-empty"></span>
-        <span class="dot dot-empty"></span>
-        <span class="dot dot-empty"></span>
-        <span class="dot dot-empty"></span>
-        <span class="dot dot-fill"></span>
-      </span>
+      <span class="name">Mana pool (multi-color, potential mana, spend, log)</span>
+      <span class="status"><span class="status-tag status-done">Done</span></span>
+    </div>
+    <div class="feature-row">
+      <span class="name">Life tracker ± and color-coded thresholds</span>
+      <span class="status"><span class="status-tag status-done">Done</span></span>
+    </div>
+    <div class="feature-row">
+      <span class="name">Dice roller (d4–d100) + coin flip</span>
+      <span class="status"><span class="status-tag status-done">Done</span></span>
+    </div>
+    <div class="feature-row">
+      <span class="name">Camera widget (drag, resize, crop, localStorage)</span>
+      <span class="status"><span class="status-tag status-done">Done</span></span>
+    </div>
+    <div class="feature-row">
+      <span class="name">Broadcast popup (OBS-friendly, no hand visible)</span>
+      <span class="status"><span class="status-tag status-done">Done</span></span>
+    </div>
+    <div class="feature-row">
+      <span class="name">Custom backgrounds (upload, select, delete)</span>
+      <span class="status"><span class="status-tag status-wip">Partial (localStorage limit)</span></span>
+    </div>
+    <div class="feature-row">
+      <span class="name">Card rule database (ETB, mana production)</span>
+      <span class="status"><span class="status-tag status-done">Done</span></span>
+    </div>
+    <div class="feature-row">
+      <span class="name">Card scaling (1×–2×)</span>
+      <span class="status"><span class="status-tag status-done">Done</span></span>
+    </div>
+    <div class="feature-row">
+      <span class="name">Persistent state (localStorage, cross-tab sync)</span>
+      <span class="status"><span class="status-tag status-done">Done</span></span>
+    </div>
+    <div class="feature-row">
+      <span class="name">Commander damage tracking</span>
+      <span class="status"><span class="status-tag status-todo">TODO</span></span>
+    </div>
+    <div class="feature-row">
+      <span class="name">Tokens (type defs + store exist, no board UI)</span>
+      <span class="status"><span class="status-tag status-wip">Partial</span></span>
+    </div>
+    <div class="feature-row">
+      <span class="name">Keyboard shortcuts + responsive layout</span>
+      <span class="status"><span class="status-tag status-todo">TODO</span></span>
+    </div>
+    <div class="feature-row">
+      <span class="name">Save/load game snapshots</span>
+      <span class="status"><span class="status-tag status-todo">TODO</span></span>
+    </div>
+    <div class="feature-row">
+      <span class="name">Test suite</span>
+      <span class="status"><span class="status-tag status-todo">TODO</span></span>
     </div>
   </div>
 
   <h2>📐 Architecture</h2>
   <ul>
-    <li><strong>State:</strong> Zustand stores (game, deck, hand, settings)</li>
-    <li><strong>Routing:</strong> React Router — <code>/decks</code>, <code>/board/:deckId</code>, <code>/tools</code>, <code>/settings</code></li>
-    <li><strong>Cards:</strong> Scryfall API for search + image URIs; card data stored locally in IndexedDB</li>
-    <li><strong>Storage:</strong> LocalStorage for settings/prefs; IndexedDB for decks and game snapshots</li>
-    <li><strong>Drag & drop:</strong> <code>@dnd-kit</code> for moving cards between zones</li>
+    <li><strong>State:</strong> Zustand stores (game, deck, card rules) with localStorage persistence</li>
+    <li><strong>Routing:</strong> React Router — <code>/</code>, <code>/lobby</code>, <code>/game/:roomId</code>, <code>/board</code>, <code>/decks</code>, <code>/decks/:id</code>, <code>/tools</code>, <code>/settings</code>, <code>/broadcast</code></li>
+    <li><strong>Cards:</strong> Scryfall API (search, named lookup, /cards/collection batch endpoint)</li>
+    <li><strong>Storage:</strong> LocalStorage for all state, backgrounds, deck data — IndexedDB planned</li>
+    <li><strong>Drag & drop:</strong> Native HTML5 drag API (hand to battlefield)</li>
+    <li><strong>Multiplayer:</strong> Colyseus room server with shared <code>protocol/</code> package; private hands/libraries are delivered through owner-only messages</li>
+  </ul>
+
+  <h2>🐛 Known Issues</h2>
+  <ul>
+    <li>BoardPage.tsx is ~1500 lines — CameraWidget extracted, but still needs further splitting</li>
+    <li>Prebuilt decks (15 of 16) have placeholder card lists — only Blight Curse is complete</li>
+    <li>Background images stored as data URLs in localStorage (~5MB limit will be hit)</li>
+    <li>No toast/notification system — errors are inline or in console</li>
+    <li>Multiplayer is ready for local testing but still needs authentication and rate limiting before public hosting</li>
   </ul>
 
   <div class="footer">
-    <span id="updated-text"></span> &mdash; <a href="#" style="color:var(--accent);" onclick="alert('Open roadmap.html in a browser to edit and re-save.')">How to update</a>
+    <span id="updated-text"></span>
   </div>
 </div>
 

@@ -1,24 +1,51 @@
+import { useEffect } from 'react'
 import { useGameStore } from '../stores/gameStore'
-import type { BoardCard } from '../types/card'
-
-const CARD_BACK_URL = '/sleeve_weathered_cardback.webp'
+import type { BoardCard, Token } from '../types/card'
+import ManaPoolArtifact from '../components/Board/ManaPoolArtifact'
+import { CARD_BACK_URL } from '../constants'
+import { formatCounterCount } from '../components/Board/cardHelpers'
+const STREAM_CARD_WIDTH = 148
+const STREAM_SIDEBAR_WIDTH = 192
+const STREAM_ZONE_HEIGHT = 108
 
 export default function BroadcastPage() {
+  useEffect(() => {
+    const previousTitle = document.title
+    document.title = 'MTG Stream — Public Board'
+    return () => { document.title = previousTitle }
+  }, [])
+
   const cards = useGameStore((s) => s.cards)
+  const tokens = useGameStore((s) => s.tokens)
+  const lifeTotal = useGameStore((s) => s.lifeTotal)
+  const turn = useGameStore((s) => s.turn)
+  const manaPool = useGameStore((s) => s.manaPool)
+  const potentialMana = useGameStore((s) => s.potentialMana)
+  const turnAnnouncement = useGameStore((s) => s.turnAnnouncement)
+  const clearTurnAnnouncement = useGameStore((s) => s.clearTurnAnnouncement)
   const backgroundImage = useGameStore((s) => s.backgroundImage)
   const showOpponent = useGameStore((s) => s.showOpponent)
+
+  useEffect(() => {
+    if (!turnAnnouncement) return
+    const announcementId = turnAnnouncement.id
+    const timeout = window.setTimeout(() => clearTurnAnnouncement(announcementId), 2800)
+    return () => window.clearTimeout(timeout)
+  }, [clearTurnAnnouncement, turnAnnouncement])
 
   const battlefieldCards = cards.filter((card) => card.zone === 'battlefield')
   const commandCards = cards.filter((card) => card.zone === 'command')
   const libraryCards = cards.filter((card) => card.zone === 'library')
   const graveyardCards = cards.filter((card) => card.zone === 'graveyard')
   const exileCards = cards.filter((card) => card.zone === 'exile')
+  const battlefieldCount = battlefieldCards.length + tokens.length
 
   return (
     <main
       style={{
         width: '100vw',
         height: '100vh',
+        aspectRatio: '16 / 9',
         minWidth: 960,
         minHeight: 540,
         display: 'flex',
@@ -27,10 +54,36 @@ export default function BroadcastPage() {
         background: backgroundImage
           ? `url(${backgroundImage}) center/cover no-repeat`
           : 'url(/unofficial_magic_the_gathering.webp) center/cover no-repeat',
+        backgroundPosition: 'center 62%',
+        backgroundColor: '#39231e',
         color: '#fff',
         fontFamily: '-apple-system, BlinkMacSystemFont, Segoe UI, sans-serif',
+        position: 'relative',
       }}
     >
+      {turnAnnouncement && (
+        <div
+          role="status"
+          style={{
+            position: 'absolute',
+            top: 54,
+            left: '50%',
+            transform: 'translateX(-50%)',
+            zIndex: 20,
+            padding: '9px 18px',
+            borderRadius: 999,
+            background: 'rgba(13,17,23,0.94)',
+            border: '1px solid rgba(88,166,255,0.8)',
+            color: '#79c0ff',
+            fontSize: '0.9rem',
+            fontWeight: 800,
+            letterSpacing: '0.6px',
+            boxShadow: '0 4px 16px rgba(0,0,0,0.5)',
+          }}
+        >
+          {turnAnnouncement.text}
+        </div>
+      )}
       <header
         style={{
           height: 42,
@@ -43,10 +96,14 @@ export default function BroadcastPage() {
           borderBottom: '1px solid rgba(255,255,255,0.12)',
         }}
       >
-        <strong style={{ fontSize: '0.85rem', letterSpacing: '0.4px' }}>MTG Board · Public Broadcast</strong>
-        <span style={{ color: '#3fb950', fontSize: '0.7rem', fontWeight: 700 }}>
-          ● HAND HIDDEN
-        </span>
+        <strong style={{ fontSize: '0.85rem', letterSpacing: '0.4px' }}>MTG Stream · Public Board</strong>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 12, fontSize: '0.7rem', fontWeight: 700 }}>
+          <span style={{ color: lifeTotal <= 0 ? '#f85149' : lifeTotal <= 5 ? '#d29922' : '#e6edf3' }}>
+            LIFE {lifeTotal}
+          </span>
+          <span style={{ color: '#79c0ff' }}>TURN {turn}</span>
+          <span style={{ color: '#3fb950' }}>● HAND HIDDEN</span>
+        </div>
       </header>
 
       <div style={{ flex: 1, display: 'flex', minHeight: 0 }}>
@@ -79,15 +136,17 @@ export default function BroadcastPage() {
             }}
           >
             <div style={{ marginBottom: 8, color: '#d0d7de', fontSize: '0.7rem', fontWeight: 700, letterSpacing: 1, textTransform: 'uppercase' }}>
-              Battlefield ({battlefieldCards.length})
+              Battlefield ({battlefieldCount})
+              {tokens.length > 0 && ` · ${tokens.length} token${tokens.length === 1 ? '' : 's'}`}
             </div>
-            {battlefieldCards.length === 0 ? (
+            {battlefieldCount === 0 ? (
               <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100%', color: 'rgba(255,255,255,0.35)', fontSize: '0.85rem' }}>
                 Battlefield empty
               </div>
             ) : (
               <div style={{ display: 'flex', flexWrap: 'wrap', alignContent: 'flex-start', gap: 8 }}>
                 {battlefieldCards.map((card) => <PublicCard key={card.id} card={card} />)}
+                {tokens.map((token) => <PublicToken key={token.id} token={token} />)}
               </div>
             )}
           </div>
@@ -95,7 +154,7 @@ export default function BroadcastPage() {
 
         <aside
           style={{
-            width: 176,
+            width: STREAM_SIDEBAR_WIDTH,
             flexShrink: 0,
             display: 'flex',
             flexDirection: 'column',
@@ -106,6 +165,15 @@ export default function BroadcastPage() {
             borderLeft: '1px solid rgba(255,255,255,0.12)',
           }}
         >
+          <ManaPoolArtifact
+            manaPool={manaPool}
+            potentialMana={potentialMana}
+            onAdd={() => undefined}
+            onSpend={() => undefined}
+            onClear={() => undefined}
+            compact
+            readOnly
+          />
           <PublicZone label="Command" count={null} card={commandCards[0]} />
           <PublicZone label="Library" count={libraryCards.length} back />
           <PublicZone label="Graveyard" count={graveyardCards.length} card={graveyardCards[0]} />
@@ -118,7 +186,7 @@ export default function BroadcastPage() {
 
 function PublicCard({ card }: { card: BoardCard }) {
   return (
-    <div style={{ width: 132, flexShrink: 0, position: 'relative' }}>
+    <div style={{ width: STREAM_CARD_WIDTH, flexShrink: 0, position: 'relative' }}>
       <img
         src={card.imageUri}
         alt={card.name}
@@ -135,9 +203,59 @@ function PublicCard({ card }: { card: BoardCard }) {
       <div style={{ marginTop: 3, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', color: '#e6edf3', fontSize: '0.62rem', textAlign: 'center' }}>
         {card.name}
       </div>
-      {card.counters > 0 && (
+      {card.counters !== 0 && (
         <span style={{ position: 'absolute', top: -4, right: -4, width: 18, height: 18, display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: '50%', background: '#d29922', color: '#000', fontSize: '0.65rem', fontWeight: 700 }}>
-          {card.counters}
+          {formatCounterCount(card.counters)}
+        </span>
+      )}
+    </div>
+  )
+}
+
+function PublicToken({ token }: { token: Token }) {
+  return (
+    <div style={{ width: STREAM_CARD_WIDTH, flexShrink: 0, position: 'relative' }}>
+      {token.imageUri ? (
+        <img
+          src={token.imageUri}
+          alt={token.name}
+          style={{
+            width: '100%',
+            aspectRatio: '5 / 7',
+            objectFit: 'cover',
+            display: 'block',
+            borderRadius: 6,
+            border: token.tapped ? '3px solid #58a6ff' : '1px solid rgba(255,255,255,0.2)',
+            transform: token.tapped ? 'rotate(90deg)' : 'none',
+          }}
+        />
+      ) : (
+        <div
+          style={{
+            width: '100%',
+            aspectRatio: '5 / 7',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            padding: 8,
+            boxSizing: 'border-box',
+            borderRadius: 6,
+            border: token.tapped ? '3px solid #58a6ff' : '1px solid rgba(255,255,255,0.2)',
+            background: 'rgba(255,255,255,0.08)',
+            color: '#e6edf3',
+            fontSize: '0.72rem',
+            textAlign: 'center',
+          }}
+        >
+          {token.name}
+        </div>
+      )}
+      <div style={{ marginTop: 3, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', color: '#e6edf3', fontSize: '0.62rem', textAlign: 'center' }}>
+        {token.name}
+      </div>
+      {token.counters > 0 && (
+        <span style={{ position: 'absolute', top: -4, right: -4, width: 18, height: 18, display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: '50%', background: '#d29922', color: '#000', fontSize: '0.65rem', fontWeight: 700 }}>
+          {token.counters}
         </span>
       )}
     </div>
@@ -149,7 +267,7 @@ function PublicZone({ label, count, card, back = false }: { label: string; count
     <div style={{ position: 'relative', padding: 6, borderRadius: 8, background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)' }}>
       {count !== null && <div style={{ marginBottom: 4, color: '#d29922', fontSize: '0.7rem', fontWeight: 700 }}>{count} cards</div>}
       {card ? (
-        <img src={card.imageUri} alt={card.name} style={zoneImageStyle} />
+        <img src={card.imageUri || CARD_BACK_URL} alt={card.name} style={zoneImageStyle} />
       ) : back ? (
         <img src={CARD_BACK_URL} alt="Library" style={zoneImageStyle} />
       ) : (
@@ -162,7 +280,7 @@ function PublicZone({ label, count, card, back = false }: { label: string; count
 
 const zoneImageStyle: React.CSSProperties = {
   width: '100%',
-  height: 110,
+  height: STREAM_ZONE_HEIGHT,
   objectFit: 'contain',
   display: 'block',
   borderRadius: 5,
