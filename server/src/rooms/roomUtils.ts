@@ -82,6 +82,10 @@ export function normalizeCards(value: unknown): CardData[] {
   return value.filter(isCardData).slice(0, MAX_DECK_SIZE).map((card) => ({ ...card }))
 }
 
+export function isLandCard(card: { type: string; typeLine: string }): boolean {
+  return card.type === 'land' || /\bLand\b/.test(card.typeLine)
+}
+
 export function modeToStartingLife(mode: GameMode): number {
   return mode === '1v1' ? 20 : mode === '2v2' ? 30 : 40
 }

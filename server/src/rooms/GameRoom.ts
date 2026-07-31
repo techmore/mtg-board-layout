@@ -20,6 +20,7 @@ import {
   validMode,
   validZone,
   entersTappedOnBattlefield,
+  isLandCard,
 } from './roomUtils.js'
 
 const LOBBY_CHANNEL = '$game-rooms'
@@ -79,7 +80,32 @@ export class GameRoom extends Room<{ state: GameState }> {
     this.onMessage('playCard', (client, message) => {
       const player = this.requireTurnPlayer(client)
       const cardId = stringField(message, 'cardId')
-      if (player && cardId) this.moveCardToZone(player, cardId, 'battlefield')
+      if (!player || !cardId) return
+      const card = this.findAnyCard(player, cardId)
+      if (!card) return
+      if (isLandCard(card)) {
+        if (card.zone === 'battlefield') return
+        if (card.zone === 'hand' && player.landPlaysThisTurn >= 1) {
+          client.send('error', { type: 'error', message: 'You can only play one land per turn.' })
+          return
+        }
+        player.landPlaysThisTurn++
+      }
+      this.moveCardToZone(player, cardId, 'battlefield')
+    })
+
+    this.onMessage('overrideLandPlay', (client, message) => {
+      const player = this.requireTurnPlayer(client)
+      const cardId = stringField(message, 'cardId')
+      if (!player || !cardId) return
+      const card = this.findPrivateCard(player, cardId)
+      if (!card || card.zone !== 'hand' || !isLandCard(card)) {
+        client.send('error', { type: 'error', message: 'No land in hand available to play as an override.' })
+        return
+      }
+      player.landPlaysThisTurn++
+      this.moveCardToZone(player, cardId, 'battlefield')
+      this.emitEvent({ type: 'turnAnnouncement', playerId: player.id, playerName: player.name, text: `${player.name} played a land override and ends the turn` })
     })
 
     this.onMessage('tapCard', (client, message) => {
@@ -135,7 +161,10 @@ export class GameRoom extends Room<{ state: GameState }> {
     this.onMessage('setLife', (client, message) => {
       const player = this.getPlayer(client)
       const value = numberField(message, 'value')
-      if (player && value !== undefined) player.lifeTotal = Math.max(-999, Math.min(999, Math.round(value)))
+      if (player && value !== undefined) {
+        player.lifeTotal = Math.max(-999, Math.min(999, Math.round(value)))
+        this.checkForGameEnd(player)
+      }
     })
 
     this.onMessage('endTurn', (client) => this.endTurn(client))
@@ -299,6 +328,18 @@ export class GameRoom extends Room<{ state: GameState }> {
     return undefined
   }
 
+  private findPublicZone(player: PlayerState, cardId: string): Zone | undefined {
+    for (const [name, zone] of [
+      ['battlefield', player.battlefield],
+      ['graveyard', player.graveyard],
+      ['exile', player.exile],
+      ['command', player.command],
+    ] as const) {
+      if (zone.find((candidate) => candidate.id === cardId)) return name
+    }
+    return undefined
+  }
+
   private findPrivateCard(player: PlayerState, cardId: string): CardData | undefined {
     const privateState = this.privateZones.get(player.playerId)
     return privateState?.hand.find((card) => card.id === cardId) ?? privateState?.library.find((card) => card.id === cardId)
@@ -337,12 +378,14 @@ export class GameRoom extends Room<{ state: GameState }> {
     }
 
     const privateCard = this.removePrivateCard(player, cardId)
+    const sourceZone = privateCard ? privateCard.zone : this.findPublicZone(player, cardId)
     const publicCard = privateCard ? cardToState(privateCard, destination) : this.removePublicCard(player, cardId)
     if (!publicCard) return
     publicCard.zone = destination
     publicCard.revealed = true
     if (destination === 'battlefield') {
       publicCard.tapped = entersTappedOnBattlefield(publicCard, player.battlefield)
+      if (sourceZone === 'command') publicCard.commanderTax = publicCard.commanderTax + 1
     }
     this.publicZone(player, destination)?.push(publicCard)
     this.updateCounts(player)
@@ -422,6 +465,15 @@ export class GameRoom extends Room<{ state: GameState }> {
   private clearMana(player: PlayerState) {
     player.manaW = 0; player.manaU = 0; player.manaB = 0
     player.manaR = 0; player.manaG = 0; player.manaC = 0
+  }
+
+  private checkForGameEnd(eliminated: PlayerState) {
+    if (this.state.status !== 'playing' || eliminated.lifeTotal > 0) return
+    this.state.status = 'finished'
+    const winners = this.connectedPlayers()
+      .filter((candidate) => candidate.id !== eliminated.id && candidate.teamId !== eliminated.teamId)
+      .sort((a, b) => a.turnOrder - b.turnOrder)
+    this.emitEvent({ type: 'gameEnded', winnerId: winners[0]?.id, reason: 'life' })
   }
 
   private endTurn(client: Client) {
