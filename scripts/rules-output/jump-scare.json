@@ -1,0 +1,790 @@
+{
+  "Zimone, Mystery Unraveler": {
+    "cardName": "Zimone, Mystery Unraveler",
+    "manaCost": "{2}{G}{U}",
+    "manaValue": 4,
+    "typeLine": "Legendary Creature — Human Wizard",
+    "cardType": "creature",
+    "subtypes": [
+      "Human",
+      "Wizard"
+    ],
+    "keywords": [],
+    "manaProduction": null,
+    "entryTapRule": null,
+    "conditionalEntryText": null,
+    "abilities": [
+      {
+        "abilityType": "triggered",
+        "triggerEvent": "etb",
+        "triggerCondition": "Landfall — Whenever a land you control enters",
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "other",
+          "params": {}
+        }
+      }
+    ],
+    "oracleText": "Landfall — Whenever a land you control enters, manifest dread if this is the first time this ability has resolved this turn. Otherwise, you may turn a permanent you control face up. (To manifest dread, look at the top two cards of your library. Put one onto the battlefield face down as a 2/2 creature and the other into your graveyard. Turn it face up any time for its mana cost if it's a creature card.)",
+    "scryfallId": "30f23588-5064-48d9-a271-039df757f8d2"
+  },
+  "Yedora, Grave Gardener": {
+    "cardName": "Yedora, Grave Gardener",
+    "manaCost": "{4}{G}",
+    "manaValue": 5,
+    "typeLine": "Legendary Creature — Treefolk Druid",
+    "cardType": "creature",
+    "subtypes": [
+      "Treefolk",
+      "Druid"
+    ],
+    "keywords": [],
+    "manaProduction": null,
+    "entryTapRule": null,
+    "conditionalEntryText": null,
+    "abilities": [
+      {
+        "abilityType": "triggered",
+        "triggerEvent": "dies",
+        "triggerCondition": "another nontoken creature you control dies",
+        "isOptional": true,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "return_from_graveyard",
+          "params": {}
+        }
+      }
+    ],
+    "oracleText": "Whenever another nontoken creature you control dies, you may return it to the battlefield face down under its owner's control. It's a Forest land. (It has no other types or abilities.)",
+    "scryfallId": "7b852b55-bee1-46fc-87e4-5c01b90bbd43"
+  },
+  "Sakura-Tribe Elder": {
+    "cardName": "Sakura-Tribe Elder",
+    "manaCost": "{1}{G}",
+    "manaValue": 2,
+    "typeLine": "Creature — Snake Shaman",
+    "cardType": "creature",
+    "subtypes": [
+      "Snake",
+      "Shaman"
+    ],
+    "keywords": [],
+    "manaProduction": null,
+    "entryTapRule": null,
+    "conditionalEntryText": null,
+    "abilities": [
+      {
+        "abilityType": "activated",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": "Sacrifice",
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "search_library",
+          "params": {}
+        }
+      }
+    ],
+    "oracleText": "Sacrifice this creature: Search your library for a basic land card, put that card onto the battlefield tapped, then shuffle.",
+    "scryfallId": "7a8b1c49-8594-426d-b585-41140235bb0e"
+  },
+  "Scute Swarm": {
+    "cardName": "Scute Swarm",
+    "manaCost": "{2}{G}",
+    "manaValue": 3,
+    "typeLine": "Creature — Insect",
+    "cardType": "creature",
+    "subtypes": [
+      "Insect"
+    ],
+    "keywords": [],
+    "manaProduction": null,
+    "entryTapRule": null,
+    "conditionalEntryText": null,
+    "abilities": [
+      {
+        "abilityType": "triggered",
+        "triggerEvent": "etb",
+        "triggerCondition": "Landfall — Whenever a land you control enters",
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "create_token",
+          "params": {
+            "tokenPower": 1,
+            "tokenToughness": 1,
+            "tokenName": "Insect creature",
+            "amount": 1
+          }
+        }
+      },
+      {
+        "abilityType": "triggered",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "create_token",
+          "params": {
+            "tokenName": "a",
+            "amount": 1
+          }
+        }
+      }
+    ],
+    "oracleText": "Landfall — Whenever a land you control enters, create a 1/1 green Insect creature token. If you control six or more lands, create a token that's a copy of this creature instead.",
+    "scryfallId": "ea630ba1-22f9-4a10-bdc6-0d03128214f4"
+  },
+  "Avenger of Zendikar": {
+    "cardName": "Avenger of Zendikar",
+    "manaCost": "{5}{G}{G}",
+    "manaValue": 7,
+    "typeLine": "Creature — Elemental",
+    "cardType": "creature",
+    "subtypes": [
+      "Elemental"
+    ],
+    "keywords": [],
+    "manaProduction": null,
+    "entryTapRule": null,
+    "conditionalEntryText": null,
+    "abilities": [
+      {
+        "abilityType": "triggered",
+        "triggerEvent": "etb",
+        "triggerCondition": "this creature enters",
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "create_token",
+          "params": {
+            "tokenPower": 0,
+            "tokenToughness": 1,
+            "tokenName": "Plant creature",
+            "amount": 1
+          }
+        }
+      },
+      {
+        "abilityType": "triggered",
+        "triggerEvent": "etb",
+        "triggerCondition": "Landfall — Whenever a land you control enters",
+        "isOptional": true,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "put_counter",
+          "params": {}
+        }
+      }
+    ],
+    "oracleText": "When this creature enters, create a 0/1 green Plant creature token for each land you control.\nLandfall — Whenever a land you control enters, you may put a +1/+1 counter on each Plant creature you control.",
+    "scryfallId": "c6f1e60f-a195-4590-80b0-86767de6c423"
+  },
+  "Rampaging Baloths": {
+    "cardName": "Rampaging Baloths",
+    "manaCost": "{4}{G}{G}",
+    "manaValue": 6,
+    "typeLine": "Creature — Beast",
+    "cardType": "creature",
+    "subtypes": [
+      "Beast"
+    ],
+    "keywords": [
+      "trample"
+    ],
+    "manaProduction": null,
+    "entryTapRule": null,
+    "conditionalEntryText": null,
+    "abilities": [
+      {
+        "abilityType": "triggered",
+        "triggerEvent": "etb",
+        "triggerCondition": "Trample Landfall — Whenever a land you control enters",
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "create_token",
+          "params": {
+            "tokenPower": 4,
+            "tokenToughness": 4,
+            "tokenName": "Beast creature",
+            "amount": 1
+          }
+        }
+      }
+    ],
+    "oracleText": "Trample\nLandfall — Whenever a land you control enters, create a 4/4 green Beast creature token.",
+    "scryfallId": "84aa18de-6acc-46cc-8e28-3046790a6751"
+  },
+  "Omnath, Locus of Rage": {
+    "cardName": "Omnath, Locus of Rage",
+    "manaCost": "{3}{R}{R}{G}{G}",
+    "manaValue": 7,
+    "typeLine": "Legendary Creature — Elemental",
+    "cardType": "creature",
+    "subtypes": [
+      "Elemental"
+    ],
+    "keywords": [],
+    "manaProduction": null,
+    "entryTapRule": null,
+    "conditionalEntryText": null,
+    "abilities": [
+      {
+        "abilityType": "triggered",
+        "triggerEvent": "etb",
+        "triggerCondition": "Landfall — Whenever a land you control enters",
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "create_token",
+          "params": {
+            "tokenPower": 5,
+            "tokenToughness": 5,
+            "tokenName": "Elemental creature",
+            "amount": 1
+          }
+        }
+      },
+      {
+        "abilityType": "triggered",
+        "triggerEvent": "dies",
+        "triggerCondition": "Omnath or another Elemental you control dies",
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "deal_damage",
+          "params": {}
+        }
+      }
+    ],
+    "oracleText": "Landfall — Whenever a land you control enters, create a 5/5 red and green Elemental creature token.\nWhenever Omnath or another Elemental you control dies, Omnath deals 3 damage to any target.",
+    "scryfallId": "637c5910-f835-496e-b1b9-445bfb71da97"
+  },
+  "Lotus Cobra": {
+    "cardName": "Lotus Cobra",
+    "manaCost": "{1}{G}",
+    "manaValue": 2,
+    "typeLine": "Creature — Snake",
+    "cardType": "creature",
+    "subtypes": [
+      "Snake"
+    ],
+    "keywords": [],
+    "manaProduction": {
+      "colors": [
+        "W",
+        "U",
+        "B",
+        "R",
+        "G",
+        "C"
+      ],
+      "amount": 1
+    },
+    "entryTapRule": null,
+    "conditionalEntryText": null,
+    "abilities": [
+      {
+        "abilityType": "triggered",
+        "triggerEvent": "etb",
+        "triggerCondition": "Landfall — Whenever a land you control enters",
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "add_mana",
+          "params": {}
+        }
+      }
+    ],
+    "oracleText": "Landfall — Whenever a land you control enters, add one mana of any color.",
+    "scryfallId": "a4b759f0-901f-4be3-93fa-224609b08d48"
+  },
+  "Tireless Tracker": {
+    "cardName": "Tireless Tracker",
+    "manaCost": "{2}{G}",
+    "manaValue": 3,
+    "typeLine": "Creature — Human Scout",
+    "cardType": "creature",
+    "subtypes": [
+      "Human",
+      "Scout"
+    ],
+    "keywords": [],
+    "manaProduction": null,
+    "entryTapRule": null,
+    "conditionalEntryText": null,
+    "abilities": [
+      {
+        "abilityType": "triggered",
+        "triggerEvent": "etb",
+        "triggerCondition": "Landfall — Whenever a land you control enters",
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "other",
+          "params": {}
+        }
+      },
+      {
+        "abilityType": "triggered",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "create_token",
+          "params": {
+            "tokenName": "Clue",
+            "amount": 1
+          }
+        }
+      },
+      {
+        "abilityType": "activated",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": "{2}, Sacrifice",
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "draw_cards",
+          "params": {
+            "amount": 2
+          }
+        }
+      },
+      {
+        "abilityType": "triggered",
+        "triggerEvent": "counter_placed",
+        "triggerCondition": "\") Whenever you sacrifice a Clue",
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "put_counter",
+          "params": {}
+        }
+      }
+    ],
+    "oracleText": "Landfall — Whenever a land you control enters, investigate. (Create a Clue token. It's an artifact with \"{2}, Sacrifice this token: Draw a card.\")\nWhenever you sacrifice a Clue, put a +1/+1 counter on this creature.",
+    "scryfallId": "66444549-ad9b-49c6-a7c6-34e977c1085d"
+  },
+  "Tireless Provisioner": {
+    "cardName": "Tireless Provisioner",
+    "manaCost": "{2}{G}",
+    "manaValue": 3,
+    "typeLine": "Creature — Elf Scout",
+    "cardType": "creature",
+    "subtypes": [
+      "Elf",
+      "Scout"
+    ],
+    "keywords": [],
+    "manaProduction": {
+      "colors": [
+        "W",
+        "U",
+        "B",
+        "R",
+        "G",
+        "C"
+      ],
+      "amount": 1
+    },
+    "entryTapRule": null,
+    "conditionalEntryText": null,
+    "abilities": [
+      {
+        "abilityType": "triggered",
+        "triggerEvent": "etb",
+        "triggerCondition": "Landfall — Whenever a land you control enters",
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "create_token",
+          "params": {
+            "tokenName": "Food",
+            "amount": 1
+          }
+        }
+      },
+      {
+        "abilityType": "static",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "gain_life",
+          "params": {
+            "amount": 2
+          }
+        }
+      },
+      {
+        "abilityType": "activated",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": "{T}, Sacrifice",
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "add_mana",
+          "params": {}
+        }
+      }
+    ],
+    "oracleText": "Landfall — Whenever a land you control enters, create a Food token or a Treasure token. (Food is an artifact with \"{2}, {T}, Sacrifice this token: You gain 3 life.\" Treasure is an artifact with \"{T}, Sacrifice this token: Add one mana of any color.\")",
+    "scryfallId": "a1e048e0-19d2-4076-892d-f8b3104dee37"
+  },
+  "Aesi, Tyrant of Gyre Strait": {
+    "cardName": "Aesi, Tyrant of Gyre Strait",
+    "manaCost": "{4}{G}{U}",
+    "manaValue": 6,
+    "typeLine": "Legendary Creature — Serpent",
+    "cardType": "creature",
+    "subtypes": [
+      "Serpent"
+    ],
+    "keywords": [],
+    "manaProduction": null,
+    "entryTapRule": null,
+    "conditionalEntryText": null,
+    "abilities": [
+      {
+        "abilityType": "triggered",
+        "triggerEvent": "etb",
+        "triggerCondition": "Landfall — Whenever a land you control enters",
+        "isOptional": true,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "draw_cards",
+          "params": {
+            "amount": 1
+          }
+        }
+      }
+    ],
+    "oracleText": "You may play an additional land on each of your turns.\nLandfall — Whenever a land you control enters, you may draw a card.",
+    "scryfallId": "673c21f8-02b6-4ac4-b2fc-df065b4ac662"
+  },
+  "Tatyova, Benthic Druid": {
+    "cardName": "Tatyova, Benthic Druid",
+    "manaCost": "{3}{G}{U}",
+    "manaValue": 5,
+    "typeLine": "Legendary Creature — Merfolk Druid",
+    "cardType": "creature",
+    "subtypes": [
+      "Merfolk",
+      "Druid"
+    ],
+    "keywords": [],
+    "manaProduction": null,
+    "entryTapRule": null,
+    "conditionalEntryText": null,
+    "abilities": [
+      {
+        "abilityType": "static",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "draw_cards",
+          "params": {
+            "amount": 1
+          }
+        }
+      }
+    ],
+    "oracleText": "Landfall — Whenever a land you control enters, you gain 1 life and draw a card.",
+    "scryfallId": "eabc978a-0666-472d-bdc6-d4b29d29eca4"
+  },
+  "Sol Ring": {
+    "cardName": "Sol Ring",
+    "manaCost": "{1}",
+    "manaValue": 1,
+    "typeLine": "Artifact",
+    "cardType": "artifact",
+    "subtypes": [],
+    "keywords": [],
+    "manaProduction": {
+      "colors": [
+        "C"
+      ],
+      "amount": 2
+    },
+    "entryTapRule": null,
+    "conditionalEntryText": null,
+    "abilities": [
+      {
+        "abilityType": "activated",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": "{T}",
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "add_mana",
+          "params": {}
+        }
+      }
+    ],
+    "oracleText": "{T}: Add {C}{C}.",
+    "scryfallId": "91fdb56b-54d5-4272-8319-505ff987fe9b"
+  },
+  "Arcane Signet": {
+    "cardName": "Arcane Signet",
+    "manaCost": "{2}",
+    "manaValue": 2,
+    "typeLine": "Artifact",
+    "cardType": "artifact",
+    "subtypes": [],
+    "keywords": [],
+    "manaProduction": {
+      "colors": [
+        "W",
+        "U",
+        "B",
+        "R",
+        "G",
+        "C"
+      ],
+      "amount": 1
+    },
+    "entryTapRule": null,
+    "conditionalEntryText": null,
+    "abilities": [
+      {
+        "abilityType": "activated",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": "{T}",
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "add_mana",
+          "params": {}
+        }
+      }
+    ],
+    "oracleText": "{T}: Add one mana of any color in your commander's color identity.",
+    "scryfallId": "1cad1bd2-7c56-4ce0-99a6-b2a49c1288dd"
+  },
+  "Command Tower": {
+    "cardName": "Command Tower",
+    "manaCost": "",
+    "manaValue": 0,
+    "typeLine": "Land",
+    "cardType": "land",
+    "subtypes": [],
+    "keywords": [],
+    "manaProduction": {
+      "colors": [
+        "W",
+        "U",
+        "B",
+        "R",
+        "G",
+        "C"
+      ],
+      "amount": 1
+    },
+    "entryTapRule": null,
+    "conditionalEntryText": null,
+    "abilities": [
+      {
+        "abilityType": "activated",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": "{T}",
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "add_mana",
+          "params": {}
+        }
+      }
+    ],
+    "oracleText": "{T}: Add one mana of any color in your commander's color identity.",
+    "scryfallId": "0548fb60-c843-4f8f-a029-6f10efc63a41"
+  },
+  "Sylvan Library": {
+    "cardName": "Sylvan Library",
+    "manaCost": "{1}{G}",
+    "manaValue": 2,
+    "typeLine": "Enchantment",
+    "cardType": "enchantment",
+    "subtypes": [],
+    "keywords": [],
+    "manaProduction": null,
+    "entryTapRule": null,
+    "conditionalEntryText": null,
+    "abilities": [
+      {
+        "abilityType": "triggered",
+        "triggerEvent": "draw_step",
+        "triggerCondition": "your draw step",
+        "isOptional": true,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "draw_cards",
+          "params": {
+            "amount": 2
+          }
+        }
+      }
+    ],
+    "oracleText": "At the beginning of your draw step, you may draw two additional cards. If you do, choose two cards in your hand drawn this turn. For each of those cards, pay 4 life or put the card on top of your library.",
+    "scryfallId": "6ada256f-2e55-4c1f-b4d3-d7b10b498956"
+  },
+  "Cultivate": {
+    "cardName": "Cultivate",
+    "manaCost": "{2}{G}",
+    "manaValue": 3,
+    "typeLine": "Sorcery",
+    "cardType": "sorcery",
+    "subtypes": [],
+    "keywords": [],
+    "manaProduction": null,
+    "entryTapRule": null,
+    "conditionalEntryText": null,
+    "abilities": [
+      {
+        "abilityType": "spell",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "search_library",
+          "params": {}
+        }
+      }
+    ],
+    "oracleText": "Search your library for up to two basic land cards, reveal those cards, put one onto the battlefield tapped and the other into your hand, then shuffle.",
+    "scryfallId": "e60deb92-f7dd-4f4e-9036-e47dd586f985"
+  },
+  "Kodama's Reach": {
+    "cardName": "Kodama's Reach",
+    "manaCost": "{2}{G}",
+    "manaValue": 3,
+    "typeLine": "Sorcery — Arcane",
+    "cardType": "sorcery",
+    "subtypes": [
+      "Arcane"
+    ],
+    "keywords": [],
+    "manaProduction": null,
+    "entryTapRule": null,
+    "conditionalEntryText": null,
+    "abilities": [
+      {
+        "abilityType": "spell",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "search_library",
+          "params": {}
+        }
+      }
+    ],
+    "oracleText": "Search your library for up to two basic land cards, reveal those cards, put one onto the battlefield tapped and the other into your hand, then shuffle.",
+    "scryfallId": "90c423cc-1264-4067-9c50-e7c88c68ef2d"
+  },
+  "Forest": {
+    "cardName": "Forest",
+    "manaCost": "",
+    "manaValue": 0,
+    "typeLine": "Basic Land — Forest",
+    "cardType": "land",
+    "subtypes": [
+      "Forest"
+    ],
+    "keywords": [],
+    "manaProduction": {
+      "colors": [
+        "G"
+      ],
+      "amount": 1
+    },
+    "entryTapRule": "never",
+    "conditionalEntryText": null,
+    "abilities": [],
+    "oracleText": "",
+    "scryfallId": "c3e84b42-5423-4d4d-b8fc-cfbb2c53a4ca"
+  },
+  "Island": {
+    "cardName": "Island",
+    "manaCost": "",
+    "manaValue": 0,
+    "typeLine": "Basic Land — Island",
+    "cardType": "land",
+    "subtypes": [
+      "Island"
+    ],
+    "keywords": [],
+    "manaProduction": {
+      "colors": [
+        "U"
+      ],
+      "amount": 1
+    },
+    "entryTapRule": "never",
+    "conditionalEntryText": null,
+    "abilities": [],
+    "oracleText": "",
+    "scryfallId": "c6aa89a8-3584-4906-b9a9-41ef2f021f8e"
+  }
+}

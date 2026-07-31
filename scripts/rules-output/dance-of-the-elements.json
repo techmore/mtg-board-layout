@@ -1,0 +1,1845 @@
+{
+  "Ashling, the Limitless": {
+    "cardName": "Ashling, the Limitless",
+    "manaCost": "{2}{R}",
+    "manaValue": 3,
+    "typeLine": "Legendary Creature — Elemental Sorcerer",
+    "cardType": "creature",
+    "subtypes": [
+      "Elemental",
+      "Sorcerer"
+    ],
+    "keywords": [
+      "haste"
+    ],
+    "manaProduction": null,
+    "entryTapRule": null,
+    "conditionalEntryText": null,
+    "abilities": [
+      {
+        "abilityType": "triggered",
+        "triggerEvent": "etb",
+        "triggerCondition": "(If you cast a spell for its evoke cost",
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "other",
+          "params": {}
+        }
+      },
+      {
+        "abilityType": "triggered",
+        "triggerEvent": "sacrifice",
+        "triggerCondition": ") Whenever you sacrifice a nontoken Elemental",
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "create_token",
+          "params": {
+            "tokenName": "a",
+            "amount": 1
+          }
+        }
+      },
+      {
+        "abilityType": "static",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "other",
+          "params": {}
+        }
+      }
+    ],
+    "oracleText": "Elemental permanent spells you cast from your hand gain evoke {4} as you cast them. (If you cast a spell for its evoke cost, it's sacrificed when it enters.)\nWhenever you sacrifice a nontoken Elemental, create a token that's a copy of it. The token gains haste until end of turn. At the beginning of your next end step, sacrifice it unless you pay {W}{U}{B}{R}{G}.",
+    "scryfallId": "5924c01f-2815-4e37-b700-3ba6cc81e0e4"
+  },
+  "Mass of Mysteries": {
+    "cardName": "Mass of Mysteries",
+    "manaCost": "{W}{U}{B}{R}{G}",
+    "manaValue": 5,
+    "typeLine": "Legendary Creature — Elemental",
+    "cardType": "creature",
+    "subtypes": [
+      "Elemental"
+    ],
+    "keywords": [
+      "first strike",
+      "trample",
+      "vigilance"
+    ],
+    "manaProduction": null,
+    "entryTapRule": null,
+    "conditionalEntryText": null,
+    "abilities": [
+      {
+        "abilityType": "triggered",
+        "triggerEvent": "attack",
+        "triggerCondition": "(Whenever it attacks",
+        "isOptional": true,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "create_token",
+          "params": {
+            "tokenName": "a",
+            "amount": 1
+          }
+        }
+      },
+      {
+        "abilityType": "triggered",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "exile",
+          "params": {}
+        }
+      }
+    ],
+    "oracleText": "First strike, vigilance, trample\nAt the beginning of combat on your turn, another target Elemental you control gains myriad until end of turn. (Whenever it attacks, for each opponent other than defending player, you may create a token copy that's tapped and attacking that player or a planeswalker they control. Exile the tokens at end of combat.)",
+    "scryfallId": "871decb1-82e7-48f7-84be-96dde2d35770"
+  },
+  "Elemental Spectacle": {
+    "cardName": "Elemental Spectacle",
+    "manaCost": "{5}{G}",
+    "manaValue": 6,
+    "typeLine": "Sorcery",
+    "cardType": "sorcery",
+    "subtypes": [],
+    "keywords": [],
+    "manaProduction": null,
+    "entryTapRule": null,
+    "conditionalEntryText": null,
+    "abilities": [
+      {
+        "abilityType": "spell",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "gain_life",
+          "params": {
+            "amount": 1
+          }
+        }
+      }
+    ],
+    "oracleText": "Vivid — Create a number of 5/5 red and green Elemental creature tokens equal to the number of colors among permanents you control. Then you gain life equal to the number of creatures you control.",
+    "scryfallId": "b012cbef-c9bc-41ac-8318-f1687340c5fa"
+  },
+  "Endurance": {
+    "cardName": "Endurance",
+    "manaCost": "{1}{G}{G}",
+    "manaValue": 3,
+    "typeLine": "Creature — Elemental Incarnation",
+    "cardType": "creature",
+    "subtypes": [
+      "Elemental",
+      "Incarnation"
+    ],
+    "keywords": [
+      "reach",
+      "flash"
+    ],
+    "manaProduction": null,
+    "entryTapRule": null,
+    "conditionalEntryText": null,
+    "abilities": [
+      {
+        "abilityType": "triggered",
+        "triggerEvent": "etb",
+        "triggerCondition": "Flash Reach When this creature enters",
+        "isOptional": false,
+        "cost": null,
+        "targets": 1,
+        "targetFilter": "player puts all the cards from their graveyard on the bottom of their library in a random order",
+        "effect": {
+          "kind": "other",
+          "params": {}
+        }
+      },
+      {
+        "abilityType": "triggered",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "exile",
+          "params": {}
+        }
+      }
+    ],
+    "oracleText": "Flash\nReach\nWhen this creature enters, up to one target player puts all the cards from their graveyard on the bottom of their library in a random order.\nEvoke—Exile a green card from your hand.",
+    "scryfallId": "b770471c-1bf7-4179-8418-dcd790ca5405"
+  },
+  "Fury": {
+    "cardName": "Fury",
+    "manaCost": "{3}{R}{R}",
+    "manaValue": 5,
+    "typeLine": "Creature — Elemental Incarnation",
+    "cardType": "creature",
+    "subtypes": [
+      "Elemental",
+      "Incarnation"
+    ],
+    "keywords": [
+      "double strike"
+    ],
+    "manaProduction": null,
+    "entryTapRule": null,
+    "conditionalEntryText": null,
+    "abilities": [
+      {
+        "abilityType": "triggered",
+        "triggerEvent": "etb",
+        "triggerCondition": "Double strike When this creature enters",
+        "isOptional": false,
+        "cost": null,
+        "targets": 1,
+        "targetFilter": "creature s and/or planeswalkers",
+        "effect": {
+          "kind": "deal_damage",
+          "params": {}
+        }
+      },
+      {
+        "abilityType": "triggered",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "exile",
+          "params": {}
+        }
+      }
+    ],
+    "oracleText": "Double strike\nWhen this creature enters, it deals 4 damage divided as you choose among any number of target creatures and/or planeswalkers.\nEvoke—Exile a red card from your hand.",
+    "scryfallId": "932d0fb9-382d-464a-9427-b91fa2398cdb"
+  },
+  "Haunting Voyage": {
+    "cardName": "Haunting Voyage",
+    "manaCost": "{4}{B}{B}",
+    "manaValue": 6,
+    "typeLine": "Sorcery",
+    "cardType": "sorcery",
+    "subtypes": [],
+    "keywords": [],
+    "manaProduction": null,
+    "entryTapRule": null,
+    "conditionalEntryText": null,
+    "abilities": [
+      {
+        "abilityType": "spell",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "return_from_graveyard",
+          "params": {}
+        }
+      },
+      {
+        "abilityType": "spell",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "return_from_graveyard",
+          "params": {}
+        }
+      },
+      {
+        "abilityType": "spell",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": true,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "exile",
+          "params": {}
+        }
+      }
+    ],
+    "oracleText": "Choose a creature type. Return up to two creature cards of that type from your graveyard to the battlefield. If this spell was foretold, return all creature cards of that type from your graveyard to the battlefield instead.\nForetell {5}{B}{B} (During your turn, you may pay {2} and exile this card from your hand face down. Cast it on a later turn for its foretell cost.)",
+    "scryfallId": "203ddc5e-3824-4a97-b97d-aeda7b82c704"
+  },
+  "Avenger of Zendikar": {
+    "cardName": "Avenger of Zendikar",
+    "manaCost": "{5}{G}{G}",
+    "manaValue": 7,
+    "typeLine": "Creature — Elemental",
+    "cardType": "creature",
+    "subtypes": [
+      "Elemental"
+    ],
+    "keywords": [],
+    "manaProduction": null,
+    "entryTapRule": null,
+    "conditionalEntryText": null,
+    "abilities": [
+      {
+        "abilityType": "triggered",
+        "triggerEvent": "etb",
+        "triggerCondition": "this creature enters",
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "create_token",
+          "params": {
+            "tokenPower": 0,
+            "tokenToughness": 1,
+            "tokenName": "Plant creature",
+            "amount": 1
+          }
+        }
+      },
+      {
+        "abilityType": "triggered",
+        "triggerEvent": "etb",
+        "triggerCondition": "Landfall — Whenever a land you control enters",
+        "isOptional": true,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "put_counter",
+          "params": {}
+        }
+      }
+    ],
+    "oracleText": "When this creature enters, create a 0/1 green Plant creature token for each land you control.\nLandfall — Whenever a land you control enters, you may put a +1/+1 counter on each Plant creature you control.",
+    "scryfallId": "c6f1e60f-a195-4590-80b0-86767de6c423"
+  },
+  "Cavalier of Thorns": {
+    "cardName": "Cavalier of Thorns",
+    "manaCost": "{2}{G}{G}{G}",
+    "manaValue": 5,
+    "typeLine": "Creature — Elemental Knight",
+    "cardType": "creature",
+    "subtypes": [
+      "Elemental",
+      "Knight"
+    ],
+    "keywords": [
+      "reach"
+    ],
+    "manaProduction": null,
+    "entryTapRule": null,
+    "conditionalEntryText": null,
+    "abilities": [
+      {
+        "abilityType": "triggered",
+        "triggerEvent": "etb",
+        "triggerCondition": "Reach When this creature enters",
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "other",
+          "params": {}
+        }
+      },
+      {
+        "abilityType": "triggered",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "return_from_graveyard",
+          "params": {}
+        }
+      },
+      {
+        "abilityType": "triggered",
+        "triggerEvent": "dies",
+        "triggerCondition": "this creature dies",
+        "isOptional": true,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "exile",
+          "params": {}
+        }
+      },
+      {
+        "abilityType": "triggered",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "return_from_graveyard",
+          "params": {}
+        }
+      }
+    ],
+    "oracleText": "Reach\nWhen this creature enters, reveal the top five cards of your library. Put a land card from among them onto the battlefield and the rest into your graveyard.\nWhen this creature dies, you may exile it. If you do, put another target card from your graveyard on top of your library.",
+    "scryfallId": "ace83f5b-2349-46b8-b27f-bf705912a6df"
+  },
+  "Selvala, Heart of the Wilds": {
+    "cardName": "Selvala, Heart of the Wilds",
+    "manaCost": "{1}{G}{G}",
+    "manaValue": 3,
+    "typeLine": "Legendary Creature — Elf Scout",
+    "cardType": "creature",
+    "subtypes": [
+      "Elf",
+      "Scout"
+    ],
+    "keywords": [],
+    "manaProduction": {
+      "colors": [
+        "W",
+        "U",
+        "B",
+        "R",
+        "G",
+        "C"
+      ],
+      "amount": 1
+    },
+    "entryTapRule": null,
+    "conditionalEntryText": null,
+    "abilities": [
+      {
+        "abilityType": "triggered",
+        "triggerEvent": "etb",
+        "triggerCondition": "another creature enters",
+        "isOptional": true,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "draw_cards",
+          "params": {
+            "amount": 1
+          }
+        }
+      },
+      {
+        "abilityType": "activated",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": "{T}, {G}",
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "add_mana",
+          "params": {}
+        }
+      }
+    ],
+    "oracleText": "Whenever another creature enters, its controller may draw a card if its power is greater than each other creature's power.\n{G}, {T}: Add X mana in any combination of colors, where X is the greatest power among creatures you control.",
+    "scryfallId": "812856be-cf51-42de-96d2-4ac91e71d442"
+  },
+  "Titan of Industry": {
+    "cardName": "Titan of Industry",
+    "manaCost": "{4}{G}{G}{G}",
+    "manaValue": 7,
+    "typeLine": "Creature — Elemental",
+    "cardType": "creature",
+    "subtypes": [
+      "Elemental"
+    ],
+    "keywords": [
+      "reach",
+      "trample"
+    ],
+    "manaProduction": null,
+    "entryTapRule": null,
+    "conditionalEntryText": null,
+    "abilities": [
+      {
+        "abilityType": "triggered",
+        "triggerEvent": "etb",
+        "triggerCondition": "Reach",
+        "isOptional": false,
+        "cost": null,
+        "targets": 1,
+        "targetFilter": "artifact or enchantment",
+        "effect": {
+          "kind": "destroy",
+          "params": {
+            "targetHint": "target artifact or"
+          }
+        }
+      },
+      {
+        "abilityType": "static",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": null,
+        "targets": 1,
+        "targetFilter": "player gains 5 life",
+        "effect": {
+          "kind": "gain_life",
+          "params": {
+            "amount": 5
+          }
+        }
+      },
+      {
+        "abilityType": "triggered",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "create_token",
+          "params": {
+            "tokenPower": 4,
+            "tokenToughness": 4,
+            "tokenName": "Warrior creature",
+            "amount": 1
+          }
+        }
+      },
+      {
+        "abilityType": "triggered",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "put_counter",
+          "params": {}
+        }
+      }
+    ],
+    "oracleText": "Reach, trample\nWhen this creature enters, choose two —\n• Destroy target artifact or enchantment.\n• Target player gains 5 life.\n• Create a 4/4 green Rhino Warrior creature token.\n• Put a shield counter on a creature you control.",
+    "scryfallId": "432f2b57-4e7e-4717-8707-8cdbc1aae154"
+  },
+  "Muldrotha, the Gravetide": {
+    "cardName": "Muldrotha, the Gravetide",
+    "manaCost": "{3}{B}{G}{U}",
+    "manaValue": 6,
+    "typeLine": "Legendary Creature — Elemental Avatar",
+    "cardType": "creature",
+    "subtypes": [
+      "Elemental",
+      "Avatar"
+    ],
+    "keywords": [],
+    "manaProduction": null,
+    "entryTapRule": null,
+    "conditionalEntryText": null,
+    "abilities": [
+      {
+        "abilityType": "static",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": true,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "return_from_graveyard",
+          "params": {
+            "description": "During each of your turns, you may play a land and cast a permanent spell of each permanent type from your graveyard"
+          }
+        }
+      }
+    ],
+    "oracleText": "During each of your turns, you may play a land and cast a permanent spell of each permanent type from your graveyard. (If a card has multiple permanent types, choose one as you play it.)",
+    "scryfallId": "705b4d97-2f50-47f7-9053-d748f4337553"
+  },
+  "Omnath, Locus of Rage": {
+    "cardName": "Omnath, Locus of Rage",
+    "manaCost": "{3}{R}{R}{G}{G}",
+    "manaValue": 7,
+    "typeLine": "Legendary Creature — Elemental",
+    "cardType": "creature",
+    "subtypes": [
+      "Elemental"
+    ],
+    "keywords": [],
+    "manaProduction": null,
+    "entryTapRule": null,
+    "conditionalEntryText": null,
+    "abilities": [
+      {
+        "abilityType": "triggered",
+        "triggerEvent": "etb",
+        "triggerCondition": "Landfall — Whenever a land you control enters",
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "create_token",
+          "params": {
+            "tokenPower": 5,
+            "tokenToughness": 5,
+            "tokenName": "Elemental creature",
+            "amount": 1
+          }
+        }
+      },
+      {
+        "abilityType": "triggered",
+        "triggerEvent": "dies",
+        "triggerCondition": "Omnath or another Elemental you control dies",
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "deal_damage",
+          "params": {}
+        }
+      }
+    ],
+    "oracleText": "Landfall — Whenever a land you control enters, create a 5/5 red and green Elemental creature token.\nWhenever Omnath or another Elemental you control dies, Omnath deals 3 damage to any target.",
+    "scryfallId": "637c5910-f835-496e-b1b9-445bfb71da97"
+  },
+  "Yarok, the Desecrated": {
+    "cardName": "Yarok, the Desecrated",
+    "manaCost": "{2}{B}{G}{U}",
+    "manaValue": 5,
+    "typeLine": "Legendary Creature — Elemental Horror",
+    "cardType": "creature",
+    "subtypes": [
+      "Elemental",
+      "Horror"
+    ],
+    "keywords": [
+      "deathtouch",
+      "lifelink"
+    ],
+    "manaProduction": null,
+    "entryTapRule": null,
+    "conditionalEntryText": null,
+    "abilities": [
+      {
+        "abilityType": "static",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "other",
+          "params": {
+            "description": "If a permanent entering causes a triggered ability of a permanent you control to trigger, that ability triggers an additional time"
+          }
+        }
+      }
+    ],
+    "oracleText": "Deathtouch, lifelink\nIf a permanent entering causes a triggered ability of a permanent you control to trigger, that ability triggers an additional time.",
+    "scryfallId": "c08a2da8-3ce7-4e0d-bdb0-81b6cdf3126a"
+  },
+  "Omnath, Locus of the Roil": {
+    "cardName": "Omnath, Locus of the Roil",
+    "manaCost": "{1}{G}{U}{R}",
+    "manaValue": 4,
+    "typeLine": "Legendary Creature — Elemental",
+    "cardType": "creature",
+    "subtypes": [
+      "Elemental"
+    ],
+    "keywords": [],
+    "manaProduction": null,
+    "entryTapRule": null,
+    "conditionalEntryText": null,
+    "abilities": [
+      {
+        "abilityType": "triggered",
+        "triggerEvent": "etb",
+        "triggerCondition": "Omnath enters",
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "deal_damage",
+          "params": {}
+        }
+      },
+      {
+        "abilityType": "triggered",
+        "triggerEvent": "etb",
+        "triggerCondition": "Landfall — Whenever a land you control enters",
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "put_counter",
+          "params": {}
+        }
+      },
+      {
+        "abilityType": "triggered",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "draw_cards",
+          "params": {
+            "amount": 1
+          }
+        }
+      }
+    ],
+    "oracleText": "When Omnath enters, it deals damage to any target equal to the number of Elementals you control.\nLandfall — Whenever a land you control enters, put a +1/+1 counter on target Elemental you control. If you control eight or more lands, draw a card.",
+    "scryfallId": "6da6957b-8f52-4fc9-affe-e1e0db03fbe2"
+  },
+  "Timeless Lotus": {
+    "cardName": "Timeless Lotus",
+    "manaCost": "{5}",
+    "manaValue": 5,
+    "typeLine": "Legendary Artifact",
+    "cardType": "artifact",
+    "subtypes": [],
+    "keywords": [],
+    "manaProduction": {
+      "colors": [
+        "W",
+        "U",
+        "B",
+        "R",
+        "G"
+      ],
+      "amount": 5
+    },
+    "entryTapRule": null,
+    "conditionalEntryText": null,
+    "abilities": [
+      {
+        "abilityType": "activated",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": "{T}",
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "add_mana",
+          "params": {}
+        }
+      }
+    ],
+    "oracleText": "Timeless Lotus enters tapped.\n{T}: Add {W}{U}{B}{R}{G}.",
+    "scryfallId": "0fbbab5f-657a-4e6a-8bdd-69f11547fe25"
+  },
+  "Blasphemous Act": {
+    "cardName": "Blasphemous Act",
+    "manaCost": "{8}{R}",
+    "manaValue": 9,
+    "typeLine": "Sorcery",
+    "cardType": "sorcery",
+    "subtypes": [],
+    "keywords": [],
+    "manaProduction": null,
+    "entryTapRule": null,
+    "conditionalEntryText": null,
+    "abilities": [
+      {
+        "abilityType": "spell",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "deal_damage",
+          "params": {}
+        }
+      }
+    ],
+    "oracleText": "This spell costs {1} less to cast for each creature on the battlefield.\nBlasphemous Act deals 13 damage to each creature.",
+    "scryfallId": "7d4b1d44-126e-4987-9a9f-f0f9627a09cb"
+  },
+  "Kindred Summons": {
+    "cardName": "Kindred Summons",
+    "manaCost": "{5}{G}{G}",
+    "manaValue": 7,
+    "typeLine": "Instant",
+    "cardType": "instant",
+    "subtypes": [],
+    "keywords": [],
+    "manaProduction": null,
+    "entryTapRule": null,
+    "conditionalEntryText": null,
+    "abilities": [
+      {
+        "abilityType": "static",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "other",
+          "params": {
+            "description": "Choose a creature type. Reveal cards from the top of your library until you reveal X creature cards of the chosen type and put them onto the battlefield"
+          }
+        }
+      }
+    ],
+    "oracleText": "Choose a creature type. Reveal cards from the top of your library until you reveal X creature cards of the chosen type, where X is the number of creatures you control of that type. Put those cards onto the battlefield, then shuffle the rest of the revealed cards into your library.",
+    "scryfallId": "3485e240-4957-421b-86f4-2aa494563747"
+  },
+  "Bane of Progress": {
+    "cardName": "Bane of Progress",
+    "manaCost": "{4}{G}{G}",
+    "manaValue": 6,
+    "typeLine": "Creature — Elemental",
+    "cardType": "creature",
+    "subtypes": [
+      "Elemental"
+    ],
+    "keywords": [],
+    "manaProduction": null,
+    "entryTapRule": null,
+    "conditionalEntryText": null,
+    "abilities": [
+      {
+        "abilityType": "triggered",
+        "triggerEvent": "etb",
+        "triggerCondition": "this creature enters",
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "destroy",
+          "params": {}
+        }
+      },
+      {
+        "abilityType": "triggered",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "put_counter",
+          "params": {}
+        }
+      }
+    ],
+    "oracleText": "When this creature enters, destroy all artifacts and enchantments. Put a +1/+1 counter on this creature for each permanent destroyed this way.",
+    "scryfallId": "54c98a43-d358-4bb5-ba65-dff25c2f12ea"
+  },
+  "Realmwalker": {
+    "cardName": "Realmwalker",
+    "manaCost": "{2}{G}",
+    "manaValue": 3,
+    "typeLine": "Creature — Shapeshifter",
+    "cardType": "creature",
+    "subtypes": [
+      "Shapeshifter"
+    ],
+    "keywords": [],
+    "manaProduction": null,
+    "entryTapRule": null,
+    "conditionalEntryText": null,
+    "abilities": [
+      {
+        "abilityType": "static",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "other",
+          "params": {
+            "description": "As this creature enters, choose a creature type"
+          }
+        }
+      },
+      {
+        "abilityType": "static",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": true,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "other",
+          "params": {
+            "description": "You may look at the top card of your library any time"
+          }
+        }
+      },
+      {
+        "abilityType": "static",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": true,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "other",
+          "params": {
+            "description": "You may cast creature spells of the chosen type from the top of your library"
+          }
+        }
+      }
+    ],
+    "oracleText": "Changeling (This card is every creature type.)\nAs this creature enters, choose a creature type.\nYou may look at the top card of your library any time.\nYou may cast creature spells of the chosen type from the top of your library.",
+    "scryfallId": "52733829-27b7-40ec-a897-cabab35b3729"
+  },
+  "Horde of Notions": {
+    "cardName": "Horde of Notions",
+    "manaCost": "{W}{U}{B}{R}{G}",
+    "manaValue": 5,
+    "typeLine": "Legendary Creature — Elemental",
+    "cardType": "creature",
+    "subtypes": [
+      "Elemental"
+    ],
+    "keywords": [
+      "haste",
+      "trample",
+      "vigilance"
+    ],
+    "manaProduction": null,
+    "entryTapRule": null,
+    "conditionalEntryText": null,
+    "abilities": [
+      {
+        "abilityType": "activated",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": "{W}{U}{B}{R}{G}",
+        "targets": 1,
+        "targetFilter": "Elemental card",
+        "effect": {
+          "kind": "return_from_graveyard",
+          "params": {
+            "description": "Play target Elemental card from your graveyard without paying its mana cost"
+          }
+        }
+      }
+    ],
+    "oracleText": "Vigilance, trample, haste\n{W}{U}{B}{R}{G}: You may play target Elemental card from your graveyard without paying its mana cost.",
+    "scryfallId": "e7d3e472-5589-4655-b246-6f2d7ccf029e"
+  },
+  "Maelstrom Wanderer": {
+    "cardName": "Maelstrom Wanderer",
+    "manaCost": "{5}{G}{U}{R}",
+    "manaValue": 8,
+    "typeLine": "Legendary Creature — Elemental",
+    "cardType": "creature",
+    "subtypes": [
+      "Elemental"
+    ],
+    "keywords": [
+      "haste"
+    ],
+    "manaProduction": null,
+    "entryTapRule": null,
+    "conditionalEntryText": null,
+    "abilities": [
+      {
+        "abilityType": "static",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "other",
+          "params": {}
+        }
+      },
+      {
+        "abilityType": "triggered",
+        "triggerEvent": "cast",
+        "triggerCondition": "Cascade",
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "exile",
+          "params": {}
+        }
+      }
+    ],
+    "oracleText": "Creatures you control have haste.\nCascade, cascade (When you cast this spell, exile cards from the top of your library until you exile a nonland card that costs less. You may cast it without paying its mana cost. Put the exiled cards on the bottom in a random order. Then do it again.)",
+    "scryfallId": "5685b28a-b943-4143-b9ed-4796c1ffbf9c"
+  },
+  "Jegantha, the Wellspring": {
+    "cardName": "Jegantha, the Wellspring",
+    "manaCost": "{4}{R/G}",
+    "manaValue": 5,
+    "typeLine": "Legendary Creature — Elemental Elk",
+    "cardType": "creature",
+    "subtypes": [
+      "Elemental",
+      "Elk"
+    ],
+    "keywords": [],
+    "manaProduction": {
+      "colors": [
+        "W",
+        "U",
+        "B",
+        "R",
+        "G"
+      ],
+      "amount": 5
+    },
+    "entryTapRule": null,
+    "conditionalEntryText": null,
+    "abilities": [
+      {
+        "abilityType": "activated",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": "{T}",
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "add_mana",
+          "params": {}
+        }
+      },
+      {
+        "abilityType": "static",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "other",
+          "params": {}
+        }
+      }
+    ],
+    "oracleText": "Companion — No card in your starting deck has more than one of the same mana symbol in its mana cost. (If this card is your chosen companion, you may put it into your hand from outside the game for {3} as a sorcery.)\n{T}: Add {W}{U}{B}{R}{G}. This mana can't be spent to pay generic mana costs.",
+    "scryfallId": "79ec30d9-daf7-4f1d-ac16-4d11e8160d97"
+  },
+  "Chromatic Lantern": {
+    "cardName": "Chromatic Lantern",
+    "manaCost": "{3}",
+    "manaValue": 3,
+    "typeLine": "Artifact",
+    "cardType": "artifact",
+    "subtypes": [],
+    "keywords": [],
+    "manaProduction": {
+      "colors": [
+        "W",
+        "U",
+        "B",
+        "R",
+        "G",
+        "C"
+      ],
+      "amount": 1
+    },
+    "entryTapRule": null,
+    "conditionalEntryText": null,
+    "abilities": [
+      {
+        "abilityType": "activated",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": "{T}",
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "add_mana",
+          "params": {}
+        }
+      },
+      {
+        "abilityType": "activated",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": "{T}",
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "add_mana",
+          "params": {}
+        }
+      }
+    ],
+    "oracleText": "Lands you control have \"{T}: Add one mana of any color.\"\n{T}: Add one mana of any color.",
+    "scryfallId": "693da13a-49af-4f7e-b247-36b454fb31a0"
+  },
+  "Primal Beyond": {
+    "cardName": "Primal Beyond",
+    "manaCost": "",
+    "manaValue": 0,
+    "typeLine": "Land",
+    "cardType": "land",
+    "subtypes": [],
+    "keywords": [],
+    "manaProduction": {
+      "colors": [
+        "C",
+        "W",
+        "U",
+        "B",
+        "R",
+        "G"
+      ],
+      "amount": 1
+    },
+    "entryTapRule": "conditional",
+    "conditionalEntryText": "If you don't, this land enters tapped",
+    "abilities": [
+      {
+        "abilityType": "activated",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": "{T}",
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "add_mana",
+          "params": {}
+        }
+      },
+      {
+        "abilityType": "activated",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": "{T}",
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "add_mana",
+          "params": {}
+        }
+      }
+    ],
+    "oracleText": "As this land enters, you may reveal an Elemental card from your hand. If you don't, this land enters tapped.\n{T}: Add {C}.\n{T}: Add one mana of any color. Spend this mana only to cast an Elemental spell or activate an ability of an Elemental.",
+    "scryfallId": "cf01949c-1aa3-4ce6-aabf-00c6d0498f5c"
+  },
+  "Exotic Orchard": {
+    "cardName": "Exotic Orchard",
+    "manaCost": "",
+    "manaValue": 0,
+    "typeLine": "Land",
+    "cardType": "land",
+    "subtypes": [],
+    "keywords": [],
+    "manaProduction": {
+      "colors": [
+        "W",
+        "U",
+        "B",
+        "R",
+        "G",
+        "C"
+      ],
+      "amount": 1
+    },
+    "entryTapRule": null,
+    "conditionalEntryText": null,
+    "abilities": [
+      {
+        "abilityType": "activated",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": "{T}",
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "add_mana",
+          "params": {}
+        }
+      }
+    ],
+    "oracleText": "{T}: Add one mana of any color that a land an opponent controls could produce.",
+    "scryfallId": "8853ff94-bf44-4cfd-9d3a-0743c361fb0d"
+  },
+  "Path to Exile": {
+    "cardName": "Path to Exile",
+    "manaCost": "{W}",
+    "manaValue": 1,
+    "typeLine": "Instant",
+    "cardType": "instant",
+    "subtypes": [],
+    "keywords": [],
+    "manaProduction": null,
+    "entryTapRule": null,
+    "conditionalEntryText": null,
+    "abilities": [
+      {
+        "abilityType": "spell",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": null,
+        "targets": 1,
+        "targetFilter": "creature",
+        "effect": {
+          "kind": "exile",
+          "params": {
+            "targetHint": "target creature"
+          }
+        }
+      },
+      {
+        "abilityType": "spell",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": true,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "search_library",
+          "params": {}
+        }
+      }
+    ],
+    "oracleText": "Exile target creature. Its controller may search their library for a basic land card, put that card onto the battlefield tapped, then shuffle.",
+    "scryfallId": "95ca89ea-1200-4bb4-ae4b-af35d3ccd35b"
+  },
+  "Mulldrifter": {
+    "cardName": "Mulldrifter",
+    "manaCost": "{4}{U}",
+    "manaValue": 5,
+    "typeLine": "Creature — Elemental",
+    "cardType": "creature",
+    "subtypes": [
+      "Elemental"
+    ],
+    "keywords": [
+      "flying"
+    ],
+    "manaProduction": null,
+    "entryTapRule": null,
+    "conditionalEntryText": null,
+    "abilities": [
+      {
+        "abilityType": "triggered",
+        "triggerEvent": "etb",
+        "triggerCondition": "Flying When this creature enters",
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "draw_cards",
+          "params": {
+            "amount": 2
+          }
+        }
+      },
+      {
+        "abilityType": "triggered",
+        "triggerEvent": "etb",
+        "triggerCondition": "If you do",
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "other",
+          "params": {}
+        }
+      }
+    ],
+    "oracleText": "Flying\nWhen this creature enters, draw two cards.\nEvoke {2}{U} (You may cast this spell for its evoke cost. If you do, it's sacrificed when it enters.)",
+    "scryfallId": "3de308cc-14ac-407e-99e7-568572ecd0e7"
+  },
+  "Reality Shift": {
+    "cardName": "Reality Shift",
+    "manaCost": "{1}{U}",
+    "manaValue": 2,
+    "typeLine": "Instant",
+    "cardType": "instant",
+    "subtypes": [],
+    "keywords": [],
+    "manaProduction": null,
+    "entryTapRule": null,
+    "conditionalEntryText": null,
+    "abilities": [
+      {
+        "abilityType": "spell",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": null,
+        "targets": 1,
+        "targetFilter": "creature",
+        "effect": {
+          "kind": "exile",
+          "params": {
+            "targetHint": "target creature"
+          }
+        }
+      }
+    ],
+    "oracleText": "Exile target creature. Its controller manifests the top card of their library. (That player puts the top card of their library onto the battlefield face down as a 2/2 creature. If it's a creature card, it can be turned face up any time for its mana cost.)",
+    "scryfallId": "920bb44e-aa7f-4ee9-ab19-30114f55ec9b"
+  },
+  "Shriekmaw": {
+    "cardName": "Shriekmaw",
+    "manaCost": "{4}{B}",
+    "manaValue": 5,
+    "typeLine": "Creature — Elemental",
+    "cardType": "creature",
+    "subtypes": [
+      "Elemental"
+    ],
+    "keywords": [
+      "fear"
+    ],
+    "manaProduction": null,
+    "entryTapRule": null,
+    "conditionalEntryText": null,
+    "abilities": [
+      {
+        "abilityType": "static",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "other",
+          "params": {}
+        }
+      },
+      {
+        "abilityType": "triggered",
+        "triggerEvent": "etb",
+        "triggerCondition": ") When this creature enters",
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "destroy",
+          "params": {
+            "targetHint": "target nonartifact"
+          }
+        }
+      },
+      {
+        "abilityType": "triggered",
+        "triggerEvent": "etb",
+        "triggerCondition": "If you do",
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "other",
+          "params": {}
+        }
+      }
+    ],
+    "oracleText": "Fear (This creature can't be blocked except by artifact creatures and/or black creatures.)\nWhen this creature enters, destroy target nonartifact, nonblack creature.\nEvoke {1}{B} (You may cast this spell for its evoke cost. If you do, it's sacrificed when it enters.)",
+    "scryfallId": "ed2d62c2-85c9-4fd4-8a7e-0017640606be"
+  },
+  "Crib Swap": {
+    "cardName": "Crib Swap",
+    "manaCost": "{2}{W}",
+    "manaValue": 3,
+    "typeLine": "Kindred Instant — Shapeshifter",
+    "cardType": "instant",
+    "subtypes": [
+      "Shapeshifter"
+    ],
+    "keywords": [],
+    "manaProduction": null,
+    "entryTapRule": null,
+    "conditionalEntryText": null,
+    "abilities": [
+      {
+        "abilityType": "spell",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": null,
+        "targets": 1,
+        "targetFilter": "creature",
+        "effect": {
+          "kind": "exile",
+          "params": {
+            "targetHint": "target creature"
+          }
+        }
+      }
+    ],
+    "oracleText": "Changeling (This card is every creature type.)\nExile target creature. Its controller creates a 1/1 colorless Shapeshifter creature token with changeling.",
+    "scryfallId": "8f2fb3c6-af75-47a3-9f97-521872c32890"
+  },
+  "Sol Ring": {
+    "cardName": "Sol Ring",
+    "manaCost": "{1}",
+    "manaValue": 1,
+    "typeLine": "Artifact",
+    "cardType": "artifact",
+    "subtypes": [],
+    "keywords": [],
+    "manaProduction": {
+      "colors": [
+        "C"
+      ],
+      "amount": 2
+    },
+    "entryTapRule": null,
+    "conditionalEntryText": null,
+    "abilities": [
+      {
+        "abilityType": "activated",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": "{T}",
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "add_mana",
+          "params": {}
+        }
+      }
+    ],
+    "oracleText": "{T}: Add {C}{C}.",
+    "scryfallId": "91fdb56b-54d5-4272-8319-505ff987fe9b"
+  },
+  "Command Tower": {
+    "cardName": "Command Tower",
+    "manaCost": "",
+    "manaValue": 0,
+    "typeLine": "Land",
+    "cardType": "land",
+    "subtypes": [],
+    "keywords": [],
+    "manaProduction": {
+      "colors": [
+        "W",
+        "U",
+        "B",
+        "R",
+        "G",
+        "C"
+      ],
+      "amount": 1
+    },
+    "entryTapRule": null,
+    "conditionalEntryText": null,
+    "abilities": [
+      {
+        "abilityType": "activated",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": "{T}",
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "add_mana",
+          "params": {}
+        }
+      }
+    ],
+    "oracleText": "{T}: Add one mana of any color in your commander's color identity.",
+    "scryfallId": "0548fb60-c843-4f8f-a029-6f10efc63a41"
+  },
+  "Arcane Signet": {
+    "cardName": "Arcane Signet",
+    "manaCost": "{2}",
+    "manaValue": 2,
+    "typeLine": "Artifact",
+    "cardType": "artifact",
+    "subtypes": [],
+    "keywords": [],
+    "manaProduction": {
+      "colors": [
+        "W",
+        "U",
+        "B",
+        "R",
+        "G",
+        "C"
+      ],
+      "amount": 1
+    },
+    "entryTapRule": null,
+    "conditionalEntryText": null,
+    "abilities": [
+      {
+        "abilityType": "activated",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": "{T}",
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "add_mana",
+          "params": {}
+        }
+      }
+    ],
+    "oracleText": "{T}: Add one mana of any color in your commander's color identity.",
+    "scryfallId": "1cad1bd2-7c56-4ce0-99a6-b2a49c1288dd"
+  },
+  "Risen Reef": {
+    "cardName": "Risen Reef",
+    "manaCost": "{1}{G}{U}",
+    "manaValue": 3,
+    "typeLine": "Creature — Elemental",
+    "cardType": "creature",
+    "subtypes": [
+      "Elemental"
+    ],
+    "keywords": [],
+    "manaProduction": null,
+    "entryTapRule": null,
+    "conditionalEntryText": null,
+    "abilities": [
+      {
+        "abilityType": "triggered",
+        "triggerEvent": "etb",
+        "triggerCondition": "this creature or another Elemental you control enters",
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "other",
+          "params": {}
+        }
+      }
+    ],
+    "oracleText": "Whenever this creature or another Elemental you control enters, look at the top card of your library. If it's a land card, you may put it onto the battlefield tapped. If you don't put the card onto the battlefield, put it into your hand.",
+    "scryfallId": "715ad2ff-7eae-42f1-bb3c-a3afc2c9b82a"
+  },
+  "Fellwar Stone": {
+    "cardName": "Fellwar Stone",
+    "manaCost": "{2}",
+    "manaValue": 2,
+    "typeLine": "Artifact",
+    "cardType": "artifact",
+    "subtypes": [],
+    "keywords": [],
+    "manaProduction": {
+      "colors": [
+        "W",
+        "U",
+        "B",
+        "R",
+        "G",
+        "C"
+      ],
+      "amount": 1
+    },
+    "entryTapRule": null,
+    "conditionalEntryText": null,
+    "abilities": [
+      {
+        "abilityType": "activated",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": "{T}",
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "add_mana",
+          "params": {}
+        }
+      }
+    ],
+    "oracleText": "{T}: Add one mana of any color that a land an opponent controls could produce.",
+    "scryfallId": "385b9f5e-81dd-49f6-a644-59d53245e3dc"
+  },
+  "Kodama's Reach": {
+    "cardName": "Kodama's Reach",
+    "manaCost": "{2}{G}",
+    "manaValue": 3,
+    "typeLine": "Sorcery — Arcane",
+    "cardType": "sorcery",
+    "subtypes": [
+      "Arcane"
+    ],
+    "keywords": [],
+    "manaProduction": null,
+    "entryTapRule": null,
+    "conditionalEntryText": null,
+    "abilities": [
+      {
+        "abilityType": "spell",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "search_library",
+          "params": {}
+        }
+      }
+    ],
+    "oracleText": "Search your library for up to two basic land cards, reveal those cards, put one onto the battlefield tapped and the other into your hand, then shuffle.",
+    "scryfallId": "90c423cc-1264-4067-9c50-e7c88c68ef2d"
+  },
+  "Cultivate": {
+    "cardName": "Cultivate",
+    "manaCost": "{2}{G}",
+    "manaValue": 3,
+    "typeLine": "Sorcery",
+    "cardType": "sorcery",
+    "subtypes": [],
+    "keywords": [],
+    "manaProduction": null,
+    "entryTapRule": null,
+    "conditionalEntryText": null,
+    "abilities": [
+      {
+        "abilityType": "spell",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "search_library",
+          "params": {}
+        }
+      }
+    ],
+    "oracleText": "Search your library for up to two basic land cards, reveal those cards, put one onto the battlefield tapped and the other into your hand, then shuffle.",
+    "scryfallId": "e60deb92-f7dd-4f4e-9036-e47dd586f985"
+  },
+  "Path of Ancestry": {
+    "cardName": "Path of Ancestry",
+    "manaCost": "",
+    "manaValue": 0,
+    "typeLine": "Land",
+    "cardType": "land",
+    "subtypes": [],
+    "keywords": [],
+    "manaProduction": {
+      "colors": [
+        "W",
+        "U",
+        "B",
+        "R",
+        "G",
+        "C"
+      ],
+      "amount": 1
+    },
+    "entryTapRule": "always",
+    "conditionalEntryText": null,
+    "abilities": [
+      {
+        "abilityType": "activated",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": "{T}",
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "add_mana",
+          "params": {}
+        }
+      },
+      {
+        "abilityType": "triggered",
+        "triggerEvent": "cast",
+        "triggerCondition": "that mana is spent to cast a creature spell that shares a creature type with your commander",
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "scry",
+          "params": {
+            "amount": 1
+          }
+        }
+      }
+    ],
+    "oracleText": "This land enters tapped.\n{T}: Add one mana of any color in your commander's color identity. When that mana is spent to cast a creature spell that shares a creature type with your commander, scry 1. (Look at the top card of your library. You may put that card on the bottom.)",
+    "scryfallId": "836b8f52-10d2-4716-9f7b-38fb23bc68de"
+  },
+  "Plains": {
+    "cardName": "Plains",
+    "manaCost": "",
+    "manaValue": 0,
+    "typeLine": "Basic Land — Plains",
+    "cardType": "land",
+    "subtypes": [
+      "Plains"
+    ],
+    "keywords": [],
+    "manaProduction": {
+      "colors": [
+        "W"
+      ],
+      "amount": 1
+    },
+    "entryTapRule": "never",
+    "conditionalEntryText": null,
+    "abilities": [],
+    "oracleText": "",
+    "scryfallId": "7b7c408b-8660-4db5-9a16-5003c11b4ac1"
+  },
+  "Island": {
+    "cardName": "Island",
+    "manaCost": "",
+    "manaValue": 0,
+    "typeLine": "Basic Land — Island",
+    "cardType": "land",
+    "subtypes": [
+      "Island"
+    ],
+    "keywords": [],
+    "manaProduction": {
+      "colors": [
+        "U"
+      ],
+      "amount": 1
+    },
+    "entryTapRule": "never",
+    "conditionalEntryText": null,
+    "abilities": [],
+    "oracleText": "",
+    "scryfallId": "c6aa89a8-3584-4906-b9a9-41ef2f021f8e"
+  },
+  "Swamp": {
+    "cardName": "Swamp",
+    "manaCost": "",
+    "manaValue": 0,
+    "typeLine": "Basic Land — Swamp",
+    "cardType": "land",
+    "subtypes": [
+      "Swamp"
+    ],
+    "keywords": [],
+    "manaProduction": {
+      "colors": [
+        "B"
+      ],
+      "amount": 1
+    },
+    "entryTapRule": "never",
+    "conditionalEntryText": null,
+    "abilities": [],
+    "oracleText": "",
+    "scryfallId": "4031e5e4-e573-4130-8d20-4a606edef0a0"
+  },
+  "Mountain": {
+    "cardName": "Mountain",
+    "manaCost": "",
+    "manaValue": 0,
+    "typeLine": "Basic Land — Mountain",
+    "cardType": "land",
+    "subtypes": [
+      "Mountain"
+    ],
+    "keywords": [],
+    "manaProduction": {
+      "colors": [
+        "R"
+      ],
+      "amount": 1
+    },
+    "entryTapRule": "never",
+    "conditionalEntryText": null,
+    "abilities": [],
+    "oracleText": "",
+    "scryfallId": "c49d378e-9549-4320-b3c6-1aeb216d1e98"
+  },
+  "Forest": {
+    "cardName": "Forest",
+    "manaCost": "",
+    "manaValue": 0,
+    "typeLine": "Basic Land — Forest",
+    "cardType": "land",
+    "subtypes": [
+      "Forest"
+    ],
+    "keywords": [],
+    "manaProduction": {
+      "colors": [
+        "G"
+      ],
+      "amount": 1
+    },
+    "entryTapRule": "never",
+    "conditionalEntryText": null,
+    "abilities": [],
+    "oracleText": "",
+    "scryfallId": "c3e84b42-5423-4d4d-b8fc-cfbb2c53a4ca"
+  }
+}

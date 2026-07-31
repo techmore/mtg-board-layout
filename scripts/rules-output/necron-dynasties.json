@@ -1,0 +1,514 @@
+{
+  "Imotekh the Stormlord": {
+    "cardName": "Imotekh the Stormlord",
+    "manaCost": "{2}{B}{B}",
+    "manaValue": 4,
+    "typeLine": "Legendary Artifact Creature — Necron",
+    "cardType": "creature",
+    "subtypes": [
+      "Necron"
+    ],
+    "keywords": [
+      "menace"
+    ],
+    "manaProduction": null,
+    "entryTapRule": null,
+    "conditionalEntryText": null,
+    "abilities": [
+      {
+        "abilityType": "triggered",
+        "triggerEvent": "graveyard",
+        "triggerCondition": "Phaeron — Whenever one or more artifact cards leave your graveyard",
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "other",
+          "params": {}
+        }
+      },
+      {
+        "abilityType": "static",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": null,
+        "targets": 1,
+        "targetFilter": "artifact creature you control gets +2/+2 and gains menace until end of turn",
+        "effect": {
+          "kind": "other",
+          "params": {}
+        }
+      }
+    ],
+    "oracleText": "Phaeron — Whenever one or more artifact cards leave your graveyard, create two 2/2 black Necron Warrior artifact creature tokens.\nGrand Strategist — At the beginning of combat on your turn, another target artifact creature you control gets +2/+2 and gains menace until end of turn.",
+    "scryfallId": "286ff901-1faf-4a02-a37a-fa165989112f"
+  },
+  "Anrakyr the Traveller": {
+    "cardName": "Anrakyr the Traveller",
+    "manaCost": "{4}{B}",
+    "manaValue": 5,
+    "typeLine": "Legendary Artifact Creature — Necron",
+    "cardType": "creature",
+    "subtypes": [
+      "Necron"
+    ],
+    "keywords": [],
+    "manaProduction": null,
+    "entryTapRule": null,
+    "conditionalEntryText": null,
+    "abilities": [
+      {
+        "abilityType": "triggered",
+        "triggerEvent": "attack",
+        "triggerCondition": "Lord of the Pyrrhian Legions — Whenever Anrakyr the Traveller attacks",
+        "isOptional": true,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "other",
+          "params": {}
+        }
+      }
+    ],
+    "oracleText": "Lord of the Pyrrhian Legions — Whenever Anrakyr the Traveller attacks, you may cast an artifact spell from your hand or graveyard by paying life equal to its mana value rather than paying its mana cost.",
+    "scryfallId": "6ea09406-c65e-4ee4-9c74-0553e5110837"
+  },
+  "Illuminor Szeras": {
+    "cardName": "Illuminor Szeras",
+    "manaCost": "{2}{B}",
+    "manaValue": 3,
+    "typeLine": "Legendary Artifact Creature — Necron",
+    "cardType": "creature",
+    "subtypes": [
+      "Necron"
+    ],
+    "keywords": [],
+    "manaProduction": {
+      "colors": [
+        "B"
+      ],
+      "amount": 1
+    },
+    "entryTapRule": null,
+    "conditionalEntryText": null,
+    "abilities": [
+      {
+        "abilityType": "activated",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": "{T}",
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "add_mana",
+          "params": {}
+        }
+      }
+    ],
+    "oracleText": "Secrets of the Soul — {T}, Sacrifice another creature: Add an amount of {B} equal to the sacrificed creature's mana value.",
+    "scryfallId": "d161a190-3c85-4207-9d88-7ff9213efea8"
+  },
+  "Trazyn the Infinite": {
+    "cardName": "Trazyn the Infinite",
+    "manaCost": "{4}{B}{B}",
+    "manaValue": 6,
+    "typeLine": "Legendary Artifact Creature — Necron",
+    "cardType": "creature",
+    "subtypes": [
+      "Necron"
+    ],
+    "keywords": [
+      "deathtouch"
+    ],
+    "manaProduction": null,
+    "entryTapRule": null,
+    "conditionalEntryText": null,
+    "abilities": [
+      {
+        "abilityType": "static",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "other",
+          "params": {
+            "description": "As long as Trazyn is on the battlefield, it has all activated abilities of all artifact cards in your graveyard"
+          }
+        }
+      }
+    ],
+    "oracleText": "Deathtouch\nPrismatic Gallery — As long as Trazyn is on the battlefield, it has all activated abilities of all artifact cards in your graveyard.",
+    "scryfallId": "1ae95cfb-1c3e-43cc-acfa-68f25b0f6e52"
+  },
+  "Canoptek Tomb Sentinel": {
+    "cardName": "Canoptek Tomb Sentinel",
+    "manaCost": "{4}",
+    "manaValue": 4,
+    "typeLine": "Artifact Creature — Insect",
+    "cardType": "creature",
+    "subtypes": [
+      "Insect"
+    ],
+    "keywords": [
+      "haste",
+      "vigilance"
+    ],
+    "manaProduction": null,
+    "entryTapRule": null,
+    "conditionalEntryText": null,
+    "abilities": [
+      {
+        "abilityType": "triggered",
+        "triggerEvent": "etb",
+        "triggerCondition": "Vigilance Exile Cannon — When this creature enters from a graveyard",
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "exile",
+          "params": {
+            "targetHint": "target nonland permanent"
+          }
+        }
+      },
+      {
+        "abilityType": "triggered",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "return_from_graveyard",
+          "params": {}
+        }
+      },
+      {
+        "abilityType": "static",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "other",
+          "params": {}
+        }
+      },
+      {
+        "abilityType": "triggered",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "exile",
+          "params": {}
+        }
+      }
+    ],
+    "oracleText": "Vigilance\nExile Cannon — When this creature enters from a graveyard, exile up to one target nonland permanent.\nUnearth {7} ({7}: Return this card from your graveyard to the battlefield. It gains haste. Exile it at the beginning of the next end step or if it would leave the battlefield. Unearth only as a sorcery.)",
+    "scryfallId": "aec9ba42-4c58-4e40-a8c5-63da81c44616"
+  },
+  "Canoptek Scarab Swarm": {
+    "cardName": "Canoptek Scarab Swarm",
+    "manaCost": "{4}",
+    "manaValue": 4,
+    "typeLine": "Artifact Creature — Insect",
+    "cardType": "creature",
+    "subtypes": [
+      "Insect"
+    ],
+    "keywords": [
+      "flying"
+    ],
+    "manaProduction": null,
+    "entryTapRule": null,
+    "conditionalEntryText": null,
+    "abilities": [
+      {
+        "abilityType": "triggered",
+        "triggerEvent": "etb",
+        "triggerCondition": "Flying Feeder Mandibles — When this creature enters",
+        "isOptional": false,
+        "cost": null,
+        "targets": 1,
+        "targetFilter": "player 's graveyard",
+        "effect": {
+          "kind": "exile",
+          "params": {
+            "targetHint": "target player"
+          }
+        }
+      },
+      {
+        "abilityType": "triggered",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "create_token",
+          "params": {
+            "tokenPower": 1,
+            "tokenToughness": 1,
+            "tokenName": "artifact creature",
+            "amount": 1
+          }
+        }
+      }
+    ],
+    "oracleText": "Flying\nFeeder Mandibles — When this creature enters, exile target player's graveyard. For each artifact or land card exiled this way, create a 1/1 colorless Insect artifact creature token with flying.",
+    "scryfallId": "3ce2021c-1422-4901-a554-2d4fab72c8e4"
+  },
+  "Sol Ring": {
+    "cardName": "Sol Ring",
+    "manaCost": "{1}",
+    "manaValue": 1,
+    "typeLine": "Artifact",
+    "cardType": "artifact",
+    "subtypes": [],
+    "keywords": [],
+    "manaProduction": {
+      "colors": [
+        "C"
+      ],
+      "amount": 2
+    },
+    "entryTapRule": null,
+    "conditionalEntryText": null,
+    "abilities": [
+      {
+        "abilityType": "activated",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": "{T}",
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "add_mana",
+          "params": {}
+        }
+      }
+    ],
+    "oracleText": "{T}: Add {C}{C}.",
+    "scryfallId": "91fdb56b-54d5-4272-8319-505ff987fe9b"
+  },
+  "Arcane Signet": {
+    "cardName": "Arcane Signet",
+    "manaCost": "{2}",
+    "manaValue": 2,
+    "typeLine": "Artifact",
+    "cardType": "artifact",
+    "subtypes": [],
+    "keywords": [],
+    "manaProduction": {
+      "colors": [
+        "W",
+        "U",
+        "B",
+        "R",
+        "G",
+        "C"
+      ],
+      "amount": 1
+    },
+    "entryTapRule": null,
+    "conditionalEntryText": null,
+    "abilities": [
+      {
+        "abilityType": "activated",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": "{T}",
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "add_mana",
+          "params": {}
+        }
+      }
+    ],
+    "oracleText": "{T}: Add one mana of any color in your commander's color identity.",
+    "scryfallId": "1cad1bd2-7c56-4ce0-99a6-b2a49c1288dd"
+  },
+  "Command Tower": {
+    "cardName": "Command Tower",
+    "manaCost": "",
+    "manaValue": 0,
+    "typeLine": "Land",
+    "cardType": "land",
+    "subtypes": [],
+    "keywords": [],
+    "manaProduction": {
+      "colors": [
+        "W",
+        "U",
+        "B",
+        "R",
+        "G",
+        "C"
+      ],
+      "amount": 1
+    },
+    "entryTapRule": null,
+    "conditionalEntryText": null,
+    "abilities": [
+      {
+        "abilityType": "activated",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": "{T}",
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "add_mana",
+          "params": {}
+        }
+      }
+    ],
+    "oracleText": "{T}: Add one mana of any color in your commander's color identity.",
+    "scryfallId": "0548fb60-c843-4f8f-a029-6f10efc63a41"
+  },
+  "Swamp": {
+    "cardName": "Swamp",
+    "manaCost": "",
+    "manaValue": 0,
+    "typeLine": "Basic Land — Swamp",
+    "cardType": "land",
+    "subtypes": [
+      "Swamp"
+    ],
+    "keywords": [],
+    "manaProduction": {
+      "colors": [
+        "B"
+      ],
+      "amount": 1
+    },
+    "entryTapRule": "never",
+    "conditionalEntryText": null,
+    "abilities": [],
+    "oracleText": "",
+    "scryfallId": "4031e5e4-e573-4130-8d20-4a606edef0a0"
+  },
+  "Mountain": {
+    "cardName": "Mountain",
+    "manaCost": "",
+    "manaValue": 0,
+    "typeLine": "Basic Land — Mountain",
+    "cardType": "land",
+    "subtypes": [
+      "Mountain"
+    ],
+    "keywords": [],
+    "manaProduction": {
+      "colors": [
+        "R"
+      ],
+      "amount": 1
+    },
+    "entryTapRule": "never",
+    "conditionalEntryText": null,
+    "abilities": [],
+    "oracleText": "",
+    "scryfallId": "c49d378e-9549-4320-b3c6-1aeb216d1e98"
+  },
+  "Orikan the Diviner": {
+    "cardName": "Orikan the Diviner",
+    "manaCost": "",
+    "manaValue": 0,
+    "typeLine": "Unknown",
+    "cardType": "other",
+    "subtypes": [],
+    "keywords": [],
+    "manaProduction": null,
+    "entryTapRule": null,
+    "conditionalEntryText": null,
+    "abilities": [],
+    "oracleText": "",
+    "scryfallId": null,
+    "note": "MANUAL PLACEHOLDER: no data for this card in Scryfall at extraction time"
+  },
+  "The Silent King": {
+    "cardName": "The Silent King",
+    "manaCost": "",
+    "manaValue": 0,
+    "typeLine": "Unknown",
+    "cardType": "other",
+    "subtypes": [],
+    "keywords": [],
+    "manaProduction": null,
+    "entryTapRule": null,
+    "conditionalEntryText": null,
+    "abilities": [],
+    "oracleText": "",
+    "scryfallId": null,
+    "note": "MANUAL PLACEHOLDER: no data for this card in Scryfall at extraction time"
+  },
+  "Doomstalker": {
+    "cardName": "Doomstalker",
+    "manaCost": "",
+    "manaValue": 0,
+    "typeLine": "Unknown",
+    "cardType": "other",
+    "subtypes": [],
+    "keywords": [],
+    "manaProduction": null,
+    "entryTapRule": null,
+    "conditionalEntryText": null,
+    "abilities": [],
+    "oracleText": "",
+    "scryfallId": null,
+    "note": "MANUAL PLACEHOLDER: no data for this card in Scryfall at extraction time"
+  },
+  "Lokhust Heavy Destroyers": {
+    "cardName": "Lokhust Heavy Destroyers",
+    "manaCost": "",
+    "manaValue": 0,
+    "typeLine": "Unknown",
+    "cardType": "other",
+    "subtypes": [],
+    "keywords": [],
+    "manaProduction": null,
+    "entryTapRule": null,
+    "conditionalEntryText": null,
+    "abilities": [],
+    "oracleText": "",
+    "scryfallId": null,
+    "note": "MANUAL PLACEHOLDER: no data for this card in Scryfall at extraction time"
+  },
+  "Warhammer 40k": {
+    "cardName": "Warhammer 40k",
+    "manaCost": "",
+    "manaValue": 0,
+    "typeLine": "Unknown",
+    "cardType": "other",
+    "subtypes": [],
+    "keywords": [],
+    "manaProduction": null,
+    "entryTapRule": null,
+    "conditionalEntryText": null,
+    "abilities": [],
+    "oracleText": "",
+    "scryfallId": null,
+    "note": "MANUAL PLACEHOLDER: deck list entry is a product name, not a Magic card; no Scryfall data exists"
+  }
+}

@@ -1,0 +1,935 @@
+{
+  "Satya, Aetherflux Genius": {
+    "cardName": "Satya, Aetherflux Genius",
+    "manaCost": "{1}{U}{R}{W}",
+    "manaValue": 4,
+    "typeLine": "Legendary Creature — Human Artificer",
+    "cardType": "creature",
+    "subtypes": [
+      "Human",
+      "Artificer"
+    ],
+    "keywords": [
+      "haste",
+      "menace"
+    ],
+    "manaProduction": null,
+    "entryTapRule": null,
+    "conditionalEntryText": null,
+    "abilities": [
+      {
+        "abilityType": "triggered",
+        "triggerEvent": "attack",
+        "triggerCondition": "Menace",
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "create_token",
+          "params": {
+            "tokenName": "and attacking",
+            "amount": 1
+          }
+        }
+      }
+    ],
+    "oracleText": "Menace, haste\nWhenever Satya attacks, create a tapped and attacking token that's a copy of up to one other target nontoken creature you control. You get {E}{E} (two energy counters). At the beginning of the next end step, sacrifice that token unless you pay an amount of {E} equal to its mana value.",
+    "scryfallId": "3b964bbe-54cc-425c-9cc6-c877f82af7ba"
+  },
+  "The Aetherspark": {
+    "cardName": "The Aetherspark",
+    "manaCost": "{4}",
+    "manaValue": 4,
+    "typeLine": "Legendary Artifact Planeswalker — Equipment",
+    "cardType": "artifact",
+    "subtypes": [
+      "Equipment"
+    ],
+    "keywords": [],
+    "manaProduction": null,
+    "entryTapRule": null,
+    "conditionalEntryText": null,
+    "abilities": [
+      {
+        "abilityType": "static",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "put_counter",
+          "params": {}
+        }
+      },
+      {
+        "abilityType": "triggered",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": null,
+        "targets": 1,
+        "targetFilter": "creature you control",
+        "effect": {
+          "kind": "other",
+          "params": {}
+        }
+      },
+      {
+        "abilityType": "triggered",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "put_counter",
+          "params": {}
+        }
+      },
+      {
+        "abilityType": "triggered",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "draw_cards",
+          "params": {
+            "amount": 2
+          }
+        }
+      },
+      {
+        "abilityType": "triggered",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "add_mana",
+          "params": {}
+        }
+      }
+    ],
+    "oracleText": "As long as The Aetherspark is attached to a creature, The Aetherspark can't be attacked and has \"Whenever equipped creature deals combat damage during your turn, put that many loyalty counters on The Aetherspark.\"\n+1: Attach The Aetherspark to up to one target creature you control. Put a +1/+1 counter on that creature.\n−5: Draw two cards.\n−10: Add ten mana of any one color.",
+    "scryfallId": "05690d52-06c4-40b1-8360-380418a83250"
+  },
+  "Amped Raptor": {
+    "cardName": "Amped Raptor",
+    "manaCost": "{1}{R}",
+    "manaValue": 2,
+    "typeLine": "Creature — Dinosaur",
+    "cardType": "creature",
+    "subtypes": [
+      "Dinosaur"
+    ],
+    "keywords": [
+      "first strike"
+    ],
+    "manaProduction": null,
+    "entryTapRule": null,
+    "conditionalEntryText": null,
+    "abilities": [
+      {
+        "abilityType": "triggered",
+        "triggerEvent": "etb",
+        "triggerCondition": "First strike When this creature enters",
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "other",
+          "params": {}
+        }
+      },
+      {
+        "abilityType": "triggered",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "exile",
+          "params": {}
+        }
+      }
+    ],
+    "oracleText": "First strike\nWhen this creature enters, you get {E}{E} (two energy counters). Then if you cast it from your hand, exile cards from the top of your library until you exile a nonland card. You may cast that card by paying an amount of {E} equal to its mana value rather than paying its mana cost.",
+    "scryfallId": "1ac0e78b-0fdd-44f9-8b7b-c4f28a32782e"
+  },
+  "Aragorn, Company Leader": {
+    "cardName": "Aragorn, Company Leader",
+    "manaCost": "{1}{G}{W}",
+    "manaValue": 3,
+    "typeLine": "Legendary Creature — Human Ranger",
+    "cardType": "creature",
+    "subtypes": [
+      "Human",
+      "Ranger"
+    ],
+    "keywords": [
+      "deathtouch",
+      "first strike",
+      "lifelink",
+      "vigilance"
+    ],
+    "manaProduction": null,
+    "entryTapRule": null,
+    "conditionalEntryText": null,
+    "abilities": [
+      {
+        "abilityType": "triggered",
+        "triggerEvent": "counter_placed",
+        "triggerCondition": "the Ring tempts you",
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "put_counter",
+          "params": {}
+        }
+      },
+      {
+        "abilityType": "triggered",
+        "triggerEvent": "counter_placed",
+        "triggerCondition": "you put one or more counters on Aragorn",
+        "isOptional": false,
+        "cost": null,
+        "targets": 1,
+        "targetFilter": "creature",
+        "effect": {
+          "kind": "put_counter",
+          "params": {}
+        }
+      }
+    ],
+    "oracleText": "Whenever the Ring tempts you, if you chose a creature other than Aragorn as your Ring-bearer, put your choice of a counter from among first strike, vigilance, deathtouch, and lifelink on Aragorn.\nWhenever you put one or more counters on Aragorn, put one of each of those kinds of counters on up to one other target creature.",
+    "scryfallId": "73ca5f48-0117-49d6-8b00-b8482e3545b3"
+  },
+  "Drannith Magistrate": {
+    "cardName": "Drannith Magistrate",
+    "manaCost": "{1}{W}",
+    "manaValue": 2,
+    "typeLine": "Creature — Human Wizard",
+    "cardType": "creature",
+    "subtypes": [
+      "Human",
+      "Wizard"
+    ],
+    "keywords": [],
+    "manaProduction": null,
+    "entryTapRule": null,
+    "conditionalEntryText": null,
+    "abilities": [
+      {
+        "abilityType": "static",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "other",
+          "params": {
+            "description": "Your opponents can't cast spells from anywhere other than their hands"
+          }
+        }
+      }
+    ],
+    "oracleText": "Your opponents can't cast spells from anywhere other than their hands.",
+    "scryfallId": "98b0a4a8-9319-451b-9b79-b0bca7a41e91"
+  },
+  "Dockside Extortionist": {
+    "cardName": "Dockside Extortionist",
+    "manaCost": "{1}{R}",
+    "manaValue": 2,
+    "typeLine": "Creature — Goblin Pirate",
+    "cardType": "creature",
+    "subtypes": [
+      "Goblin",
+      "Pirate"
+    ],
+    "keywords": [],
+    "manaProduction": {
+      "colors": [
+        "W",
+        "U",
+        "B",
+        "R",
+        "G",
+        "C"
+      ],
+      "amount": 1
+    },
+    "entryTapRule": null,
+    "conditionalEntryText": null,
+    "abilities": [
+      {
+        "abilityType": "triggered",
+        "triggerEvent": "etb",
+        "triggerCondition": "this creature enters",
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "other",
+          "params": {}
+        }
+      },
+      {
+        "abilityType": "activated",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": "{T}, Sacrifice",
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "add_mana",
+          "params": {}
+        }
+      }
+    ],
+    "oracleText": "When this creature enters, create X Treasure tokens, where X is the number of artifacts and enchantments your opponents control. (Treasure tokens are artifacts with \"{T}, Sacrifice this token: Add one mana of any color.\")",
+    "scryfallId": "9e2e3efb-75cb-430f-b9f4-cb58f3aeb91b"
+  },
+  "Goldspan Dragon": {
+    "cardName": "Goldspan Dragon",
+    "manaCost": "{3}{R}{R}",
+    "manaValue": 5,
+    "typeLine": "Creature — Dragon",
+    "cardType": "creature",
+    "subtypes": [
+      "Dragon"
+    ],
+    "keywords": [
+      "flying",
+      "haste"
+    ],
+    "manaProduction": null,
+    "entryTapRule": null,
+    "conditionalEntryText": null,
+    "abilities": [
+      {
+        "abilityType": "triggered",
+        "triggerEvent": "attack",
+        "triggerCondition": "Flying",
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "create_token",
+          "params": {
+            "tokenName": "Treasure",
+            "amount": 1
+          }
+        }
+      },
+      {
+        "abilityType": "activated",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": "{T}, Sacrifice",
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "add_mana",
+          "params": {}
+        }
+      }
+    ],
+    "oracleText": "Flying, haste\nWhenever this creature attacks or becomes the target of a spell, create a Treasure token.\nTreasures you control have \"{T}, Sacrifice this artifact: Add two mana of any one color.\"",
+    "scryfallId": "848c1951-90fa-4f01-9aed-76f1afcd9995"
+  },
+  "Jaxis, the Troublemaker": {
+    "cardName": "Jaxis, the Troublemaker",
+    "manaCost": "{3}{R}",
+    "manaValue": 4,
+    "typeLine": "Legendary Creature — Human Warrior",
+    "cardType": "creature",
+    "subtypes": [
+      "Human",
+      "Warrior"
+    ],
+    "keywords": [
+      "haste"
+    ],
+    "manaProduction": null,
+    "entryTapRule": null,
+    "conditionalEntryText": null,
+    "abilities": [
+      {
+        "abilityType": "activated",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": "{T}, {R}, Discard",
+        "targets": 1,
+        "targetFilter": "creature you control",
+        "effect": {
+          "kind": "create_token",
+          "params": {
+            "tokenName": "a",
+            "amount": 1
+          }
+        }
+      },
+      {
+        "abilityType": "static",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "draw_cards",
+          "params": {
+            "amount": 1
+          }
+        }
+      },
+      {
+        "abilityType": "static",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "draw_cards",
+          "params": {
+            "amount": 1
+          }
+        }
+      }
+    ],
+    "oracleText": "{R}, {T}, Discard a card: Create a token that's a copy of another target creature you control. It gains haste and \"When this token dies, draw a card.\" Sacrifice it at the beginning of the next end step. Activate only as a sorcery.\nBlitz {1}{R} (If you cast this spell for its blitz cost, it gains haste and \"When this creature dies, draw a card.\" Sacrifice it at the beginning of the next end step.)",
+    "scryfallId": "78127c0c-672f-4e4b-9c23-6a5f237228fd"
+  },
+  "Kiki-Jiki, Mirror Breaker": {
+    "cardName": "Kiki-Jiki, Mirror Breaker",
+    "manaCost": "{2}{R}{R}{R}",
+    "manaValue": 5,
+    "typeLine": "Legendary Creature — Goblin Shaman",
+    "cardType": "creature",
+    "subtypes": [
+      "Goblin",
+      "Shaman"
+    ],
+    "keywords": [
+      "haste"
+    ],
+    "manaProduction": null,
+    "entryTapRule": null,
+    "conditionalEntryText": null,
+    "abilities": [
+      {
+        "abilityType": "static",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "create_token",
+          "params": {
+            "tokenName": "a",
+            "amount": 1
+          }
+        }
+      }
+    ],
+    "oracleText": "Haste\n{T}: Create a token that's a copy of target nonlegendary creature you control, except it has haste. Sacrifice it at the beginning of the next end step.",
+    "scryfallId": "a2ff0ee3-9600-4c7d-acec-6ec90595384e"
+  },
+  "Laelia, the Blade Reforged": {
+    "cardName": "Laelia, the Blade Reforged",
+    "manaCost": "{2}{R}",
+    "manaValue": 3,
+    "typeLine": "Legendary Creature — Spirit Warrior",
+    "cardType": "creature",
+    "subtypes": [
+      "Spirit",
+      "Warrior"
+    ],
+    "keywords": [
+      "haste"
+    ],
+    "manaProduction": null,
+    "entryTapRule": null,
+    "conditionalEntryText": null,
+    "abilities": [
+      {
+        "abilityType": "triggered",
+        "triggerEvent": "attack",
+        "triggerCondition": "Haste Whenever Laelia attacks",
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "exile",
+          "params": {}
+        }
+      },
+      {
+        "abilityType": "triggered",
+        "triggerEvent": "counter_placed",
+        "triggerCondition": "one or more cards are put into exile from your library and/or your graveyard",
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "put_counter",
+          "params": {}
+        }
+      }
+    ],
+    "oracleText": "Haste\nWhenever Laelia attacks, exile the top card of your library. You may play that card this turn.\nWhenever one or more cards are put into exile from your library and/or your graveyard, put a +1/+1 counter on Laelia.",
+    "scryfallId": "2cb16354-1211-4230-90e2-4858ba68f348"
+  },
+  "Mana Echoes": {
+    "cardName": "Mana Echoes",
+    "manaCost": "{2}{R}{R}",
+    "manaValue": 4,
+    "typeLine": "Enchantment",
+    "cardType": "enchantment",
+    "subtypes": [],
+    "keywords": [],
+    "manaProduction": {
+      "colors": [
+        "C"
+      ],
+      "amount": 1
+    },
+    "entryTapRule": null,
+    "conditionalEntryText": null,
+    "abilities": [
+      {
+        "abilityType": "triggered",
+        "triggerEvent": "etb",
+        "triggerCondition": "a creature enters",
+        "isOptional": true,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "add_mana",
+          "params": {}
+        }
+      }
+    ],
+    "oracleText": "Whenever a creature enters, you may add an amount of {C} equal to the number of creatures you control that share a creature type with it.",
+    "scryfallId": "bd079929-fa58-4484-91b7-31305b87ee43"
+  },
+  "Professional Face-Breaker": {
+    "cardName": "Professional Face-Breaker",
+    "manaCost": "{2}{R}",
+    "manaValue": 3,
+    "typeLine": "Creature — Human Warrior",
+    "cardType": "creature",
+    "subtypes": [
+      "Human",
+      "Warrior"
+    ],
+    "keywords": [
+      "menace"
+    ],
+    "manaProduction": null,
+    "entryTapRule": null,
+    "conditionalEntryText": null,
+    "abilities": [
+      {
+        "abilityType": "triggered",
+        "triggerEvent": "combat_damage",
+        "triggerCondition": "Menace Whenever one or more creatures you control deal combat damage to a player",
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "create_token",
+          "params": {
+            "tokenName": "Treasure",
+            "amount": 1
+          }
+        }
+      },
+      {
+        "abilityType": "activated",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": "Sacrifice",
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "exile",
+          "params": {}
+        }
+      }
+    ],
+    "oracleText": "Menace\nWhenever one or more creatures you control deal combat damage to a player, create a Treasure token.\nSacrifice a Treasure: Exile the top card of your library. You may play that card this turn.",
+    "scryfallId": "42acbf52-b137-44f0-a815-2817fe8d2da2"
+  },
+  "Splinter Twin": {
+    "cardName": "Splinter Twin",
+    "manaCost": "{2}{R}{R}",
+    "manaValue": 4,
+    "typeLine": "Enchantment — Aura",
+    "cardType": "enchantment",
+    "subtypes": [
+      "Aura"
+    ],
+    "keywords": [
+      "haste"
+    ],
+    "manaProduction": null,
+    "entryTapRule": null,
+    "conditionalEntryText": null,
+    "abilities": [
+      {
+        "abilityType": "static",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "create_token",
+          "params": {
+            "tokenName": "a",
+            "amount": 1
+          }
+        }
+      },
+      {
+        "abilityType": "triggered",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "exile",
+          "params": {}
+        }
+      }
+    ],
+    "oracleText": "Enchant creature\nEnchanted creature has \"{T}: Create a token that's a copy of this creature, except it has haste. Exile that token at the beginning of the next end step.\"",
+    "scryfallId": "580fbbf8-ba7e-4889-a5ea-d066f3ea8cea"
+  },
+  "Storm-Kiln Artist": {
+    "cardName": "Storm-Kiln Artist",
+    "manaCost": "{3}{R}",
+    "manaValue": 4,
+    "typeLine": "Creature — Dwarf Shaman",
+    "cardType": "creature",
+    "subtypes": [
+      "Dwarf",
+      "Shaman"
+    ],
+    "keywords": [],
+    "manaProduction": {
+      "colors": [
+        "W",
+        "U",
+        "B",
+        "R",
+        "G",
+        "C"
+      ],
+      "amount": 1
+    },
+    "entryTapRule": null,
+    "conditionalEntryText": null,
+    "abilities": [
+      {
+        "abilityType": "static",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "other",
+          "params": {}
+        }
+      },
+      {
+        "abilityType": "triggered",
+        "triggerEvent": "cast",
+        "triggerCondition": "Magecraft — Whenever you cast or copy an instant or sorcery spell",
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "create_token",
+          "params": {
+            "tokenName": "Treasure",
+            "amount": 1
+          }
+        }
+      },
+      {
+        "abilityType": "activated",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": "{T}, Sacrifice",
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "add_mana",
+          "params": {}
+        }
+      }
+    ],
+    "oracleText": "This creature gets +1/+0 for each artifact you control.\nMagecraft — Whenever you cast or copy an instant or sorcery spell, create a Treasure token. (It's an artifact with \"{T}, Sacrifice this token: Add one mana of any color.\")",
+    "scryfallId": "da7ae8e0-cb6b-4386-8a30-9527d1af9be5"
+  },
+  "Underworld Breach": {
+    "cardName": "Underworld Breach",
+    "manaCost": "{1}{R}",
+    "manaValue": 2,
+    "typeLine": "Enchantment",
+    "cardType": "enchantment",
+    "subtypes": [],
+    "keywords": [],
+    "manaProduction": null,
+    "entryTapRule": null,
+    "conditionalEntryText": null,
+    "abilities": [
+      {
+        "abilityType": "triggered",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "exile",
+          "params": {}
+        }
+      },
+      {
+        "abilityType": "triggered",
+        "triggerEvent": "end_of_turn",
+        "triggerCondition": ") At the beginning of the end step",
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "other",
+          "params": {}
+        }
+      }
+    ],
+    "oracleText": "Each nonland card in your graveyard has escape. The escape cost is equal to the card's mana cost plus exile three other cards from your graveyard. (You may cast cards from your graveyard for their escape cost.)\nAt the beginning of the end step, sacrifice this enchantment.",
+    "scryfallId": "0e51d796-7279-4c06-87f0-37adbdaa41df"
+  },
+  "Sol Ring": {
+    "cardName": "Sol Ring",
+    "manaCost": "{1}",
+    "manaValue": 1,
+    "typeLine": "Artifact",
+    "cardType": "artifact",
+    "subtypes": [],
+    "keywords": [],
+    "manaProduction": {
+      "colors": [
+        "C"
+      ],
+      "amount": 2
+    },
+    "entryTapRule": null,
+    "conditionalEntryText": null,
+    "abilities": [
+      {
+        "abilityType": "activated",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": "{T}",
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "add_mana",
+          "params": {}
+        }
+      }
+    ],
+    "oracleText": "{T}: Add {C}{C}.",
+    "scryfallId": "91fdb56b-54d5-4272-8319-505ff987fe9b"
+  },
+  "Arcane Signet": {
+    "cardName": "Arcane Signet",
+    "manaCost": "{2}",
+    "manaValue": 2,
+    "typeLine": "Artifact",
+    "cardType": "artifact",
+    "subtypes": [],
+    "keywords": [],
+    "manaProduction": {
+      "colors": [
+        "W",
+        "U",
+        "B",
+        "R",
+        "G",
+        "C"
+      ],
+      "amount": 1
+    },
+    "entryTapRule": null,
+    "conditionalEntryText": null,
+    "abilities": [
+      {
+        "abilityType": "activated",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": "{T}",
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "add_mana",
+          "params": {}
+        }
+      }
+    ],
+    "oracleText": "{T}: Add one mana of any color in your commander's color identity.",
+    "scryfallId": "1cad1bd2-7c56-4ce0-99a6-b2a49c1288dd"
+  },
+  "Command Tower": {
+    "cardName": "Command Tower",
+    "manaCost": "",
+    "manaValue": 0,
+    "typeLine": "Land",
+    "cardType": "land",
+    "subtypes": [],
+    "keywords": [],
+    "manaProduction": {
+      "colors": [
+        "W",
+        "U",
+        "B",
+        "R",
+        "G",
+        "C"
+      ],
+      "amount": 1
+    },
+    "entryTapRule": null,
+    "conditionalEntryText": null,
+    "abilities": [
+      {
+        "abilityType": "activated",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": "{T}",
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "add_mana",
+          "params": {}
+        }
+      }
+    ],
+    "oracleText": "{T}: Add one mana of any color in your commander's color identity.",
+    "scryfallId": "0548fb60-c843-4f8f-a029-6f10efc63a41"
+  },
+  "Mountain": {
+    "cardName": "Mountain",
+    "manaCost": "",
+    "manaValue": 0,
+    "typeLine": "Basic Land — Mountain",
+    "cardType": "land",
+    "subtypes": [
+      "Mountain"
+    ],
+    "keywords": [],
+    "manaProduction": {
+      "colors": [
+        "R"
+      ],
+      "amount": 1
+    },
+    "entryTapRule": "never",
+    "conditionalEntryText": null,
+    "abilities": [],
+    "oracleText": "",
+    "scryfallId": "c49d378e-9549-4320-b3c6-1aeb216d1e98"
+  },
+  "Island": {
+    "cardName": "Island",
+    "manaCost": "",
+    "manaValue": 0,
+    "typeLine": "Basic Land — Island",
+    "cardType": "land",
+    "subtypes": [
+      "Island"
+    ],
+    "keywords": [],
+    "manaProduction": {
+      "colors": [
+        "U"
+      ],
+      "amount": 1
+    },
+    "entryTapRule": "never",
+    "conditionalEntryText": null,
+    "abilities": [],
+    "oracleText": "",
+    "scryfallId": "c6aa89a8-3584-4906-b9a9-41ef2f021f8e"
+  },
+  "Plains": {
+    "cardName": "Plains",
+    "manaCost": "",
+    "manaValue": 0,
+    "typeLine": "Basic Land — Plains",
+    "cardType": "land",
+    "subtypes": [
+      "Plains"
+    ],
+    "keywords": [],
+    "manaProduction": {
+      "colors": [
+        "W"
+      ],
+      "amount": 1
+    },
+    "entryTapRule": "never",
+    "conditionalEntryText": null,
+    "abilities": [],
+    "oracleText": "",
+    "scryfallId": "7b7c408b-8660-4db5-9a16-5003c11b4ac1"
+  }
+}
