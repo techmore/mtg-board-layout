@@ -1,26 +1,50 @@
-import { useEffect, useMemo } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { useSearchParams } from 'react-router-dom'
-import type { CardData, RoomJoinOptions, RoomPlayerInfo } from 'mtg-protocol'
+import type { CardData, ChatMessageEvent, RoomJoinOptions, RoomPlayerInfo } from 'mtg-protocol'
 import { deckToRoomCards } from '../multiplayer/roomCards'
 import { useRoomSession } from '../multiplayer/useRoom'
+import { getServerUrlFromSearchParams } from '../multiplayer/serverUrl'
 import { useDeckStore } from '../stores/deckStore'
 import { formatCounterCount } from '../components/Board/cardHelpers'
+
+interface ChatEntry {
+  id: number
+  playerName: string
+  text: string
+}
 
 export default function MultiplayerBoardPage() {
   const [searchParams] = useSearchParams()
   const roomId = searchParams.get('roomId') ?? ''
   const decks = useDeckStore((state) => state.decks)
-  const { state, privateState, error, isConnecting, connect, sendAction, leave } = useRoomSession()
-  const deck = decks[0]
+  const { state, privateState, lastEvent, error, isConnecting, connect, sendAction, leave } = useRoomSession()
+  const [chatInput, setChatInput] = useState('')
+  const [messages, setMessages] = useState<ChatEntry[]>([])
+
+  const requestedServerUrl = getServerUrlFromSearchParams(searchParams)
+  const initialName = searchParams.get('name') ?? ''
+  const initialDeck = searchParams.get('deck') ?? ''
+  const selectedDeck = decks.find((deck) => deck.id === initialDeck) ?? decks[0]
+
   const joinOptions = useMemo<RoomJoinOptions>(() => ({
-    playerName: 'Player',
-    deckId: deck?.id ?? '',
-    cards: deck ? deckToRoomCards(deck) : [],
-  }), [deck])
+    playerName: initialName || 'Player',
+    deckId: selectedDeck?.id ?? initialDeck,
+    cards: selectedDeck ? deckToRoomCards(selectedDeck) : [],
+  }), [initialName, initialDeck, selectedDeck])
 
   useEffect(() => {
-    if (roomId && state?.roomId !== roomId) void connect(roomId, joinOptions).catch(() => undefined)
-  }, [connect, joinOptions, roomId, state?.roomId])
+    if (roomId && state?.roomId !== roomId) void connect(roomId, joinOptions, requestedServerUrl).catch(() => undefined)
+  }, [connect, joinOptions, requestedServerUrl, roomId, state?.roomId])
+
+  useEffect(() => {
+    setMessages([])
+  }, [roomId])
+
+  useEffect(() => {
+    if (!lastEvent || lastEvent.type !== 'chatMessage') return
+    const event = lastEvent as ChatMessageEvent
+    setMessages((current) => [...current, { id: Date.now() + current.length, playerName: event.playerName, text: event.text }])
+  }, [lastEvent])
 
   if (isConnecting || !state) return <main style={pageStyle}><div>Connecting to multiplayer board…{error ? ` ${error}` : ''}</div></main>
 
@@ -31,6 +55,12 @@ export default function MultiplayerBoardPage() {
   const isMyTurn = state.activePlayerId === me.id
   const adjustLife = (amount: number) => sendAction({ type: 'setLife', value: me.lifeTotal + amount })
   const moveSeat = (x: number, y: number) => sendAction({ type: 'setPosition', x: me.positionX + x, y: me.positionY + y })
+  const sendChat = () => {
+    const text = chatInput.trim()
+    if (!text) return
+    sendAction({ type: 'chatMessage', text })
+    setChatInput('')
+  }
 
   return (
     <main style={pageStyle}>
@@ -82,6 +112,30 @@ export default function MultiplayerBoardPage() {
         </div>
       </section>
 
+      <section style={chatStyle}>
+        <h2 style={sectionTitle}>Chat</h2>
+        <div style={chatLogStyle}>
+          {messages.length === 0
+            ? <div style={mutedStyle}>No messages yet.</div>
+            : messages.map((message) => (
+              <div key={message.id} style={chatEntryStyle}>
+                <span style={chatNameStyle}>{message.playerName}:</span> {message.text}
+              </div>
+            ))}
+        </div>
+        <div style={{ display: 'flex', gap: 8 }}>
+          <input
+            value={chatInput}
+            onChange={(e) => setChatInput(e.target.value)}
+            onKeyDown={(e) => { if (e.key === 'Enter') sendChat() }}
+            placeholder="Message the table…"
+            maxLength={500}
+            style={chatInputStyle}
+          />
+          <button onClick={sendChat} disabled={chatInput.trim().length === 0} style={smallButtonStyle}>Send</button>
+        </div>
+      </section>
+
       <section style={handStyle}>
         <h2 style={sectionTitle}>Your hand ({privateState.hand.length})</h2>
         <CardRow cards={privateState.hand} empty="Your hand is empty" onCard={(card) => sendAction({ type: 'playCard', cardId: card.id })} />
@@ -124,6 +178,11 @@ const cardImageStyle: React.CSSProperties = { width: '100%', aspectRatio: '488 /
 const cardNameStyle: React.CSSProperties = { display: 'block', padding: '4px 2px 1px', fontSize: '0.65rem', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }
 const sectionTitle: React.CSSProperties = { margin: '0 0 10px', fontSize: '0.85rem' }
 const zoneSummaryStyle: React.CSSProperties = { display: 'flex', flexWrap: 'wrap', gap: 12, marginTop: 12, color: '#8b949e', fontSize: '0.75rem' }
+const chatStyle: React.CSSProperties = { marginTop: 14, padding: 14, border: '1px solid #30363d', borderRadius: 10, background: 'rgba(255,255,255,0.02)' }
+const chatLogStyle: React.CSSProperties = { display: 'flex', flexDirection: 'column', gap: 4, maxHeight: 180, overflowY: 'auto', marginBottom: 10, fontSize: '0.78rem' }
+const chatEntryStyle: React.CSSProperties = { lineHeight: 1.4 }
+const chatNameStyle: React.CSSProperties = { color: '#58a6ff', fontWeight: 700 }
+const chatInputStyle: React.CSSProperties = { flex: 1, padding: '8px 10px', borderRadius: 6, border: '1px solid #30363d', background: '#161b22', color: '#e6edf3', fontSize: '0.78rem' }
 const mutedStyle: React.CSSProperties = { color: '#8b949e', fontSize: '0.78rem' }
 const activeBadgeStyle: React.CSSProperties = { color: '#3fb950', fontWeight: 700, fontSize: '0.78rem' }
 const smallButtonStyle: React.CSSProperties = { padding: '6px 9px', borderRadius: 6, border: '1px solid #30363d', background: '#161b22', color: '#e6edf3', cursor: 'pointer', fontSize: '0.72rem' }
