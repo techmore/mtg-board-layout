@@ -7,7 +7,7 @@ import { getCardTypeFeatures } from '../data/cardFeatures'
 import { getCachedCardRules } from './cardRulesLoader'
 import { localCardImage } from '../data/localCardImages'
 import { cacheDeckImages } from '../services/cardImageCache'
-import { pickSpell, pickAttackers } from './opponentAI'
+import { pickSpell, pickAttackers, pickCommanderCast } from './opponentAI'
 
 type SetFn = (partial: GameState | Partial<GameState> | ((state: GameState) => Partial<GameState>)) => void
 
@@ -47,6 +47,7 @@ export function createOpponentAI(set: SetFn, get: () => GameState): Pick<GameSta
             const s3 = get()
             const oppHand2 = s3.cards.filter((c) => (c.owner ?? 'player') === 'opponent' && c.zone === 'hand')
             const oppBattlefield = s3.cards.filter((c) => (c.owner ?? 'player') === 'opponent' && c.zone === 'battlefield')
+            const oppCommand = s3.cards.filter((c) => (c.owner ?? 'player') === 'opponent' && c.zone === 'command')
             const oppLands = oppBattlefield.filter((c) => c.type === 'land' && !c.tapped)
             const manaPool = { W: 0, U: 0, B: 0, R: 0, G: 0, C: 0 } as ManaPool
             for (const l of oppLands) {
@@ -55,9 +56,13 @@ export function createOpponentAI(set: SetFn, get: () => GameState): Pick<GameSta
               }
             }
 
-            const toCast = pickSpell(oppHand2, oppBattlefield, manaPool)
-            if (toCast && toCast.manaCost) {
-              const parsed = parseManaCost(toCast.manaCost)
+            const commanderCast = pickCommanderCast(oppCommand, manaPool)
+            const toCast = pickSpell(oppHand2, oppBattlefield, manaPool) ?? commanderCast?.card ?? null
+            const castCost = toCast
+              ? commanderCast && toCast.id === commanderCast.card.id ? commanderCast.cost : toCast.manaCost
+              : undefined
+            if (toCast && castCost) {
+              const parsed = parseManaCost(castCost)
               const remainingColor: Record<string, number> = {}
               for (const p of parsed.colored) remainingColor[p.color] = (remainingColor[p.color] ?? 0) + p.count
               let genericRemaining = parsed.generic
@@ -99,8 +104,8 @@ export function createOpponentAI(set: SetFn, get: () => GameState): Pick<GameSta
                   if (idx >= 0) updatedCards[idx] = { ...updatedCards[idx], tapped: true }
                 }
 
-                if (toCast.manaCost) {
-                  const bp = parseManaCost(toCast.manaCost)
+                if (castCost) {
+                  const bp = parseManaCost(castCost)
                   for (const p of bp.colored) newPool[p.color] = Math.max(0, (newPool[p.color] ?? 0) - p.count)
                   let g = bp.generic
                   for (const color of ['W', 'U', 'B', 'R', 'G', 'C'] as const) {
@@ -108,8 +113,9 @@ export function createOpponentAI(set: SetFn, get: () => GameState): Pick<GameSta
                   }
                 }
 
+                const isCommanderCast = commanderCast !== null && toCast.id === commanderCast.card.id
                 const idx = updatedCards.findIndex((c) => c.id === toCast.id)
-                if (idx >= 0) updatedCards[idx] = { ...updatedCards[idx], zone: 'battlefield' as const, tapped: false, revealed: false, enteredAtTurn: prev.turn }
+                if (idx >= 0) updatedCards[idx] = { ...updatedCards[idx], zone: 'battlefield' as const, tapped: false, revealed: false, enteredAtTurn: prev.turn, commanderTax: isCommanderCast ? (toCast.commanderTax ?? 0) + 1 : (updatedCards[idx].commanderTax ?? 0) }
 
                 return {
                   cards: updatedCards,

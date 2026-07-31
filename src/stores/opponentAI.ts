@@ -13,6 +13,16 @@ export function pickSpell(hand: BoardCard[], _battlefield: BoardCard[], manaPool
   return (creatures.length > 0 ? creatures : playable)[0]
 }
 
+export function pickCommanderCast(commandCards: BoardCard[], manaPool: Record<ManaColor, number>): { card: BoardCard; cost: string } | null {
+  for (const card of commandCards) {
+    if (!card.manaCost) continue
+    const tax = card.commanderTax ?? 0
+    const cost = card.manaCost + (tax > 0 ? `{${tax * 2}}` : '')
+    if (canPayManaCost(manaPool, cost)) return { card, cost }
+  }
+  return null
+}
+
 export function pickAttackers(battlefield: BoardCard[], currentTurn: number): string[] {
   return battlefield
     .filter((c) => c.type === 'creature' && !c.tapped && c.enteredAtTurn !== currentTurn)
