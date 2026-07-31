@@ -1,5 +1,6 @@
 import { MiniCard } from '../components/Board/MiniCard'
 import { CARD_BACK_URL } from '../constants'
+import { useGameStore } from '../stores/gameStore'
 import type { BoardViewModel } from './boardViewModel'
 
 interface Props {
@@ -51,8 +52,11 @@ export function BoardOpponentZone({
   cardWidth,
   cardHeight,
 }: Props) {
+  const opponentName = useGameStore((s) => s.opponentName)
   const miniWidth = Math.round(cardWidth * 0.5)
   const miniHeight = Math.round(cardHeight * 0.5)
+  const commander = opponentViewModel.commandCards[0]
+  const displayName = opponentName ?? 'Opponent'
   return (
     <div
       style={{
@@ -68,13 +72,45 @@ export function BoardOpponentZone({
       }}
     >
       <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 6, flexShrink: 0 }}>
-        <span style={{ color: '#f85149', fontSize: '0.75rem', fontWeight: 700 }}>Opponent</span>
+        <span
+          aria-hidden="true"
+          style={{
+            width: 26,
+            height: 26,
+            flexShrink: 0,
+            borderRadius: '50%',
+            background: 'rgba(248,81,73,0.25)',
+            border: '1px solid rgba(248,81,73,0.6)',
+            color: '#f85149',
+            display: 'inline-flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            fontWeight: 900,
+            fontSize: '0.8rem',
+          }}
+        >
+          {displayName.charAt(0).toUpperCase()}
+        </span>
+        <span style={{ color: '#f85149', fontSize: '0.8rem', fontWeight: 800 }}>{displayName}</span>
         <span style={{ fontSize: '0.95rem', fontWeight: 700, fontVariantNumeric: 'tabular-nums', color: opponentLifeTotal <= 0 ? '#f85149' : opponentLifeTotal <= 5 ? '#d29922' : '#e6edf3', minWidth: 24 }}>
           {opponentLifeTotal}
         </span>
         <span style={{ color: '#8b949e', fontSize: '0.65rem' }}>Hand ({opponentViewModel.handCards.length})</span>
         <span style={{ color: '#8b949e', fontSize: '0.65rem' }}>GY ({opponentViewModel.graveyardCards.length})</span>
         <span style={{ color: '#8b949e', fontSize: '0.65rem' }}>Library ({opponentViewModel.libraryCards.length})</span>
+        {commander && (
+          <div style={{ display: 'flex', alignItems: 'center', gap: 5, marginLeft: 'auto' }}>
+            <span style={{ color: '#8b949e', fontSize: '0.62rem', textTransform: 'uppercase', letterSpacing: 0.5, fontWeight: 600 }}>Commander</span>
+            <MiniCard
+              card={commander}
+              width={Math.round(cardWidth * 0.32)}
+              height={Math.round(cardHeight * 0.32)}
+              variant="command"
+              onClick={() => setOverlay({ type: 'zoom', cardId: commander.id })}
+              onContextMenu={(e) => handleRightClick(e, commander.id)}
+            />
+          </div>
+        )}
       </div>
 
       {opponentViewModel.handCards.length > 0 && (

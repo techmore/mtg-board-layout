@@ -69,6 +69,7 @@ export interface GameState {
   rollHistory: string[]
   overlay: OverlayState
   showOpponent: boolean
+  opponentName: string | null
   opponentLifeTotal: number
   activePlayer: ActivePlayer
   opponentManaPool: ManaPool
@@ -96,7 +97,7 @@ export interface GameState {
   setBroadcasting: (active: boolean) => void
   toggleOpponent: () => void
   setOpponentLife: (n: number) => void
-  loadOpponentDeck: (commanderNames: string[], deckCards: DeckCard[]) => void
+  loadOpponentDeck: (commanderNames: string[], deckCards: DeckCard[], opponentName?: string) => void
   runOpponentTurn: () => void
   advanceTurn: () => void
   advancePhase: () => void

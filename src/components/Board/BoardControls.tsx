@@ -175,7 +175,7 @@ export function BoardControls({
           <button
             title="Load AI opponent (Draconic Destruction)"
             onClick={() => {
-              useGameStore.getState().loadOpponentDeck(DRACONIC_DESTRUCTION_DECK.commanderNames, DRACONIC_DESTRUCTION_DECK.cards)
+              useGameStore.getState().loadOpponentDeck(DRACONIC_DESTRUCTION_DECK.commanderNames, DRACONIC_DESTRUCTION_DECK.cards, DRACONIC_DESTRUCTION_DECK.name)
             }}
             style={{
               padding: '4px 10px',

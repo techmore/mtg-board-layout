@@ -1,8 +1,20 @@
-import { afterEach, describe, expect, it } from 'vitest'
+import { afterEach, describe, expect, it, vi } from 'vitest'
 import { useGameStore } from './gameStore'
-import type { BoardCard, ManaPool } from '../types/card'
+import type { BoardCard, DeckCard, ManaPool } from '../types/card'
 
 const emptyManaPool = (): ManaPool => ({ W: 0, U: 0, B: 0, R: 0, G: 0, C: 0 })
+
+function deckCard(name: string, typeLine: string, quantity = 1): DeckCard {
+  return {
+    scryfallId: `sf-${name}`,
+    name,
+    manaCost: typeLine === 'Land' ? '' : '{1}',
+    manaValue: typeLine === 'Land' ? 0 : 2,
+    typeLine,
+    imageUri: '',
+    quantity,
+  }
+}
 
 function card(overrides: Partial<BoardCard> = {}): BoardCard {
   return {
@@ -50,6 +62,67 @@ function resetStore() {
 }
 
 afterEach(resetStore)
+
+describe('loadOpponentDeck', () => {
+  it('loads a simple commander deck with the commander in the command zone', () => {
+    vi.useFakeTimers()
+    try {
+      const cards = [
+        deckCard('Atarka, World Render', 'Legendary Creature — Dragon'),
+        deckCard('Mountain', 'Land', 6),
+        deckCard('Dragon Fodder', 'Sorcery'),
+        deckCard('Thunderbreak Regent', 'Creature — Dragon'),
+      ]
+      useGameStore.getState().loadOpponentDeck(['Atarka, World Render'], cards, 'Draconic Destruction')
+
+      const state = useGameStore.getState()
+      const opponentCards = state.cards.filter((c) => (c.owner ?? 'player') === 'opponent')
+
+      expect(state.showOpponent).toBe(true)
+      expect(state.opponentName).toBe('Draconic Destruction')
+      expect(state.activePlayer).toBe('opponent')
+      expect(state.opponentLifeTotal).toBe(40)
+
+      const commander = opponentCards.find((c) => c.name === 'Atarka, World Render')
+      expect(commander?.zone).toBe('command')
+      expect(commander?.revealed).toBe(true)
+      expect(commander?.owner).toBe('opponent')
+
+      const hand = opponentCards.filter((c) => c.zone === 'hand')
+      expect(hand).toHaveLength(7)
+      const library = opponentCards.filter((c) => c.zone === 'library')
+      expect(library.length).toBeGreaterThan(0)
+      expect(hand.every((c) => c.owner === 'opponent')).toBe(true)
+    } finally {
+      vi.clearAllTimers()
+      vi.useRealTimers()
+    }
+  })
+
+  it('plays a full AI turn and hands back to the player', () => {
+    vi.useFakeTimers()
+    try {
+      const cards = [
+        deckCard('Atarka, World Render', 'Legendary Creature — Dragon'),
+        ...Array.from({ length: 8 }, () => deckCard('Mountain', 'Land')),
+        deckCard('Dragon Whelp', 'Creature — Dragon'),
+      ]
+      useGameStore.getState().loadOpponentDeck(['Atarka, World Render'], cards, 'Draconic Destruction')
+
+      vi.advanceTimersByTime(3200)
+
+      const state = useGameStore.getState()
+      expect(state.turn).toBe(2)
+      expect(state.activePlayer).toBe('player')
+      const opponentBattlefield = state.cards.filter((c) => (c.owner ?? 'player') === 'opponent' && c.zone === 'battlefield')
+      expect(opponentBattlefield.some((c) => c.type === 'land')).toBe(true)
+      expect(state.opponentLandPlaysThisTurn).toBe(0)
+    } finally {
+      vi.clearAllTimers()
+      vi.useRealTimers()
+    }
+  })
+})
 
 describe('game store action history', () => {
   it('records one undo entry for mana generation and supports redo', () => {

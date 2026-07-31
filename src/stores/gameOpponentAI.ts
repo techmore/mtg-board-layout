@@ -143,43 +143,52 @@ export function createOpponentAI(set: SetFn, get: () => GameState): Pick<GameSta
       }, 400)
     },
 
-    loadOpponentDeck: (_commanderNames, deckCards) => {
+    loadOpponentDeck: (_commanderNames, deckCards, opponentName) => {
       cacheDeckImages(deckCards)
       set((state) => {
+        const commanderIds = new Set(deckCards
+          .filter((dc) => _commanderNames.some((name) => dc.name.toLowerCase() === name.toLowerCase()))
+          .map((dc) => dc.name))
         const cards: BoardCard[] = []
+
         for (const dc of deckCards) {
           const rules = getCachedCardRules()?.[dc.name]
           const features = getCardTypeFeatures(dc.typeLine, dc.name)
-          cards.push({
-            id: crypto.randomUUID(),
-            scryfallId: dc.scryfallId,
-            name: dc.name,
-            imageUri: localCardImage(dc.scryfallId) ?? dc.imageUri,
-            manaCost: rules?.manaCost ?? dc.manaCost,
-            manaValue: rules?.manaValue ?? dc.manaValue,
-            oracleText: dc.oracleText,
-            ...features,
-            manaProduction: rules?.manaProduction ?? dc.manaProduction,
-            entryTapMode: dc.entryTapMode ?? 'automatic',
-            entersTapped: rules?.entryTapRule === 'always' || dc.entersTapped === true,
-            entryTapRule: rules?.entryTapRule ?? dc.entryTapRule,
-            zone: 'library' as Zone,
-            tapped: false,
-            counters: 0,
-            type: classifyType(dc.typeLine),
-            revealed: false,
-            owner: 'opponent',
-          })
+          const isCommander = commanderIds.has(dc.name)
+          for (let i = 0; i < dc.quantity; i++) {
+            cards.push({
+              id: crypto.randomUUID(),
+              scryfallId: dc.scryfallId,
+              name: dc.name,
+              imageUri: localCardImage(dc.scryfallId) ?? dc.imageUri,
+              manaCost: rules?.manaCost ?? dc.manaCost,
+              manaValue: rules?.manaValue ?? dc.manaValue,
+              oracleText: dc.oracleText,
+              ...features,
+              manaProduction: rules?.manaProduction ?? dc.manaProduction,
+              entryTapMode: dc.entryTapMode ?? 'automatic',
+              entersTapped: rules?.entryTapRule === 'always' || dc.entersTapped === true,
+              entryTapRule: rules?.entryTapRule ?? dc.entryTapRule,
+              zone: isCommander ? 'command' as Zone : 'library' as Zone,
+              tapped: false,
+              counters: 0,
+              type: classifyType(dc.typeLine),
+              revealed: isCommander,
+              owner: 'opponent',
+            })
+          }
         }
-        const shuffled = shuffle(cards)
-        const drawn = shuffled.map((c, i) => i < 7 ? { ...c, zone: 'hand' as Zone } : c)
+        const libraryCards = shuffle(cards.filter((c) => c.zone === 'library'))
+        const commanders = cards.filter((c) => c.zone === 'command')
+        const drawn = libraryCards.map((c, i) => i < 7 ? { ...c, zone: 'hand' as Zone } : c)
         return {
           ...pushUndo(state),
           showOpponent: true,
-          cards: [...state.cards, ...drawn],
+          opponentName: opponentName ?? null,
+          cards: [...state.cards, ...commanders, ...drawn],
           activePlayer: 'opponent' as ActivePlayer,
           currentPhase: 'beginning',
-          turnAnnouncement: { id: Date.now(), text: "OPPONENT'S FIRST TURN" },
+          turnAnnouncement: { id: Date.now(), text: `${opponentName ?? 'OPPONENT'}'S FIRST TURN` },
         }
       })
       get().runOpponentTurn()

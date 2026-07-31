@@ -86,7 +86,11 @@ export function createCombatActions(set: SetFn, get: () => GameState): Pick<Game
             }
           }
         } else if (isOpponentAttacker) {
-          state.setLife(state.lifeTotal - power)
+          const newLife = state.lifeTotal - power
+          state.setLife(newLife)
+          if (newLife <= 0) {
+            set({ turnAnnouncement: { id: Date.now(), text: 'YOU DEFEATED' }, turnPrompt: null })
+          }
           state.emitGameEvent({
             type: 'combat_damage',
             sourceCardId: attackerId,

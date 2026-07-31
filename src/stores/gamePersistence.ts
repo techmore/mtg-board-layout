@@ -15,7 +15,7 @@ export const STORAGE_KEY = 'mtg-board-state'
 
 export type PersistedGameState = Pick<
   GameState,
-  'activeDeckId' | 'lifeTotal' | 'cards' | 'cardScale' | 'manaPool' | 'potentialMana' | 'manaLog' | 'effectHistory' | 'tokens' | 'backgroundImage' | 'backgrounds' | 'rollHistory' | 'overlay' | 'showOpponent' | 'opponentLifeTotal' | 'turn' | 'currentPhase' | 'landPlaysThisTurn' | 'turnAnnouncement' | 'triggerStack'
+  'activeDeckId' | 'lifeTotal' | 'cards' | 'cardScale' | 'manaPool' | 'potentialMana' | 'manaLog' | 'effectHistory' | 'tokens' | 'backgroundImage' | 'backgrounds' | 'rollHistory' | 'overlay' | 'showOpponent' | 'opponentName' | 'opponentLifeTotal' | 'turn' | 'currentPhase' | 'landPlaysThisTurn' | 'turnAnnouncement' | 'triggerStack'
 >
 
 export const defaultGameState: PersistedGameState & { undoStack: GameSnapshot[]; redoStack: GameSnapshot[] } = {
@@ -33,6 +33,7 @@ export const defaultGameState: PersistedGameState & { undoStack: GameSnapshot[];
   rollHistory: [],
   overlay: { type: null },
   showOpponent: false,
+  opponentName: null,
   opponentLifeTotal: 40,
   turn: 1,
   currentPhase: 'beginning' as Phase,
@@ -99,6 +100,7 @@ export function loadPersistedGameState(): PersistedGameState {
       rollHistory: Array.isArray(parsed.rollHistory) ? parsed.rollHistory.filter((entry): entry is string => typeof entry === 'string') : defaultGameState.rollHistory,
       overlay: isOverlayState(parsed.overlay) ? parsed.overlay : defaultGameState.overlay,
       showOpponent: typeof parsed.showOpponent === 'boolean' ? parsed.showOpponent : defaultGameState.showOpponent,
+      opponentName: typeof parsed.opponentName === 'string' ? parsed.opponentName : defaultGameState.opponentName,
       opponentLifeTotal: Number.isFinite(parsed.opponentLifeTotal) ? parsed.opponentLifeTotal! : defaultGameState.opponentLifeTotal,
       turn: Number.isFinite(parsed.turn) ? Math.max(1, parsed.turn!) : defaultGameState.turn,
       currentPhase: PHASES.includes(parsed.currentPhase as any) ? parsed.currentPhase as Phase : defaultGameState.currentPhase,
@@ -135,6 +137,7 @@ export function persistGameState(state: GameState) {
       rollHistory: state.rollHistory,
       overlay: state.overlay,
       showOpponent: state.showOpponent,
+      opponentName: state.opponentName,
       opponentLifeTotal: state.opponentLifeTotal,
       turn: state.turn,
       currentPhase: state.currentPhase,
