@@ -5,6 +5,7 @@ import { RoomSessionProvider } from './multiplayer/useRoom'
 
 const BoardPage = lazy(() => import('./pages/BoardPage'))
 const DecksPage = lazy(() => import('./pages/DecksPage'))
+const DeckBuilderPage = lazy(() => import('./pages/DeckBuilderPage'))
 const DeckDetailPage = lazy(() => import('./pages/DeckDetailPage'))
 const ToolsPage = lazy(() => import('./pages/ToolsPage'))
 const SettingsPage = lazy(() => import('./pages/SettingsPage'))
@@ -32,6 +33,7 @@ function App() {
             <Route element={<Layout />}>
               <Route path="/board" element={<BoardRoute />} />
               <Route path="/decks/:deckId" element={<DeckDetailPage />} />
+              <Route path="/decks/builder" element={<DeckBuilderPage />} />
               <Route path="/decks" element={<DecksPage />} />
               <Route path="/tools" element={<ToolsPage />} />
               <Route path="/settings" element={<SettingsPage />} />

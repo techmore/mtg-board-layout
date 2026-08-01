@@ -92,7 +92,25 @@ export default function DecksPage() {
 
   return (
     <div style={{ flex: 1, padding: 24, color: '#e6edf3', minHeight: 0, overflow: 'auto' }}>
-      <h2 style={{ marginBottom: 16 }}>My Decks</h2>
+      <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 16 }}>
+        <h2 style={{ margin: 0 }}>My Decks</h2>
+        <div style={{ flex: 1 }} />
+        <button
+          onClick={() => navigate('/decks/builder')}
+          style={{
+            padding: '8px 16px',
+            borderRadius: 7,
+            border: '1px solid rgba(88,166,255,0.4)',
+            background: 'rgba(88,166,255,0.12)',
+            color: '#58a6ff',
+            cursor: 'pointer',
+            fontSize: '0.8rem',
+            fontWeight: 700,
+          }}
+        >
+          + New Deck
+        </button>
+      </div>
 
       <section style={{ marginBottom: 24, padding: 16, background: '#161b22', border: '1px solid #30363d', borderRadius: 10 }}>
         <h3 style={{ margin: '0 0 8px', color: '#8b949e', fontSize: '0.9rem', textTransform: 'uppercase', letterSpacing: 1 }}>
