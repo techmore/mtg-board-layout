@@ -193,6 +193,19 @@ export function createOpponentAI(set: SetFn, get: () => GameState): Pick<GameSta
                 const s5 = get()
                 if (s5.activePlayer !== 'opponent' || s5.gameOver) return
                 get().resolveCombat()
+
+                // End-of-turn cleanup: discard down to a 7-card hand.
+                const oppHand = s5.cards.filter((c) => (c.owner ?? 'player') === 'opponent' && c.zone === 'hand')
+                if (oppHand.length > 7) {
+                  const excess = oppHand.length - 7
+                  const discardIds = new Set(oppHand.slice(0, excess).map((c) => c.id))
+                  set({
+                    cards: get().cards.map((c) =>
+                      discardIds.has(c.id) ? { ...c, zone: 'graveyard' as const, revealed: true } : c,
+                    ),
+                  })
+                }
+
                 get().advanceTurn()
               }, resolveDelay)
             }, 600)

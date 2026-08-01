@@ -25,6 +25,15 @@ export default function BroadcastPage() {
   const clearTurnAnnouncement = useGameStore((s) => s.clearTurnAnnouncement)
   const backgroundImage = useGameStore((s) => s.backgroundImage)
   const showOpponent = useGameStore((s) => s.showOpponent)
+  const opponentName = useGameStore((s) => s.opponentName)
+  const opponentLifeTotal = useGameStore((s) => s.opponentLifeTotal)
+  const activePlayer = useGameStore((s) => s.activePlayer)
+  const opponentCards = cards.filter((c) => (c.owner ?? 'player') === 'opponent')
+  const opponentBattlefield = opponentCards.filter((c) => c.zone === 'battlefield')
+  const opponentCommand = opponentCards.filter((c) => c.zone === 'command')
+  const opponentGraveyard = opponentCards.filter((c) => c.zone === 'graveyard')
+  const opponentExile = opponentCards.filter((c) => c.zone === 'exile')
+  const opponentHandCount = opponentCards.filter((c) => c.zone === 'hand').length
 
   useEffect(() => {
     if (!turnAnnouncement) return
@@ -102,6 +111,9 @@ export default function BroadcastPage() {
             LIFE {lifeTotal}
           </span>
           <span style={{ color: '#79c0ff' }}>TURN {turn}</span>
+          <span style={{ color: activePlayer === 'opponent' ? '#f85149' : '#3fb950' }}>
+            {activePlayer === 'opponent' ? `● ${(opponentName ?? 'OPPONENT').toUpperCase()}'S TURN` : '● YOUR TURN'}
+          </span>
           <span style={{ color: '#3fb950' }}>● HAND HIDDEN</span>
         </div>
       </header>
@@ -111,18 +123,32 @@ export default function BroadcastPage() {
           {showOpponent && (
             <div
               style={{
-                height: '18%',
+                height: '22%',
                 flexShrink: 0,
                 display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                background: 'rgba(0,0,0,0.3)',
+                flexDirection: 'column',
+                padding: '6px 14px',
+                background: 'rgba(0,0,0,0.32)',
                 borderBottom: '1px solid rgba(255,255,255,0.12)',
-                color: '#8b949e',
-                fontSize: '0.8rem',
+                overflow: 'hidden',
               }}
             >
-              Opponent&apos;s Board
+              <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 4, fontSize: '0.7rem', fontWeight: 700 }}>
+                <span style={{ color: '#f85149' }}>{opponentName ?? 'Opponent'}</span>
+                <span style={{ color: opponentLifeTotal <= 0 ? '#f85149' : opponentLifeTotal <= 5 ? '#d29922' : '#e6edf3' }}>
+                  LIFE {opponentLifeTotal}
+                </span>
+                <span style={{ color: '#8b949e' }}>CMD {opponentCommand.length}</span>
+                <span style={{ color: '#8b949e' }}>GY {opponentGraveyard.length}</span>
+                <span style={{ color: '#8b949e' }}>EX {opponentExile.length}</span>
+                <span style={{ color: '#8b949e' }}>HAND {opponentHandCount} (hidden)</span>
+              </div>
+              <div style={{ flex: 1, minHeight: 0, display: 'flex', flexWrap: 'wrap', gap: 5, alignContent: 'flex-start', overflow: 'hidden' }}>
+                {opponentBattlefield.map((card) => <PublicCard key={card.id} card={card} width={84} />)}
+                {opponentBattlefield.length === 0 && (
+                  <span style={{ color: 'rgba(255,255,255,0.35)', fontSize: '0.75rem' }}>Opponent has no permanents</span>
+                )}
+              </div>
             </div>
           )}
 
@@ -184,10 +210,10 @@ export default function BroadcastPage() {
   )
 }
 
-function PublicCard({ card }: { card: BoardCard }) {
+function PublicCard({ card, width = STREAM_CARD_WIDTH }: { card: BoardCard; width?: number }) {
   const [imgError, setImgError] = useState(false)
   return (
-    <div style={{ width: STREAM_CARD_WIDTH, flexShrink: 0, position: 'relative' }}>
+    <div style={{ width, flexShrink: 0, position: 'relative' }}>
       <img
         src={imgError ? CARD_BACK_URL : (card.imageUri || CARD_BACK_URL)}
         alt={card.name}

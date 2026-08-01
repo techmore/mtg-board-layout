@@ -1109,6 +1109,30 @@ describe('loadOpponentDeck', () => {
       vi.useRealTimers()
     }
   })
+
+  it('discards down to a 7-card hand at the end of its turn', () => {
+    vi.useFakeTimers()
+    try {
+      // No lands: the AI can't play a land, so it ends its turn with 8 cards
+      // (7 opening + 1 draw) and must discard one.
+      const cards = [
+        deckCard('Atarka, World Render', 'Legendary Creature — Dragon'),
+        ...Array.from({ length: 10 }, (_, i) => deckCard(`Bear ${i}`, 'Creature')),
+      ]
+      useGameStore.getState().loadOpponentDeck(['Atarka, World Render'], cards, 'Draconic Destruction')
+
+      vi.advanceTimersByTime(10500)
+
+      const state = useGameStore.getState()
+      const opponentHand = state.cards.filter((c) => (c.owner ?? 'player') === 'opponent' && c.zone === 'hand')
+      expect(opponentHand.length).toBe(7)
+      const opponentGraveyard = state.cards.filter((c) => (c.owner ?? 'player') === 'opponent' && c.zone === 'graveyard')
+      expect(opponentGraveyard.length).toBe(1)
+    } finally {
+      vi.clearAllTimers()
+      vi.useRealTimers()
+    }
+  })
 })
 
 describe('game store action history', () => {
