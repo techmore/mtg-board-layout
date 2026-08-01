@@ -54,7 +54,7 @@ DFC names normalized to front faces; arena-only printings excluded.
 | C2 | AI improvement: cast instants during combat, use commander more, keep 2+ land types for color fixing | [~] |
 | C3 | AI opponent in multiplayer? (solo AI only today) | [ ] |
 | C4 | Multiplayer rules parity: trigger engine + SBA server-side (protocol Phase 6) | [ ] |
-| C5 | Deck import polish: Moxfield/Archidekt raw list handling, import validation errors surfaced | [~] |
+| C5 | Deck import polish: Moxfield/Archidekt raw list handling, import validation errors surfaced | [x] section handling fixed (blank line returns to main after Commander/Sideboard; partners stay), notFound errors surfaced in DecksPage |
 
 ## Phase D: Data & Content Infrastructure
 
