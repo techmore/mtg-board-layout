@@ -48,6 +48,13 @@ export function createTurnPhases(set: SetFn, get: () => GameState): Pick<GameSta
       switch (state.currentPhase) {
         case 'beginning': {
           get().emitGameEvent({ type: 'upkeep' })
+          set((prev) => ({
+            cards: prev.cards.map((c) =>
+              (c.owner ?? 'player') === 'player' && c.zone === 'battlefield'
+                ? { ...c, tapped: false, damage: 0 }
+                : c,
+            ),
+          }))
           if (state.turn > 1) {
             get().drawCards(1)
           }

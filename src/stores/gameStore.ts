@@ -12,6 +12,7 @@ import { createCardMovement } from './gameCardMovement'
 import { createTokenActions } from './gameTokenActions'
 import { createManaActions } from './gameManaActions'
 import { createCombatActions } from './gameCombatActions'
+import { createStateBasedActions } from './gameStateBasedActions'
 
 export interface OverlayState {
   type: 'dice' | 'coin' | 'zoom' | 'graveyard' | null
@@ -126,8 +127,10 @@ export interface GameState {
   toggleTap: (cardId: string) => void
   addCounter: (cardId: string) => void
   removeCounter: (cardId: string) => void
+  addDamage: (cardId: string, amount: number) => void
   removeCard: (cardId: string) => void
   revealCard: (cardId: string) => void
+  checkStateBasedActions: () => void
 
   addToken: (token: Token) => void
   addTokenToCard: (cardId: string) => void
@@ -182,6 +185,7 @@ export const useGameStore = create<GameState>((set, get) => {
     ...createDeckActions(set, get),
     ...createCardMovement(set, get),
     ...createTokenActions(set, get),
+    ...createStateBasedActions(set, get),
     ...createManaActions(set, get),
     ...createCombatActions(set, get),
     ...createUndoActions(set),

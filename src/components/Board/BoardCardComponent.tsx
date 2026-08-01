@@ -90,6 +90,30 @@ export function BoardCardComponent({
             {card.type === 'planeswalker' ? `L:${card.counters > 0 ? '+' : ''}${card.counters}` : formatCounterCount(card.counters)}
           </div>
         )}
+        {card.damage !== undefined && card.damage > 0 && (
+          <div
+            style={{
+              position: 'absolute',
+              top: 4,
+              left: 4,
+              minWidth: 22,
+              height: 22,
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              borderRadius: 999,
+              padding: '0 5px',
+              boxSizing: 'border-box',
+              background: 'rgba(248,81,73,0.92)',
+              color: '#fff',
+              fontSize: '0.65rem',
+              fontWeight: 800,
+            }}
+            title={`${card.damage} damage marked`}
+          >
+            {card.damage}✕
+          </div>
+        )}
         <TokenBadge count={card.tokenCount} />
         {card.manaCost && (
           <div

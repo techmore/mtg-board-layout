@@ -30,6 +30,14 @@ export function isLand(type: string) {
   return type === 'land'
 }
 
+export function getCreaturePower(typeLine: string | undefined): number {
+  return parseInt(typeLine?.match(/(\d+)\//)?.[1] ?? '0', 10)
+}
+
+export function getCreatureToughness(typeLine: string | undefined): number {
+  return parseInt(typeLine?.match(/\/(\d+)/)?.[1] ?? '0', 10)
+}
+
 export function parseManaCost(cost: string) {
   const symbols = cost.match(/\{[^}]+\}/g) ?? []
   const colored: Record<string, number> = { W: 0, U: 0, B: 0, R: 0, G: 0, C: 0 }

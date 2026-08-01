@@ -4,7 +4,7 @@ import { pushUndo, prepareCardPlay, generatedManaState } from './gameRules'
 
 type SetFn = (partial: GameState | Partial<GameState> | ((state: GameState) => Partial<GameState>)) => void
 
-export function createCardMovement(set: SetFn, get: () => GameState): Pick<GameState, 'moveCard' | 'addCard' | 'reorderBattlefield' | 'toggleTap' | 'addCounter' | 'removeCounter' | 'removeCard' | 'revealCard'> {
+export function createCardMovement(set: SetFn, get: () => GameState): Pick<GameState, 'moveCard' | 'addCard' | 'reorderBattlefield' | 'toggleTap' | 'addCounter' | 'removeCounter' | 'addDamage' | 'removeCard' | 'revealCard'> {
   return {
     addCard: (card) =>
       set((state) => ({ ...pushUndo(state), cards: [...state.cards, card] })),
@@ -23,6 +23,7 @@ export function createCardMovement(set: SetFn, get: () => GameState): Pick<GameS
           zone,
           tapped: preparation?.entersBattlefield ? preparation.entersTapped : false,
           revealed: zone !== 'hand' && zone !== 'library',
+          damage: zone === 'battlefield' ? current.damage ?? 0 : 0,
           counters: current.type === 'planeswalker' && zone === 'battlefield' && current.counters === 0 ? 5 : current.counters,
         }
         if (preparation?.blockReason === 'land') {
@@ -170,6 +171,14 @@ export function createCardMovement(set: SetFn, get: () => GameState): Pick<GameS
         ...pushUndo(state),
         cards: state.cards.map((c) =>
           c.id === cardId ? { ...c, counters: c.counters - 1 } : c
+        ),
+      })),
+
+    addDamage: (cardId, amount) =>
+      set((state) => ({
+        ...pushUndo(state),
+        cards: state.cards.map((c) =>
+          c.id === cardId ? { ...c, damage: (c.damage ?? 0) + amount } : c
         ),
       })),
 

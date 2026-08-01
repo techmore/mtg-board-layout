@@ -1,5 +1,6 @@
 import type { GameState } from './gameStore'
 import { pickBlockers } from './opponentAI'
+import { getCreaturePower } from '../utils/misc'
 
 type SetFn = (partial: GameState | Partial<GameState> | ((state: GameState) => Partial<GameState>)) => void
 
@@ -56,7 +57,7 @@ export function createCombatActions(set: SetFn, get: () => GameState): Pick<Game
       for (const attackerId of attackers) {
         const attacker = state.cards.find((c) => c.id === attackerId)
         if (!attacker) continue
-        const power = parseInt(attacker.typeLine?.match(/(\d+)\//)?.[1] ?? '0')
+        const power = getCreaturePower(attacker.typeLine)
         if (power === 0) continue
         const isOpponentAttacker = (attacker.owner ?? 'player') === 'opponent'
 
@@ -65,7 +66,7 @@ export function createCombatActions(set: SetFn, get: () => GameState): Pick<Game
           const blockerId = assignedBlockers[0]
           const blocker = state.cards.find((c) => c.id === blockerId)
           if (blocker) {
-            for (let i = 0; i < power; i++) state.addCounter(blockerId)
+            if (power > 0) state.addDamage(blockerId, power)
             state.emitGameEvent({
               type: 'combat_damage',
               sourceCardId: attackerId,
@@ -73,9 +74,9 @@ export function createCombatActions(set: SetFn, get: () => GameState): Pick<Game
               targetCardId: blockerId,
               amount: power,
             })
-            const blockerPower = parseInt(blocker.typeLine?.match(/(\d+)\//)?.[1] ?? '0')
+            const blockerPower = getCreaturePower(blocker.typeLine)
             if (blockerPower > 0) {
-              for (let i = 0; i < blockerPower; i++) state.addCounter(attackerId)
+              state.addDamage(attackerId, blockerPower)
               state.emitGameEvent({
                 type: 'combat_damage',
                 sourceCardId: blockerId,
@@ -115,6 +116,7 @@ export function createCombatActions(set: SetFn, get: () => GameState): Pick<Game
       set({
         combatState: { active: false, attackers: [], blockers: {} },
       })
+      get().checkStateBasedActions()
     },
   }
 }

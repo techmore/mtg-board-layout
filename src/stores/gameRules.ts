@@ -75,6 +75,7 @@ export function resetAndDealCards(sourceCards: BoardCard[], openingHandSize = 0)
     zone: commanders.has(card.id) ? 'command' as const : 'library' as const,
     tapped: false,
     counters: 0,
+    damage: 0,
     revealed: commanders.has(card.id),
     commanderTax: card.commanderTax ?? 0,
   }))
@@ -183,7 +184,7 @@ export function generatedManaState(
 
 export function advanceTurnState(state: GameState): Partial<GameState> {
   const cards = moveCastSpellsToGraveyard(state.cards).map((card) => {
-    if (card.zone === 'battlefield') return { ...card, tapped: false }
+    if (card.zone === 'battlefield') return { ...card, tapped: false, damage: 0 }
     return card
   })
   return {

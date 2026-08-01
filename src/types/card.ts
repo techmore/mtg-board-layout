@@ -102,6 +102,7 @@ export interface BoardCard {
   zone: Zone
   tapped: boolean
   counters: number
+  damage?: number
   tokenCount?: number
   type: 'land' | 'creature' | 'instant' | 'sorcery' | 'enchantment' | 'artifact' | 'planeswalker' | 'battle' | 'other'
   revealed: boolean

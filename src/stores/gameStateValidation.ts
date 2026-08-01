@@ -30,6 +30,7 @@ export function isBoardCard(value: unknown): value is BoardCard {
     (card.subtypes === undefined || Array.isArray(card.subtypes)) &&
     (card.isBasicLand === undefined || typeof card.isBasicLand === 'boolean') &&
     (card.tokenCount === undefined || (typeof card.tokenCount === 'number' && Number.isInteger(card.tokenCount) && card.tokenCount >= 0)) &&
+    (card.damage === undefined || (typeof card.damage === 'number' && Number.isFinite(card.damage) && card.damage >= 0)) &&
     (card.manaProduction === undefined || isManaProduction(card.manaProduction)) &&
     (card.commanderTax === undefined || (typeof card.commanderTax === 'number' && Number.isInteger(card.commanderTax) && card.commanderTax >= 0)) &&
     (card.owner === undefined || card.owner === 'player' || card.owner === 'opponent')

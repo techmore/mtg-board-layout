@@ -107,6 +107,80 @@ describe('game over', () => {
   })
 })
 
+describe('state-based actions', () => {
+  it('kills a creature when damage reaches its toughness', () => {
+    useGameStore.setState({
+      cards: [card({ id: 'grizzly', name: 'Grizzly Bears', typeLine: '2/2', type: 'creature', zone: 'battlefield' })],
+    })
+    useGameStore.getState().addDamage('grizzly', 2)
+    expect(useGameStore.getState().cards.find((c) => c.id === 'grizzly')?.zone).toBe('battlefield')
+
+    useGameStore.getState().checkStateBasedActions()
+
+    const dead = useGameStore.getState().cards.find((c) => c.id === 'grizzly')
+    expect(dead?.zone).toBe('graveyard')
+    expect(dead?.damage).toBe(0)
+    expect(useGameStore.getState().cards.length).toBe(1)
+  })
+
+  it('spares a creature with non-lethal damage', () => {
+    useGameStore.setState({
+      cards: [card({ id: 'wall', name: 'Wall', typeLine: '1/3', type: 'creature', zone: 'battlefield' })],
+    })
+    useGameStore.getState().addDamage('wall', 2)
+    useGameStore.getState().checkStateBasedActions()
+    expect(useGameStore.getState().cards.find((c) => c.id === 'wall')?.zone).toBe('battlefield')
+  })
+
+  it('kills a creature whose toughness dropped below one from counters', () => {
+    useGameStore.setState({
+      cards: [card({ id: 'bear', name: 'Bear', typeLine: '2/2', type: 'creature', zone: 'battlefield', counters: -2 })],
+    })
+    useGameStore.getState().checkStateBasedActions()
+    expect(useGameStore.getState().cards.find((c) => c.id === 'bear')?.zone).toBe('graveyard')
+  })
+
+  it('clears damage and untaps on the beginning phase of the player turn', () => {
+    useGameStore.setState({
+      cards: [card({ id: 'grizzly', name: 'Grizzly Bears', typeLine: '2/2', type: 'creature', zone: 'battlefield', damage: 1, tapped: true })],
+      currentPhase: 'beginning',
+    })
+    useGameStore.getState().advancePhase()
+    const after = useGameStore.getState().cards.find((c) => c.id === 'grizzly')
+    expect(after?.tapped).toBe(false)
+    expect(after?.damage).toBe(0)
+  })
+
+  it('combat damage kills a blocked creature through state-based actions', () => {
+    useGameStore.setState({
+      cards: [
+        card({ id: 'attacker', name: 'Beater', typeLine: '4/4', type: 'creature', zone: 'battlefield', tapped: true }),
+        card({ id: 'blocker', name: 'Chump', typeLine: '1/3', type: 'creature', zone: 'battlefield', owner: 'opponent' }),
+      ],
+      combatState: { active: true, attackers: ['attacker'], blockers: { attacker: ['blocker'] } },
+    })
+
+    useGameStore.getState().resolveCombat()
+
+    const attacker = useGameStore.getState().cards.find((c) => c.id === 'attacker')
+    const blocker = useGameStore.getState().cards.find((c) => c.id === 'blocker')
+    expect(blocker?.zone).toBe('graveyard')
+    expect(attacker?.zone).toBe('battlefield')
+    expect(attacker?.damage).toBe(1)
+  })
+
+  it('undoes state-based action deaths as one step', () => {
+    useGameStore.setState({
+      cards: [card({ id: 'bear', name: 'Bear', typeLine: '2/2', type: 'creature', zone: 'battlefield', damage: 2 })],
+    })
+    useGameStore.getState().checkStateBasedActions()
+    expect(useGameStore.getState().cards.find((c) => c.id === 'bear')?.zone).toBe('graveyard')
+
+    useGameStore.getState().undo()
+    expect(useGameStore.getState().cards.find((c) => c.id === 'bear')?.zone).toBe('battlefield')
+  })
+})
+
 describe('loadOpponentDeck', () => {
   it('loads a simple commander deck with the commander in the command zone', () => {
     vi.useFakeTimers()
