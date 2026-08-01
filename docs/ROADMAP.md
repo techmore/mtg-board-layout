@@ -38,7 +38,7 @@ DFC names normalized to front faces; arena-only printings excluded.
 
 | # | Ability | Mechanic needed | Status |
 |---|---------|-----------------|--------|
-| B1 | Keywords (flying, trample, lifelink, deathtouch, haste, vigilance, reach, first strike, ward, indestructible, hexproof) | Parse keywords from rules JSON; combat modifiers (flying/reach blocking, trample overflow, lifelink heal, deathtouch lethal, indestructible survival, haste/vigilance attack rules) | [ ] |
+| B1 | Keywords (flying, trample, lifelink, deathtouch, haste, vigilance, reach, first strike, ward, indestructible, hexproof) | **flying (blocking validity), trample (damage overflow), lifelink (heal), deathtouch (lethal mark), indestructible (survives SBA), haste (attack same turn), reach (blocks fliers) DONE in combat + AI.** First strike / double strike (damage priority) and hexproof/ward (targeting) pending | [~] |
 | B2 | Targeting | `TargetCard.tsx` exists — wire target-selection step into cast/resolve flow for spells and abilities that target | [~] |
 | B3 | Continuous / temporary effects | `EffectHistoryEntry` exists — model "until end of turn", pump spells, auras | [~] |
 | B4 | Modal spells & kicker | Cost-choice UI before resolution | [ ] |
@@ -50,7 +50,7 @@ DFC names normalized to front faces; arena-only printings excluded.
 
 | # | Item | Status |
 |---|------|--------|
-| C1 | AI opponent deck selection (choose any imported/prebuilt deck for the AI) | [ ] |
+| C1 | AI opponent deck selection (choose any imported/prebuilt deck for the AI) | [x] OpponentSetupDialog — pick from all 16 prebuilt or imported decks |
 | C2 | AI improvement: cast instants during combat, use commander more, keep 2+ land types for color fixing | [~] |
 | C3 | AI opponent in multiplayer? (solo AI only today) | [ ] |
 | C4 | Multiplayer rules parity: trigger engine + SBA server-side (protocol Phase 6) | [ ] |
