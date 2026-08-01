@@ -1,6 +1,9 @@
 import { useEffect, useState } from 'react'
 import { useGameStore } from '../../stores/gameStore'
 import { CARD_BACK_URL } from '../../constants'
+import { getCachedCardRules, getCardRule } from '../../stores/cardRulesLoader'
+import { getCardPower, getCardToughness } from '../../utils/misc'
+import { formatCounterCount } from './cardHelpers'
 
 export default function CardZoom() {
   const [imgError, setImgError] = useState(false)
@@ -22,6 +25,18 @@ export default function CardZoom() {
 
   const card = cards.find((c) => c.id === overlay.cardId)
   if (!card) return null
+
+  const rule = getCardRule(card.name, getCachedCardRules())
+  const oracleText = card.oracleText ?? rule?.oracleText
+  const isCreature = card.type === 'creature'
+  const power = getCardPower(card)
+  const toughness = getCardToughness(card)
+  const stateBits: string[] = []
+  if (card.tapped) stateBits.push('tapped')
+  if (card.counters !== 0) stateBits.push(`${formatCounterCount(card.counters)} counter(s)`)
+  if ((card.damage ?? 0) > 0) stateBits.push(`${card.damage} damage`)
+  if ((card.powerBoost ?? 0) !== 0 || (card.toughnessBoost ?? 0) !== 0) stateBits.push(`pumped +${card.powerBoost ?? 0}/+${card.toughnessBoost ?? 0}`)
+  if ((card.tokenCount ?? 0) > 0) stateBits.push(`${card.tokenCount} token(s)`)
 
   return (
     <div
@@ -46,11 +61,13 @@ export default function CardZoom() {
       <div
         onClick={(e) => e.stopPropagation()}
         style={{
-          maxWidth: '90vw',
-          maxHeight: '90vh',
+          maxWidth: 'min(900px, 92vw)',
+          maxHeight: '92vh',
           display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
+          gap: 16,
+          alignItems: 'flex-start',
+          justifyContent: 'center',
+          flexWrap: 'wrap',
         }}
       >
         <img
@@ -58,21 +75,81 @@ export default function CardZoom() {
           alt={card.name}
           onError={() => setImgError(true)}
           style={{
-            maxWidth: '100%',
-            maxHeight: '85vh',
+            maxWidth: 'min(320px, 60vw)',
+            maxHeight: '82vh',
             borderRadius: 12,
             boxShadow: '0 8px 32px rgba(0,0,0,0.5)',
           }}
         />
         <div
           style={{
-            marginTop: 8,
-            color: '#e6edf3',
-            fontSize: '1.1rem',
-            fontWeight: 600,
+            width: 'min(420px, 100%)',
+            display: 'flex',
+            flexDirection: 'column',
+            gap: 10,
+            background: '#161b22',
+            border: '1px solid #30363d',
+            borderRadius: 12,
+            padding: 18,
+            boxShadow: '0 8px 32px rgba(0,0,0,0.5)',
           }}
         >
-          {card.name}
+          <div style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'space-between', gap: 12 }}>
+            <div style={{ color: '#e6edf3', fontSize: '1.15rem', fontWeight: 700 }}>{card.name}</div>
+            {card.manaCost && (
+              <div style={{ color: '#ffd33d', fontSize: '0.9rem', fontWeight: 800, whiteSpace: 'nowrap' }}>
+                {card.manaCost}
+              </div>
+            )}
+          </div>
+          <div style={{ color: '#8b949e', fontSize: '0.78rem' }}>
+            {card.typeLine}
+            {isCreature && (
+              <span style={{ color: '#d29922', marginLeft: 8, fontWeight: 700 }}>
+                {power}/{toughness}
+              </span>
+            )}
+          </div>
+          {stateBits.length > 0 && (
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: 5 }}>
+              {stateBits.map((bit) => (
+                <span
+                  key={bit}
+                  style={{
+                    padding: '2px 8px',
+                    borderRadius: 999,
+                    background: 'rgba(88,166,255,0.12)',
+                    border: '1px solid rgba(88,166,255,0.3)',
+                    color: '#79c0ff',
+                    fontSize: '0.68rem',
+                    fontWeight: 700,
+                  }}
+                >
+                  {bit}
+                </span>
+              ))}
+            </div>
+          )}
+          {oracleText ? (
+            <div
+              style={{
+                color: '#d0d7de',
+                fontSize: '0.82rem',
+                lineHeight: 1.55,
+                whiteSpace: 'pre-line',
+                maxHeight: 300,
+                overflowY: 'auto',
+                borderTop: '1px solid rgba(255,255,255,0.08)',
+                paddingTop: 10,
+              }}
+            >
+              {oracleText}
+            </div>
+          ) : (
+            <div style={{ color: '#8b949e', fontSize: '0.78rem', fontStyle: 'italic' }}>
+              No card text available for this card.
+            </div>
+          )}
         </div>
       </div>
     </div>
