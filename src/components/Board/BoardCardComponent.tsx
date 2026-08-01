@@ -28,6 +28,7 @@ export function BoardCardComponent({
   // Tapped cards are wider after rotation. Reserve that footprint so the
   // rotated image cannot spill into a neighboring card or grid slot.
   const [imgError, setImgError] = useState(false)
+  const [hover, setHover] = useState(false)
   const visualWidth = card.tapped ? cardHeight : cardWidth
   const manaPool = useGameStore((s) => s.manaPool)
   const affordable = card.zone === 'hand' && card.manaCost ? canPayManaCost(manaPool, card.manaCost) : null
@@ -36,6 +37,8 @@ export function BoardCardComponent({
   return (
     <div
       title={cardRuleSummary(card)}
+      onMouseEnter={() => setHover(true)}
+      onMouseLeave={() => setHover(false)}
       style={{
         width: visualWidth,
         position: 'relative',
@@ -79,7 +82,9 @@ export function BoardCardComponent({
           }}
         />
         {reorderBattlefield && (
-          <BattlefieldOrderControls cardId={card.id} reorderBattlefield={reorderBattlefield} />
+          <div style={{ opacity: hover ? 1 : 0, transition: 'opacity 0.12s' }}>
+            <BattlefieldOrderControls cardId={card.id} reorderBattlefield={reorderBattlefield} />
+          </div>
         )}
         {card.counters !== 0 && (
           <div style={{

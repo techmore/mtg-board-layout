@@ -118,8 +118,12 @@ export function BoardBattlefield({
                 flexShrink: 0,
                 position: 'relative',
               }}
+              onMouseEnter={(e) => { (e.currentTarget.querySelector('[data-order-controls]') as HTMLElement | null)?.style.setProperty('opacity', '1') }}
+              onMouseLeave={(e) => { (e.currentTarget.querySelector('[data-order-controls]') as HTMLElement | null)?.style.setProperty('opacity', '0') }}
             >
-              <BattlefieldOrderControls cardId={stack[0].id} reorderBattlefield={reorderBattlefield} />
+              <div data-order-controls style={{ opacity: 0, transition: 'opacity 0.12s', position: 'absolute', top: 4, left: 4, zIndex: 20 }}>
+                <BattlefieldOrderControls cardId={stack[0].id} reorderBattlefield={reorderBattlefield} />
+              </div>
               {stack.map((card, idx) => (
                 <div
                   key={card.id}

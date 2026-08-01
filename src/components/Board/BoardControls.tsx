@@ -135,9 +135,6 @@ export function BoardControls({
       <div style={dividerStyle} />
       <BoardBtn onClick={() => useGameStore.getState().drawCards(7)}>Draw 7</BoardBtn>
       <BoardBtn onClick={() => useGameStore.getState().drawCards(1)}>Draw 1</BoardBtn>
-      <BoardBtn onClick={() => useGameStore.getState().redeal(7)}>
-        Redeal 7
-      </BoardBtn>
       <div style={dividerStyle} />
       <BoardBtn onClick={onBackgroundOnly}>
         Background Only
@@ -244,21 +241,6 @@ export function BoardControls({
         )}
       </div>
 
-      <div
-        aria-label={`Turn ${turn}`}
-        style={{
-          padding: '4px 9px',
-          borderRadius: 999,
-          background: 'rgba(88,166,255,0.14)',
-          border: '1px solid rgba(88,166,255,0.3)',
-          color: '#79c0ff',
-          fontSize: '0.75rem',
-          fontWeight: 700,
-          whiteSpace: 'nowrap',
-        }}
-      >
-        Turn {turn}
-      </div>
       <BoardBtn onClick={() => { if (window.confirm('New hand?')) redeal() }}>
         New Hand
       </BoardBtn>
