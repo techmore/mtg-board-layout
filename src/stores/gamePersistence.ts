@@ -15,7 +15,7 @@ export const STORAGE_KEY = 'mtg-board-state'
 
 export type PersistedGameState = Pick<
   GameState,
-  'activeDeckId' | 'lifeTotal' | 'cards' | 'cardScale' | 'manaPool' | 'potentialMana' | 'manaLog' | 'effectHistory' | 'tokens' | 'backgroundImage' | 'backgrounds' | 'rollHistory' | 'overlay' | 'showOpponent' | 'opponentName' | 'aiFixedDeck' | 'opponentLifeTotal' | 'turn' | 'currentPhase' | 'landPlaysThisTurn' | 'turnAnnouncement' | 'triggerStack'
+  'activeDeckId' | 'lifeTotal' | 'cards' | 'cardScale' | 'manaPool' | 'potentialMana' | 'manaLog' | 'effectHistory' | 'tokens' | 'backgroundImage' | 'backgrounds' | 'rollHistory' | 'overlay' | 'showOpponent' | 'opponentName' | 'aiFixedDeck' | 'opponentLifeTotal' | 'turnPlayerMs' | 'turnOpponentMs' | 'turn' | 'currentPhase' | 'landPlaysThisTurn' | 'turnAnnouncement' | 'triggerStack'
 >
 
 export const defaultGameState: PersistedGameState & { undoStack: GameSnapshot[]; redoStack: GameSnapshot[] } = {
@@ -35,6 +35,8 @@ export const defaultGameState: PersistedGameState & { undoStack: GameSnapshot[];
   showOpponent: false,
   opponentName: null,
   aiFixedDeck: true,
+  turnPlayerMs: 0,
+  turnOpponentMs: 0,
   opponentLifeTotal: 40,
   turn: 1,
   currentPhase: 'beginning' as Phase,
@@ -103,6 +105,8 @@ export function loadPersistedGameState(): PersistedGameState {
       showOpponent: typeof parsed.showOpponent === 'boolean' ? parsed.showOpponent : defaultGameState.showOpponent,
       opponentName: typeof parsed.opponentName === 'string' ? parsed.opponentName : defaultGameState.opponentName,
       aiFixedDeck: typeof parsed.aiFixedDeck === 'boolean' ? parsed.aiFixedDeck : defaultGameState.aiFixedDeck,
+      turnPlayerMs: Number.isFinite(parsed.turnPlayerMs) ? Math.max(0, parsed.turnPlayerMs!) : defaultGameState.turnPlayerMs,
+      turnOpponentMs: Number.isFinite(parsed.turnOpponentMs) ? Math.max(0, parsed.turnOpponentMs!) : defaultGameState.turnOpponentMs,
       opponentLifeTotal: Number.isFinite(parsed.opponentLifeTotal) ? parsed.opponentLifeTotal! : defaultGameState.opponentLifeTotal,
       turn: Number.isFinite(parsed.turn) ? Math.max(1, parsed.turn!) : defaultGameState.turn,
       currentPhase: PHASES.includes(parsed.currentPhase as any) ? parsed.currentPhase as Phase : defaultGameState.currentPhase,
@@ -141,6 +145,8 @@ export function persistGameState(state: GameState) {
       showOpponent: state.showOpponent,
       opponentName: state.opponentName,
       aiFixedDeck: state.aiFixedDeck,
+      turnPlayerMs: state.turnPlayerMs,
+      turnOpponentMs: state.turnOpponentMs,
       opponentLifeTotal: state.opponentLifeTotal,
       turn: state.turn,
       currentPhase: state.currentPhase,

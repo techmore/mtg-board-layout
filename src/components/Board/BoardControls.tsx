@@ -9,7 +9,6 @@ import { ManaUsageLog } from './ManaUsageLog'
 import { OpponentSetupDialog } from './OpponentSetupDialog'
 import { PhaseBar } from './PhaseBar'
 import { DRACONIC_DESTRUCTION_DECK } from '../../data/prebuiltDecks'
-import type { OpponentZoneSize } from '../../pages/BoardOpponentZone'
 
 interface BoardControlsProps {
   handleDeckChange: (deckId: string) => Promise<void>
@@ -20,8 +19,8 @@ interface BoardControlsProps {
   manaUsageLabel: string
   setManaUsageLabel: (label: string) => void
   onBackgroundOnly: () => void
-  tableView: OpponentZoneSize
-  onCycleTableView: () => void
+  opponentSize: number
+  onCycleOpponentSize: () => void
 }
 
 export function BoardControls({
@@ -33,8 +32,8 @@ export function BoardControls({
   manaUsageLabel,
   setManaUsageLabel,
   onBackgroundOnly,
-  tableView,
-  onCycleTableView,
+  opponentSize,
+  onCycleOpponentSize,
 }: BoardControlsProps) {
   const activeDeckId = useGameStore((s) => s.activeDeckId)
   const decks = useDeckStore((s) => s.decks)
@@ -209,21 +208,21 @@ export function BoardControls({
         )}
         {showOpponent && (
           <button
-            title={`Table view: ${tableView === 'normal' ? 'compact' : tableView === 'full' ? 'full table' : 'opponent focused'}. Click to change.`}
-            onClick={onCycleTableView}
+            title="Cycle table presets. Drag the divider bar to resize freely."
+            onClick={onCycleOpponentSize}
             style={{
               padding: '4px 10px',
               borderRadius: 4,
               border: '1px solid rgba(255,255,255,0.18)',
               background: 'rgba(255,255,255,0.06)',
-              color: tableView === 'normal' ? '#8b949e' : '#58a6ff',
+              color: opponentSize < 0.4 ? '#8b949e' : '#58a6ff',
               cursor: 'pointer',
               fontSize: '0.7rem',
               fontWeight: 700,
               whiteSpace: 'nowrap',
             }}
           >
-            {tableView === 'normal' ? 'Table: Normal' : tableView === 'full' ? 'Table: Full' : 'Table: Opponent'}
+            {opponentSize < 0.4 ? 'Table: Compact' : opponentSize < 0.65 ? 'Table: Split' : 'Table: Opponent'}
           </button>
         )}
         {!combatState.active ? (

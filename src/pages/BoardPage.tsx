@@ -8,6 +8,8 @@ import { CardContextMenu } from '../components/Board/CardContextMenu'
 import { BoardControls } from '../components/Board/BoardControls'
 import { BoardZonesPanel } from '../components/Board/BoardZonesPanel'
 import { GameOverOverlay } from '../components/Board/GameOverOverlay'
+import { TurnTimerPill } from '../components/Board/TurnTimerPill'
+import { useState, useRef, useEffect } from 'react'
 import { useBoardInteractions } from './useBoardInteractions'
 import { BoardTurnPrompt } from './BoardTurnPrompt'
 import { BoardOpponentZone } from './BoardOpponentZone'
@@ -33,11 +35,32 @@ export default function BoardPage() {
     manaUsageKind, setManaUsageKind,
     manaUsageLabel, setManaUsageLabel,
     backgroundOnly, setBackgroundOnly,
-    tableView, setTableView,
+    opponentSize, setOpponentSize,
     cardLayout, dragCardId,
     handleRightClick, handleDeckChange,
     onDragOver, onDropOnBattlefield,
   } = useBoardInteractions()
+
+  const boardAreaRef = useRef<HTMLDivElement>(null)
+  const [resizing, setResizing] = useState(false)
+
+  useEffect(() => {
+    if (!resizing) return
+    const onMove = (e: MouseEvent) => {
+      const el = boardAreaRef.current
+      if (!el) return
+      const rect = el.getBoundingClientRect()
+      const ratio = (e.clientY - rect.top) / rect.height
+      setOpponentSize(Math.min(0.85, Math.max(0.2, ratio)))
+    }
+    const onUp = () => setResizing(false)
+    window.addEventListener('mousemove', onMove)
+    window.addEventListener('mouseup', onUp)
+    return () => {
+      window.removeEventListener('mousemove', onMove)
+      window.removeEventListener('mouseup', onUp)
+    }
+  }, [resizing, setOpponentSize])
 
   return (
     <div
@@ -171,18 +194,33 @@ export default function BoardPage() {
       )}
 
       <div
+        ref={boardAreaRef}
         style={{
           flex: 1,
           display: 'flex',
+          flexDirection: 'column',
           minHeight: 0,
           position: 'relative',
           overflow: 'auto',
           background: '#10151d',
         }}
       >
+        {showOpponent && (
+          <BoardOpponentZone
+            opponentViewModel={opponentViewModel}
+            opponentLifeTotal={opponentLifeTotal}
+            activePlayer={activePlayer}
+            setOverlay={setOverlay}
+            handleRightClick={handleRightClick}
+            cardWidth={cardLayout.boardCard.width}
+            cardHeight={cardLayout.boardCard.height}
+            ratio={opponentSize}
+          />
+        )}
+
         <div
           style={{
-            flex: 1,
+            flex: 1 - opponentSize,
             minWidth: 0,
             minHeight: cardLayout.zonePanelHeight + cardLayout.boardCard.height + 24,
             display: 'flex',
@@ -191,17 +229,34 @@ export default function BoardPage() {
           }}
         >
           {showOpponent && (
-            <BoardOpponentZone
-              opponentViewModel={opponentViewModel}
-              opponentLifeTotal={opponentLifeTotal}
-              activePlayer={activePlayer}
-              setOverlay={setOverlay}
-              handleRightClick={handleRightClick}
-              cardWidth={cardLayout.boardCard.width}
-              cardHeight={cardLayout.boardCard.height}
-              size={tableView}
-            />
+            <div
+              onMouseDown={(e) => { e.preventDefault(); setResizing(true) }}
+              style={{
+                position: 'absolute',
+                top: -5,
+                left: 0,
+                right: 0,
+                height: 10,
+                zIndex: 40,
+                cursor: 'row-resize',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+              }}
+              title="Drag to resize the opponent's half"
+            >
+              <div
+                style={{
+                  width: 64,
+                  height: 4,
+                  borderRadius: 999,
+                  background: resizing ? 'rgba(88,166,255,0.9)' : 'rgba(255,255,255,0.35)',
+                  transition: 'background 0.12s',
+                }}
+              />
+            </div>
           )}
+          <TurnTimerPill />
 
           <BoardControls
             handleDeckChange={handleDeckChange}
@@ -212,8 +267,8 @@ export default function BoardPage() {
             manaUsageLabel={manaUsageLabel}
             setManaUsageLabel={setManaUsageLabel}
             onBackgroundOnly={() => setBackgroundOnly(true)}
-            tableView={tableView}
-            onCycleTableView={() => setTableView(tableView === 'normal' ? 'full' : tableView === 'full' ? 'opponent' : 'normal')}
+            opponentSize={opponentSize}
+            onCycleOpponentSize={() => setOpponentSize(opponentSize < 0.4 ? 0.5 : opponentSize < 0.65 ? 0.75 : 0.3)}
           />
 
           <div

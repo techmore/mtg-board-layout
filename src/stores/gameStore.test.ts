@@ -79,6 +79,8 @@ function resetStore() {
     undoStack: [],
     redoStack: [],
     gameOver: null,
+    turnPlayerMs: 0,
+    turnOpponentMs: 0,
   })
 }
 
@@ -94,6 +96,31 @@ describe('aiFixedDeck setting', () => {
     expect(useGameStore.getState().aiFixedDeck).toBe(false)
     useGameStore.getState().setAiFixedDeck(true)
     expect(useGameStore.getState().aiFixedDeck).toBe(true)
+  })
+})
+
+describe('turn timer', () => {
+  it('accumulates turn time per player', () => {
+    useGameStore.getState().addTurnTime('player', 65_000)
+    useGameStore.getState().addTurnTime('opponent', 30_000)
+    useGameStore.getState().addTurnTime('player', 5_000)
+    const state = useGameStore.getState()
+    expect(state.turnPlayerMs).toBe(70_000)
+    expect(state.turnOpponentMs).toBe(30_000)
+  })
+
+  it('ignores negative durations', () => {
+    useGameStore.getState().addTurnTime('player', -100)
+    expect(useGameStore.getState().turnPlayerMs).toBe(0)
+  })
+
+  it('resets accumulated time when a new game is dealt', () => {
+    useGameStore.getState().addTurnTime('player', 65_000)
+    useGameStore.getState().addTurnTime('opponent', 30_000)
+    useGameStore.getState().redeal(7)
+    const state = useGameStore.getState()
+    expect(state.turnPlayerMs).toBe(0)
+    expect(state.turnOpponentMs).toBe(0)
   })
 })
 

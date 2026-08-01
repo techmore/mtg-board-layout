@@ -72,7 +72,7 @@ export function createDeckActions(set: SetFn, get: () => GameState): Pick<GameSt
       }
 
       cacheDeckImages(deckCards)
-      set({ ...pushUndo(preState), activeDeckId: deckId ?? null, cards: shuffle(cards), manaPool: emptyManaPool(), potentialMana: [], manaLog: [], effectHistory: [], lifeTotal: 40, tokens: [], rollHistory: [], overlay: { type: null }, turn: 1, landPlaysThisTurn: 0, drawNotice: null, turnAnnouncement: null, turnPrompt: null })
+      set({ ...pushUndo(preState), activeDeckId: deckId ?? null, cards: shuffle(cards), manaPool: emptyManaPool(), potentialMana: [], manaLog: [], effectHistory: [], lifeTotal: 40, tokens: [], rollHistory: [], overlay: { type: null }, turn: 1, turnPlayerMs: 0, turnOpponentMs: 0, landPlaysThisTurn: 0, drawNotice: null, turnAnnouncement: null, turnPrompt: null })
     },
 
     reshuffle: () =>
@@ -86,6 +86,8 @@ export function createDeckActions(set: SetFn, get: () => GameState): Pick<GameSt
           manaLog: [],
           effectHistory: [],
           lifeTotal: 40,
+          turnPlayerMs: 0,
+          turnOpponentMs: 0,
           tokens: [],
           rollHistory: [],
           overlay: { type: null },
@@ -109,6 +111,8 @@ export function createDeckActions(set: SetFn, get: () => GameState): Pick<GameSt
           manaLog: [],
           effectHistory: [],
           lifeTotal: 40,
+          turnPlayerMs: 0,
+          turnOpponentMs: 0,
           tokens: [],
           rollHistory: [],
           overlay: { type: null },

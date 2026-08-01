@@ -73,6 +73,8 @@ export interface GameState {
   opponentName: string | null
   aiFixedDeck: boolean
   opponentLifeTotal: number
+  turnPlayerMs: number
+  turnOpponentMs: number
   activePlayer: ActivePlayer
   opponentManaPool: ManaPool
   opponentPotentialMana: PotentialManaSource[]
@@ -100,6 +102,7 @@ export interface GameState {
   setBroadcasting: (active: boolean) => void
   setGameOver: (gameOver: { winner: 'player' | 'opponent' } | null) => void
   setAiFixedDeck: (fixed: boolean) => void
+  addTurnTime: (who: 'player' | 'opponent', ms: number) => void
   toggleOpponent: () => void
   setOpponentLife: (n: number) => void
   loadOpponentDeck: (commanderNames: string[], deckCards: DeckCard[], opponentName?: string) => void
@@ -223,6 +226,10 @@ export const useGameStore = create<GameState>((set, get) => {
     setBroadcasting: (active) => set({ broadcasting: active }),
     setGameOver: (gameOver) => set({ gameOver }),
     setAiFixedDeck: (fixed) => set({ aiFixedDeck: fixed }),
+    addTurnTime: (who, ms) =>
+      set((state) => who === 'player'
+        ? { turnPlayerMs: state.turnPlayerMs + Math.max(0, Math.round(ms)) }
+        : { turnOpponentMs: state.turnOpponentMs + Math.max(0, Math.round(ms)) }),
     toggleOpponent: () =>
       set((state) => ({ showOpponent: !state.showOpponent })),
     setOpponentLife: (n) => set(() => ({
