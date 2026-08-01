@@ -95,18 +95,16 @@ export function createCombatActions(set: SetFn, get: () => GameState): Pick<Game
         const attackerDeathtouch = hasKeyword(attacker, 'deathtouch')
 
         const blocker = pair.blockerId ? current.cards.find((c) => c.id === pair.blockerId) : undefined
-        const blockerAlive = Boolean(blocker && blocker.zone === 'battlefield')
+        const liveBlocker = blocker && blocker.zone === 'battlefield' ? blocker : undefined
 
         if (attackerDeals) {
-          if (blockerAlive) {
-            const blockerPower = getCreaturePower(blocker.typeLine)
-
+          if (liveBlocker) {
             // Deathtouch makes any damage lethal — mark the target's full toughness.
             const damageToBlocker = attackerDeathtouch
-              ? Math.max(1, getCreatureToughness(blocker.typeLine) + blocker.counters)
+              ? Math.max(1, getCreatureToughness(liveBlocker.typeLine) + liveBlocker.counters)
               : power
             if (damageToBlocker > 0) {
-              state.addDamage(blocker.id, damageToBlocker)
+              state.addDamage(liveBlocker.id, damageToBlocker)
               if (attackerLifelink) {
                 if (isOpponentAttacker) set({ opponentLifeTotal: current.opponentLifeTotal + power })
                 else state.setLife(current.lifeTotal + power)
@@ -116,13 +114,13 @@ export function createCombatActions(set: SetFn, get: () => GameState): Pick<Game
               type: 'combat_damage',
               sourceCardId: attacker.id,
               sourceCardName: attacker.name,
-              targetCardId: blocker.id,
+              targetCardId: liveBlocker.id,
               amount: power,
             })
 
             // Trample: excess damage spills over to the defending player.
             if (attackerTrample && power > 0) {
-              const blockerToughness = getCreatureToughness(blocker.typeLine) + blocker.counters
+              const blockerToughness = getCreatureToughness(liveBlocker.typeLine) + liveBlocker.counters
               const excess = power - blockerToughness
               if (excess > 0) {
                 if (isOpponentAttacker) state.setLife(current.lifeTotal - excess)
@@ -154,21 +152,21 @@ export function createCombatActions(set: SetFn, get: () => GameState): Pick<Game
           }
         }
 
-        if (blockerDeals && blockerAlive) {
-          const blockerPower = getCreaturePower(blocker.typeLine)
+        if (blockerDeals && liveBlocker) {
+          const blockerPower = getCreaturePower(liveBlocker.typeLine)
           if (blockerPower > 0) {
-            const damageToAttacker = hasKeyword(blocker, 'deathtouch')
+            const damageToAttacker = hasKeyword(liveBlocker, 'deathtouch')
               ? Math.max(1, getCreatureToughness(attacker.typeLine) + attacker.counters)
               : blockerPower
             if (damageToAttacker > 0) state.addDamage(attacker.id, damageToAttacker)
-            if (hasKeyword(blocker, 'lifelink')) {
+            if (hasKeyword(liveBlocker, 'lifelink')) {
               if (isOpponentAttacker) set({ opponentLifeTotal: current.opponentLifeTotal + blockerPower })
               else state.setLife(current.lifeTotal + blockerPower)
             }
             state.emitGameEvent({
               type: 'combat_damage',
-              sourceCardId: blocker.id,
-              sourceCardName: blocker.name,
+              sourceCardId: liveBlocker.id,
+              sourceCardName: liveBlocker.name,
               targetCardId: attacker.id,
               amount: blockerPower,
             })
