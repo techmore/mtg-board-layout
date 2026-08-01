@@ -135,10 +135,6 @@ export function BoardControls({
       <div style={dividerStyle} />
       <BoardBtn onClick={() => useGameStore.getState().drawCards(7)}>Draw 7</BoardBtn>
       <BoardBtn onClick={() => useGameStore.getState().drawCards(1)}>Draw 1</BoardBtn>
-      <div style={dividerStyle} />
-      <BoardBtn onClick={onBackgroundOnly}>
-        Background Only
-      </BoardBtn>
       <div
         aria-label={`Land drops this turn: ${landPlaysThisTurn} of 1`}
         title="Land drop tracker for the current turn"
@@ -308,6 +304,10 @@ export function BoardControls({
       <div style={dividerStyle} />
 
       <div style={{ flex: 1 }} />
+
+      <BoardBtn onClick={onBackgroundOnly}>
+        Background Only
+      </BoardBtn>
 
       <button
         title={showOpponent ? 'Hide opponent zone' : 'Show opponent zone'}
