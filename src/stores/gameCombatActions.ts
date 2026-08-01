@@ -1,9 +1,15 @@
+import type { BoardCard } from '../types/card'
 import type { GameState } from './gameStore'
 import { pickBlockers } from './opponentAI'
 import { getCreaturePower, getCreatureToughness } from '../utils/misc'
 import { hasKeyword } from './cardRulesLoader'
 
 type SetFn = (partial: GameState | Partial<GameState> | ((state: GameState) => Partial<GameState>)) => void
+
+interface CombatPair {
+  attacker: BoardCard
+  blockerId?: string
+}
 
 export function createCombatActions(set: SetFn, get: () => GameState): Pick<GameState, 'toggleCombat' | 'toggleAttacker' | 'assignBlocker' | 'resolveCombat'> {
   return {
@@ -54,42 +60,53 @@ export function createCombatActions(set: SetFn, get: () => GameState): Pick<Game
         const oppBattlefield = state.cards.filter((c) => (c.owner ?? 'player') === 'opponent' && c.zone === 'battlefield')
         finalBlockers = pickBlockers(attackers, oppBattlefield, state.cards, state.turn)
       }
+
+      // Build combat pairs. Only flying/reach creatures can block a flying attacker.
+      const pairs: CombatPair[] = []
       for (const attackerId of attackers) {
-        const current = get()
-        const attacker = current.cards.find((c) => c.id === attackerId)
+        const attacker = get().cards.find((c) => c.id === attackerId)
         if (!attacker) continue
-        const power = getCreaturePower(attacker.typeLine)
-        if (power === 0) continue
-        const isOpponentAttacker = (attacker.owner ?? 'player') === 'opponent'
-
-        const attackerFlying = hasKeyword(attacker, 'flying')
-        const attackerTrample = hasKeyword(attacker, 'trample')
-        const attackerLifelink = hasKeyword(attacker, 'lifelink')
-
-        // Only flying/reach creatures can block a flying attacker.
-        let assignedBlockers: string[] | undefined = finalBlockers[attackerId]
-        if (attackerFlying && assignedBlockers && assignedBlockers.length > 0) {
-          const valid = assignedBlockers.filter((blockerId) => {
-            const blocker = current.cards.find((c) => c.id === blockerId)
+        if (getCreaturePower(attacker.typeLine) === 0) continue
+        let assigned: string[] | undefined = finalBlockers[attackerId]
+        if (hasKeyword(attacker, 'flying') && assigned && assigned.length > 0) {
+          const valid = assigned.filter((blockerId) => {
+            const blocker = get().cards.find((c) => c.id === blockerId)
             return blocker ? hasKeyword(blocker, 'flying') || hasKeyword(blocker, 'reach') : false
           })
-          assignedBlockers = valid.length > 0 ? valid : undefined
+          assigned = valid.length > 0 ? valid : undefined
         }
+        pairs.push({ attacker, blockerId: assigned?.[0] })
+      }
 
-        if (assignedBlockers && assignedBlockers.length > 0) {
-          const blockerId = assignedBlockers[0]
-          const blocker = current.cards.find((c) => c.id === blockerId)
-          if (blocker) {
+      const fast = (card: BoardCard | undefined) =>
+        card ? hasKeyword(card, 'first strike') || hasKeyword(card, 'double strike') : false
+      const dealsInRegularStep = (card: BoardCard | undefined) =>
+        card ? !(hasKeyword(card, 'first strike') && !hasKeyword(card, 'double strike')) : false
+
+      const deal = (pair: CombatPair, attackerDeals: boolean, blockerDeals: boolean) => {
+        const current = get()
+        const attacker = current.cards.find((c) => c.id === pair.attacker.id)
+        if (!attacker || attacker.zone !== 'battlefield') return
+        const power = getCreaturePower(attacker.typeLine)
+        if (power === 0) return
+        const isOpponentAttacker = (attacker.owner ?? 'player') === 'opponent'
+        const attackerLifelink = hasKeyword(attacker, 'lifelink')
+        const attackerTrample = hasKeyword(attacker, 'trample')
+        const attackerDeathtouch = hasKeyword(attacker, 'deathtouch')
+
+        const blocker = pair.blockerId ? current.cards.find((c) => c.id === pair.blockerId) : undefined
+        const blockerAlive = Boolean(blocker && blocker.zone === 'battlefield')
+
+        if (attackerDeals) {
+          if (blockerAlive) {
             const blockerPower = getCreaturePower(blocker.typeLine)
-            const blockerLifelink = hasKeyword(blocker, 'lifelink')
-            const attackerDeathtouch = hasKeyword(attacker, 'deathtouch')
 
             // Deathtouch makes any damage lethal — mark the target's full toughness.
             const damageToBlocker = attackerDeathtouch
               ? Math.max(1, getCreatureToughness(blocker.typeLine) + blocker.counters)
               : power
             if (damageToBlocker > 0) {
-              state.addDamage(blockerId, damageToBlocker)
+              state.addDamage(blocker.id, damageToBlocker)
               if (attackerLifelink) {
                 if (isOpponentAttacker) set({ opponentLifeTotal: current.opponentLifeTotal + power })
                 else state.setLife(current.lifeTotal + power)
@@ -97,9 +114,9 @@ export function createCombatActions(set: SetFn, get: () => GameState): Pick<Game
             }
             state.emitGameEvent({
               type: 'combat_damage',
-              sourceCardId: attackerId,
+              sourceCardId: attacker.id,
               sourceCardName: attacker.name,
-              targetCardId: blockerId,
+              targetCardId: blocker.id,
               amount: power,
             })
 
@@ -112,52 +129,78 @@ export function createCombatActions(set: SetFn, get: () => GameState): Pick<Game
                 else set({ opponentLifeTotal: current.opponentLifeTotal - excess })
               }
             }
-
-            if (blockerPower > 0) {
-              const damageToAttacker = hasKeyword(blocker, 'deathtouch')
-                ? Math.max(1, getCreatureToughness(attacker.typeLine) + attacker.counters)
-                : blockerPower
-              if (damageToAttacker > 0) state.addDamage(attackerId, damageToAttacker)
-              if (blockerLifelink) {
-                if (isOpponentAttacker) set({ opponentLifeTotal: current.opponentLifeTotal + blockerPower })
-                else state.setLife(current.lifeTotal + blockerPower)
+          } else {
+            if (isOpponentAttacker) {
+              const newLife = current.lifeTotal - power
+              if (attackerLifelink) set({ opponentLifeTotal: current.opponentLifeTotal + power })
+              state.setLife(newLife)
+              if (newLife <= 0) {
+                set({ turnAnnouncement: { id: Date.now(), text: 'YOU DEFEATED' }, turnPrompt: null, gameOver: { winner: 'opponent' } })
               }
-              state.emitGameEvent({
-                type: 'combat_damage',
-                sourceCardId: blockerId,
-                sourceCardName: blocker.name,
-                targetCardId: attackerId,
-                amount: blockerPower,
-              })
+            } else {
+              const newOppLife = current.opponentLifeTotal - power
+              if (attackerLifelink) state.setLife(current.lifeTotal + power)
+              set({ opponentLifeTotal: newOppLife })
+              if (newOppLife <= 0) {
+                set({ turnAnnouncement: { id: Date.now(), text: 'OPPONENT DEFEATED' }, turnPrompt: null, gameOver: { winner: 'player' } })
+              }
             }
+            state.emitGameEvent({
+              type: 'combat_damage',
+              sourceCardId: attacker.id,
+              sourceCardName: attacker.name,
+              amount: power,
+            })
           }
-        } else if (isOpponentAttacker) {
-          const newLife = current.lifeTotal - power
-          if (attackerLifelink) set({ opponentLifeTotal: current.opponentLifeTotal + power })
-          state.setLife(newLife)
-          if (newLife <= 0) {
-            set({ turnAnnouncement: { id: Date.now(), text: 'YOU DEFEATED' }, turnPrompt: null, gameOver: { winner: 'opponent' } })
-          }
-          state.emitGameEvent({
-            type: 'combat_damage',
-            sourceCardId: attackerId,
-            sourceCardName: attacker.name,
-            amount: power,
-          })
-        } else {
-          const newOppLife = current.opponentLifeTotal - power
-          if (attackerLifelink) state.setLife(current.lifeTotal + power)
-          set({ opponentLifeTotal: newOppLife })
-          if (newOppLife <= 0) {
-            set({ turnAnnouncement: { id: Date.now(), text: 'OPPONENT DEFEATED' }, turnPrompt: null, gameOver: { winner: 'player' } })
-          }
-          state.emitGameEvent({
-            type: 'combat_damage',
-            sourceCardId: attackerId,
-            sourceCardName: attacker.name,
-            amount: power,
-          })
         }
+
+        if (blockerDeals && blockerAlive) {
+          const blockerPower = getCreaturePower(blocker.typeLine)
+          if (blockerPower > 0) {
+            const damageToAttacker = hasKeyword(blocker, 'deathtouch')
+              ? Math.max(1, getCreatureToughness(attacker.typeLine) + attacker.counters)
+              : blockerPower
+            if (damageToAttacker > 0) state.addDamage(attacker.id, damageToAttacker)
+            if (hasKeyword(blocker, 'lifelink')) {
+              if (isOpponentAttacker) set({ opponentLifeTotal: current.opponentLifeTotal + blockerPower })
+              else state.setLife(current.lifeTotal + blockerPower)
+            }
+            state.emitGameEvent({
+              type: 'combat_damage',
+              sourceCardId: blocker.id,
+              sourceCardName: blocker.name,
+              targetCardId: attacker.id,
+              amount: blockerPower,
+            })
+          }
+        }
+      }
+
+      // First-strike damage step: only first/double strikers deal, then SBA.
+      const anyFirstStrike = pairs.some((p) => fast(get().cards.find((c) => c.id === p.attacker.id))) ||
+        pairs.some((p) => fast(get().cards.find((c) => c.id === p.blockerId)))
+      if (anyFirstStrike) {
+        for (const pair of pairs) {
+          const attacker = get().cards.find((c) => c.id === pair.attacker.id)
+          if (!attacker || attacker.zone !== 'battlefield') continue
+          const blocker = pair.blockerId ? get().cards.find((c) => c.id === pair.blockerId) : undefined
+          const attackerFast = fast(attacker)
+          const blockerFast = blocker && blocker.zone === 'battlefield' ? fast(blocker) : false
+          if (!attackerFast && !blockerFast) continue
+          deal(pair, attackerFast, blockerFast)
+        }
+        get().checkStateBasedActions()
+      }
+
+      // Regular damage step: everyone else deals; double strikers deal again.
+      for (const pair of pairs) {
+        const attacker = get().cards.find((c) => c.id === pair.attacker.id)
+        if (!attacker || attacker.zone !== 'battlefield') continue
+        const blocker = pair.blockerId ? get().cards.find((c) => c.id === pair.blockerId) : undefined
+        const attackerDeals = dealsInRegularStep(attacker)
+        const blockerDeals = blocker && blocker.zone === 'battlefield' ? dealsInRegularStep(blocker) : false
+        if (!attackerDeals && !blockerDeals) continue
+        deal(pair, attackerDeals, blockerDeals)
       }
 
       set({

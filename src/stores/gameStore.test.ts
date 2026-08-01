@@ -323,6 +323,100 @@ describe('combat keywords', () => {
   })
 })
 
+describe('combat damage steps', () => {
+  function startCombat(cards: BoardCard[], rules: CardRuleEntry[], attackerIds: string[], blockers: Record<string, string[]> = {}) {
+    primeCardRules(Object.fromEntries(rules.map((r) => [r.cardName, r])))
+    useGameStore.setState({
+      cards,
+      combatState: { active: true, attackers: attackerIds, blockers },
+    })
+  }
+
+  it('a first striker kills a blocker before it can deal damage', () => {
+    startCombat(
+      [
+        card({ id: 'knight', name: 'Knight', typeLine: '2/2', type: 'creature', zone: 'battlefield', tapped: true }),
+        card({ id: 'goblin', name: 'Goblin', typeLine: '2/1', type: 'creature', zone: 'battlefield', owner: 'opponent' }),
+      ],
+      [ruleFor('Knight', ['first strike'])],
+      ['knight'],
+      { knight: ['goblin'] },
+    )
+    useGameStore.getState().resolveCombat()
+    const knight = useGameStore.getState().cards.find((c) => c.id === 'knight')
+    const goblin = useGameStore.getState().cards.find((c) => c.id === 'goblin')
+    expect(goblin?.zone).toBe('graveyard')
+    expect(knight?.zone).toBe('battlefield')
+    expect(knight?.damage ?? 0).toBe(0)
+  })
+
+  it('a first striker trades when the blocker survives the first-strike step', () => {
+    startCombat(
+      [
+        card({ id: 'knight', name: 'Knight', typeLine: '2/2', type: 'creature', zone: 'battlefield', tapped: true }),
+        card({ id: 'wall', name: 'Wall', typeLine: '2/3', type: 'creature', zone: 'battlefield', owner: 'opponent' }),
+      ],
+      [ruleFor('Knight', ['first strike'])],
+      ['knight'],
+      { knight: ['wall'] },
+    )
+    useGameStore.getState().resolveCombat()
+    const knight = useGameStore.getState().cards.find((c) => c.id === 'knight')
+    const wall = useGameStore.getState().cards.find((c) => c.id === 'wall')
+    // Knight's first-strike damage (2) doesn't kill the 3-toughness wall, so the
+    // wall survives the step and deals 2 back in the regular step — lethal.
+    expect(knight?.zone).toBe('graveyard')
+    expect(wall?.zone).toBe('battlefield')
+    expect(wall?.damage).toBe(2)
+  })
+
+  it('a double striker deals damage in both steps', () => {
+    startCombat(
+      [
+        card({ id: 'dt', name: 'Dual', typeLine: '2/2', type: 'creature', zone: 'battlefield', tapped: true }),
+        card({ id: 'chump', name: 'Chump', typeLine: '1/3', type: 'creature', zone: 'battlefield', owner: 'opponent' }),
+      ],
+      [ruleFor('Dual', ['double strike'])],
+      ['dt'],
+      { dt: ['chump'] },
+    )
+    useGameStore.getState().resolveCombat()
+    expect(useGameStore.getState().cards.find((c) => c.id === 'chump')?.zone).toBe('graveyard')
+  })
+
+  it('a first-strike blocker hits before a non-first-strike attacker', () => {
+    startCombat(
+      [
+        card({ id: 'bear', name: 'Bear', typeLine: '3/3', type: 'creature', zone: 'battlefield', tapped: true }),
+        card({ id: 'guard', name: 'Guard', typeLine: '1/1', type: 'creature', zone: 'battlefield', owner: 'opponent' }),
+      ],
+      [ruleFor('Guard', ['first strike'])],
+      ['bear'],
+      { bear: ['guard'] },
+    )
+    useGameStore.getState().resolveCombat()
+    const bear = useGameStore.getState().cards.find((c) => c.id === 'bear')
+    const guard = useGameStore.getState().cards.find((c) => c.id === 'guard')
+    // Guard's 1 first-strike damage isn't lethal to the 3-toughness bear, so the
+    // bear deals 3 in the regular step — lethal to the guard.
+    expect(bear?.zone).toBe('battlefield')
+    expect(bear?.damage).toBe(1)
+    expect(guard?.zone).toBe('graveyard')
+  })
+
+  it('first-strike damage still counts toward defeat', () => {
+    startCombat(
+      [
+        card({ id: 'knight', name: 'Knight', typeLine: '6/1', type: 'creature', zone: 'battlefield', tapped: true }),
+      ],
+      [ruleFor('Knight', ['first strike'])],
+      ['knight'],
+    )
+    useGameStore.getState().resolveCombat()
+    expect(useGameStore.getState().opponentLifeTotal).toBe(34)
+  })
+})
+
 describe('loadOpponentDeck', () => {
   it('loads a simple commander deck with the commander in the command zone', () => {
     vi.useFakeTimers()
