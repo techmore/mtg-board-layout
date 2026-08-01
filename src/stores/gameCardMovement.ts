@@ -1,6 +1,6 @@
 import type { BoardCard } from '../types/card'
 import type { GameState } from './gameStore'
-import { pushUndo, prepareCardPlay, generatedManaState } from './gameRules'
+import { pushUndo, prepareCardPlay, generatedManaState, attachAuras } from './gameRules'
 
 type SetFn = (partial: GameState | Partial<GameState> | ((state: GameState) => Partial<GameState>)) => void
 
@@ -54,12 +54,12 @@ export function createCardMovement(set: SetFn, get: () => GameState): Pick<GameS
           return {
             ...undo,
             manaPool: nextManaPool,
-            cards: applyUpdated([...state.cards.filter((card) => card.id !== cardId), updated]),
+            cards: attachAuras(applyUpdated([...state.cards.filter((card) => card.id !== cardId), updated])),
             landPlaysThisTurn: nextLandPlaysThisTurn,
           }
         }
 
-        return { ...undo, manaPool: nextManaPool, cards: applyUpdated(state.cards), landPlaysThisTurn: nextLandPlaysThisTurn }
+        return { ...undo, manaPool: nextManaPool, cards: attachAuras(applyUpdated(state.cards)), landPlaysThisTurn: nextLandPlaysThisTurn }
       })
       if (zone === 'battlefield' && cardBefore && cardBefore.zone !== 'battlefield') {
         get().emitGameEvent({ type: 'etb', cardId, cardName: cardBefore.name })

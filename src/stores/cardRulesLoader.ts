@@ -39,7 +39,7 @@ export function hasKeyword(card: { name: string }, keyword: string): boolean {
  * applying to a creature from same-owner battlefield permanents.
  */
 export function computeStaticPump(
-  cards: { id: string; name: string; type: string; typeLine?: string; zone: string; owner?: 'player' | 'opponent' }[],
+  cards: { id: string; name: string; type: string; typeLine?: string; zone: string; owner?: 'player' | 'opponent'; enchantsCardId?: string }[],
   card: { id: string; name: string; type: string; owner?: 'player' | 'opponent' },
 ): { power: number; toughness: number } {
   if (card.type !== 'creature') return { power: 0, toughness: 0 }
@@ -49,9 +49,11 @@ export function computeStaticPump(
   for (const source of cards) {
     if (source.zone !== 'battlefield' || (source.owner ?? 'player') !== owner) continue
     if (source.id === card.id) continue
-    // Auras enchant a single creature; without attachment tracking their
-    // static pump would incorrectly boost the whole team — skip them.
-    if (/\bauras?\b/i.test(source.typeLine ?? '')) continue
+    // Auras enchant a single creature: their pump applies only to the card
+    // they are attached to.
+    if (/\bauras?\b/i.test(source.typeLine ?? '')) {
+      if (source.enchantsCardId !== card.id) continue
+    }
     const rule = getCardRule(source.name, rulesCache)
     for (const ability of rule?.abilities ?? []) {
       if (ability.abilityType !== 'static' || ability.effect?.kind !== 'pump') continue

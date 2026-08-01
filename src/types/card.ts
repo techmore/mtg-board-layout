@@ -105,6 +105,8 @@ export interface BoardCard {
   damage?: number
   powerBoost?: number
   toughnessBoost?: number
+  enchantsCardId?: string
+  enchantsCardName?: string
   tokenCount?: number
   type: 'land' | 'creature' | 'instant' | 'sorcery' | 'enchantment' | 'artifact' | 'planeswalker' | 'battle' | 'other'
   revealed: boolean

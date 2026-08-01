@@ -2,7 +2,7 @@ import type { BoardCard, ManaPool, Zone } from '../types/card'
 import type { ActivePlayer } from './gameStore'
 import type { GameState } from './gameStore'
 import { shuffle, classifyType, parseManaCost, getCardPower } from '../utils/misc'
-import { pushUndo } from './gameRules'
+import { pushUndo, attachAuras } from './gameRules'
 import { getCardTypeFeatures } from '../data/cardFeatures'
 import { getCachedCardRules } from './cardRulesLoader'
 import { localCardImage } from '../data/localCardImages'
@@ -144,6 +144,7 @@ export function createOpponentAI(set: SetFn, get: () => GameState): Pick<GameSta
                 }
               })
               resolveAISpellAbilities(set, get, toCast)
+              set({ cards: attachAuras(get().cards) })
               if (toCast.type !== 'instant' && toCast.type !== 'sorcery') {
                 resolveAIAutoAbilities(set, get, toCast, 'etb')
               }
@@ -172,6 +173,7 @@ export function createOpponentAI(set: SetFn, get: () => GameState): Pick<GameSta
                   turnAnnouncement: { id: Date.now(), text: `OPPONENT casts ${trick.name}` },
                 }))
                 resolveAISpellAbilities(set, get, trick)
+                set({ cards: attachAuras(get().cards) })
                 break
               }
 

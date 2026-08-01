@@ -816,6 +816,67 @@ describe('static effects', () => {
   })
 })
 
+describe('auras', () => {
+  function auraRule(): CardRuleEntry {
+    return {
+      cardName: 'Giant Strength', manaCost: '{1}{G}', manaValue: 2, typeLine: 'Enchantment — Aura', cardType: 'enchantment', subtypes: [], keywords: [], manaProduction: null, entryTapRule: null, conditionalEntryText: null, oracleText: 'Enchant creature. Enchanted creature gets +2/+2.', scryfallId: 'a', abilities: [{
+        abilityType: 'static',
+        triggerEvent: null,
+        triggerCondition: null,
+        isOptional: false,
+        cost: null,
+        targets: 0,
+        targetFilter: null,
+        effect: { kind: 'pump', params: { power: 2, toughness: 2 } },
+      }],
+    }
+  }
+
+  function auraCard(id: string, overrides: Partial<BoardCard> = {}): BoardCard {
+    return card({ id, name: 'Giant Strength', typeLine: 'Enchantment — Aura', type: 'enchantment', zone: 'battlefield', ...overrides })
+  }
+
+  it('attaches to a friendly creature when it enters the battlefield', () => {
+    useGameStore.setState({
+      cards: [auraCard('aura', { zone: 'hand' }), card({ id: 'bear', name: 'Bear', typeLine: '2/2', type: 'creature', zone: 'battlefield' })],
+    })
+    useGameStore.getState().moveCard('aura', 'battlefield')
+    const attached = useGameStore.getState().cards.find((c) => c.id === 'aura')
+    expect(attached?.zone).toBe('battlefield')
+    expect(attached?.enchantsCardId).toBe('bear')
+  })
+
+  it('dies when there is no creature to enchant', () => {
+    useGameStore.setState({
+      cards: [auraCard('aura', { zone: 'hand' }), card({ id: 'land', name: 'Forest', typeLine: 'Basic Land', type: 'land', zone: 'battlefield' })],
+    })
+    useGameStore.getState().moveCard('aura', 'battlefield')
+    expect(useGameStore.getState().cards.find((c) => c.id === 'aura')?.zone).toBe('graveyard')
+  })
+
+  it('pumps only the enchanted creature', () => {
+    primeCardRules({ 'Giant Strength': auraRule() })
+    const enchanted = card({ id: 'ench', name: 'Bear', typeLine: '2/2', type: 'creature', zone: 'battlefield', damage: 3 })
+    const other = card({ id: 'other', name: 'Wolf', typeLine: '2/2', type: 'creature', zone: 'battlefield', damage: 3 })
+    const aura = auraCard('aura', { enchantsCardId: 'ench' })
+    useGameStore.setState({ cards: [enchanted, other, aura] })
+    useGameStore.getState().checkStateBasedActions()
+    // The enchanted 2/2 is effectively 4/4: survives 3 damage. The other dies.
+    expect(useGameStore.getState().cards.find((c) => c.id === 'ench')?.zone).toBe('battlefield')
+    expect(useGameStore.getState().cards.find((c) => c.id === 'other')?.zone).toBe('graveyard')
+  })
+
+  it('dies with its enchanted creature', () => {
+    primeCardRules({})
+    const bear = card({ id: 'bear', name: 'Bear', typeLine: '2/2', type: 'creature', zone: 'battlefield', damage: 2 })
+    const aura = auraCard('aura', { enchantsCardId: 'bear' })
+    useGameStore.setState({ cards: [bear, aura] })
+    useGameStore.getState().checkStateBasedActions()
+    expect(useGameStore.getState().cards.find((c) => c.id === 'bear')?.zone).toBe('graveyard')
+    expect(useGameStore.getState().cards.find((c) => c.id === 'aura')?.zone).toBe('graveyard')
+  })
+})
+
 describe('ward', () => {
   const wardExileAbility = (): CardAbilityDef => ({
     abilityType: 'spell',

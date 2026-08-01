@@ -1,6 +1,6 @@
 import type { BoardCard, Zone } from '../types/card'
 import type { GameState } from './gameStore'
-import { pushUndo } from './gameRules'
+import { pushUndo, attachAuras, isAura } from './gameRules'
 import { getCardToughness } from '../utils/misc'
 import { hasKeyword, computeStaticPump } from './cardRulesLoader'
 
@@ -24,13 +24,16 @@ export function createStateBasedActions(set: SetFn, get: () => GameState): Pick<
       if (dead.length === 0) return
 
       const deadIds = new Set(dead.map((card) => card.id))
+      // Auras whose enchanted creature died die with it; orphaned auras attach
+      // to a new friendly creature or die.
+      const updatedCards = attachAuras(state.cards.map((card) =>
+        deadIds.has(card.id) || (isAura(card) && card.enchantsCardId && deadIds.has(card.enchantsCardId))
+          ? { ...card, zone: 'graveyard' as Zone, tapped: false, revealed: true, damage: 0 }
+          : card,
+      ))
       set((prev) => ({
         ...pushUndo(prev),
-        cards: prev.cards.map((card) =>
-          deadIds.has(card.id)
-            ? { ...card, zone: 'graveyard' as Zone, tapped: false, revealed: true, damage: 0 }
-            : card,
-        ),
+        cards: updatedCards,
         turnAnnouncement: {
           id: Date.now(),
           text: dead.length === 1 ? `${dead[0].name} died` : `${dead.length} creatures died`,

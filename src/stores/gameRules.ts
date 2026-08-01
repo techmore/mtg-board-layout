@@ -1,7 +1,7 @@
 import type { BoardCard, ManaColor, ManaLogEntry, ManaPool, PotentialManaSource } from '../types/card'
 import { resolveCardRules } from '../data/cardRules'
 import { evaluateConditionalEntryTap } from '../data/cardFeatures'
-import { canPayManaCost, shuffle, spendManaForCost } from '../utils/misc'
+import { canPayManaCost, shuffle, spendManaForCost, getCardPower } from '../utils/misc'
 import type { GameState, GameSnapshot } from './gameStore'
 
 export function resolveEntryRules(card: Pick<BoardCard, 'scryfallId' | 'name' | 'oracleText' | 'entryTapMode' | 'entersTapped' | 'entryTapRule'>) {
@@ -100,6 +100,33 @@ export function moveCastSpellsToGraveyard(cards: BoardCard[]): BoardCard[] {
 
 export function emptyManaPool(): ManaPool {
   return { W: 0, U: 0, B: 0, R: 0, G: 0, C: 0 }
+}
+
+export function isAura(card: Pick<BoardCard, 'type' | 'typeLine'>): boolean {
+  return card.type === 'enchantment' && /\baura\b/i.test(card.typeLine ?? '')
+}
+
+/**
+ * Attach unattached battlefield auras to a friendly creature (the strongest
+ * one). Auras with no valid creature die. Returns the updated card list.
+ */
+export function attachAuras(cards: BoardCard[]): BoardCard[] {
+  let changed = false
+  const updated = cards.map((card) => {
+    if (!isAura(card) || card.zone !== 'battlefield' || card.enchantsCardId) return card
+    const owner = card.owner ?? 'player'
+    const candidates = cards.filter(
+      (c) => c.zone === 'battlefield' && (c.owner ?? 'player') === owner && c.type === 'creature' && c.id !== card.id,
+    )
+    const target = candidates.sort((a, b) => getCardPower(b) - getCardPower(a))[0]
+    if (target) {
+      changed = true
+      return { ...card, enchantsCardId: target.id, enchantsCardName: target.name }
+    }
+    changed = true
+    return { ...card, zone: 'graveyard' as const, revealed: true }
+  })
+  return changed ? updated : cards
 }
 
 const MAX_UNDO = 50

@@ -5,9 +5,11 @@ export function cardRuleSummary(card: {
   manaCost?: string
   manaValue?: number
   entersTapped?: boolean
+  enchantsCardName?: string
 }) {
   const mana = card.manaCost ? `Mana cost: ${card.manaCost}` : card.manaValue !== undefined ? `Mana value: ${card.manaValue}` : 'Mana cost unknown'
-  return `${card.name} · ${mana}${card.entersTapped ? ' · Enters battlefield tapped' : ''}`
+  const enchants = card.enchantsCardName ? ` · Enchanting ${card.enchantsCardName}` : ''
+  return `${card.name} · ${mana}${card.entersTapped ? ' · Enters battlefield tapped' : ''}${enchants}`
 }
 
 export const counterBadgeStyle: React.CSSProperties = {

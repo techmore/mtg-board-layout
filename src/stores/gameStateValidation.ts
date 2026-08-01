@@ -33,6 +33,7 @@ export function isBoardCard(value: unknown): value is BoardCard {
     (card.damage === undefined || (typeof card.damage === 'number' && Number.isFinite(card.damage) && card.damage >= 0)) &&
     (card.powerBoost === undefined || (typeof card.powerBoost === 'number' && Number.isFinite(card.powerBoost))) &&
     (card.toughnessBoost === undefined || (typeof card.toughnessBoost === 'number' && Number.isFinite(card.toughnessBoost))) &&
+    (card.enchantsCardId === undefined || typeof card.enchantsCardId === 'string') &&
     (card.manaProduction === undefined || isManaProduction(card.manaProduction)) &&
     (card.commanderTax === undefined || (typeof card.commanderTax === 'number' && Number.isInteger(card.commanderTax) && card.commanderTax >= 0)) &&
     (card.owner === undefined || card.owner === 'player' || card.owner === 'opponent')
