@@ -21,6 +21,8 @@ export default function MultiplayerBoardPage() {
   const [chatInput, setChatInput] = useState('')
   const [messages, setMessages] = useState<ChatEntry[]>([])
   const [gameWinnerId, setGameWinnerId] = useState<string | null>(null)
+  const [combatMode, setCombatMode] = useState<'none' | 'attack' | 'block'>('none')
+  const [combatSelection, setCombatSelection] = useState<string[]>([])
 
   const requestedServerUrl = getServerUrlFromSearchParams(searchParams)
   const initialName = searchParams.get('name') ?? ''
@@ -62,6 +64,9 @@ export default function MultiplayerBoardPage() {
   const finished = state.status === 'finished'
   const winnerId = finished ? (gameWinnerId ?? state.players[0]?.id ?? null) : null
   const winnerName = winnerId ? state.players.find((player) => player.id === winnerId)?.name : undefined
+  const combatActive = state.combatActive && !finished
+  const opponentAttacking = combatActive && state.attackers.length > 0 && !isMyTurn
+  const myBlockedIds = state.blockers
   const adjustLife = (amount: number) => sendAction({ type: 'setLife', value: me.lifeTotal + amount })
   const moveSeat = (x: number, y: number) => sendAction({ type: 'setPosition', x: me.positionX + x, y: me.positionY + y })
   const sendChat = () => {
@@ -69,6 +74,16 @@ export default function MultiplayerBoardPage() {
     if (!text) return
     sendAction({ type: 'chatMessage', text })
     setChatInput('')
+  }
+  const toggleCombatSelection = (cardId: string) => {
+    setCombatSelection((current) =>
+      current.includes(cardId) ? current.filter((id) => id !== cardId) : [...current, cardId],
+    )
+  }
+  const cardInCombat = (cardId: string) => {
+    if (state.attackers.includes(cardId)) return 'attack'
+    if (myBlockedIds.includes(cardId)) return 'block'
+    return 'none'
   }
 
   return (
@@ -106,7 +121,26 @@ export default function MultiplayerBoardPage() {
 
       <section style={positionedTableStyle(me.positionX, me.positionY)}>
         <h2 style={sectionTitle}>Your battlefield</h2>
-        <CardRow cards={me.battlefield} empty="No permanents yet" onCard={(card) => sendAction({ type: 'tapCard', cardId: card.id })} />
+        {opponentAttacking && (
+          <div style={{ ...combatBannerStyle, background: 'rgba(248,81,73,0.14)', borderColor: 'rgba(248,81,73,0.5)', color: '#ff7b72' }}>
+            ⚔ DEFEND — click your creatures to block ({state.attackers.length} attacking)
+          </div>
+        )}
+        {combatMode === 'attack' && (
+          <div style={{ ...combatBannerStyle, background: 'rgba(88,166,255,0.12)', borderColor: 'rgba(88,166,255,0.5)', color: '#79c0ff' }}>
+            Click creatures to declare as attackers ({combatSelection.length} selected)
+          </div>
+        )}
+        <CardRow
+          cards={me.battlefield}
+          empty="No permanents yet"
+          onCard={(card) => {
+            if (combatMode === 'attack' || combatMode === 'block') toggleCombatSelection(card.id)
+            else sendAction({ type: 'tapCard', cardId: card.id })
+          }}
+          combatStatus={cardInCombat}
+          selectedIds={combatMode === 'none' ? undefined : combatSelection}
+        />
         {me.tokens.length > 0 && (
           <div style={tokenRowStyle}>
             {me.tokens.map((token) => (
@@ -147,6 +181,59 @@ export default function MultiplayerBoardPage() {
         <div style={controlGroupStyle}>
           <button onClick={() => sendAction({ type: 'drawCards', count: 1 })} disabled={!isMyTurn || finished} style={smallButtonStyle}>Draw</button>
           <button onClick={() => sendAction({ type: 'endTurn' })} disabled={!isMyTurn || finished} style={primaryButtonStyle}>{isMyTurn ? 'End Turn' : 'Opponent Turn'}</button>
+        </div>
+        <div style={controlGroupStyle}>
+          {!combatActive && isMyTurn && !finished && (
+            <button
+              onClick={() => { setCombatMode('attack'); setCombatSelection([]) }}
+              style={smallButtonStyle}
+            >
+              Start Combat
+            </button>
+          )}
+          {combatMode === 'attack' && (
+            <button
+              onClick={() => {
+                if (combatSelection.length === 0) return
+                sendAction({ type: 'declareAttackers', attackerIds: combatSelection })
+                setCombatMode('none')
+                setCombatSelection([])
+              }}
+              disabled={combatSelection.length === 0}
+              style={primaryButtonStyle}
+            >
+              Declare Attackers ({combatSelection.length})
+            </button>
+          )}
+          {opponentAttacking && (
+            <button
+              onClick={() => { setCombatMode(combatMode === 'block' ? 'none' : 'block'); setCombatSelection([]) }}
+              style={combatMode === 'block' ? primaryButtonStyle : smallButtonStyle}
+            >
+              {combatMode === 'block' ? 'Cancel Blocking' : 'Choose Blockers'}
+            </button>
+          )}
+          {combatMode === 'block' && (
+            <button
+              onClick={() => {
+                sendAction({ type: 'declareBlockers', blockerIds: combatSelection })
+                setCombatMode('none')
+                setCombatSelection([])
+              }}
+              disabled={combatSelection.length === 0}
+              style={primaryButtonStyle}
+            >
+              Declare Blockers ({combatSelection.length})
+            </button>
+          )}
+          {combatActive && (
+            <button
+              onClick={() => { setCombatMode('none'); setCombatSelection([]); sendAction({ type: 'resolveCombat' }) }}
+              style={smallButtonStyle}
+            >
+              Resolve Combat
+            </button>
+          )}
         </div>
         <div style={controlGroupStyle}>
           <strong>Token</strong>
@@ -224,12 +311,36 @@ function PlayerPanel({ player, opponent }: { player: RoomPlayerInfo; opponent?: 
   </div>
 }
 
-function CardRow({ cards, empty, onCard }: { cards: CardData[]; empty: string; onCard?: (card: CardData) => void }) {
+function CardRow({ cards, empty, onCard, combatStatus, selectedIds }: {
+  cards: CardData[]
+  empty: string
+  onCard?: (card: CardData) => void
+  combatStatus?: (cardId: string) => 'attack' | 'block' | 'none'
+  selectedIds?: string[]
+}) {
   if (cards.length === 0) return <div style={mutedStyle}>{empty}</div>
-  return <div style={cardRowStyle}>{cards.map((card) => <button key={card.id} onClick={() => onCard?.(card)} style={cardButtonStyle(card.tapped)} title={onCard ? 'Click to play or tap' : card.name}>
-    {card.imageUri ? <img src={card.imageUri} alt={card.name} style={cardImageStyle} /> : <span>{card.name}</span>}
-    <span style={cardNameStyle}>{card.name}{card.counters !== 0 ? ` ${formatCounterCount(card.counters)}` : ''}</span>
-  </button>)}</div>
+  return <div style={cardRowStyle}>{cards.map((card) => {
+    const status = combatStatus?.(card.id) ?? 'none'
+    const selected = selectedIds?.includes(card.id) ?? false
+    return (
+      <button
+        key={card.id}
+        onClick={() => onCard?.(card)}
+        style={{
+          ...cardButtonStyle(card.tapped),
+          borderColor: selected ? '#58a6ff' : status === 'attack' ? 'rgba(248,81,73,0.7)' : status === 'block' ? 'rgba(88,166,255,0.7)' : undefined,
+          boxShadow: selected ? '0 0 0 2px rgba(88,166,255,0.5)' : undefined,
+        }}
+        title={status === 'attack' ? `${card.name} (attacking)` : status === 'block' ? `${card.name} (blocking)` : onCard ? 'Click to play or tap' : card.name}
+      >
+        {card.imageUri ? <img src={card.imageUri} alt={card.name} style={cardImageStyle} /> : <span>{card.name}</span>}
+        <span style={cardNameStyle}>
+          {card.name}{card.counters !== 0 ? ` ${formatCounterCount(card.counters)}` : ''}
+          {status === 'attack' ? ' ⚔' : status === 'block' ? ' 🛡' : ''}
+        </span>
+      </button>
+    )
+  })}</div>
 }
 
 const pageStyle: React.CSSProperties = { minHeight: '100%', boxSizing: 'border-box', padding: 18, background: '#0d1117', color: '#e6edf3', overflow: 'auto' }
@@ -262,6 +373,7 @@ const tokenStyle = (tapped: boolean): React.CSSProperties => ({
   color: '#e6edf3',
 })
 const tinyButtonStyle: React.CSSProperties = { padding: '1px 6px', borderRadius: 4, border: '1px solid #30363d', background: 'rgba(255,255,255,0.04)', color: '#d0d7de', cursor: 'pointer', fontSize: '0.62rem' }
+const combatBannerStyle: React.CSSProperties = { marginBottom: 10, padding: '8px 12px', borderRadius: 8, border: '1px solid', fontSize: '0.78rem', fontWeight: 700 }
 const mutedStyle: React.CSSProperties = { color: '#8b949e', fontSize: '0.78rem' }
 const activeBadgeStyle: React.CSSProperties = { color: '#3fb950', fontWeight: 700, fontSize: '0.78rem' }
 const smallButtonStyle: React.CSSProperties = { padding: '6px 9px', borderRadius: 6, border: '1px solid #30363d', background: '#161b22', color: '#e6edf3', cursor: 'pointer', fontSize: '0.72rem' }

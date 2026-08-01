@@ -116,6 +116,20 @@ export interface EndTurnAction {
   type: 'endTurn'
 }
 
+export interface DeclareAttackersAction {
+  type: 'declareAttackers'
+  attackerIds: string[]
+}
+
+export interface DeclareBlockersAction {
+  type: 'declareBlockers'
+  blockerIds: string[]
+}
+
+export interface ResolveCombatAction {
+  type: 'resolveCombat'
+}
+
 export interface SetPositionAction {
   type: 'setPosition'
   x: number
@@ -218,6 +232,9 @@ export type PlayerAction =
   | SpendManaAction
   | ClearManaPoolAction
   | EndTurnAction
+  | DeclareAttackersAction
+  | DeclareBlockersAction
+  | ResolveCombatAction
   | SetPositionAction
   | AnnounceEndTurnAction
   | AddTokenAction

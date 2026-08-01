@@ -118,6 +118,9 @@ export class GameState extends Schema {
   @type('string') hostId: string
   @type('number') turn: number
   @type('string') activePlayerId: string
+  @type('boolean') combatActive: boolean
+  @type(['string']) attackers: ArraySchema<string>
+  @type(['string']) blockers: ArraySchema<string>
   @type({ map: PlayerState }) players: MapSchema<PlayerState>
 
   constructor(roomId: string, gameMode: string, hostId: string) {
@@ -128,6 +131,9 @@ export class GameState extends Schema {
     this.hostId = hostId
     this.turn = 1
     this.activePlayerId = ''
+    this.combatActive = false
+    this.attackers = new ArraySchema<string>()
+    this.blockers = new ArraySchema<string>()
     this.players = new MapSchema<PlayerState>()
   }
 }

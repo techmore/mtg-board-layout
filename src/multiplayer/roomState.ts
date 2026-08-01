@@ -18,6 +18,9 @@ export interface GameRoomState {
   myPlayerId: string | null
   turn: number
   activePlayerId: string
+  combatActive: boolean
+  attackers: string[]
+  blockers: string[]
 }
 
 export interface PrivateState {
@@ -136,6 +139,9 @@ export function createSnapshot(room: Room): GameRoomState {
     myPlayerId: room.sessionId,
     turn: typeof state.turn === 'number' ? state.turn : 1,
     activePlayerId: typeof state.activePlayerId === 'string' ? state.activePlayerId : '',
+    combatActive: state.combatActive === true,
+    attackers: arrayValues(state.attackers).filter((id): id is string => typeof id === 'string'),
+    blockers: arrayValues(state.blockers).filter((id): id is string => typeof id === 'string'),
   }
 }
 

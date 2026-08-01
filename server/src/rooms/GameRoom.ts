@@ -1,6 +1,7 @@
 import { Room, type Client } from '@colyseus/core'
 import type { CardData, GameMode, ServerEvent, Zone } from 'mtg-protocol'
 import { GameState, PlayerState, CardState, TokenState } from './schema/GameState.js'
+import { ArraySchema } from '@colyseus/schema'
 import { registerGameRoomUtilityMessages, type GameRoomUtilityMessageContext } from './gameRoomMessages.js'
 import {
   OPENING_HAND_SIZE,
@@ -168,6 +169,39 @@ export class GameRoom extends Room<{ state: GameState }> {
     })
 
     this.onMessage('endTurn', (client) => this.endTurn(client))
+
+    this.onMessage('declareAttackers', (client, message) => {
+      const player = this.getPlayer(client)
+      if (!player || this.state.status !== 'playing' || this.state.activePlayerId !== player.id) return
+      if (this.state.combatActive) return
+      const ids = Array.isArray(message?.attackerIds) ? message.attackerIds.filter((id: unknown): id is string => typeof id === 'string') : []
+      const battlefield = new Set(player.battlefield.map((c) => c.id))
+      const valid = ids.filter((id: string) => battlefield.has(id) && !player.battlefield.find((c) => c.id === id)?.tapped)
+      if (valid.length === 0) return
+      this.state.combatActive = true
+      this.state.attackers = new ArraySchema<string>(...valid)
+      this.state.blockers = new ArraySchema<string>()
+      this.emitEvent({ type: 'turnAnnouncement', playerId: player.id, playerName: player.name, text: `${player.name} attacks with ${valid.length} creature(s)` })
+    })
+
+    this.onMessage('declareBlockers', (client, message) => {
+      const player = this.getPlayer(client)
+      if (!player || this.state.status !== 'playing' || this.state.activePlayerId === player.id) return
+      if (!this.state.combatActive) return
+      const ids = Array.isArray(message?.blockerIds) ? message.blockerIds.filter((id: unknown): id is string => typeof id === 'string') : []
+      const battlefield = new Set(player.battlefield.map((c) => c.id))
+      const valid = ids.filter((id: string) => battlefield.has(id) && !player.battlefield.find((c) => c.id === id)?.tapped)
+      // Blockers are stored flat; resolveCombat assigns them round-robin to the
+      // declared attackers in declaration order.
+      this.state.blockers = new ArraySchema<string>(...valid)
+      this.emitEvent({ type: 'turnAnnouncement', playerId: player.id, playerName: player.name, text: `${player.name} declares ${valid.length} blocker(s)` })
+    })
+
+    this.onMessage('resolveCombat', (client) => {
+      const player = this.getPlayer(client)
+      if (!player || !this.state.combatActive) return
+      this.resolveCombat()
+    })
 
     this.onMessage('setPosition', (client, message) => {
       const player = this.getPlayer(client)
@@ -474,6 +508,55 @@ export class GameRoom extends Room<{ state: GameState }> {
       .filter((candidate) => candidate.id !== eliminated.id && candidate.teamId !== eliminated.teamId)
       .sort((a, b) => a.turnOrder - b.turnOrder)
     this.emitEvent({ type: 'gameEnded', winnerId: winners[0]?.id, reason: 'life' })
+  }
+
+  /**
+   * Resolve declared combat. Each attacker fights its first assigned blocker
+   * (lethal = power >= toughness, one-shot); unblocked attackers deal their
+   * power to every opponent not on the attacker's team.
+   */
+  private resolveCombat() {
+    const state = this.state
+    if (!state.combatActive || state.status !== 'playing') return
+    const attackerIds = [...state.attackers]
+
+    for (const attackerId of attackerIds) {
+      const attackerOwner = [...state.players.values()].find((p) => p.battlefield.some((c) => c.id === attackerId))
+      if (!attackerOwner) continue
+      const attacker = attackerOwner.battlefield.find((c) => c.id === attackerId)
+      if (!attacker) continue
+      const power = parseInt(attacker.typeLine.match(/(\d+)\//)?.[1] ?? '0', 10)
+      const toughness = parseInt(attacker.typeLine.match(/\/(\d+)/)?.[1] ?? '0', 10)
+
+      const blockerIds = [...state.blockers]
+      const blockersFor = (attackerId: string): string[] => {
+        // Assign each declared blocker round-robin across attackers.
+        const index = attackerIds.indexOf(attackerId)
+        return blockerIds.filter((_, i) => i % attackerIds.length === index)
+      }
+      if (blockerIds.length > 0) {
+        const assigned = blockersFor(attackerId)
+        const blockerOwner = [...state.players.values()].find((p) => p.battlefield.some((c) => c.id === assigned[0]))
+        const blocker = blockerOwner?.battlefield.find((c) => c.id === assigned[0])
+        if (blockerOwner && blocker) {
+          const blockerPower = parseInt(blocker.typeLine.match(/(\d+)\//)?.[1] ?? '0', 10)
+          const blockerToughness = parseInt(blocker.typeLine.match(/\/(\d+)/)?.[1] ?? '0', 10)
+          if (power >= blockerToughness) this.moveCardToZone(blockerOwner, blocker.id, 'graveyard')
+          if (blockerPower >= toughness) this.moveCardToZone(attackerOwner, attacker.id, 'graveyard')
+        }
+      } else {
+        for (const defender of state.players.values()) {
+          if (defender.id === attackerOwner.id || defender.teamId === attackerOwner.teamId) continue
+          defender.lifeTotal = Math.max(0, defender.lifeTotal - power)
+          this.checkForGameEnd(defender)
+        }
+      }
+    }
+
+    state.combatActive = false
+    state.attackers = new ArraySchema<string>()
+    state.blockers = new ArraySchema<string>()
+    this.emitEvent({ type: 'turnAnnouncement', playerId: attackerIds[0] ?? '', playerName: '', text: 'Combat resolved' })
   }
 
   private endTurn(client: Client) {
