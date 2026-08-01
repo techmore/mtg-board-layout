@@ -8,6 +8,8 @@ import ManaPoolArtifact from './ManaPoolArtifact'
 import { ManaUsageLog } from './ManaUsageLog'
 import { OpponentSetupDialog } from './OpponentSetupDialog'
 import { PhaseBar } from './PhaseBar'
+import { DRACONIC_DESTRUCTION_DECK } from '../../data/prebuiltDecks'
+import type { OpponentZoneSize } from '../../pages/BoardOpponentZone'
 
 interface BoardControlsProps {
   handleDeckChange: (deckId: string) => Promise<void>
@@ -18,6 +20,8 @@ interface BoardControlsProps {
   manaUsageLabel: string
   setManaUsageLabel: (label: string) => void
   onBackgroundOnly: () => void
+  tableView: OpponentZoneSize
+  onCycleTableView: () => void
 }
 
 export function BoardControls({
@@ -29,6 +33,8 @@ export function BoardControls({
   manaUsageLabel,
   setManaUsageLabel,
   onBackgroundOnly,
+  tableView,
+  onCycleTableView,
 }: BoardControlsProps) {
   const activeDeckId = useGameStore((s) => s.activeDeckId)
   const decks = useDeckStore((s) => s.decks)
@@ -48,6 +54,7 @@ export function BoardControls({
   const setLife = useGameStore((s) => s.setLife)
   const showOpponent = useGameStore((s) => s.showOpponent)
   const toggleOpponent = useGameStore((s) => s.toggleOpponent)
+  const aiFixedDeck = useGameStore((s) => s.aiFixedDeck)
   const [opponentSetupOpen, setOpponentSetupOpen] = useState(false)
   const combatState = useGameStore((s) => s.combatState)
   const toggleCombat = useGameStore((s) => s.toggleCombat)
@@ -177,8 +184,14 @@ export function BoardControls({
       <div style={{ display: 'flex', gap: 4, alignItems: 'center' }}>
         {!showOpponent && (
           <button
-            title="Choose AI opponent deck"
-            onClick={() => setOpponentSetupOpen(true)}
+            title={aiFixedDeck ? 'Load the fixed simple AI deck (Draconic Destruction)' : 'Choose the AI opponent deck'}
+            onClick={() => {
+              if (aiFixedDeck) {
+                useGameStore.getState().loadOpponentDeck(DRACONIC_DESTRUCTION_DECK.commanderNames, DRACONIC_DESTRUCTION_DECK.cards, DRACONIC_DESTRUCTION_DECK.name)
+              } else {
+                setOpponentSetupOpen(true)
+              }
+            }}
             style={{
               padding: '4px 10px',
               borderRadius: 4,
@@ -192,6 +205,25 @@ export function BoardControls({
             }}
           >
             + AI Opponent
+          </button>
+        )}
+        {showOpponent && (
+          <button
+            title={`Table view: ${tableView === 'normal' ? 'compact' : tableView === 'full' ? 'full table' : 'opponent focused'}. Click to change.`}
+            onClick={onCycleTableView}
+            style={{
+              padding: '4px 10px',
+              borderRadius: 4,
+              border: '1px solid rgba(255,255,255,0.18)',
+              background: 'rgba(255,255,255,0.06)',
+              color: tableView === 'normal' ? '#8b949e' : '#58a6ff',
+              cursor: 'pointer',
+              fontSize: '0.7rem',
+              fontWeight: 700,
+              whiteSpace: 'nowrap',
+            }}
+          >
+            {tableView === 'normal' ? 'Table: Normal' : tableView === 'full' ? 'Table: Full' : 'Table: Opponent'}
           </button>
         )}
         {!combatState.active ? (

@@ -1,7 +1,13 @@
 import { MiniCard } from '../components/Board/MiniCard'
 import { CARD_BACK_URL } from '../constants'
 import { useGameStore } from '../stores/gameStore'
+import ManaPoolArtifact from '../components/Board/ManaPoolArtifact'
 import type { BoardViewModel } from './boardViewModel'
+
+export type OpponentZoneSize = 'normal' | 'full' | 'opponent'
+
+const FLEX_BY_SIZE: Record<OpponentZoneSize, number> = { normal: 0.45, full: 1, opponent: 2.3 }
+const CARD_SCALE_BY_SIZE: Record<OpponentZoneSize, number> = { normal: 0.5, full: 0.65, opponent: 0.8 }
 
 interface Props {
   opponentViewModel: BoardViewModel
@@ -11,6 +17,7 @@ interface Props {
   handleRightClick: (e: React.MouseEvent, cardId: string) => void
   cardWidth: number
   cardHeight: number
+  size?: OpponentZoneSize
 }
 
 function OpponentBattlefieldSection({ label, cards, cardWidth, cardHeight, setOverlay, handleRightClick }: {
@@ -51,16 +58,20 @@ export function BoardOpponentZone({
   handleRightClick,
   cardWidth,
   cardHeight,
+  size = 'normal',
 }: Props) {
   const opponentName = useGameStore((s) => s.opponentName)
-  const miniWidth = Math.round(cardWidth * 0.5)
-  const miniHeight = Math.round(cardHeight * 0.5)
+  const opponentManaPool = useGameStore((s) => s.opponentManaPool)
+  const opponentPotentialMana = useGameStore((s) => s.opponentPotentialMana)
+  const cardFactor = CARD_SCALE_BY_SIZE[size]
+  const miniWidth = Math.round(cardWidth * cardFactor)
+  const miniHeight = Math.round(cardHeight * cardFactor)
   const commander = opponentViewModel.commandCards[0]
   const displayName = opponentName ?? 'Opponent'
   return (
     <div
       style={{
-        flex: 1,
+        flex: FLEX_BY_SIZE[size],
         display: 'flex',
         flexDirection: 'column',
         padding: '8px 12px',
@@ -98,6 +109,17 @@ export function BoardOpponentZone({
         <span style={{ color: '#8b949e', fontSize: '0.65rem' }}>Hand ({opponentViewModel.handCards.length})</span>
         <span style={{ color: '#8b949e', fontSize: '0.65rem' }}>GY ({opponentViewModel.graveyardCards.length})</span>
         <span style={{ color: '#8b949e', fontSize: '0.65rem' }}>Library ({opponentViewModel.libraryCards.length})</span>
+        {size !== 'normal' && (
+          <ManaPoolArtifact
+            manaPool={opponentManaPool}
+            potentialMana={opponentPotentialMana}
+            onAdd={() => undefined}
+            onSpend={() => undefined}
+            onClear={() => undefined}
+            compact
+            readOnly
+          />
+        )}
         {commander && (
           <div style={{ display: 'flex', alignItems: 'center', gap: 5, marginLeft: 'auto' }}>
             <span style={{ color: '#8b949e', fontSize: '0.62rem', textTransform: 'uppercase', letterSpacing: 0.5, fontWeight: 600 }}>Commander</span>

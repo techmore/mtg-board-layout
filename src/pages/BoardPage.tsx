@@ -33,6 +33,7 @@ export default function BoardPage() {
     manaUsageKind, setManaUsageKind,
     manaUsageLabel, setManaUsageLabel,
     backgroundOnly, setBackgroundOnly,
+    tableView, setTableView,
     cardLayout, dragCardId,
     handleRightClick, handleDeckChange,
     onDragOver, onDropOnBattlefield,
@@ -198,6 +199,7 @@ export default function BoardPage() {
               handleRightClick={handleRightClick}
               cardWidth={cardLayout.boardCard.width}
               cardHeight={cardLayout.boardCard.height}
+              size={tableView}
             />
           )}
 
@@ -210,6 +212,8 @@ export default function BoardPage() {
             manaUsageLabel={manaUsageLabel}
             setManaUsageLabel={setManaUsageLabel}
             onBackgroundOnly={() => setBackgroundOnly(true)}
+            tableView={tableView}
+            onCycleTableView={() => setTableView(tableView === 'normal' ? 'full' : tableView === 'full' ? 'opponent' : 'normal')}
           />
 
           <div

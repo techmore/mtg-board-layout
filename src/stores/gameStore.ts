@@ -71,6 +71,7 @@ export interface GameState {
   overlay: OverlayState
   showOpponent: boolean
   opponentName: string | null
+  aiFixedDeck: boolean
   opponentLifeTotal: number
   activePlayer: ActivePlayer
   opponentManaPool: ManaPool
@@ -98,6 +99,7 @@ export interface GameState {
   setOverlay: (overlay: OverlayState) => void
   setBroadcasting: (active: boolean) => void
   setGameOver: (gameOver: { winner: 'player' | 'opponent' } | null) => void
+  setAiFixedDeck: (fixed: boolean) => void
   toggleOpponent: () => void
   setOpponentLife: (n: number) => void
   loadOpponentDeck: (commanderNames: string[], deckCards: DeckCard[], opponentName?: string) => void
@@ -179,6 +181,7 @@ export const useGameStore = create<GameState>((set, get) => {
     opponentPotentialMana: [] as PotentialManaSource[],
     opponentLandPlaysThisTurn: 0,
     gameOver: null,
+    aiFixedDeck: true,
 
     ...createTurnPhases(set, get),
     ...createOpponentAI(set, get),
@@ -219,6 +222,7 @@ export const useGameStore = create<GameState>((set, get) => {
     setOverlay: (overlay) => set({ overlay }),
     setBroadcasting: (active) => set({ broadcasting: active }),
     setGameOver: (gameOver) => set({ gameOver }),
+    setAiFixedDeck: (fixed) => set({ aiFixedDeck: fixed }),
     toggleOpponent: () =>
       set((state) => ({ showOpponent: !state.showOpponent })),
     setOpponentLife: (n) => set(() => ({

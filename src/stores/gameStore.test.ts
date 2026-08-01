@@ -83,6 +83,19 @@ function resetStore() {
 
 afterEach(resetStore)
 
+describe('aiFixedDeck setting', () => {
+  it('defaults to the fixed simple deck', () => {
+    expect(useGameStore.getState().aiFixedDeck).toBe(true)
+  })
+
+  it('can be toggled off to enable deck selection', () => {
+    useGameStore.getState().setAiFixedDeck(false)
+    expect(useGameStore.getState().aiFixedDeck).toBe(false)
+    useGameStore.getState().setAiFixedDeck(true)
+    expect(useGameStore.getState().aiFixedDeck).toBe(true)
+  })
+})
+
 beforeEach(() => {
   primeCardRules({})
 })

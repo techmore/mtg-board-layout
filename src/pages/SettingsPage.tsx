@@ -108,6 +108,8 @@ export default function SettingsPage() {
   const setBackground = useGameStore((s) => s.setBackground)
   const saveBackground = useGameStore((s) => s.saveBackground)
   const removeBackground = useGameStore((s) => s.removeBackground)
+  const aiFixedDeck = useGameStore((s) => s.aiFixedDeck)
+  const setAiFixedDeck = useGameStore((s) => s.setAiFixedDeck)
 
   const handleUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
@@ -242,6 +244,27 @@ export default function SettingsPage() {
             )
           })}
         </div>
+      </section>
+
+      <section style={{ marginBottom: 24 }}>
+        <h3 style={{ marginBottom: 8 }}>AI Opponent</h3>
+        <label style={{ display: 'flex', alignItems: 'flex-start', gap: 10, cursor: 'pointer' }}>
+          <input
+            type="checkbox"
+            checked={aiFixedDeck}
+            onChange={(e) => setAiFixedDeck(e.target.checked)}
+            style={{ marginTop: 3 }}
+          />
+          <div>
+            <div style={{ fontSize: '0.85rem', fontWeight: 600 }}>Use the fixed simple deck (Draconic Destruction)</div>
+            <div style={{ color: '#8b949e', fontSize: '0.75rem', lineHeight: 1.5, marginTop: 4, maxWidth: 520 }}>
+              Recommended. The AI is built and tested against this one red-green dragon deck, so its turns are reliable.
+              The other starter decks were only recently completed and haven't been fully play-tested yet — enabling them
+              here means the "+ AI Opponent" button lets you pick any prebuilt or imported deck, and the AI may run into
+              cards its simple logic doesn't know how to play yet.
+            </div>
+          </div>
+        </label>
       </section>
 
       <CardRuleDatabase />

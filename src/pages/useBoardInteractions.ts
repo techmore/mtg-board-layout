@@ -65,6 +65,7 @@ export function useBoardInteractions() {
   const [manaUsageKind, setManaUsageKind] = useState<ManaUsageKind>('spell')
   const [manaUsageLabel, setManaUsageLabel] = useState('')
   const [backgroundOnly, setBackgroundOnly] = useState(false)
+  const [tableView, setTableView] = useState<'normal' | 'full' | 'opponent'>('normal')
 
   const handBig = altHeld || handExpanded
   const maxHandStackCount = Math.max(1, ...handStacks.map(([, stack]) => stack.count))
@@ -194,6 +195,7 @@ export function useBoardInteractions() {
     manaUsageKind, setManaUsageKind,
     manaUsageLabel, setManaUsageLabel,
     backgroundOnly, setBackgroundOnly,
+    tableView, setTableView,
     handBig, maxHandStackCount, cardLayout,
     dragCardId,
     handleRightClick, handleDeckChange,
