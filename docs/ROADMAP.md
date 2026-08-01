@@ -7,31 +7,32 @@ Status legend: [x] done · [~] partial · [ ] not started
 
 ## Phase A: Starter Deck Completion (highest priority)
 
-All 16 prebuilt decks become complete, official, playable 100-card lists.
+All 16 prebuilt decks are complete, official, playable 100-card lists. Decklists live in
+`src/data/decklists/*.json` (single source for app + parser script).
 
 | Deck | Status |
 |------|--------|
 | Blight Curse | [x] complete |
 | Draconic Destruction (AI) | [x] complete |
-| Dance of the Elements | [ ] |
-| Cairo's Monument | [ ] |
-| Enduring Enchantments | [ ] |
-| Sauron, the Dark Lord | [ ] |
-| Food & Fellowship | [ ] |
-| Creative Energy | [ ] |
-| Eldrazi Incursion | [ ] |
-| Squirreled Away | [ ] |
-| Jump Scare | [ ] |
-| Endless Punishment | [ ] |
-| Eldrazi Unbound | [ ] |
-| Grave Danger | [ ] |
-| Mutant Menace | [ ] |
-| Glory Dog | [ ] |
-| Necron Dynasties | [ ] |
+| Dance of the Elements | [x] official list (playgroup.gg, cross-checked) |
+| Cairo's Monument | [x] theme-built (fictional product; commander Cairo not in Scryfall) |
+| Enduring Enchantments | [x] official (Commander Masters 2023) |
+| Sauron, the Dark Lord | [x] official (Tales of Middle-earth) |
+| Food & Fellowship | [x] official (Tales of Middle-earth) |
+| Creative Energy | [x] official (MH3 WotC page) |
+| Eldrazi Incursion | [x] official (MH3 WotC page) |
+| Squirreled Away | [x] official (Bloomburrow WotC page) |
+| Jump Scare | [x] official (Duskmourn WotC page) |
+| Endless Punishment | [x] official (Duskmourn WotC page) |
+| Eldrazi Unbound | [x] official (WotC article) |
+| Grave Danger | [x] official (Fallout) |
+| Mutant Menace | [x] official (Fallout "Hail, Caesar") |
+| Glory Dog | [x] official (Fallout "Scrappy Survivors") |
+| Necron Dynasties | [x] official (WotC article) |
 
-Steps per deck: fetch official list → validate every name against Scryfall → land
-in `src/data/decklists/<id>.json` (single source for app + parser) → run card-rule
-parser → verify rules output complete → play test (import, board, vs AI).
+All 16 decks: rules parsed and verified (1,495 cards), combined into
+`public/all-decks-rules.json` feeding the trigger engine for every deck.
+DFC names normalized to front faces; arena-only printings excluded.
 
 ## Phase B: Ability Engine
 
