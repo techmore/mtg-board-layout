@@ -133,6 +133,7 @@ export function BoardTurnPrompt({
                     <img
                       src={card.imageUri || CARD_BACK_URL}
                       alt={card.name}
+                      onError={(e) => { e.currentTarget.src = CARD_BACK_URL }}
                       style={{ width: '100%', aspectRatio: '5 / 7', objectFit: 'cover', display: 'block', borderRadius: 4 }}
                     />
                     <span style={{ display: 'block', marginTop: 4, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', fontSize: '0.62rem' }}>
