@@ -19,6 +19,13 @@ export function CardContextMenu({ cardId, x, y, onClose }: CardContextMenuProps)
   const addTokenToCard = useGameStore((s) => s.addTokenToCard)
   const setOverlay = useGameStore((s) => s.setOverlay)
 
+  // Keep the menu inside the viewport: right-clicking near an edge would
+  // otherwise overflow the window. Estimate height from the action count.
+  const menuWidth = 150
+  const menuHeight = 60 + 8 * 30
+  const clampedX = Math.max(4, Math.min(x, window.innerWidth - menuWidth - 8))
+  const clampedY = Math.max(4, Math.min(y, window.innerHeight - menuHeight - 8))
+
   return (
     <>
       <div
@@ -28,8 +35,8 @@ export function CardContextMenu({ cardId, x, y, onClose }: CardContextMenuProps)
       <div
         style={{
           position: 'fixed',
-          left: x,
-          top: y,
+          left: clampedX,
+          top: clampedY,
           background: '#1a1a2e',
           border: '1px solid #30363d',
           borderRadius: 8,

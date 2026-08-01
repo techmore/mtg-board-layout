@@ -58,7 +58,6 @@ export function BoardControls({
   const combatState = useGameStore((s) => s.combatState)
   const toggleCombat = useGameStore((s) => s.toggleCombat)
   const resolveCombat = useGameStore((s) => s.resolveCombat)
-  const drawCards = useGameStore((s) => s.drawCards)
   const redeal = useGameStore((s) => s.redeal)
 
   return (
@@ -122,6 +121,7 @@ export function BoardControls({
           ))}
         </select>
       </label>
+      <div style={dividerStyle} />
       <ManaPoolArtifact
         manaPool={manaPool}
         potentialMana={potentialMana}
@@ -132,11 +132,13 @@ export function BoardControls({
         manaLogOpen={manaLogOpen}
         compact
       />
+      <div style={dividerStyle} />
       <BoardBtn onClick={() => useGameStore.getState().drawCards(7)}>Draw 7</BoardBtn>
       <BoardBtn onClick={() => useGameStore.getState().drawCards(1)}>Draw 1</BoardBtn>
       <BoardBtn onClick={() => useGameStore.getState().redeal(7)}>
         Redeal 7
       </BoardBtn>
+      <div style={dividerStyle} />
       <BoardBtn onClick={onBackgroundOnly}>
         Background Only
       </BoardBtn>
@@ -180,6 +182,7 @@ export function BoardControls({
 
       <div style={{ flex: 1 }} />
 
+      <div style={dividerStyle} />
       <div style={{ display: 'flex', gap: 4, alignItems: 'center' }}>
         {!showOpponent && (
           <button
@@ -256,12 +259,10 @@ export function BoardControls({
       >
         Turn {turn}
       </div>
-      <BoardBtn onClick={() => drawCards(1)}>
-        Draw 1
-      </BoardBtn>
       <BoardBtn onClick={() => { if (window.confirm('New hand?')) redeal() }}>
         New Hand
       </BoardBtn>
+      <div style={dividerStyle} />
 
       <div
         style={{
@@ -322,6 +323,8 @@ export function BoardControls({
         </button>
       </div>
 
+      <div style={dividerStyle} />
+
       <div style={{ flex: 1 }} />
 
       <button
@@ -350,3 +353,5 @@ export function BoardControls({
     </div>
   )
 }
+
+const dividerStyle: React.CSSProperties = { width: 1, height: 26, background: 'rgba(255,255,255,0.14)', flexShrink: 0 }

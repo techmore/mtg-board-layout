@@ -23,3 +23,39 @@ body {
 a {
   color: inherit;
 }
+
+/* ── Global button affordances ───────────────────────────────
+   Every button in the app is inline-styled; these rules give
+   consistent hover/active/disabled/focus feedback without
+   touching each component. */
+button {
+  font: inherit;
+}
+
+button:focus-visible {
+  outline: 2px solid #58a6ff;
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+button:not(:disabled):hover {
+  filter: brightness(1.18);
+}
+
+button:not(:disabled):active {
+  filter: brightness(0.88);
+}
+
+button:disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
+}
+
+/* Respect reduced-motion preferences for animations we add. */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

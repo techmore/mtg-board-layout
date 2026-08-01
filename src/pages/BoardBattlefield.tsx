@@ -82,8 +82,11 @@ export function BoardBattlefield({
         {creatureCards.length === 0 && planeswalkerCards.length === 0 && battleCards.length === 0 &&
          artifactCards.length === 0 && enchantmentCards.length === 0 && otherPermanents.length === 0 &&
          landCards.length === 0 && (
-          <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', opacity: 0.3, fontSize: '0.85rem' }}>
-            Battlefield
+          <div style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 6, opacity: 0.45, fontSize: '0.85rem' }}>
+            <div style={{ fontSize: '0.95rem', fontWeight: 700, letterSpacing: '0.5px', textTransform: 'uppercase' }}>Battlefield</div>
+            <div style={{ fontSize: '0.72rem', color: '#8b949e' }}>
+              Play cards from your hand — or drag them here
+            </div>
           </div>
         )}
       </div>
