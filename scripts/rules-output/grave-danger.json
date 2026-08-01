@@ -26,7 +26,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": "Flying Whenever The Wise Mothman enters or attacks, each player gets a rad counter"
+          }
         }
       },
       {
@@ -68,7 +70,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": "Storm (When you cast this spell, copy it for each spell cast before it this turn"
+          }
         }
       },
       {
@@ -690,7 +694,9 @@
         "targetFilter": "player gets two rad counters",
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": "When The Master enters, target player gets two rad counters"
+          }
         }
       },
       {
@@ -703,7 +709,9 @@
         "targetFilter": "creature card in a graveyard that was milled this turn onto the battlefield under your control",
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": "{T}: Put target creature card in a graveyard that was milled this turn onto the battlefield under your control"
+          }
         }
       }
     ],
@@ -766,7 +774,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": "It gains flying until end of turn"
+          }
         }
       }
     ],
@@ -800,7 +810,9 @@
         "targetFilter": "player gets two rad counters",
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": "Vigilance When this creature enters, target player gets two rad counters"
+          }
         }
       },
       {
@@ -936,7 +948,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": "When this creature dies, each opponent gets a number of rad counters equal to its power"
+          }
         }
       }
     ],
@@ -1006,7 +1020,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": "Flying, menace Whenever this creature attacks, each player gets two rad counters"
+          }
         }
       }
     ],
@@ -1088,7 +1104,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": "At the beginning of your upkeep, double the number of +1/+1 counters on Lily Bowen if its power is 16 or less"
+          }
         }
       },
       {
@@ -1222,7 +1240,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": "Landfall — Whenever a land you control enters, you may get two rad counters"
+          }
         }
       },
       {
@@ -1235,7 +1255,9 @@
         "targetFilter": "land card in a graveyard that was milled this turn onto the battlefield under your control tapped",
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": "{T}: Put target land card in a graveyard that was milled this turn onto the battlefield under your control tapped"
+          }
         }
       }
     ],
@@ -1461,7 +1483,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": "Landfall — Whenever a land you control enters, investigate"
+          }
         }
       },
       {
@@ -1606,7 +1630,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": "Flying This creature can't block"
+          }
         }
       },
       {
@@ -1769,7 +1795,9 @@
         "targetFilter": "player gets four rad counters",
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": ") When this creature enters, target player gets four rad counters"
+          }
         }
       },
       {
@@ -1782,7 +1810,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": "This creature can't be blocked as long as defending player has a rad counter"
+          }
         }
       }
     ],
@@ -1815,7 +1845,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": "{T}: Each player mills a card"
+          }
         }
       }
     ],
@@ -1849,7 +1881,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": "Menace (This creature can't be blocked except by two or more creatures"
+          }
         }
       },
       {
@@ -2136,7 +2170,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": "It can't be regenerated"
+          }
         }
       }
     ],
@@ -2389,7 +2425,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": "• Brotherhood — At the beginning of your upkeep, each opponent draws a card"
+          }
         }
       },
       {
@@ -2417,7 +2455,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": "• Enclave — Whenever a player attacks you with one or more creatures, that player gets twice that many rad counters"
+          }
         }
       }
     ],
@@ -2526,7 +2566,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": "Enchant player At the beginning of each end step, enchanted player mills X cards, where X is the number of cards put into their graveyard from anywhere this turn"
+          }
         }
       }
     ],
@@ -2710,7 +2752,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": "Equipped creature gets +3/+0 and has intimidate"
+          }
         }
       },
       {
@@ -2723,7 +2767,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": "(It can't be blocked except by artifact creatures and/or creatures that share a color with it"
+          }
         }
       },
       {
@@ -2736,7 +2782,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": ") Whenever equipped creature attacks, until the end of defending player's next turn, that player gets two rad counters whenever they cast a spell"
+          }
         }
       }
     ],
@@ -3445,7 +3493,9 @@
         "targetFilter": "permanent you control onto a second target permanent",
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": "{1}, {T}: Move a counter from target permanent you control onto a second target permanent"
+          }
         }
       }
     ],

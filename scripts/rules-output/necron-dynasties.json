@@ -25,7 +25,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": "Phaeron — Whenever one or more artifact cards leave your graveyard, create two 2/2 black Necron Warrior artifact creature tokens"
+          }
         }
       },
       {
@@ -38,7 +40,9 @@
         "targetFilter": "artifact creature you control gets +2/+2 and gains menace until end of turn",
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": "Grand Strategist — At the beginning of combat on your turn, another target artifact creature you control gets +2/+2 and gains menace until end of turn"
+          }
         }
       }
     ],
@@ -69,7 +73,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": "Lord of the Pyrrhian Legions — Whenever Anrakyr the Traveller attacks, you may cast an artifact spell from your hand or graveyard by paying life equal to its mana value rather than paying its mana cos"
+          }
         }
       }
     ],
@@ -186,7 +192,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": "It gains haste"
+          }
         }
       },
       {
@@ -521,7 +529,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": "Flying My Will Be Done — Whenever Szarekh attacks, mill three cards"
+          }
         }
       },
       {
@@ -597,7 +607,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": "It gains haste"
+          }
         }
       },
       {
@@ -642,7 +654,9 @@
         "targetFilter": "artifact creature you control",
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": "{1}{B}, {T}: Choose another target artifact creature you control"
+          }
         }
       },
       {
@@ -689,7 +703,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": "Flying Enmitic Exterminator — When this creature enters, each player sacrifices a creature of their choice"
+          }
         }
       },
       {
@@ -715,7 +731,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": "It gains haste"
+          }
         }
       },
       {
@@ -861,7 +879,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": "Phalanx Commander — When this creature enters, create two tapped 2/2 black Necron Warrior artifact creature tokens"
+          }
         }
       },
       {
@@ -887,7 +907,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": "It gains haste"
+          }
         }
       },
       {
@@ -983,7 +1005,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": "Flying Spear of the Void Dragon — Whenever this creature attacks, each opponent sacrifices a nonland permanent of their choice"
+          }
         }
       },
       {
@@ -1031,7 +1055,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": "Menace Command Protocols — Other artifact creatures you control get +1/+0 and have menace"
+          }
         }
       },
       {
@@ -1057,7 +1083,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": "It gains haste"
+          }
         }
       },
       {
@@ -1220,7 +1248,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": "Wraith Form — This creature can't be blocked"
+          }
         }
       },
       {
@@ -1298,7 +1328,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": "Lifelink Flesh Flayer — When this creature enters, mill three cards"
+          }
         }
       }
     ],
@@ -1331,7 +1363,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": "Multi-threat Eliminator — This creature can't be blocked except by six or more creatures"
+          }
         }
       },
       {
@@ -1357,7 +1391,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": "It gains haste"
+          }
         }
       },
       {
@@ -1493,7 +1529,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": "Deathtouch Hyperphase Threshers — Whenever an artifact you control enters, this creature gains first strike until end of turn"
+          }
         }
       }
     ],
@@ -1555,7 +1593,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": "It gains haste"
+          }
         }
       },
       {
@@ -1961,7 +2001,9 @@
         "targetFilter": "creature cards with total mana value 8 or less in your graveyard",
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": "III — Choose up to three target creature cards with total mana value 8 or less in your graveyard"
+          }
         }
       },
       {
@@ -2003,7 +2045,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": "Translocation Protocols — {3}, {T}: Mill three cards"
+          }
         }
       }
     ],
@@ -2036,7 +2080,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": "Flying Repair Barge — Whenever this Vehicle becomes crewed, each artifact creature card in your graveyard gains unearth {3} until end of turn"
+          }
         }
       }
     ],
@@ -2070,7 +2116,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": "Flying, indestructible Eternity Gate — Whenever this Vehicle attacks, mill three cards"
+          }
         }
       },
       {
@@ -2121,7 +2169,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": "Equipped creature has lifelink"
+          }
         }
       },
       {
@@ -2147,7 +2197,9 @@
         "targetFilter": "creature you control",
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": "Equip {4} ({4}: Attach to target creature you control"
+          }
         }
       }
     ],
@@ -2266,7 +2318,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": "Creatures you control of the chosen color get +1/+1"
+          }
         }
       },
       {
@@ -2414,7 +2468,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": "Equipped creature gets +1/+0 for each artifact you control"
+          }
         }
       },
       {
@@ -2427,7 +2483,9 @@
         "targetFilter": "creature you control",
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": "{B}{B}: Attach this Equipment to target creature you control"
+          }
         }
       }
     ],
@@ -2520,7 +2578,9 @@
         "targetFilter": "creature you control",
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": "Equip {1} ({1}: Attach to target creature you control"
+          }
         }
       }
     ],

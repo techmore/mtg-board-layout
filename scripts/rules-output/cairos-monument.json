@@ -113,7 +113,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": ") As long as you have 30 or more life, this creature gets +5/+5 and has flying"
+          }
         }
       }
     ],
@@ -215,7 +217,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": "{3}{W}{W}{W}: Until end of turn, this creature gets +2/+2 and gains lifelink"
+          }
         }
       }
     ],
@@ -264,7 +268,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": "As long as you have at least 7 life more than your starting life total, creatures you control get +2/+2"
+          }
         }
       }
     ],
@@ -298,7 +304,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": "Flying Lieutenant — As long as you control your commander, this creature gets +2/+2 and creatures you control have vigilance"
+          }
         }
       }
     ],
@@ -361,7 +369,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": ") Other Angels you control get +1/+1 and have lifelink"
+          }
         }
       }
     ],
@@ -457,7 +467,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": "Vigilance Other creatures you control get +2/+2"
+          }
         }
       }
     ],
@@ -785,7 +797,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": "They can't be regenerated"
+          }
         }
       }
     ],
@@ -1830,7 +1844,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": "This creature gets +2/+2 as long as you have 25 or more life"
+          }
         }
       }
     ],
@@ -1952,7 +1968,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": "Flying As long as this creature is untapped, creatures can't attack you or planeswalkers you control unless their controller pays {1} for each of those creatures"
+          }
         }
       },
       {
@@ -1965,7 +1983,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": "As long as this creature is attacking, creatures can't block unless their controller pays {1} for each of those creatures"
+          }
         }
       }
     ],
@@ -1998,7 +2018,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": "Flying Activated abilities of creatures your opponents control can't be activated"
+          }
         }
       }
     ],
@@ -2186,7 +2208,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": "Flying Other nonblack creatures you control get +1/+1"
+          }
         }
       }
     ],
@@ -2254,7 +2278,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": "Flying, protection from black Echo {3}{W}{W} (At the beginning of your upkeep, if this came under your control since the beginning of your last upkeep, sacrifice it unless you pay its echo cost"
+          }
         }
       },
       {
@@ -2365,7 +2391,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": "Look at the top ten cards of your library"
+          }
         }
       }
     ],
@@ -2398,7 +2426,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": "Create three 1/1 white Soldier creature tokens"
+          }
         }
       },
       {
@@ -2424,7 +2454,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": "You get an emblem with \"Creatures you control get +2/+2 and have flying"
+          }
         }
       }
     ],
@@ -2555,7 +2587,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": "This spell can't be countered"
+          }
         }
       },
       {
@@ -2626,7 +2660,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": "This spell can't be countered"
+          }
         }
       },
       {
@@ -2757,7 +2793,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": "Creatures can't attack you unless their controller pays {2} for each creature they control that's attacking you"
+          }
         }
       }
     ],
@@ -2786,7 +2824,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": "Creatures can't attack you unless their controller pays {2} for each creature they control that's attacking you"
+          }
         }
       }
     ],
@@ -2933,7 +2973,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": "Enchant creature Enchanted creature can't attack or block, and its activated abilities can't be activated"
+          }
         }
       },
       {
@@ -2946,7 +2988,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": "Whenever a creature an opponent controls enters, you may attach this Aura to that creature"
+          }
         }
       }
     ],
@@ -2992,7 +3036,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": "Enchanted permanent can't attack or block, and its activated abilities can't be activated unless they're mana abilities"
+          }
         }
       }
     ],

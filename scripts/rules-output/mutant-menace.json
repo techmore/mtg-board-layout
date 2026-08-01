@@ -56,7 +56,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": "{4}, {T}: Roll a six-sided die plus an additional six-sided die for each mana from Treasures spent to activate this ability"
+          }
         }
       }
     ],
@@ -488,7 +490,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": "Whenever you attack, you may sacrifice another creature"
+          }
         }
       },
       {
@@ -550,7 +554,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": ") Whenever a creature you control attacks, if it enlisted a creature this combat, the creature that attacked gains double strike until end of turn"
+          }
         }
       },
       {
@@ -645,7 +651,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": "When this creature enters, create that many tokens that are copies of it"
+          }
         }
       },
       {
@@ -706,7 +714,9 @@
         "targetFilter": "creature you control gets +X/+X until end of turn",
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": "Whenever you sacrifice a Food, target creature you control gets +X/+X until end of turn, where X is the number of quest counters on Sierra"
+          }
         }
       }
     ],
@@ -737,7 +747,9 @@
         "targetFilter": "opponent gains control of Yes Man",
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": "{T}: Target opponent gains control of Yes Man"
+          }
         }
       },
       {
@@ -763,7 +775,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": "Wild Card — When Yes Man leaves the battlefield, its owner creates a tapped 1/1 white Soldier creature token for each quest counter on it"
+          }
         }
       }
     ],
@@ -795,7 +809,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": "When this creature enters, create that many tokens that are copies of it"
+          }
         }
       },
       {
@@ -808,7 +824,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": ") When this creature enters, each player sacrifices a creature of their choice"
+          }
         }
       }
     ],
@@ -876,7 +894,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": "When this creature enters, create that many tokens that are copies of it"
+          }
         }
       },
       {
@@ -990,7 +1010,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": "When this creature enters, create that many tokens that are copies of it"
+          }
         }
       },
       {
@@ -1101,7 +1123,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": "Lifelink Exploit (When this creature enters, you may sacrifice a creature"
+          }
         }
       },
       {
@@ -1148,7 +1172,9 @@
         "targetFilter": "creature card in your graveyard that's an artifact or that has mana value 3 or less gains escape until end of turn",
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": "Vigilance Whenever Desdemona attacks, target creature card in your graveyard that's an artifact or that has mana value 3 or less gains escape until end of turn"
+          }
         }
       },
       {
@@ -1208,7 +1234,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": ") Blind Betrayal — Sacrifice another creature: Elder Arthur Maxson gains indestructible until end of turn"
+          }
         }
       }
     ],
@@ -1259,7 +1287,9 @@
         "targetFilter": "creature for as long as you control Kellogg",
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": "Sacrifice five Treasures: Gain control of target creature for as long as you control Kellogg"
+          }
         }
       }
     ],
@@ -1291,7 +1321,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": "Whenever a creature you control with power 2 or less attacks, it gains skulk until end of turn"
+          }
         }
       },
       {
@@ -1304,7 +1336,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": "(It can't be blocked by creatures with greater power"
+          }
         }
       },
       {
@@ -1435,7 +1469,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": ") Other Soldier creatures you control get +1/+1 and have vigilance"
+          }
         }
       },
       {
@@ -1448,7 +1484,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": "When this creature enters, create three 1/1 white Soldier creature tokens"
+          }
         }
       }
     ],
@@ -1530,7 +1568,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": "When this creature enters, create that many tokens that are copies of it"
+          }
         }
       },
       {
@@ -1580,7 +1620,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": "Menace (This creature can't be blocked except by two or more creatures"
+          }
         }
       },
       {
@@ -1656,7 +1698,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": "When this creature enters, create that many tokens that are copies of it"
+          }
         }
       },
       {
@@ -1669,7 +1713,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": ") Menace (This creature can't be blocked except by two or more creatures"
+          }
         }
       }
     ],
@@ -1749,7 +1795,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": "Decimate — When Legate Lanius enters, each opponent sacrifices a tenth of the creatures they control of their choice, rounded up"
+          }
         }
       },
       {
@@ -1794,7 +1842,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": "When this creature enters, create two 1/1 white Human Soldier creature tokens"
+          }
         }
       },
       {
@@ -2019,7 +2069,9 @@
         "targetFilter": "creature s with equal toughness",
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": ") Choose any number of target creatures with equal toughness"
+          }
         }
       },
       {
@@ -2061,7 +2113,9 @@
         "targetFilter": "player sacrifices an attacking creature of their choice",
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": "Target player sacrifices an attacking creature of their choice"
+          }
         }
       }
     ],
@@ -2267,7 +2321,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": "It gains haste until end of turn"
+          }
         }
       },
       {
@@ -2398,7 +2454,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": "Until end of turn, creatures you control get +1/+1 and gain haste"
+          }
         }
       }
     ],
@@ -2591,7 +2649,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": ") Creatures you control get +1/+1"
+          }
         }
       },
       {
@@ -2792,7 +2852,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": "Creature tokens you control get +1/+1 and have vigilance"
+          }
         }
       }
     ],
@@ -2895,7 +2957,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": "{4}, {T}: Create X 1/1 white Soldier creature tokens, where X is the number of Bobbleheads you control"
+          }
         }
       }
     ],
@@ -2949,7 +3013,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": "{1}, {T}: Roll X six-sided dice, where X is the number of Bobbleheads you control"
+          }
         }
       },
       {
@@ -3040,7 +3106,9 @@
         "targetFilter": "player loses all rad counters",
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": "\") • RadAway — Target player loses all rad counters"
+          }
         }
       }
     ],
@@ -3071,7 +3139,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": "Equipped creature gets +1/-1"
+          }
         }
       },
       {
@@ -3354,7 +3424,9 @@
         "targetFilter": "creature",
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": "{T}: Move a shield counter from this land onto target creature"
+          }
         }
       }
     ],
@@ -3795,7 +3867,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": "{W}, {T}: You may play the exiled card without paying its mana cost if you attacked with three or more creatures this turn"
+          }
         }
       }
     ],
@@ -3918,7 +3992,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": "{3}{W}, {T}, Sacrifice this land: Create two 1/1 white Soldier creature tokens"
+          }
         }
       }
     ],

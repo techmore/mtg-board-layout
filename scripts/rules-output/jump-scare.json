@@ -24,7 +24,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": "Landfall — Whenever a land you control enters, manifest dread if this is the first time this ability has resolved this turn"
+          }
         }
       }
     ],
@@ -887,7 +889,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": "When this enchantment enters, manifest dread twice"
+          }
         }
       },
       {
@@ -977,7 +981,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": "Whenever this creature enters or attacks, manifest dread"
+          }
         }
       }
     ],
@@ -1006,7 +1012,9 @@
         "targetFilter": "artifact or enchantment that player controls",
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": "For each opponent, choose up to one target artifact or enchantment that player controls"
+          }
         }
       },
       {
@@ -1065,7 +1073,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": "Trample Whenever you attack with one or more creatures, untap up to X lands, where X is the greatest power among those creatures"
+          }
         }
       }
     ],
@@ -1304,7 +1314,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": "Flying, indestructible Kefnet can't attack or block unless you have seven or more cards in hand"
+          }
         }
       },
       {
@@ -1393,7 +1405,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": "At the beginning of your end step, you may manifest the top card of your library"
+          }
         }
       },
       {
@@ -1622,7 +1636,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": "Reach, trample Multani gets +1/+1 for each land you control and each land card in your graveyard"
+          }
         }
       },
       {
@@ -1666,7 +1682,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": "Until end of turn, creatures you control gain trample and get +X/+X, where X is the greatest power among creatures you control"
+          }
         }
       }
     ],
@@ -1697,7 +1715,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": "Creatures with flying can't attack you or planeswalkers you control"
+          }
         }
       },
       {
@@ -1805,7 +1825,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": "When this creature enters, manifest the top card of your library"
+          }
         }
       },
       {
@@ -1851,7 +1873,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": "Trample Lieutenant — As long as you control your commander, this creature gets +2/+2 and other creatures you control get +2/+2 and have trample"
+          }
         }
       }
     ],
@@ -1927,7 +1951,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": "At the beginning of your end step, manifest the top card of your library"
+          }
         }
       },
       {
@@ -1940,7 +1966,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": ") Sacrifice this creature: Until end of turn, face-up nontoken creatures you control gain \"When this creature dies, manifest the top card of your library"
+          }
         }
       }
     ],
@@ -1973,7 +2001,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": "Trample When this creature dies, create three 5/5 green Wurm creature tokens with trample"
+          }
         }
       },
       {
@@ -1986,7 +2016,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": "When Worldspine Wurm is put into a graveyard from anywhere, shuffle it into its owner's library"
+          }
         }
       }
     ],
@@ -2023,7 +2055,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": ") Whenever you cast a spell, you may remove a slumber counter from Arixmethes"
+          }
         }
       },
       {
@@ -2112,7 +2146,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": "Whenever you cast your first spell each turn, reveal the top card of your library"
+          }
         }
       }
     ],
@@ -2141,7 +2177,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": "{T}: Manifest a card from your hand"
+          }
         }
       }
     ],
@@ -2381,7 +2419,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": "{G}, {T}: You may play the exiled card without paying its mana cost if creatures you control have total power 10 or greater"
+          }
         }
       }
     ],
@@ -2649,7 +2689,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": "Flash When this enchantment enters, manifest dread"
+          }
         }
       },
       {
@@ -2855,7 +2897,9 @@
         "targetFilter": "creature",
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": "Landfall — Whenever a land you control enters, choose one — • You may tap or untap target creature"
+          }
         }
       },
       {
@@ -2990,7 +3034,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": "At the beginning of your end step, untap all lands you control"
+          }
         }
       }
     ],

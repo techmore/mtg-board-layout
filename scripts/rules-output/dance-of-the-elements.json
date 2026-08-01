@@ -26,7 +26,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": "(If you cast a spell for its evoke cost, it's sacrificed when it enters"
+          }
         }
       },
       {
@@ -55,7 +57,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": "The token gains haste until end of turn"
+          }
         }
       }
     ],
@@ -172,7 +176,9 @@
         "targetFilter": "player puts all the cards from their graveyard on the bottom of their library in a random order",
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": "Flash Reach When this creature enters, up to one target player puts all the cards from their graveyard on the bottom of their library in a random order"
+          }
         }
       },
       {
@@ -370,7 +376,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": "Reach When this creature enters, reveal the top five cards of your library"
+          }
         }
       },
       {
@@ -892,7 +900,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": "Creatures you control have haste"
+          }
         }
       },
       {
@@ -959,7 +969,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": "This mana can't be spent to pay generic mana costs"
+          }
         }
       }
     ],
@@ -1194,7 +1206,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": "If you do, it's sacrificed when it enters"
+          }
         }
       }
     ],
@@ -1258,7 +1272,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": "Fear (This creature can't be blocked except by artifact creatures and/or black creatures"
+          }
         }
       },
       {
@@ -1286,7 +1302,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": "If you do, it's sacrificed when it enters"
+          }
         }
       }
     ],
@@ -1462,7 +1480,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": "Whenever this creature or another Elemental you control enters, look at the top card of your library"
+          }
         }
       }
     ],
@@ -1883,7 +1903,9 @@
         "targetFilter": "creature gains haste until end of turn",
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": "{R}, {T}: Target creature gains haste until end of turn"
+          }
         }
       }
     ],
@@ -2598,7 +2620,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": "When this creature enters, create three 1/1 colorless Shapeshifter creature tokens with changeling"
+          }
         }
       },
       {
@@ -2627,7 +2651,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": "They gain haste"
+          }
         }
       }
     ],
@@ -2659,7 +2685,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": "When this creature enters, look at the top four cards of your library"
+          }
         }
       }
     ],
@@ -2693,7 +2721,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": "Vigilance This creature gets +1/+1 for each color among permanents you control"
+          }
         }
       },
       {
@@ -2794,7 +2824,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": "If you do, it's sacrificed when it enters"
+          }
         }
       }
     ],
@@ -2885,7 +2917,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": "When this creature enters, you may cast target instant or sorcery card from a graveyard without paying its mana cost"
+          }
         }
       },
       {
@@ -2927,7 +2961,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": "They gain haste"
+          }
         }
       }
     ],
@@ -2961,7 +2997,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": "Other Elemental creatures you control get +1/+1"
+          }
         }
       },
       {
@@ -2987,7 +3025,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": "That creature gains haste until end of turn"
+          }
         }
       }
     ],
@@ -3033,7 +3073,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": "If you do, it's sacrificed when it enters"
+          }
         }
       }
     ],
@@ -3068,7 +3110,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": "When this creature enters, creatures you control get +2/+2 and gain trample until end of turn"
+          }
         }
       },
       {
@@ -3097,7 +3141,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": "They gain haste"
+          }
         }
       }
     ],
@@ -3177,7 +3223,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": "They gain haste"
+          }
         }
       }
     ],
@@ -3210,7 +3258,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": "Menace (This creature can't be blocked except by two or more creatures"
+          }
         }
       },
       {
@@ -3256,7 +3306,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": "When this creature leaves the battlefield, choose an opponent"
+          }
         }
       },
       {
@@ -3284,7 +3336,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": "If you do, it's sacrificed when it enters"
+          }
         }
       }
     ],
@@ -3390,7 +3444,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": "They gain haste"
+          }
         }
       }
     ],
@@ -3570,7 +3626,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": "Whenever a creature you control enters, you may look at the top X cards of your library, where X is that creature's power"
+          }
         }
       }
     ],
@@ -3662,7 +3720,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": "Creatures you control have trample"
+          }
         }
       },
       {
@@ -3780,7 +3840,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": "When this enchantment enters, create X 1/1 colorless Shapeshifter creature tokens with changeling"
+          }
         }
       },
       {

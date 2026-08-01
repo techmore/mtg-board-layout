@@ -82,7 +82,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": "Forestwalk (This creature can't be blocked as long as defending player controls a Forest"
+          }
         }
       },
       {
@@ -95,7 +97,9 @@
         "targetFilter": "creature gets +X/-X until end of turn",
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": "{B}, Sacrifice X Squirrels: Target creature gets +X/-X until end of turn"
+          }
         }
       }
     ],
@@ -127,7 +131,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": "Other Squirrels you control get +1/+1"
+          }
         }
       }
     ],
@@ -753,7 +759,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": "Menace, trample, reach Squirrels you control have \"{T}: Target Squirrel gets +2/+2 and gains trample until end of turn"
+          }
         }
       },
       {
@@ -814,7 +822,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": "You get an emblem with \"Creatures you control get +3/+3 and have trample"
+          }
         }
       }
     ],
@@ -846,7 +856,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": "When this creature enters, create a number of 1/1 black Rat creature tokens equal to the number of opponents you have"
+          }
         }
       },
       {
@@ -912,7 +924,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": "{3}{B}, Sacrifice X Foods: Creatures you control get +X/+0 and gain menace until end of turn"
+          }
         }
       }
     ],
@@ -1193,7 +1207,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": "Rats you control have deathtouch"
+          }
         }
       }
     ],
@@ -1235,7 +1251,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": "They can't be regenerated"
+          }
         }
       },
       {
@@ -1403,7 +1421,9 @@
         "targetFilter": "player creates a 1/1 green Squirrel creature token",
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": "• Target player creates a 1/1 green Squirrel creature token"
+          }
         }
       },
       {
@@ -1416,7 +1436,9 @@
         "targetFilter": "opponent sacrifices a nontoken artifact of their choice",
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": "• Target opponent sacrifices a nontoken artifact of their choice"
+          }
         }
       }
     ],
@@ -1512,7 +1534,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": "Vigilance, trample, haste When this creature enters, other creatures you control get +2/+2 and gain vigilance and trample until end of turn"
+          }
         }
       }
     ],
@@ -1582,7 +1606,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": "At the beginning of your upkeep, remove a time counter from it"
+          }
         }
       },
       {
@@ -1595,7 +1621,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": "When the last is removed, sacrifice it"
+          }
         }
       },
       {
@@ -1608,7 +1636,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": ") When this creature enters, create four 1/1 green Squirrel creature tokens"
+          }
         }
       },
       {
@@ -1621,7 +1651,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": "Squirrels you control get +1/+1"
+          }
         }
       }
     ],
@@ -1654,7 +1686,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": "This spell can't be countered"
+          }
         }
       },
       {
@@ -1709,7 +1743,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": "As long as this enchantment has seven or more quest counters on it, creatures you control get +5/+5"
+          }
         }
       }
     ],
@@ -2191,7 +2227,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": "{T}: Regenerate target Insect, Rat, Spider, or Squirrel"
+          }
         }
       }
     ],
@@ -2544,7 +2582,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": "At the beginning of your upkeep, you may sacrifice a token"
+          }
         }
       },
       {
@@ -2570,7 +2610,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": "Squirrels you control get +1/+1 for each acorn counter on this artifact"
+          }
         }
       },
       {
@@ -2671,7 +2713,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": "\" Pay 10 life: Untap all lands you control"
+          }
         }
       }
     ],
@@ -2751,7 +2795,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": "Equipped creature gets +1/+1 for each creature you control with base power or toughness 1"
+          }
         }
       }
     ],
@@ -2931,7 +2977,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": "When this creature enters, each player sacrifices a creature or planeswalker of their choice"
+          }
         }
       }
     ],
@@ -3038,7 +3086,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": "Storm (When you cast this spell, copy it for each spell cast before it this turn"
+          }
         }
       }
     ],
@@ -3199,7 +3249,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": "Reach When this creature enters, you may sacrifice another creature"
+          }
         }
       },
       {
@@ -3303,7 +3355,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": "III — Creatures you control gain deathtouch until end of turn"
+          }
         }
       }
     ],
@@ -3470,7 +3524,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": "When this creature dies, create X tapped 1/1 green Squirrel creature tokens, where X is this creature's power"
+          }
         }
       }
     ],
@@ -3927,7 +3983,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": "It can't be regenerated"
+          }
         }
       }
     ],
@@ -4055,7 +4113,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": "Equipped creature gets +1/-1"
+          }
         }
       },
       {

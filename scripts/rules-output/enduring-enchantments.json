@@ -1694,7 +1694,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": ") Pegasus creatures you control have lifelink"
+          }
         }
       },
       {
@@ -1824,7 +1826,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": "{2}{B}, Sacrifice another enchantment: This creature gets +X/+0 until end of turn, where X is the sacrificed enchantment's mana value"
+          }
         }
       }
     ],
@@ -1858,7 +1862,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": "Creature and enchantment spells you control can't be countered"
+          }
         }
       },
       {
@@ -1871,7 +1877,9 @@
         "targetFilter": "land you control becomes an X/X Elemental creature with trample and haste until end of turn",
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": "{3}{G}: Target land you control becomes an X/X Elemental creature with trample and haste until end of turn, where X is the number of enchantments you control"
+          }
         }
       }
     ],
@@ -1955,7 +1963,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": "Whenever another creature you control dies, you may pay 2 life"
+          }
         }
       },
       {
@@ -2175,7 +2185,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": "Constellation — Whenever an enchantment you control enters, look at the top three cards of your library"
+          }
         }
       }
     ],
@@ -2208,7 +2220,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": "Reach At the beginning of your upkeep, mill two cards"
+          }
         }
       },
       {
@@ -2257,7 +2271,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": "Trample {1}{G}, Sacrifice another enchantment: This creature gains indestructible until end of turn"
+          }
         }
       }
     ],
@@ -2671,7 +2687,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": "III — Creatures you control gain deathtouch until end of turn"
+          }
         }
       }
     ],
@@ -2713,7 +2731,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": "Creatures you control get +1/+1 for each blessing counter on this enchantment"
+          }
         }
       }
     ],
@@ -2758,7 +2778,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": "Whenever this enchantment or another enchantment you control enters, until end of turn, this enchantment becomes a legendary 6/6 Nightmare God creature with menace and deathtouch"
+          }
         }
       }
     ],
@@ -2912,7 +2934,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": ") Whenever a Zombie token you control with power 6 or greater attacks, it gains lifelink until end of turn"
+          }
         }
       }
     ],
@@ -3023,7 +3047,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": "Enchant creature Enchanted creature gets +1/+1, has deathtouch, and is goaded"
+          }
         }
       },
       {
@@ -3204,7 +3230,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": "Creatures you control get +1/+1"
+          }
         }
       },
       {
@@ -3342,7 +3370,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": "Creatures with flying can't attack you or planeswalkers you control"
+          }
         }
       },
       {
@@ -3766,7 +3796,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": "Look at the top four cards of your library"
+          }
         }
       },
       {

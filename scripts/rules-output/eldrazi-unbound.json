@@ -220,7 +220,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": "Annihilator 2 (Whenever this creature attacks, defending player sacrifices two permanents of their choice"
+          }
         }
       }
     ],
@@ -308,7 +310,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": "Annihilator 2 (Whenever this creature attacks, defending player sacrifices two permanents of their choice"
+          }
         }
       }
     ],
@@ -416,7 +420,9 @@
         "targetFilter": "creature can't attack or block this turn",
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": "{C}, {T}: Target creature can't attack or block this turn"
+          }
         }
       },
       {
@@ -462,7 +468,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": "Whenever this creature attacks, defending player exiles two permanents they control"
+          }
         }
       }
     ],
@@ -765,7 +773,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": "When Omarthis dies, manifest a number of cards from the top of your library equal to the number of counters on it"
+          }
         }
       }
     ],
@@ -846,7 +856,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": "Vigilance {1}, {T}: Copy target activated or triggered ability you control from a colorless source"
+          }
         }
       },
       {
@@ -859,7 +871,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": "(Mana abilities can't be targeted"
+          }
         }
       }
     ],
@@ -966,7 +980,9 @@
         "targetFilter": "creature until end of turn",
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": "When you cast this spell, gain control of target creature until end of turn"
+          }
         }
       },
       {
@@ -979,7 +995,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": "Until end of turn, it has base power and toughness 10/10 and gains trample, annihilator 2, and haste"
+          }
         }
       },
       {
@@ -992,7 +1010,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": "Annihilator 2 (Whenever this creature attacks, defending player sacrifices two permanents of their choice"
+          }
         }
       }
     ],
@@ -1021,7 +1041,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": "This spell can't be countered"
+          }
         }
       },
       {
@@ -1049,7 +1071,9 @@
         "targetFilter": "player draws four cards",
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": "Target player draws four cards"
+          }
         }
       },
       {
@@ -1096,7 +1120,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": "Whenever you cast a colorless spell, until end of turn, this creature gains trample and gets +X/+X, where X is that spell's mana value"
+          }
         }
       }
     ],
@@ -1125,7 +1151,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": "Whenever you cast a colorless creature spell, manifest the top card of your library"
+          }
         }
       },
       {
@@ -1138,7 +1166,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": ") Whenever you attack with creatures with total power 6 or greater, you may turn a face-down creature you control face up"
+          }
         }
       }
     ],
@@ -1220,7 +1250,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": ") When this creature dies, reveal the top card of your library"
+          }
         }
       }
     ],
@@ -1403,7 +1435,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": "Colorless creatures you control get +2/+2"
+          }
         }
       },
       {
@@ -1699,7 +1733,9 @@
         "targetFilter": "artifact",
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": "{2}: This artifact becomes a copy of target artifact, creature, enchantment, or land until end of turn"
+          }
         }
       }
     ],
@@ -1730,7 +1766,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": "When this creature becomes the target of a spell, sacrifice it and create a number of 1/1 colorless Construct artifact creature tokens equal to its power"
+          }
         }
       }
     ],
@@ -1822,7 +1860,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": "When this creature dies, create three 3/3 colorless Phyrexian Golem artifact creature tokens"
+          }
         }
       },
       {
@@ -1851,7 +1891,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": "They gain haste"
+          }
         }
       }
     ],
@@ -2237,7 +2279,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": "{2}, {T}: Each player draws a card, then discards a card"
+          }
         }
       }
     ],
@@ -2284,7 +2328,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": "{2}{C}, {T}, Sacrifice this land: Copy target instant or sorcery spell you control"
+          }
         }
       },
       {
@@ -2541,7 +2587,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": "{2}, {T}: Target legendary creature becomes a God in addition to its other types"
+          }
         }
       },
       {
@@ -2713,7 +2761,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": "Equipped creature has haste and shroud"
+          }
         }
       },
       {
@@ -2726,7 +2776,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": "(It can't be the target of spells or abilities"
+          }
         }
       }
     ],
@@ -2957,7 +3009,9 @@
         "targetFilter": "creature can't be blocked this turn",
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": "{4}, {T}: Target creature can't be blocked this turn"
+          }
         }
       }
     ],
@@ -3165,7 +3219,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": "Defender {T}: Creatures you control gain haste until end of turn"
+          }
         }
       }
     ],
@@ -3245,7 +3301,9 @@
         "targetFilter": "creature you control",
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": ") Equip {2} ({2}: Attach to target creature you control"
+          }
         }
       }
     ],
@@ -3450,7 +3508,9 @@
         "targetFilter": "creature can't be blocked this turn",
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": "Defender {3}, {T}: Target creature can't be blocked this turn"
+          }
         }
       }
     ],
@@ -3533,7 +3593,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": "{1}, {T}: Until end of turn, creatures your opponents control lose hexproof and shroud and can't have hexproof or shroud"
+          }
         }
       }
     ],
@@ -3580,7 +3642,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": "{T}: Choose target commander that entered this turn"
+          }
         }
       },
       {

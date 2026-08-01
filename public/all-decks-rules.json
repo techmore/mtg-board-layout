@@ -87,7 +87,9 @@
     "targetFilter": null,
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "Whenever a creature an opponent controls with a -1/-1 counter on it dies, you may put that card onto the battlefield under your control"
+     }
     }
    }
   ],
@@ -152,7 +154,9 @@
     "targetFilter": null,
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "{5}, {T}, Sacrifice this artifact: Create X tapped 2/2 colorless Scarecrow artifact creature tokens, where X is the number of charge counters on this artifact"
+     }
     }
    }
   ],
@@ -332,7 +336,9 @@
     "targetFilter": null,
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "When this enchantment enters, you become the monarch"
+     }
     }
    },
    {
@@ -545,7 +551,9 @@
     "targetFilter": "player controls",
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "When Ferrafor enters, create a number of 1/1 green Saproling creature tokens equal to the number of counters among creatures target player controls"
+     }
     }
    },
    {
@@ -558,7 +566,9 @@
     "targetFilter": "creature",
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "{T}: Double the number of each kind of counter on target creature"
+     }
     }
    }
   ],
@@ -591,7 +601,9 @@
     "targetFilter": "opponent 's life total with this creature's toughness",
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "Defender {T}: Exchange target opponent's life total with this creature's toughness"
+     }
     }
    }
   ],
@@ -832,7 +844,9 @@
     "targetFilter": "permanent you control onto a second target permanent",
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "{1}, {T}: Move a counter from target permanent you control onto a second target permanent"
+     }
     }
    }
   ],
@@ -915,7 +929,9 @@
     "targetFilter": null,
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "Deathtouch Whenever this creature enters or attacks, create two 2/2 black Zombie creature tokens"
+     }
     }
    }
   ],
@@ -969,7 +985,9 @@
     "targetFilter": "player has fewer than nine poison counters",
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "If target player has fewer than nine poison counters, they get a number of poison counters equal to the difference"
+     }
     }
    }
   ],
@@ -1116,7 +1134,9 @@
     "targetFilter": null,
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "Spells you control can't be countered"
+     }
     }
    },
    {
@@ -1129,7 +1149,9 @@
     "targetFilter": null,
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "At the beginning of your end step, discover 5"
+     }
     }
    },
    {
@@ -1225,7 +1247,9 @@
     "targetFilter": null,
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "It gains haste"
+     }
     }
    },
    {
@@ -1681,7 +1705,9 @@
     "targetFilter": "permanent",
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "• Remove up to three counters from target permanent"
+     }
     }
    }
   ],
@@ -1727,7 +1753,9 @@
     "targetFilter": null,
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "Damage can't be prevented"
+     }
     }
    },
    {
@@ -2788,7 +2816,9 @@
     "targetFilter": null,
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "It can't be regenerated"
+     }
     }
    }
   ],
@@ -2849,7 +2879,9 @@
     "targetFilter": null,
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "III — Creatures you control gain deathtouch until end of turn"
+     }
     }
    }
   ],
@@ -2897,7 +2929,9 @@
     "targetFilter": null,
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": ") Creatures your opponents control with counters on them can't attack or block"
+     }
     }
    }
   ],
@@ -3147,7 +3181,9 @@
     "targetFilter": null,
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "It can't be regenerated"
+     }
     }
    }
   ],
@@ -3386,7 +3422,9 @@
     "targetFilter": null,
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "When this land enters, sacrifice it"
+     }
     }
    },
    {
@@ -3732,7 +3770,9 @@
     "targetFilter": null,
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": ") As long as you have 30 or more life, this creature gets +5/+5 and has flying"
+     }
     }
    }
   ],
@@ -3834,7 +3874,9 @@
     "targetFilter": null,
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "{3}{W}{W}{W}: Until end of turn, this creature gets +2/+2 and gains lifelink"
+     }
     }
    }
   ],
@@ -3883,7 +3925,9 @@
     "targetFilter": null,
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "As long as you have at least 7 life more than your starting life total, creatures you control get +2/+2"
+     }
     }
    }
   ],
@@ -3917,7 +3961,9 @@
     "targetFilter": null,
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "Flying Lieutenant — As long as you control your commander, this creature gets +2/+2 and creatures you control have vigilance"
+     }
     }
    }
   ],
@@ -3980,7 +4026,9 @@
     "targetFilter": null,
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": ") Other Angels you control get +1/+1 and have lifelink"
+     }
     }
    }
   ],
@@ -4092,7 +4140,9 @@
     "targetFilter": null,
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "Vigilance Other creatures you control get +2/+2"
+     }
     }
    }
   ],
@@ -4308,7 +4358,9 @@
     "targetFilter": null,
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "They can't be regenerated"
+     }
     }
    }
   ],
@@ -5256,7 +5308,9 @@
     "targetFilter": null,
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "This creature gets +2/+2 as long as you have 25 or more life"
+     }
     }
    }
   ],
@@ -5378,7 +5432,9 @@
     "targetFilter": null,
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "Flying As long as this creature is untapped, creatures can't attack you or planeswalkers you control unless their controller pays {1} for each of those creatures"
+     }
     }
    },
    {
@@ -5391,7 +5447,9 @@
     "targetFilter": null,
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "As long as this creature is attacking, creatures can't block unless their controller pays {1} for each of those creatures"
+     }
     }
    }
   ],
@@ -5424,7 +5482,9 @@
     "targetFilter": null,
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "Flying Activated abilities of creatures your opponents control can't be activated"
+     }
     }
    }
   ],
@@ -5612,7 +5672,9 @@
     "targetFilter": null,
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "Flying Other nonblack creatures you control get +1/+1"
+     }
     }
    }
   ],
@@ -5680,7 +5742,9 @@
     "targetFilter": null,
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "Flying, protection from black Echo {3}{W}{W} (At the beginning of your upkeep, if this came under your control since the beginning of your last upkeep, sacrifice it unless you pay its echo cost"
+     }
     }
    },
    {
@@ -5791,7 +5855,9 @@
     "targetFilter": null,
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "Look at the top ten cards of your library"
+     }
     }
    }
   ],
@@ -5824,7 +5890,9 @@
     "targetFilter": null,
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "Create three 1/1 white Soldier creature tokens"
+     }
     }
    },
    {
@@ -5850,7 +5918,9 @@
     "targetFilter": null,
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "You get an emblem with \"Creatures you control get +2/+2 and have flying"
+     }
     }
    }
   ],
@@ -5981,7 +6051,9 @@
     "targetFilter": null,
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "This spell can't be countered"
+     }
     }
    },
    {
@@ -6052,7 +6124,9 @@
     "targetFilter": null,
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "This spell can't be countered"
+     }
     }
    },
    {
@@ -6359,7 +6433,9 @@
     "targetFilter": null,
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "Enchant creature Enchanted creature can't attack or block, and its activated abilities can't be activated"
+     }
     }
    },
    {
@@ -6372,7 +6448,9 @@
     "targetFilter": null,
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "Whenever a creature an opponent controls enters, you may attach this Aura to that creature"
+     }
     }
    }
   ],
@@ -6418,7 +6496,9 @@
     "targetFilter": null,
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "Enchanted permanent can't attack or block, and its activated abilities can't be activated unless they're mana abilities"
+     }
     }
    }
   ],
@@ -6788,7 +6868,9 @@
     "targetFilter": null,
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "First strike When this creature enters, you get {E}{E}"
+     }
     }
    },
    {
@@ -7438,7 +7520,9 @@
     "targetFilter": null,
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "{2}, {T}: Choose one — • Populate"
+     }
     }
    },
    {
@@ -7533,7 +7617,9 @@
     "targetFilter": null,
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "When this Vehicle enters, you get {E}{E}{E}{E}"
+     }
     }
    },
    {
@@ -7546,7 +7632,9 @@
     "targetFilter": null,
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "Whenever this Vehicle attacks, you may pay {E}{E}"
+     }
     }
    },
    {
@@ -7559,7 +7647,9 @@
     "targetFilter": null,
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "When you do, target instant or sorcery card in your graveyard gains jump-start until end of turn"
+     }
     }
    },
    {
@@ -7632,7 +7722,9 @@
     "targetFilter": null,
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "{T}: You get {E}, then you may pay one or more {E}"
+     }
     }
    },
    {
@@ -7745,7 +7837,9 @@
     "targetFilter": null,
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "Flying, vigilance, trample Whenever you attack, other creatures you control get +2/+2 and gain indestructible until end of turn"
+     }
     }
    },
    {
@@ -7771,7 +7865,9 @@
     "targetFilter": null,
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "It gains haste"
+     }
     }
    },
    {
@@ -7817,7 +7913,9 @@
     "targetFilter": null,
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "Haste Whenever this creature attacks, you get {E}{E}, then you may pay eight {E}"
+     }
     }
    },
    {
@@ -7862,7 +7960,9 @@
     "targetFilter": null,
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "Whenever this creature or equipped creature attacks, you get {E} , then it gets +X/+X until end of turn, where X is the amount of {E} you have"
+     }
     }
    },
    {
@@ -7875,7 +7975,9 @@
     "targetFilter": "creature you control",
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "(Pay {2} or {E}{E}{E}: Attach to target creature you control"
+     }
     }
    }
   ],
@@ -7907,7 +8009,9 @@
     "targetFilter": null,
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "(Whenever you cast a creature spell, you may copy it"
+     }
     }
    }
   ],
@@ -7952,7 +8056,9 @@
     "targetFilter": null,
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "Whenever this creature attacks, double its power until end of turn"
+     }
     }
    },
    {
@@ -7996,7 +8102,9 @@
     "targetFilter": null,
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "Whenever a creature you control attacks, you get {E}"
+     }
     }
    },
    {
@@ -8110,7 +8218,9 @@
     "targetFilter": null,
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "{3}, {T}: You get {E}{E}{E}"
+     }
     }
    },
    {
@@ -8187,7 +8297,9 @@
     "targetFilter": null,
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "Double strike, haste Whenever this creature attacks, you get {E}{E} , then you may pay eight {E}"
+     }
     }
    }
   ],
@@ -8220,7 +8332,9 @@
     "targetFilter": null,
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "Flying When this creature enters, you get six {E}"
+     }
     }
    },
    {
@@ -8265,7 +8379,9 @@
     "targetFilter": null,
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "Whenever this creature attacks, you get {E}{E}"
+     }
     }
    },
    {
@@ -8312,7 +8428,9 @@
     "targetFilter": null,
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "Flying When this Vehicle enters, you get {E}{E}"
+     }
     }
    },
    {
@@ -8325,7 +8443,9 @@
     "targetFilter": null,
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "Pay {E}: This Vehicle gains lifelink until end of turn"
+     }
     }
    }
   ],
@@ -8367,7 +8487,9 @@
     "targetFilter": null,
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "{1}{U}, {T}: Creatures your opponents control attack this turn if able"
+     }
     }
    }
   ],
@@ -8461,7 +8583,9 @@
     "targetFilter": null,
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "When this creature enters, create four 1/1 colorless Myr artifact creature tokens"
+     }
     }
    },
    {
@@ -8474,7 +8598,9 @@
     "targetFilter": null,
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "Whenever this creature attacks, you may tap X untapped Myr you control"
+     }
     }
    },
    {
@@ -8566,7 +8692,9 @@
     "targetFilter": null,
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "Creature tokens you control have haste"
+     }
     }
    },
    {
@@ -8641,7 +8769,9 @@
     "targetFilter": null,
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "Whenever one or more creatures an opponent controls attack you and aren't blocked, that player draws three cards and gains control of this artifact"
+     }
     }
    }
   ],
@@ -8770,7 +8900,9 @@
     "targetFilter": null,
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "• Creatures you control gain flying, vigilance, and double strike until end of turn"
+     }
     }
    },
    {
@@ -8783,7 +8915,9 @@
     "targetFilter": null,
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "• Creatures you control gain lifelink, indestructible, and protection from each color until end of turn"
+     }
     }
    }
   ],
@@ -8987,7 +9121,9 @@
     "targetFilter": null,
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "Whenever a permanent you control is put into a graveyard, you get {E}"
+     }
     }
    },
    {
@@ -9000,7 +9136,9 @@
     "targetFilter": null,
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "{T}, Pay six {E}: Look at the top six cards of your library"
+     }
     }
    }
   ],
@@ -9051,7 +9189,9 @@
     "targetFilter": null,
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": ") Other creatures you control get +1/+1"
+     }
     }
    }
   ],
@@ -9080,7 +9220,9 @@
     "targetFilter": "artifact or creature",
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "Choose target artifact or creature"
+     }
     }
    }
   ],
@@ -9113,7 +9255,9 @@
     "targetFilter": null,
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "Flying Whenever this creature or another creature you control enters, you get {E}"
+     }
     }
    },
    {
@@ -9126,7 +9270,9 @@
     "targetFilter": null,
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "Whenever this creature attacks, you may pay {E}{E}"
+     }
     }
    },
    {
@@ -9172,7 +9318,9 @@
     "targetFilter": null,
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "Flying At the beginning of your upkeep, you get {E}{E}{E}"
+     }
     }
    },
    {
@@ -9185,7 +9333,9 @@
     "targetFilter": null,
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "Pay eight {E}: Return all other creatures to their owners' hands"
+     }
     }
    }
   ],
@@ -9672,7 +9822,9 @@
     "targetFilter": null,
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "When this creature leaves the battlefield, the exiled card's owner creates an X/X blue Illusion creature token, where X is the mana value of the exiled card"
+     }
     }
    }
   ],
@@ -9750,7 +9902,9 @@
     "targetFilter": "artifact or creature card in your graveyard",
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "Choose up to one target artifact or creature card in your graveyard"
+     }
     }
    },
    {
@@ -9809,7 +9963,9 @@
     "targetFilter": null,
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "{T}: You get {E}{E}"
+     }
     }
    },
    {
@@ -9822,7 +9978,9 @@
     "targetFilter": "creature",
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "{T}, Pay {E}{E}: Tap target creature"
+     }
     }
    },
    {
@@ -9850,7 +10008,9 @@
     "targetFilter": null,
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "Pay {E}{E}{E}{E}: This Vehicle becomes an artifact creature until end of turn"
+     }
     }
    }
   ],
@@ -9882,7 +10042,9 @@
     "targetFilter": null,
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "Landfall — Whenever a land you control enters, you get {E}"
+     }
     }
    },
    {
@@ -9926,7 +10088,9 @@
     "targetFilter": null,
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "When this artifact enters, you get {E}{E}"
+     }
     }
    },
    {
@@ -10004,7 +10168,9 @@
     "targetFilter": null,
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "When this artifact enters, you get {E}{E}{E}"
+     }
     }
    },
    {
@@ -10061,7 +10227,9 @@
     "targetFilter": null,
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "When this enchantment enters, create two 1/1 red Gremlin creature tokens"
+     }
     }
    },
    {
@@ -10074,7 +10242,9 @@
     "targetFilter": null,
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "Pay {E}{E}{E}{E}: Creatures you control get +1/+0 and gain haste until end of turn"
+     }
     }
    }
   ],
@@ -10306,7 +10476,9 @@
     "targetFilter": null,
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "Whenever an artifact or Artificer you control enters, you may pay {1}"
+     }
     }
    },
    {
@@ -10360,7 +10532,9 @@
     "targetFilter": null,
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "When this land enters, you get {E}"
+     }
     }
    },
    {
@@ -10415,7 +10589,9 @@
     "targetFilter": null,
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "Whenever a creature you control enters, you get {E}"
+     }
     }
    },
    {
@@ -10493,7 +10669,9 @@
     "targetFilter": null,
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "When this creature enters, you get {E}{E}{E}"
+     }
     }
    },
    {
@@ -10747,7 +10925,9 @@
     "targetFilter": null,
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "(If you cast a spell for its evoke cost, it's sacrificed when it enters"
+     }
     }
    },
    {
@@ -10776,7 +10956,9 @@
     "targetFilter": null,
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "The token gains haste until end of turn"
+     }
     }
    }
   ],
@@ -10893,7 +11075,9 @@
     "targetFilter": "player puts all the cards from their graveyard on the bottom of their library in a random order",
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "Flash Reach When this creature enters, up to one target player puts all the cards from their graveyard on the bottom of their library in a random order"
+     }
     }
    },
    {
@@ -11091,7 +11275,9 @@
     "targetFilter": null,
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "Reach When this creature enters, reveal the top five cards of your library"
+     }
     }
    },
    {
@@ -11613,7 +11799,9 @@
     "targetFilter": null,
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "Creatures you control have haste"
+     }
     }
    },
    {
@@ -11680,7 +11868,9 @@
     "targetFilter": null,
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "This mana can't be spent to pay generic mana costs"
+     }
     }
    }
   ],
@@ -11832,7 +12022,9 @@
     "targetFilter": null,
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "If you do, it's sacrificed when it enters"
+     }
     }
    }
   ],
@@ -11896,7 +12088,9 @@
     "targetFilter": null,
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "Fear (This creature can't be blocked except by artifact creatures and/or black creatures"
+     }
     }
    },
    {
@@ -11924,7 +12118,9 @@
     "targetFilter": null,
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "If you do, it's sacrificed when it enters"
+     }
     }
    }
   ],
@@ -11988,7 +12184,9 @@
     "targetFilter": null,
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "Whenever this creature or another Elemental you control enters, look at the top card of your library"
+     }
     }
    }
   ],
@@ -12245,7 +12443,9 @@
     "targetFilter": "creature gains haste until end of turn",
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "{R}, {T}: Target creature gains haste until end of turn"
+     }
     }
    }
   ],
@@ -12924,7 +13124,9 @@
     "targetFilter": null,
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "When this creature enters, create three 1/1 colorless Shapeshifter creature tokens with changeling"
+     }
     }
    },
    {
@@ -12953,7 +13155,9 @@
     "targetFilter": null,
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "They gain haste"
+     }
     }
    }
   ],
@@ -12985,7 +13189,9 @@
     "targetFilter": null,
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "When this creature enters, look at the top four cards of your library"
+     }
     }
    }
   ],
@@ -13019,7 +13225,9 @@
     "targetFilter": null,
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "Vigilance This creature gets +1/+1 for each color among permanents you control"
+     }
     }
    },
    {
@@ -13120,7 +13328,9 @@
     "targetFilter": null,
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "If you do, it's sacrificed when it enters"
+     }
     }
    }
   ],
@@ -13211,7 +13421,9 @@
     "targetFilter": null,
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "When this creature enters, you may cast target instant or sorcery card from a graveyard without paying its mana cost"
+     }
     }
    },
    {
@@ -13253,7 +13465,9 @@
     "targetFilter": null,
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "They gain haste"
+     }
     }
    }
   ],
@@ -13287,7 +13501,9 @@
     "targetFilter": null,
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "Other Elemental creatures you control get +1/+1"
+     }
     }
    },
    {
@@ -13313,7 +13529,9 @@
     "targetFilter": null,
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "That creature gains haste until end of turn"
+     }
     }
    }
   ],
@@ -13359,7 +13577,9 @@
     "targetFilter": null,
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "If you do, it's sacrificed when it enters"
+     }
     }
    }
   ],
@@ -13394,7 +13614,9 @@
     "targetFilter": null,
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "When this creature enters, creatures you control get +2/+2 and gain trample until end of turn"
+     }
     }
    },
    {
@@ -13423,7 +13645,9 @@
     "targetFilter": null,
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "They gain haste"
+     }
     }
    }
   ],
@@ -13503,7 +13727,9 @@
     "targetFilter": null,
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "They gain haste"
+     }
     }
    }
   ],
@@ -13536,7 +13762,9 @@
     "targetFilter": null,
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "Menace (This creature can't be blocked except by two or more creatures"
+     }
     }
    },
    {
@@ -13582,7 +13810,9 @@
     "targetFilter": null,
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "When this creature leaves the battlefield, choose an opponent"
+     }
     }
    },
    {
@@ -13610,7 +13840,9 @@
     "targetFilter": null,
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "If you do, it's sacrificed when it enters"
+     }
     }
    }
   ],
@@ -13716,7 +13948,9 @@
     "targetFilter": null,
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "They gain haste"
+     }
     }
    }
   ],
@@ -13896,7 +14130,9 @@
     "targetFilter": null,
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "Whenever a creature you control enters, you may look at the top X cards of your library, where X is that creature's power"
+     }
     }
    }
   ],
@@ -13988,7 +14224,9 @@
     "targetFilter": null,
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "Creatures you control have trample"
+     }
     }
    },
    {
@@ -14106,7 +14344,9 @@
     "targetFilter": null,
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "When this enchantment enters, create X 1/1 colorless Shapeshifter creature tokens with changeling"
+     }
     }
    },
    {
@@ -14197,7 +14437,9 @@
     "targetFilter": null,
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": ") Whenever you cast an Eldrazi spell, you may pay {C}{C}"
+     }
     }
    },
    {
@@ -14210,7 +14452,9 @@
     "targetFilter": null,
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "(Mana abilities can't be copied"
+     }
     }
    }
   ],
@@ -14243,7 +14487,9 @@
     "targetFilter": null,
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "Whenever Azlask or another colorless creature you control dies, you get an experience counter"
+     }
     }
    }
   ],
@@ -14476,7 +14722,9 @@
     "targetFilter": null,
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "Annihilator 2 (Whenever this creature attacks, defending player sacrifices two permanents of their choice"
+     }
     }
    }
   ],
@@ -14564,7 +14812,9 @@
     "targetFilter": null,
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "Annihilator 2 (Whenever this creature attacks, defending player sacrifices two permanents of their choice"
+     }
     }
    }
   ],
@@ -14716,7 +14966,9 @@
     "targetFilter": null,
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "Enchant creature Enchanted creature gets +10/+10 and has trample and annihilator 2"
+     }
     }
    },
    {
@@ -14729,7 +14981,9 @@
     "targetFilter": null,
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "(Whenever it attacks, defending player sacrifices two permanents of their choice"
+     }
     }
    }
   ],
@@ -14893,7 +15147,9 @@
     "targetFilter": null,
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": ") When you cast this spell, for each opponent, choose a creature that player controls"
+     }
     }
    },
    {
@@ -14940,7 +15196,9 @@
     "targetFilter": "creature you control gains protection from each color until end of turn",
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "Target creature you control gains protection from each color until end of turn"
+     }
     }
    }
   ],
@@ -15004,7 +15262,9 @@
     "targetFilter": null,
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": ") Flying, vigilance When this creature enters, sacrifice any number of creatures each with base power or toughness 1 or less"
+     }
     }
    }
   ],
@@ -15071,7 +15331,9 @@
     "targetFilter": "creature that player controls until end of turn",
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": ") When you cast this spell, for each opponent, gain control of up to one target creature that player controls until end of turn"
+     }
     }
    },
    {
@@ -15084,7 +15346,9 @@
     "targetFilter": null,
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "They gain trample, haste, and annihilator 1 until end of turn"
+     }
     }
    },
    {
@@ -15097,7 +15361,9 @@
     "targetFilter": null,
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "Trample, haste, annihilator 1 (Whenever this creature attacks, defending player sacrifices a permanent of their choice"
+     }
     }
    }
   ],
@@ -15128,7 +15394,9 @@
     "targetFilter": null,
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "Whenever you attack, choose odd or even"
+     }
     }
    },
    {
@@ -15141,7 +15409,9 @@
     "targetFilter": null,
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "Creatures with mana value of that quality can't block this turn"
+     }
     }
    }
   ],
@@ -15175,7 +15445,9 @@
     "targetFilter": "permanent or opponent",
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": ") When you cast this spell, remove all counters from up to one target permanent or opponent"
+     }
     }
    }
   ],
@@ -15372,7 +15644,9 @@
     "targetFilter": "creature s until end of turn",
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "At the beginning of combat on your turn, switch the power and toughness of each of any number of target creatures until end of turn"
+     }
     }
    }
   ],
@@ -15504,7 +15778,9 @@
     "targetFilter": null,
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "Creatures you control get +1/+1 and have flying and indestructible"
+     }
     }
    },
    {
@@ -15517,7 +15793,9 @@
     "targetFilter": null,
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "At the beginning of your upkeep, sacrifice a creature"
+     }
     }
    }
   ],
@@ -15664,7 +15942,9 @@
     "targetFilter": null,
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": ") When this creature enters, create two 1/1 colorless Eldrazi Scion creature tokens"
+     }
     }
    },
    {
@@ -15690,7 +15970,9 @@
     "targetFilter": "creature",
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "\" Sacrifice an Eldrazi Scion: Tap target creature"
+     }
     }
    }
   ],
@@ -16376,7 +16658,9 @@
     "targetFilter": null,
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "Other creatures you control of the chosen type get +1/+1"
+     }
     }
    }
   ],
@@ -16624,7 +16908,9 @@
     "targetFilter": "creature can't attack or block this turn",
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "{C}, {T}: Target creature can't attack or block this turn"
+     }
     }
    },
    {
@@ -16735,7 +17021,9 @@
     "targetFilter": "creature can't be blocked this turn",
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "{3}{C}: Target creature can't be blocked this turn"
+     }
     }
    }
   ],
@@ -16773,7 +17061,9 @@
     "targetFilter": null,
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": ") Flash When you cast this spell, you may pay {C}"
+     }
     }
    },
    {
@@ -17000,7 +17290,9 @@
     "targetFilter": "permanent s",
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": ") When you cast this spell, tap up to four target permanents"
+     }
     }
    }
   ],
@@ -17083,7 +17375,9 @@
     "targetFilter": null,
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "Colorless creatures you control get +2/+2"
+     }
     }
    },
    {
@@ -17192,7 +17486,9 @@
     "targetFilter": null,
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "At the beginning of your upkeep, look at the top card of your library"
+     }
     }
    }
   ],
@@ -17485,7 +17781,9 @@
     "targetFilter": null,
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "{6}, {T}, Sacrifice this land: Create three 1/1 colorless Eldrazi Scion creature tokens"
+     }
     }
    },
    {
@@ -18225,7 +18523,9 @@
     "targetFilter": null,
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "Annihilator 2 (Whenever this creature attacks, defending player sacrifices two permanents of their choice"
+     }
     }
    }
   ],
@@ -18459,7 +18759,9 @@
     "targetFilter": null,
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "Whenever this creature attacks, defending player exiles two permanents they control"
+     }
     }
    }
   ],
@@ -18504,7 +18806,9 @@
     "targetFilter": null,
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "When Omarthis dies, manifest a number of cards from the top of your library equal to the number of counters on it"
+     }
     }
    }
   ],
@@ -18585,7 +18889,9 @@
     "targetFilter": null,
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "Vigilance {1}, {T}: Copy target activated or triggered ability you control from a colorless source"
+     }
     }
    },
    {
@@ -18598,7 +18904,9 @@
     "targetFilter": null,
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "(Mana abilities can't be targeted"
+     }
     }
    }
   ],
@@ -18705,7 +19013,9 @@
     "targetFilter": "creature until end of turn",
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "When you cast this spell, gain control of target creature until end of turn"
+     }
     }
    },
    {
@@ -18718,7 +19028,9 @@
     "targetFilter": null,
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "Until end of turn, it has base power and toughness 10/10 and gains trample, annihilator 2, and haste"
+     }
     }
    },
    {
@@ -18731,7 +19043,9 @@
     "targetFilter": null,
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "Annihilator 2 (Whenever this creature attacks, defending player sacrifices two permanents of their choice"
+     }
     }
    }
   ],
@@ -18760,7 +19074,9 @@
     "targetFilter": null,
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "This spell can't be countered"
+     }
     }
    },
    {
@@ -18788,7 +19104,9 @@
     "targetFilter": "player draws four cards",
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "Target player draws four cards"
+     }
     }
    },
    {
@@ -18835,7 +19153,9 @@
     "targetFilter": null,
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "Whenever you cast a colorless spell, until end of turn, this creature gains trample and gets +X/+X, where X is that spell's mana value"
+     }
     }
    }
   ],
@@ -18864,7 +19184,9 @@
     "targetFilter": null,
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "Whenever you cast a colorless creature spell, manifest the top card of your library"
+     }
     }
    },
    {
@@ -18877,7 +19199,9 @@
     "targetFilter": null,
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": ") Whenever you attack with creatures with total power 6 or greater, you may turn a face-down creature you control face up"
+     }
     }
    }
   ],
@@ -18942,7 +19266,9 @@
     "targetFilter": null,
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": ") When this creature dies, reveal the top card of your library"
+     }
     }
    }
   ],
@@ -19313,7 +19639,9 @@
     "targetFilter": "artifact",
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "{2}: This artifact becomes a copy of target artifact, creature, enchantment, or land until end of turn"
+     }
     }
    }
   ],
@@ -19344,7 +19672,9 @@
     "targetFilter": null,
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "When this creature becomes the target of a spell, sacrifice it and create a number of 1/1 colorless Construct artifact creature tokens equal to its power"
+     }
     }
    }
   ],
@@ -19407,7 +19737,9 @@
     "targetFilter": null,
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "When this creature dies, create three 3/3 colorless Phyrexian Golem artifact creature tokens"
+     }
     }
    },
    {
@@ -19436,7 +19768,9 @@
     "targetFilter": null,
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "They gain haste"
+     }
     }
    }
   ],
@@ -19727,7 +20061,9 @@
     "targetFilter": null,
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "{2}, {T}: Each player draws a card, then discards a card"
+     }
     }
    }
   ],
@@ -19774,7 +20110,9 @@
     "targetFilter": null,
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "{2}{C}, {T}, Sacrifice this land: Copy target instant or sorcery spell you control"
+     }
     }
    },
    {
@@ -19937,7 +20275,9 @@
     "targetFilter": null,
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "{2}, {T}: Target legendary creature becomes a God in addition to its other types"
+     }
     }
    },
    {
@@ -20078,7 +20418,9 @@
     "targetFilter": null,
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "Equipped creature has haste and shroud"
+     }
     }
    },
    {
@@ -20091,7 +20433,9 @@
     "targetFilter": null,
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "(It can't be the target of spells or abilities"
+     }
     }
    }
   ],
@@ -20254,7 +20598,9 @@
     "targetFilter": "creature can't be blocked this turn",
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "{4}, {T}: Target creature can't be blocked this turn"
+     }
     }
    }
   ],
@@ -20382,7 +20728,9 @@
     "targetFilter": null,
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "Defender {T}: Creatures you control gain haste until end of turn"
+     }
     }
    }
   ],
@@ -20428,7 +20776,9 @@
     "targetFilter": "creature you control",
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": ") Equip {2} ({2}: Attach to target creature you control"
+     }
     }
    }
   ],
@@ -20584,7 +20934,9 @@
     "targetFilter": "creature can't be blocked this turn",
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "Defender {3}, {T}: Target creature can't be blocked this turn"
+     }
     }
    }
   ],
@@ -20667,7 +21019,9 @@
     "targetFilter": null,
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "{1}, {T}: Until end of turn, creatures your opponents control lose hexproof and shroud and can't have hexproof or shroud"
+     }
     }
    }
   ],
@@ -20714,7 +21068,9 @@
     "targetFilter": null,
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "{T}: Choose target commander that entered this turn"
+     }
     }
    },
    {
@@ -21624,7 +21980,9 @@
     "targetFilter": "player",
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "Whenever a player casts their first spell each turn, choose another target player"
+     }
     }
    },
    {
@@ -21798,7 +22156,9 @@
     "targetFilter": null,
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "At the beginning of your upkeep, remove a time counter"
+     }
     }
    },
    {
@@ -21811,7 +22171,9 @@
     "targetFilter": null,
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "When the last is removed, you may cast it without paying its mana cost"
+     }
     }
    }
   ],
@@ -21927,7 +22289,9 @@
     "targetFilter": null,
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "Menace Whenever this creature attacks, choose up to one target nonland permanent"
+     }
     }
    },
    {
@@ -22092,7 +22456,9 @@
     "targetFilter": null,
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "At the beginning of your end step, you may sacrifice an artifact, creature, enchantment, land, or planeswalker"
+     }
     }
    },
    {
@@ -22149,7 +22515,9 @@
     "targetFilter": null,
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "They can't be regenerated"
+     }
     }
    },
    {
@@ -22260,7 +22628,9 @@
     "targetFilter": null,
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "Equipped creature has flying and lifelink"
+     }
     }
    },
    {
@@ -22273,7 +22643,9 @@
     "targetFilter": null,
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "Whenever equipped creature dies, you may pay X life, where X is its power"
+     }
     }
    },
    {
@@ -22484,7 +22856,9 @@
     "targetFilter": "creature",
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "{2}{R}, {T}: This creature fights another target creature"
+     }
     }
    }
   ],
@@ -22907,7 +23281,9 @@
     "targetFilter": null,
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "Whenever you cast your first spell each turn, choose an opponent at random"
+     }
     }
    },
    {
@@ -22954,7 +23330,9 @@
     "targetFilter": null,
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "Equipped creature has deathtouch and lifelink"
+     }
     }
    },
    {
@@ -22995,7 +23373,9 @@
     "targetFilter": "creature you control",
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": ") Equip {2} ({2}: Attach to target creature you control"
+     }
     }
    }
   ],
@@ -23256,7 +23636,9 @@
     "targetFilter": null,
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "{R}, {T}: You may play the exiled card without paying its mana cost if an opponent was dealt 7 or more damage this turn"
+     }
     }
    }
   ],
@@ -23355,7 +23737,9 @@
     "targetFilter": null,
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "{2}, {T}: Target commander gains lifelink until end of turn"
+     }
     }
    }
   ],
@@ -23878,7 +24262,9 @@
     "targetFilter": null,
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "When Kardur enters, until your next turn, creatures your opponents control attack each combat if able and attack a player other than you if able"
+     }
     }
    },
    {
@@ -25379,7 +25765,9 @@
     "targetFilter": null,
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": ") Pegasus creatures you control have lifelink"
+     }
     }
    },
    {
@@ -25509,7 +25897,9 @@
     "targetFilter": null,
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "{2}{B}, Sacrifice another enchantment: This creature gets +X/+0 until end of turn, where X is the sacrificed enchantment's mana value"
+     }
     }
    }
   ],
@@ -25543,7 +25933,9 @@
     "targetFilter": null,
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "Creature and enchantment spells you control can't be countered"
+     }
     }
    },
    {
@@ -25556,7 +25948,9 @@
     "targetFilter": "land you control becomes an X/X Elemental creature with trample and haste until end of turn",
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "{3}{G}: Target land you control becomes an X/X Elemental creature with trample and haste until end of turn, where X is the number of enchantments you control"
+     }
     }
    }
   ],
@@ -25640,7 +26034,9 @@
     "targetFilter": null,
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "Whenever another creature you control dies, you may pay 2 life"
+     }
     }
    },
    {
@@ -25860,7 +26256,9 @@
     "targetFilter": null,
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "Constellation — Whenever an enchantment you control enters, look at the top three cards of your library"
+     }
     }
    }
   ],
@@ -25893,7 +26291,9 @@
     "targetFilter": null,
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "Reach At the beginning of your upkeep, mill two cards"
+     }
     }
    },
    {
@@ -25942,7 +26342,9 @@
     "targetFilter": null,
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "Trample {1}{G}, Sacrifice another enchantment: This creature gains indestructible until end of turn"
+     }
     }
    }
   ],
@@ -26337,7 +26739,9 @@
     "targetFilter": null,
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "Creatures you control get +1/+1 for each blessing counter on this enchantment"
+     }
     }
    }
   ],
@@ -26382,7 +26786,9 @@
     "targetFilter": null,
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "Whenever this enchantment or another enchantment you control enters, until end of turn, this enchantment becomes a legendary 6/6 Nightmare God creature with menace and deathtouch"
+     }
     }
    }
   ],
@@ -26536,7 +26942,9 @@
     "targetFilter": null,
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": ") Whenever a Zombie token you control with power 6 or greater attacks, it gains lifelink until end of turn"
+     }
     }
    }
   ],
@@ -26647,7 +27055,9 @@
     "targetFilter": null,
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "Enchant creature Enchanted creature gets +1/+1, has deathtouch, and is goaded"
+     }
     }
    },
    {
@@ -26828,7 +27238,9 @@
     "targetFilter": null,
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "Creatures you control get +1/+1"
+     }
     }
    },
    {
@@ -26966,7 +27378,9 @@
     "targetFilter": null,
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "Creatures with flying can't attack you or planeswalkers you control"
+     }
     }
    },
    {
@@ -27315,7 +27729,9 @@
     "targetFilter": null,
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "Look at the top four cards of your library"
+     }
     }
    },
    {
@@ -27375,7 +27791,9 @@
     "targetFilter": null,
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "Whenever Frodo Baggins or another legendary creature you control enters, the Ring tempts you"
+     }
     }
    }
   ],
@@ -27521,7 +27939,9 @@
     "targetFilter": "player may put Pippin into their hand from their library",
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "Partner with Pippin, Warden of Isengard (When this creature enters, target player may put Pippin into their hand from their library, then shuffle"
+     }
     }
    },
    {
@@ -27573,7 +27993,9 @@
     "targetFilter": "player may put Merry into their hand from their library",
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "Partner with Merry, Warden of Isengard (When this creature enters, target player may put Merry into their hand from their library, then shuffle"
+     }
     }
    },
    {
@@ -27602,7 +28024,9 @@
     "targetFilter": null,
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "{T}, Sacrifice four Foods: Other creatures you control get +3/+3 and gain haste until end of turn"
+     }
     }
    }
   ],
@@ -27819,7 +28243,9 @@
     "targetFilter": null,
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": ") Creatures with power less than this creature's power can't block it"
+     }
     }
    }
   ],
@@ -27854,7 +28280,9 @@
     "targetFilter": null,
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "{2}, Sacrifice a Food: This creature gains indestructible until end of turn"
+     }
     }
    }
   ],
@@ -27965,7 +28393,9 @@
     "targetFilter": "creature with power 3 or less can't be blocked this turn",
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "{3}, {T}: Target creature with power 3 or less can't be blocked this turn"
+     }
     }
    }
   ],
@@ -28421,7 +28851,9 @@
     "targetFilter": null,
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "Activate only if you have 111 or more life"
+     }
     }
    }
   ],
@@ -28549,7 +28981,9 @@
     "targetFilter": null,
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "Flying When this creature enters, creatures you control get +1/+0 and gain first strike until end of turn"
+     }
     }
    },
    {
@@ -28628,7 +29062,9 @@
     "targetFilter": null,
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "When this creature enters, create X 1/1 white Halfling creature tokens and X Food tokens"
+     }
     }
    },
    {
@@ -28829,7 +29265,9 @@
     "targetFilter": null,
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "Skulk (This creature can't be blocked by creatures with greater power"
+     }
     }
    },
    {
@@ -28915,7 +29353,9 @@
     "targetFilter": null,
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "Flying Whenever Gwaihir attacks, target attacking creature gains flying until end of turn"
+     }
     }
    },
    {
@@ -28967,7 +29407,9 @@
     "targetFilter": null,
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "Flying Whenever two or more creatures you control attack a player, target attacking creature without flying gains flying until end of turn"
+     }
     }
    }
   ],
@@ -29012,7 +29454,9 @@
     "targetFilter": null,
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "{T}, Sacrifice an artifact: Choose one — • Until end of turn, you may play a card exiled with Lobelia without paying its mana cost"
+     }
     }
    },
    {
@@ -29146,7 +29590,9 @@
     "targetFilter": null,
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "When this creature enters, create two Food tokens"
+     }
     }
    },
    {
@@ -29465,7 +29911,9 @@
     "targetFilter": null,
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "Vigilance When this creature enters, you may sacrifice a token"
+     }
     }
    },
    {
@@ -29621,7 +30069,9 @@
     "targetFilter": null,
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "Trample, ward {2} When Treebeard enters, create two Food tokens"
+     }
     }
    },
    {
@@ -29956,7 +30406,9 @@
     "targetFilter": null,
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "This artifact can't be sacrificed"
+     }
     }
    },
    {
@@ -30341,7 +30793,9 @@
     "targetFilter": null,
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "Sacrifice this enchantment: Create three tapped X/X green Treefolk creature tokens, where X is the amount of life you gained this turn"
+     }
     }
    },
    {
@@ -30396,7 +30850,9 @@
     "targetFilter": null,
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "Creatures you control get +1/+1 for each unity counter on this enchantment"
+     }
     }
    }
   ],
@@ -31102,7 +31558,9 @@
     "targetFilter": null,
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "'\" Whenever Preston Garvey attacks, untap each enchanted permanent you control"
+     }
     }
    }
   ],
@@ -31153,7 +31611,9 @@
     "targetFilter": "creature you control",
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "{T}: Attach target Aura or Equipment you control to target creature you control"
+     }
     }
    }
   ],
@@ -31249,7 +31709,9 @@
     "targetFilter": null,
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "Menace Whenever Veronica attacks, you may discard a card"
+     }
     }
    },
    {
@@ -31490,7 +31952,9 @@
     "targetFilter": null,
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "Whenever you attack, you may pay {2} and sacrifice an Aura attached to Three Dog"
+     }
     }
    },
    {
@@ -31551,7 +32015,9 @@
     "targetFilter": null,
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "When this creature dies, create X Junk tokens, where X is the number of +1/+1 counters on it"
+     }
     }
    },
    {
@@ -31829,7 +32295,9 @@
     "targetFilter": null,
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "Trample This creature gets +1/+1 for each Aura and Equipment attached to it"
+     }
     }
    },
    {
@@ -32019,7 +32487,9 @@
     "targetFilter": "creature gains indestructible until end of turn",
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "Choose one — • Target creature gains indestructible until end of turn"
+     }
     }
    },
    {
@@ -32137,7 +32607,9 @@
     "targetFilter": null,
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "Enchant creature Enchanted creature has \"Whenever this creature attacks alone, it gets +X/+X until end of turn, where X is the number of nonland permanents you control"
+     }
     }
    }
   ],
@@ -32234,7 +32706,9 @@
     "targetFilter": null,
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "Enchant creature When this Aura enters, untap each creature you control"
+     }
     }
    },
    {
@@ -32247,7 +32721,9 @@
     "targetFilter": null,
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "Enchanted creature gets +2/+2 and has haste"
+     }
     }
    }
   ],
@@ -32376,7 +32852,9 @@
     "targetFilter": null,
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "Enchanted creature gets +2/+2 for each Aura and Equipment attached to it"
+     }
     }
    }
   ],
@@ -32439,7 +32917,9 @@
     "targetFilter": null,
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "Enchanted creature gets +1/+1 for each Aura and Equipment attached to it"
+     }
     }
    }
   ],
@@ -32470,7 +32950,9 @@
     "targetFilter": null,
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "Enchant creature Enchanted creature gets +2/+2 and is goaded"
+     }
     }
    },
    {
@@ -32483,7 +32965,9 @@
     "targetFilter": null,
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": ") Whenever enchanted creature attacks, defending player gets two rad counters"
+     }
     }
    }
   ],
@@ -32545,7 +33029,9 @@
     "targetFilter": null,
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "Enchant creature Enchanted creature gets +1/+1 for each artifact and/or enchantment you control"
+     }
     }
    }
   ],
@@ -32604,7 +33090,9 @@
     "targetFilter": null,
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "\" (It can't be blocked except by two or more creatures"
+     }
     }
    },
    {
@@ -32665,7 +33153,9 @@
     "targetFilter": null,
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "Enchant creature Enchanted creature gets +2/+0 and has trample"
+     }
     }
    },
    {
@@ -32777,7 +33267,9 @@
     "targetFilter": null,
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "Equipped creature gets +2/+2 and has vigilance"
+     }
     }
    }
   ],
@@ -32837,7 +33329,9 @@
     "targetFilter": null,
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "\") {3}, Sacrifice another artifact: Double equipped creature's power until end of turn"
+     }
     }
    }
   ],
@@ -32896,7 +33390,9 @@
     "targetFilter": "land s",
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "• Check Map — Untap up to two target lands"
+     }
     }
    }
   ],
@@ -32927,7 +33423,9 @@
     "targetFilter": null,
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "Equipped creature gets +2/+0"
+     }
     }
    },
    {
@@ -32976,7 +33474,9 @@
     "targetFilter": null,
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "Equipped creature gets +2/+2"
+     }
     }
    },
    {
@@ -32989,7 +33489,9 @@
     "targetFilter": null,
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "(It can't be the target of spells or abilities your opponents control"
+     }
     }
    }
   ],
@@ -33062,7 +33564,9 @@
     "targetFilter": "creature s you control each gain haste until end of turn and can't be blocked this turn except by creatures with haste",
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "{3}, {T}: Up to X target creatures you control each gain haste until end of turn and can't be blocked this turn except by creatures with haste, where X is the number of Bobbleheads you control as you "
+     }
     }
    }
   ],
@@ -33116,7 +33620,9 @@
     "targetFilter": null,
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "{3}, {T}: Look at the top X cards of your library, where X is the number of Bobbleheads you control"
+     }
     }
    }
   ],
@@ -33149,7 +33655,9 @@
     "targetFilter": "creature you control",
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "Flash When this Equipment enters, attach it to target creature you control"
+     }
     }
    },
    {
@@ -33162,7 +33670,9 @@
     "targetFilter": null,
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "(It can't be the target of spells or abilities"
+     }
     }
    },
    {
@@ -33175,7 +33685,9 @@
     "targetFilter": null,
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": ") Equipped creature can't be blocked"
+     }
     }
    }
   ],
@@ -33209,7 +33721,9 @@
     "targetFilter": null,
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "Equipped creature gets +2/+2 and has trample and lifelink"
+     }
     }
    }
   ],
@@ -33242,7 +33756,9 @@
     "targetFilter": null,
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "When you cast this spell, copy it"
+     }
     }
    },
    {
@@ -33255,7 +33771,9 @@
     "targetFilter": "creature you control",
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "Equip {1} ({1}: Attach to target creature you control"
+     }
     }
    }
   ],
@@ -33286,7 +33804,9 @@
     "targetFilter": null,
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "Whenever equipped creature attacks, look at the top card of your library"
+     }
     }
    },
    {
@@ -33299,7 +33819,9 @@
     "targetFilter": "creature you control",
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "Equip {1} ({1}: Attach to target creature you control"
+     }
     }
    }
   ],
@@ -33333,7 +33855,9 @@
     "targetFilter": null,
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "(It can't be the target of spells or abilities your opponents control"
+     }
     }
    },
    {
@@ -33346,7 +33870,9 @@
     "targetFilter": "creature you control",
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": ") Equip {1} ({1}: Attach to target creature you control"
+     }
     }
    }
   ],
@@ -33393,7 +33919,9 @@
     "targetFilter": null,
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "{4}{R}, {T}, Sacrifice this land: Create three Junk tokens"
+     }
     }
    },
    {
@@ -33706,7 +34234,9 @@
     "targetFilter": null,
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "Flying Whenever The Wise Mothman enters or attacks, each player gets a rad counter"
+     }
     }
    },
    {
@@ -33748,7 +34278,9 @@
     "targetFilter": null,
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "Storm (When you cast this spell, copy it for each spell cast before it this turn"
+     }
     }
    },
    {
@@ -34192,7 +34724,9 @@
     "targetFilter": "player gets two rad counters",
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "When The Master enters, target player gets two rad counters"
+     }
     }
    },
    {
@@ -34205,7 +34739,9 @@
     "targetFilter": "creature card in a graveyard that was milled this turn onto the battlefield under your control",
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "{T}: Put target creature card in a graveyard that was milled this turn onto the battlefield under your control"
+     }
     }
    }
   ],
@@ -34268,7 +34804,9 @@
     "targetFilter": null,
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "It gains flying until end of turn"
+     }
     }
    }
   ],
@@ -34302,7 +34840,9 @@
     "targetFilter": "player gets two rad counters",
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "Vigilance When this creature enters, target player gets two rad counters"
+     }
     }
    },
    {
@@ -34438,7 +34978,9 @@
     "targetFilter": null,
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "When this creature dies, each opponent gets a number of rad counters equal to its power"
+     }
     }
    }
   ],
@@ -34508,7 +35050,9 @@
     "targetFilter": null,
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "Flying, menace Whenever this creature attacks, each player gets two rad counters"
+     }
     }
    }
   ],
@@ -34590,7 +35134,9 @@
     "targetFilter": null,
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "At the beginning of your upkeep, double the number of +1/+1 counters on Lily Bowen if its power is 16 or less"
+     }
     }
    },
    {
@@ -34724,7 +35270,9 @@
     "targetFilter": null,
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "Landfall — Whenever a land you control enters, you may get two rad counters"
+     }
     }
    },
    {
@@ -34737,7 +35285,9 @@
     "targetFilter": "land card in a graveyard that was milled this turn onto the battlefield under your control tapped",
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "{T}: Put target land card in a graveyard that was milled this turn onto the battlefield under your control tapped"
+     }
     }
    }
   ],
@@ -35108,7 +35658,9 @@
     "targetFilter": null,
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "Flying This creature can't block"
+     }
     }
    },
    {
@@ -35271,7 +35823,9 @@
     "targetFilter": "player gets four rad counters",
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": ") When this creature enters, target player gets four rad counters"
+     }
     }
    },
    {
@@ -35284,7 +35838,9 @@
     "targetFilter": null,
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "This creature can't be blocked as long as defending player has a rad counter"
+     }
     }
    }
   ],
@@ -35317,7 +35873,9 @@
     "targetFilter": null,
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "{T}: Each player mills a card"
+     }
     }
    }
   ],
@@ -35351,7 +35909,9 @@
     "targetFilter": null,
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "Menace (This creature can't be blocked except by two or more creatures"
+     }
     }
    },
    {
@@ -35729,7 +36289,9 @@
     "targetFilter": null,
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "• Brotherhood — At the beginning of your upkeep, each opponent draws a card"
+     }
     }
    },
    {
@@ -35757,7 +36319,9 @@
     "targetFilter": null,
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "• Enclave — Whenever a player attacks you with one or more creatures, that player gets twice that many rad counters"
+     }
     }
    }
   ],
@@ -35866,7 +36430,9 @@
     "targetFilter": null,
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "Enchant player At the beginning of each end step, enchanted player mills X cards, where X is the number of cards put into their graveyard from anywhere this turn"
+     }
     }
    }
   ],
@@ -36050,7 +36616,9 @@
     "targetFilter": null,
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "Equipped creature gets +3/+0 and has intimidate"
+     }
     }
    },
    {
@@ -36063,7 +36631,9 @@
     "targetFilter": null,
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "(It can't be blocked except by artifact creatures and/or creatures that share a color with it"
+     }
     }
    },
    {
@@ -36076,7 +36646,9 @@
     "targetFilter": null,
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": ") Whenever equipped creature attacks, until the end of defending player's next turn, that player gets two rad counters whenever they cast a spell"
+     }
     }
    }
   ],
@@ -36737,7 +37309,9 @@
     "targetFilter": null,
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "Landfall — Whenever a land you control enters, manifest dread if this is the first time this ability has resolved this turn"
+     }
     }
    }
   ],
@@ -37137,7 +37711,9 @@
     "targetFilter": null,
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "When this enchantment enters, manifest dread twice"
+     }
     }
    },
    {
@@ -37227,7 +37803,9 @@
     "targetFilter": null,
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "Whenever this creature enters or attacks, manifest dread"
+     }
     }
    }
   ],
@@ -37256,7 +37834,9 @@
     "targetFilter": "artifact or enchantment that player controls",
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "For each opponent, choose up to one target artifact or enchantment that player controls"
+     }
     }
    },
    {
@@ -37315,7 +37895,9 @@
     "targetFilter": null,
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "Trample Whenever you attack with one or more creatures, untap up to X lands, where X is the greatest power among those creatures"
+     }
     }
    }
   ],
@@ -37554,7 +38136,9 @@
     "targetFilter": null,
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "Flying, indestructible Kefnet can't attack or block unless you have seven or more cards in hand"
+     }
     }
    },
    {
@@ -37643,7 +38227,9 @@
     "targetFilter": null,
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "At the beginning of your end step, you may manifest the top card of your library"
+     }
     }
    },
    {
@@ -37872,7 +38458,9 @@
     "targetFilter": null,
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "Reach, trample Multani gets +1/+1 for each land you control and each land card in your graveyard"
+     }
     }
    },
    {
@@ -37916,7 +38504,9 @@
     "targetFilter": null,
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "Until end of turn, creatures you control gain trample and get +X/+X, where X is the greatest power among creatures you control"
+     }
     }
    }
   ],
@@ -38006,7 +38596,9 @@
     "targetFilter": null,
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "When this creature enters, manifest the top card of your library"
+     }
     }
    },
    {
@@ -38052,7 +38644,9 @@
     "targetFilter": null,
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "Trample Lieutenant — As long as you control your commander, this creature gets +2/+2 and other creatures you control get +2/+2 and have trample"
+     }
     }
    }
   ],
@@ -38128,7 +38722,9 @@
     "targetFilter": null,
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "At the beginning of your end step, manifest the top card of your library"
+     }
     }
    },
    {
@@ -38141,7 +38737,9 @@
     "targetFilter": null,
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": ") Sacrifice this creature: Until end of turn, face-up nontoken creatures you control gain \"When this creature dies, manifest the top card of your library"
+     }
     }
    }
   ],
@@ -38174,7 +38772,9 @@
     "targetFilter": null,
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "Trample When this creature dies, create three 5/5 green Wurm creature tokens with trample"
+     }
     }
    },
    {
@@ -38187,7 +38787,9 @@
     "targetFilter": null,
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "When Worldspine Wurm is put into a graveyard from anywhere, shuffle it into its owner's library"
+     }
     }
    }
   ],
@@ -38224,7 +38826,9 @@
     "targetFilter": null,
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": ") Whenever you cast a spell, you may remove a slumber counter from Arixmethes"
+     }
     }
    },
    {
@@ -38298,7 +38902,9 @@
     "targetFilter": null,
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "Whenever you cast your first spell each turn, reveal the top card of your library"
+     }
     }
    }
   ],
@@ -38327,7 +38933,9 @@
     "targetFilter": null,
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "{T}: Manifest a card from your hand"
+     }
     }
    }
   ],
@@ -38483,7 +39091,9 @@
     "targetFilter": null,
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "{G}, {T}: You may play the exiled card without paying its mana cost if creatures you control have total power 10 or greater"
+     }
     }
    }
   ],
@@ -38604,7 +39214,9 @@
     "targetFilter": null,
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "Flash When this enchantment enters, manifest dread"
+     }
     }
    },
    {
@@ -38721,7 +39333,9 @@
     "targetFilter": "creature",
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "Landfall — Whenever a land you control enters, choose one — • You may tap or untap target creature"
+     }
     }
    },
    {
@@ -38794,7 +39408,9 @@
     "targetFilter": null,
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "At the beginning of your end step, untap all lands you control"
+     }
     }
    }
   ],
@@ -39203,7 +39819,9 @@
     "targetFilter": null,
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "{4}, {T}: Roll a six-sided die plus an additional six-sided die for each mana from Treasures spent to activate this ability"
+     }
     }
    }
   ],
@@ -39342,7 +39960,9 @@
     "targetFilter": null,
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "Whenever you attack, you may sacrifice another creature"
+     }
     }
    },
    {
@@ -39404,7 +40024,9 @@
     "targetFilter": null,
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": ") Whenever a creature you control attacks, if it enlisted a creature this combat, the creature that attacked gains double strike until end of turn"
+     }
     }
    },
    {
@@ -39499,7 +40121,9 @@
     "targetFilter": null,
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "When this creature enters, create that many tokens that are copies of it"
+     }
     }
    },
    {
@@ -39560,7 +40184,9 @@
     "targetFilter": "creature you control gets +X/+X until end of turn",
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "Whenever you sacrifice a Food, target creature you control gets +X/+X until end of turn, where X is the number of quest counters on Sierra"
+     }
     }
    }
   ],
@@ -39591,7 +40217,9 @@
     "targetFilter": "opponent gains control of Yes Man",
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "{T}: Target opponent gains control of Yes Man"
+     }
     }
    },
    {
@@ -39617,7 +40245,9 @@
     "targetFilter": null,
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "Wild Card — When Yes Man leaves the battlefield, its owner creates a tapped 1/1 white Soldier creature token for each quest counter on it"
+     }
     }
    }
   ],
@@ -39649,7 +40279,9 @@
     "targetFilter": null,
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "When this creature enters, create that many tokens that are copies of it"
+     }
     }
    },
    {
@@ -39662,7 +40294,9 @@
     "targetFilter": null,
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": ") When this creature enters, each player sacrifices a creature of their choice"
+     }
     }
    }
   ],
@@ -39730,7 +40364,9 @@
     "targetFilter": null,
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "When this creature enters, create that many tokens that are copies of it"
+     }
     }
    },
    {
@@ -39844,7 +40480,9 @@
     "targetFilter": null,
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "When this creature enters, create that many tokens that are copies of it"
+     }
     }
    },
    {
@@ -39955,7 +40593,9 @@
     "targetFilter": null,
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "Lifelink Exploit (When this creature enters, you may sacrifice a creature"
+     }
     }
    },
    {
@@ -40002,7 +40642,9 @@
     "targetFilter": "creature card in your graveyard that's an artifact or that has mana value 3 or less gains escape until end of turn",
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "Vigilance Whenever Desdemona attacks, target creature card in your graveyard that's an artifact or that has mana value 3 or less gains escape until end of turn"
+     }
     }
    },
    {
@@ -40062,7 +40704,9 @@
     "targetFilter": null,
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": ") Blind Betrayal — Sacrifice another creature: Elder Arthur Maxson gains indestructible until end of turn"
+     }
     }
    }
   ],
@@ -40113,7 +40757,9 @@
     "targetFilter": "creature for as long as you control Kellogg",
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "Sacrifice five Treasures: Gain control of target creature for as long as you control Kellogg"
+     }
     }
    }
   ],
@@ -40145,7 +40791,9 @@
     "targetFilter": null,
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "Whenever a creature you control with power 2 or less attacks, it gains skulk until end of turn"
+     }
     }
    },
    {
@@ -40158,7 +40806,9 @@
     "targetFilter": null,
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "(It can't be blocked by creatures with greater power"
+     }
     }
    },
    {
@@ -40289,7 +40939,9 @@
     "targetFilter": null,
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": ") Other Soldier creatures you control get +1/+1 and have vigilance"
+     }
     }
    },
    {
@@ -40302,7 +40954,9 @@
     "targetFilter": null,
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "When this creature enters, create three 1/1 white Soldier creature tokens"
+     }
     }
    }
   ],
@@ -40384,7 +41038,9 @@
     "targetFilter": null,
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "When this creature enters, create that many tokens that are copies of it"
+     }
     }
    },
    {
@@ -40434,7 +41090,9 @@
     "targetFilter": null,
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "Menace (This creature can't be blocked except by two or more creatures"
+     }
     }
    },
    {
@@ -40510,7 +41168,9 @@
     "targetFilter": null,
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "When this creature enters, create that many tokens that are copies of it"
+     }
     }
    },
    {
@@ -40523,7 +41183,9 @@
     "targetFilter": null,
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": ") Menace (This creature can't be blocked except by two or more creatures"
+     }
     }
    }
   ],
@@ -40603,7 +41265,9 @@
     "targetFilter": null,
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "Decimate — When Legate Lanius enters, each opponent sacrifices a tenth of the creatures they control of their choice, rounded up"
+     }
     }
    },
    {
@@ -40648,7 +41312,9 @@
     "targetFilter": null,
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "When this creature enters, create two 1/1 white Human Soldier creature tokens"
+     }
     }
    },
    {
@@ -40839,7 +41505,9 @@
     "targetFilter": "creature s with equal toughness",
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": ") Choose any number of target creatures with equal toughness"
+     }
     }
    },
    {
@@ -40881,7 +41549,9 @@
     "targetFilter": "player sacrifices an attacking creature of their choice",
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "Target player sacrifices an attacking creature of their choice"
+     }
     }
    }
   ],
@@ -41041,7 +41711,9 @@
     "targetFilter": null,
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "It gains haste until end of turn"
+     }
     }
    },
    {
@@ -41172,7 +41844,9 @@
     "targetFilter": null,
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "Until end of turn, creatures you control get +1/+1 and gain haste"
+     }
     }
    }
   ],
@@ -41365,7 +42039,9 @@
     "targetFilter": null,
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": ") Creatures you control get +1/+1"
+     }
     }
    },
    {
@@ -41566,7 +42242,9 @@
     "targetFilter": null,
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "Creature tokens you control get +1/+1 and have vigilance"
+     }
     }
    }
   ],
@@ -41620,7 +42298,9 @@
     "targetFilter": null,
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "{4}, {T}: Create X 1/1 white Soldier creature tokens, where X is the number of Bobbleheads you control"
+     }
     }
    }
   ],
@@ -41674,7 +42354,9 @@
     "targetFilter": null,
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "{1}, {T}: Roll X six-sided dice, where X is the number of Bobbleheads you control"
+     }
     }
    },
    {
@@ -41765,7 +42447,9 @@
     "targetFilter": "player loses all rad counters",
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "\") • RadAway — Target player loses all rad counters"
+     }
     }
    }
   ],
@@ -41796,7 +42480,9 @@
     "targetFilter": null,
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "Equipped creature gets +1/-1"
+     }
     }
    },
    {
@@ -41955,7 +42641,9 @@
     "targetFilter": "creature",
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "{T}: Move a shield counter from this land onto target creature"
+     }
     }
    }
   ],
@@ -42015,7 +42703,9 @@
     "targetFilter": null,
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "{W}, {T}: You may play the exiled card without paying its mana cost if you attacked with three or more creatures this turn"
+     }
     }
    }
   ],
@@ -42062,7 +42752,9 @@
     "targetFilter": null,
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "{3}{W}, {T}, Sacrifice this land: Create two 1/1 white Soldier creature tokens"
+     }
     }
    }
   ],
@@ -42131,7 +42823,9 @@
     "targetFilter": null,
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "Phaeron — Whenever one or more artifact cards leave your graveyard, create two 2/2 black Necron Warrior artifact creature tokens"
+     }
     }
    },
    {
@@ -42144,7 +42838,9 @@
     "targetFilter": "artifact creature you control gets +2/+2 and gains menace until end of turn",
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "Grand Strategist — At the beginning of combat on your turn, another target artifact creature you control gets +2/+2 and gains menace until end of turn"
+     }
     }
    }
   ],
@@ -42175,7 +42871,9 @@
     "targetFilter": null,
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "Lord of the Pyrrhian Legions — Whenever Anrakyr the Traveller attacks, you may cast an artifact spell from your hand or graveyard by paying life equal to its mana value rather than paying its mana cos"
+     }
     }
    }
   ],
@@ -42292,7 +42990,9 @@
     "targetFilter": null,
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "It gains haste"
+     }
     }
    },
    {
@@ -42471,7 +43171,9 @@
     "targetFilter": null,
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "Flying My Will Be Done — Whenever Szarekh attacks, mill three cards"
+     }
     }
    },
    {
@@ -42547,7 +43249,9 @@
     "targetFilter": null,
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "It gains haste"
+     }
     }
    },
    {
@@ -42592,7 +43296,9 @@
     "targetFilter": "artifact creature you control",
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "{1}{B}, {T}: Choose another target artifact creature you control"
+     }
     }
    },
    {
@@ -42639,7 +43345,9 @@
     "targetFilter": null,
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "Flying Enmitic Exterminator — When this creature enters, each player sacrifices a creature of their choice"
+     }
     }
    },
    {
@@ -42665,7 +43373,9 @@
     "targetFilter": null,
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "It gains haste"
+     }
     }
    },
    {
@@ -42811,7 +43521,9 @@
     "targetFilter": null,
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "Phalanx Commander — When this creature enters, create two tapped 2/2 black Necron Warrior artifact creature tokens"
+     }
     }
    },
    {
@@ -42837,7 +43549,9 @@
     "targetFilter": null,
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "It gains haste"
+     }
     }
    },
    {
@@ -42933,7 +43647,9 @@
     "targetFilter": null,
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "Flying Spear of the Void Dragon — Whenever this creature attacks, each opponent sacrifices a nonland permanent of their choice"
+     }
     }
    },
    {
@@ -42981,7 +43697,9 @@
     "targetFilter": null,
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "Menace Command Protocols — Other artifact creatures you control get +1/+0 and have menace"
+     }
     }
    },
    {
@@ -43007,7 +43725,9 @@
     "targetFilter": null,
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "It gains haste"
+     }
     }
    },
    {
@@ -43170,7 +43890,9 @@
     "targetFilter": null,
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "Wraith Form — This creature can't be blocked"
+     }
     }
    },
    {
@@ -43248,7 +43970,9 @@
     "targetFilter": null,
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "Lifelink Flesh Flayer — When this creature enters, mill three cards"
+     }
     }
    }
   ],
@@ -43281,7 +44005,9 @@
     "targetFilter": null,
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "Multi-threat Eliminator — This creature can't be blocked except by six or more creatures"
+     }
     }
    },
    {
@@ -43307,7 +44033,9 @@
     "targetFilter": null,
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "It gains haste"
+     }
     }
    },
    {
@@ -43443,7 +44171,9 @@
     "targetFilter": null,
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "Deathtouch Hyperphase Threshers — Whenever an artifact you control enters, this creature gains first strike until end of turn"
+     }
     }
    }
   ],
@@ -43505,7 +44235,9 @@
     "targetFilter": null,
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "It gains haste"
+     }
     }
    },
    {
@@ -43880,7 +44612,9 @@
     "targetFilter": "creature cards with total mana value 8 or less in your graveyard",
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "III — Choose up to three target creature cards with total mana value 8 or less in your graveyard"
+     }
     }
    },
    {
@@ -43922,7 +44656,9 @@
     "targetFilter": null,
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "Translocation Protocols — {3}, {T}: Mill three cards"
+     }
     }
    }
   ],
@@ -43955,7 +44691,9 @@
     "targetFilter": null,
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "Flying Repair Barge — Whenever this Vehicle becomes crewed, each artifact creature card in your graveyard gains unearth {3} until end of turn"
+     }
     }
    }
   ],
@@ -43989,7 +44727,9 @@
     "targetFilter": null,
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "Flying, indestructible Eternity Gate — Whenever this Vehicle attacks, mill three cards"
+     }
     }
    },
    {
@@ -44040,7 +44780,9 @@
     "targetFilter": null,
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "Equipped creature has lifelink"
+     }
     }
    },
    {
@@ -44066,7 +44808,9 @@
     "targetFilter": "creature you control",
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "Equip {4} ({4}: Attach to target creature you control"
+     }
     }
    }
   ],
@@ -44185,7 +44929,9 @@
     "targetFilter": null,
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "Creatures you control of the chosen color get +1/+1"
+     }
     }
    },
    {
@@ -44273,7 +45019,9 @@
     "targetFilter": null,
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "Equipped creature gets +1/+0 for each artifact you control"
+     }
     }
    },
    {
@@ -44286,7 +45034,9 @@
     "targetFilter": "creature you control",
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "{B}{B}: Attach this Equipment to target creature you control"
+     }
     }
    }
   ],
@@ -44330,7 +45080,9 @@
     "targetFilter": "creature you control",
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "Equip {1} ({1}: Attach to target creature you control"
+     }
     }
    }
   ],
@@ -44607,7 +45359,9 @@
     "targetFilter": null,
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "Whenever the Ring tempts you, you may discard your hand"
+     }
     }
    },
    {
@@ -45411,7 +46165,9 @@
     "targetFilter": null,
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "{1}{B}, {T}: Choose a player with the most life or tied for most life"
+     }
     }
    },
    {
@@ -45424,7 +46180,9 @@
     "targetFilter": "creature can't be blocked by creatures that player controls this turn",
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "Target creature can't be blocked by creatures that player controls this turn"
+     }
     }
    }
   ],
@@ -45505,7 +46263,9 @@
     "targetFilter": null,
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "It gains haste until end of turn"
+     }
     }
    }
   ],
@@ -45569,7 +46329,9 @@
     "targetFilter": null,
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "When this creature enters, each player sacrifices a creature of their choice"
+     }
     }
    }
   ],
@@ -45671,7 +46433,9 @@
     "targetFilter": null,
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "Trample Other Orcs and Goblins you control have trample"
+     }
     }
    },
    {
@@ -45684,7 +46448,9 @@
     "targetFilter": null,
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "Whenever this creature attacks, it gets +X/+0 until end of turn, where X is the greatest power among creatures you control"
+     }
     }
    }
   ],
@@ -45735,7 +46501,9 @@
     "targetFilter": null,
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "Haste As long as this card is in your graveyard and you control a Mountain, creatures you control have haste"
+     }
     }
    }
   ],
@@ -45767,7 +46535,9 @@
     "targetFilter": null,
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "{2}{U}: Target Goblin, Orc, or Pirate can't be blocked this turn"
+     }
     }
    },
    {
@@ -45843,7 +46613,9 @@
     "targetFilter": null,
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "Gríma can't be blocked"
+     }
     }
    },
    {
@@ -45960,7 +46732,9 @@
     "targetFilter": null,
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "Whenever you cast a noncreature spell, amass Orcs X, where X is that spell's mana value"
+     }
     }
    },
    {
@@ -46064,7 +46838,9 @@
     "targetFilter": "creature card with mana value X exiled with Shelob onto the battlefield tapped under your control",
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "{X}{1}{B}: Put target creature card with mana value X exiled with Shelob onto the battlefield tapped under your control"
+     }
     }
    }
   ],
@@ -46097,7 +46873,9 @@
     "targetFilter": null,
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "Menace (This creature can't be blocked except by two or more creatures"
+     }
     }
    },
    {
@@ -46110,7 +46888,9 @@
     "targetFilter": null,
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": ") When this creature enters, you may cast target instant or sorcery card with mana value 3 or less from your graveyard without paying its mana cost"
+     }
     }
    },
    {
@@ -46154,7 +46934,9 @@
     "targetFilter": null,
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "When Monstrosity of the Lake enters, you may pay {5}"
+     }
     }
    },
    {
@@ -46211,7 +46993,9 @@
     "targetFilter": null,
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "When this creature enters, create three 1/1 red Goblin creature tokens"
+     }
     }
    },
    {
@@ -46256,7 +47040,9 @@
     "targetFilter": "player mills three cards",
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "When The Mouth of Sauron enters, target player mills three cards"
+     }
     }
    },
    {
@@ -46380,7 +47166,9 @@
     "targetFilter": null,
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": ") Whenever this creature attacks for the first time each turn, if it's attacking the player with the most life or tied for most life, untap all attacking creatures"
+     }
     }
    }
   ],
@@ -46411,7 +47199,9 @@
     "targetFilter": null,
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "This creature can't be blocked except by three or more creatures"
+     }
     }
    },
    {
@@ -46458,7 +47248,9 @@
     "targetFilter": null,
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "Flying When this creature enters, each opponent sacrifices a creature of their choice"
+     }
     }
    },
    {
@@ -47125,7 +47917,9 @@
     "targetFilter": "player draws two cards",
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "Target player draws two cards"
+     }
     }
    },
    {
@@ -47511,7 +48305,9 @@
     "targetFilter": null,
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "When this enchantment enters, the Ring tempts you"
+     }
     }
    },
    {
@@ -47565,7 +48361,9 @@
     "targetFilter": null,
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "Enchant creature Enchanted creature gets +2/+2 and is goaded"
+     }
     }
    },
    {
@@ -47677,7 +48475,9 @@
     "targetFilter": "creature that player controls until end of turn",
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "IV — For each opponent, gain control of up to one target creature that player controls until end of turn"
+     }
     }
    },
    {
@@ -47690,7 +48490,9 @@
     "targetFilter": null,
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "They gain haste until end of turn"
+     }
     }
    }
   ],
@@ -47780,7 +48582,9 @@
     "targetFilter": null,
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "Forestwalk (This creature can't be blocked as long as defending player controls a Forest"
+     }
     }
    },
    {
@@ -47793,7 +48597,9 @@
     "targetFilter": "creature gets +X/-X until end of turn",
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "{B}, Sacrifice X Squirrels: Target creature gets +X/-X until end of turn"
+     }
     }
    }
   ],
@@ -47825,7 +48631,9 @@
     "targetFilter": null,
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "Other Squirrels you control get +1/+1"
+     }
     }
    }
   ],
@@ -48237,7 +49045,9 @@
     "targetFilter": null,
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "Menace, trample, reach Squirrels you control have \"{T}: Target Squirrel gets +2/+2 and gains trample until end of turn"
+     }
     }
    },
    {
@@ -48298,7 +49108,9 @@
     "targetFilter": null,
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "You get an emblem with \"Creatures you control get +3/+3 and have trample"
+     }
     }
    }
   ],
@@ -48330,7 +49142,9 @@
     "targetFilter": null,
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "When this creature enters, create a number of 1/1 black Rat creature tokens equal to the number of opponents you have"
+     }
     }
    },
    {
@@ -48396,7 +49210,9 @@
     "targetFilter": null,
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "{3}{B}, Sacrifice X Foods: Creatures you control get +X/+0 and gain menace until end of turn"
+     }
     }
    }
   ],
@@ -48677,7 +49493,9 @@
     "targetFilter": null,
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "Rats you control have deathtouch"
+     }
     }
    }
   ],
@@ -48799,7 +49617,9 @@
     "targetFilter": "player creates a 1/1 green Squirrel creature token",
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "• Target player creates a 1/1 green Squirrel creature token"
+     }
     }
    },
    {
@@ -48812,7 +49632,9 @@
     "targetFilter": "opponent sacrifices a nontoken artifact of their choice",
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "• Target opponent sacrifices a nontoken artifact of their choice"
+     }
     }
    }
   ],
@@ -48908,7 +49730,9 @@
     "targetFilter": null,
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "Vigilance, trample, haste When this creature enters, other creatures you control get +2/+2 and gain vigilance and trample until end of turn"
+     }
     }
    }
   ],
@@ -48940,7 +49764,9 @@
     "targetFilter": null,
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "At the beginning of your upkeep, remove a time counter from it"
+     }
     }
    },
    {
@@ -48953,7 +49779,9 @@
     "targetFilter": null,
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "When the last is removed, sacrifice it"
+     }
     }
    },
    {
@@ -48966,7 +49794,9 @@
     "targetFilter": null,
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": ") When this creature enters, create four 1/1 green Squirrel creature tokens"
+     }
     }
    },
    {
@@ -48979,7 +49809,9 @@
     "targetFilter": null,
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "Squirrels you control get +1/+1"
+     }
     }
    }
   ],
@@ -49012,7 +49844,9 @@
     "targetFilter": null,
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "This spell can't be countered"
+     }
     }
    },
    {
@@ -49067,7 +49901,9 @@
     "targetFilter": null,
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "As long as this enchantment has seven or more quest counters on it, creatures you control get +5/+5"
+     }
     }
    }
   ],
@@ -49338,7 +50174,9 @@
     "targetFilter": null,
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "{T}: Regenerate target Insect, Rat, Spider, or Squirrel"
+     }
     }
    }
   ],
@@ -49465,7 +50303,9 @@
     "targetFilter": null,
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "At the beginning of your upkeep, you may sacrifice a token"
+     }
     }
    },
    {
@@ -49491,7 +50331,9 @@
     "targetFilter": null,
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "Squirrels you control get +1/+1 for each acorn counter on this artifact"
+     }
     }
    },
    {
@@ -49592,7 +50434,9 @@
     "targetFilter": null,
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "\" Pay 10 life: Untap all lands you control"
+     }
     }
    }
   ],
@@ -49623,7 +50467,9 @@
     "targetFilter": null,
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "Equipped creature gets +1/+1 for each creature you control with base power or toughness 1"
+     }
     }
    }
   ],
@@ -49720,7 +50566,9 @@
     "targetFilter": null,
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "When this creature enters, each player sacrifices a creature or planeswalker of their choice"
+     }
     }
    }
   ],
@@ -49827,7 +50675,9 @@
     "targetFilter": null,
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "Storm (When you cast this spell, copy it for each spell cast before it this turn"
+     }
     }
    }
   ],
@@ -49988,7 +50838,9 @@
     "targetFilter": null,
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "Reach When this creature enters, you may sacrifice another creature"
+     }
     }
    },
    {
@@ -50150,7 +51002,9 @@
     "targetFilter": null,
     "effect": {
      "kind": "other",
-     "params": {}
+     "params": {
+      "description": "When this creature dies, create X tapped 1/1 green Squirrel creature tokens, where X is this creature's power"
+     }
     }
    }
   ],

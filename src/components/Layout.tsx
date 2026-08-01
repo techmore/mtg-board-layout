@@ -45,6 +45,30 @@ export default function Layout() {
 
   useEffect(() => () => stopBroadcast(), [stopBroadcast])
 
+  // Keyboard shortcuts: undo/redo (⌘/Ctrl + Z, ⌘/Ctrl + Shift + Z, ⌘/Ctrl + Y).
+  useEffect(() => {
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement || e.target instanceof HTMLSelectElement) return
+      const mod = e.metaKey || e.ctrlKey
+      if (!mod || e.key.toLowerCase() !== 'z') {
+        if (mod && e.key.toLowerCase() === 'y') {
+          e.preventDefault()
+          useGameStore.getState().redo()
+        }
+        return
+      }
+      if (e.shiftKey) {
+        e.preventDefault()
+        useGameStore.getState().redo()
+      } else {
+        e.preventDefault()
+        useGameStore.getState().undo()
+      }
+    }
+    window.addEventListener('keydown', onKeyDown)
+    return () => window.removeEventListener('keydown', onKeyDown)
+  }, [])
+
   const toggleBroadcast = () => {
     if (broadcasting) {
       stopBroadcast()

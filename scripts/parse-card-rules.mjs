@@ -484,7 +484,7 @@ function parseEffect(sentence) {
       return { kind: ep.kind, params }
     }
   }
-  return { kind: 'other', params: {} }
+  return { kind: 'other', params: { description: sentence.slice(0, 200) } }
 }
 
 function parseTargets(sentence) {

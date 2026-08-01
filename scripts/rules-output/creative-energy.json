@@ -148,7 +148,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": "First strike When this creature enters, you get {E}{E}"
+          }
         }
       },
       {
@@ -976,7 +978,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": "{2}, {T}: Choose one — • Populate"
+          }
         }
       },
       {
@@ -1071,7 +1075,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": "When this Vehicle enters, you get {E}{E}{E}{E}"
+          }
         }
       },
       {
@@ -1084,7 +1090,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": "Whenever this Vehicle attacks, you may pay {E}{E}"
+          }
         }
       },
       {
@@ -1097,7 +1105,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": "When you do, target instant or sorcery card in your graveyard gains jump-start until end of turn"
+          }
         }
       },
       {
@@ -1170,7 +1180,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": "{T}: You get {E}, then you may pay one or more {E}"
+          }
         }
       },
       {
@@ -1283,7 +1295,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": "Flying, vigilance, trample Whenever you attack, other creatures you control get +2/+2 and gain indestructible until end of turn"
+          }
         }
       },
       {
@@ -1309,7 +1323,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": "It gains haste"
+          }
         }
       },
       {
@@ -1355,7 +1371,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": "Haste Whenever this creature attacks, you get {E}{E}, then you may pay eight {E}"
+          }
         }
       },
       {
@@ -1400,7 +1418,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": "Whenever this creature or equipped creature attacks, you get {E} , then it gets +X/+X until end of turn, where X is the amount of {E} you have"
+          }
         }
       },
       {
@@ -1413,7 +1433,9 @@
         "targetFilter": "creature you control",
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": "(Pay {2} or {E}{E}{E}: Attach to target creature you control"
+          }
         }
       }
     ],
@@ -1445,7 +1467,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": "(Whenever you cast a creature spell, you may copy it"
+          }
         }
       }
     ],
@@ -1490,7 +1514,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": "Whenever this creature attacks, double its power until end of turn"
+          }
         }
       },
       {
@@ -1534,7 +1560,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": "Whenever a creature you control attacks, you get {E}"
+          }
         }
       },
       {
@@ -1648,7 +1676,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": "{3}, {T}: You get {E}{E}{E}"
+          }
         }
       },
       {
@@ -1725,7 +1755,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": "Double strike, haste Whenever this creature attacks, you get {E}{E} , then you may pay eight {E}"
+          }
         }
       }
     ],
@@ -1758,7 +1790,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": "Flying When this creature enters, you get six {E}"
+          }
         }
       },
       {
@@ -1803,7 +1837,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": "Whenever this creature attacks, you get {E}{E}"
+          }
         }
       },
       {
@@ -1850,7 +1886,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": "Flying When this Vehicle enters, you get {E}{E}"
+          }
         }
       },
       {
@@ -1863,7 +1901,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": "Pay {E}: This Vehicle gains lifelink until end of turn"
+          }
         }
       }
     ],
@@ -1905,7 +1945,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": "{1}{U}, {T}: Creatures your opponents control attack this turn if able"
+          }
         }
       }
     ],
@@ -2049,7 +2091,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": "When this creature enters, create four 1/1 colorless Myr artifact creature tokens"
+          }
         }
       },
       {
@@ -2062,7 +2106,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": "Whenever this creature attacks, you may tap X untapped Myr you control"
+          }
         }
       },
       {
@@ -2154,7 +2200,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": "Creature tokens you control have haste"
+          }
         }
       },
       {
@@ -2229,7 +2277,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": "Whenever one or more creatures an opponent controls attack you and aren't blocked, that player draws three cards and gains control of this artifact"
+          }
         }
       }
     ],
@@ -2358,7 +2408,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": "• Creatures you control gain flying, vigilance, and double strike until end of turn"
+          }
         }
       },
       {
@@ -2371,7 +2423,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": "• Creatures you control gain lifelink, indestructible, and protection from each color until end of turn"
+          }
         }
       }
     ],
@@ -2637,7 +2691,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": "Whenever a permanent you control is put into a graveyard, you get {E}"
+          }
         }
       },
       {
@@ -2650,7 +2706,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": "{T}, Pay six {E}: Look at the top six cards of your library"
+          }
         }
       }
     ],
@@ -2701,7 +2759,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": ") Other creatures you control get +1/+1"
+          }
         }
       }
     ],
@@ -2730,7 +2790,9 @@
         "targetFilter": "artifact or creature",
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": "Choose target artifact or creature"
+          }
         }
       }
     ],
@@ -2763,7 +2825,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": "Flying Whenever this creature or another creature you control enters, you get {E}"
+          }
         }
       },
       {
@@ -2776,7 +2840,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": "Whenever this creature attacks, you may pay {E}{E}"
+          }
         }
       },
       {
@@ -2822,7 +2888,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": "Flying At the beginning of your upkeep, you get {E}{E}{E}"
+          }
         }
       },
       {
@@ -2835,7 +2903,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": "Pay eight {E}: Return all other creatures to their owners' hands"
+          }
         }
       }
     ],
@@ -3395,7 +3465,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": "When this creature leaves the battlefield, the exiled card's owner creates an X/X blue Illusion creature token, where X is the mana value of the exiled card"
+          }
         }
       }
     ],
@@ -3473,7 +3545,9 @@
         "targetFilter": "artifact or creature card in your graveyard",
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": "Choose up to one target artifact or creature card in your graveyard"
+          }
         }
       },
       {
@@ -3532,7 +3606,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": "{T}: You get {E}{E}"
+          }
         }
       },
       {
@@ -3545,7 +3621,9 @@
         "targetFilter": "creature",
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": "{T}, Pay {E}{E}: Tap target creature"
+          }
         }
       },
       {
@@ -3573,7 +3651,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": "Pay {E}{E}{E}{E}: This Vehicle becomes an artifact creature until end of turn"
+          }
         }
       }
     ],
@@ -3605,7 +3685,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": "Landfall — Whenever a land you control enters, you get {E}"
+          }
         }
       },
       {
@@ -3649,7 +3731,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": "When this artifact enters, you get {E}{E}"
+          }
         }
       },
       {
@@ -3727,7 +3811,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": "When this artifact enters, you get {E}{E}{E}"
+          }
         }
       },
       {
@@ -3784,7 +3870,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": "When this enchantment enters, create two 1/1 red Gremlin creature tokens"
+          }
         }
       },
       {
@@ -3797,7 +3885,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": "Pay {E}{E}{E}{E}: Creatures you control get +1/+0 and gain haste until end of turn"
+          }
         }
       }
     ],
@@ -4139,7 +4229,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": "Whenever an artifact or Artificer you control enters, you may pay {1}"
+          }
         }
       },
       {
@@ -4193,7 +4285,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": "When this land enters, you get {E}"
+          }
         }
       },
       {
@@ -4248,7 +4342,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": "Whenever a creature you control enters, you get {E}"
+          }
         }
       },
       {
@@ -4326,7 +4422,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": "When this creature enters, you get {E}{E}{E}"
+          }
         }
       },
       {

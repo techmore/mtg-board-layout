@@ -87,7 +87,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": "Whenever a creature an opponent controls with a -1/-1 counter on it dies, you may put that card onto the battlefield under your control"
+          }
         }
       }
     ],
@@ -152,7 +154,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": "{5}, {T}, Sacrifice this artifact: Create X tapped 2/2 colorless Scarecrow artifact creature tokens, where X is the number of charge counters on this artifact"
+          }
         }
       }
     ],
@@ -332,7 +336,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": "When this enchantment enters, you become the monarch"
+          }
         }
       },
       {
@@ -545,7 +551,9 @@
         "targetFilter": "player controls",
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": "When Ferrafor enters, create a number of 1/1 green Saproling creature tokens equal to the number of counters among creatures target player controls"
+          }
         }
       },
       {
@@ -558,7 +566,9 @@
         "targetFilter": "creature",
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": "{T}: Double the number of each kind of counter on target creature"
+          }
         }
       }
     ],
@@ -591,7 +601,9 @@
         "targetFilter": "opponent 's life total with this creature's toughness",
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": "Defender {T}: Exchange target opponent's life total with this creature's toughness"
+          }
         }
       }
     ],
@@ -832,7 +844,9 @@
         "targetFilter": "permanent you control onto a second target permanent",
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": "{1}, {T}: Move a counter from target permanent you control onto a second target permanent"
+          }
         }
       }
     ],
@@ -915,7 +929,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": "Deathtouch Whenever this creature enters or attacks, create two 2/2 black Zombie creature tokens"
+          }
         }
       }
     ],
@@ -969,7 +985,9 @@
         "targetFilter": "player has fewer than nine poison counters",
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": "If target player has fewer than nine poison counters, they get a number of poison counters equal to the difference"
+          }
         }
       }
     ],
@@ -1116,7 +1134,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": "Spells you control can't be countered"
+          }
         }
       },
       {
@@ -1129,7 +1149,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": "At the beginning of your end step, discover 5"
+          }
         }
       },
       {
@@ -1225,7 +1247,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": "It gains haste"
+          }
         }
       },
       {
@@ -1681,7 +1705,9 @@
         "targetFilter": "permanent",
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": "• Remove up to three counters from target permanent"
+          }
         }
       }
     ],
@@ -1727,7 +1753,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": "Damage can't be prevented"
+          }
         }
       },
       {
@@ -2788,7 +2816,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": "It can't be regenerated"
+          }
         }
       }
     ],
@@ -2849,7 +2879,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": "III — Creatures you control gain deathtouch until end of turn"
+          }
         }
       }
     ],
@@ -2897,7 +2929,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": ") Creatures your opponents control with counters on them can't attack or block"
+          }
         }
       }
     ],
@@ -3147,7 +3181,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": "It can't be regenerated"
+          }
         }
       }
     ],
@@ -3386,7 +3422,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": "When this land enters, sacrifice it"
+          }
         }
       },
       {

@@ -804,6 +804,16 @@ describe('static effects', () => {
     useGameStore.getState().checkStateBasedActions()
     expect(useGameStore.getState().cards.find((c) => c.id === 'bear')?.zone).toBe('battlefield')
   })
+
+  it('an aura does not pump the whole team (no attachment tracking)', () => {
+    primeCardRules({ 'Giant Strength': anthemRule() })
+    const aura = card({ id: 'aura', name: 'Giant Strength', typeLine: 'Enchantment — Aura', type: 'enchantment', zone: 'battlefield' })
+    const bear = card({ id: 'bear', name: 'Bear', typeLine: '2/2', type: 'creature', zone: 'battlefield', damage: 2 })
+    useGameStore.setState({ cards: [aura, bear] })
+    useGameStore.getState().checkStateBasedActions()
+    // Without the pump, the 2-damage bear dies.
+    expect(useGameStore.getState().cards.find((c) => c.id === 'bear')?.zone).toBe('graveyard')
+  })
 })
 
 describe('ward', () => {

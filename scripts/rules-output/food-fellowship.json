@@ -24,7 +24,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": "Whenever Frodo Baggins or another legendary creature you control enters, the Ring tempts you"
+          }
         }
       }
     ],
@@ -170,7 +172,9 @@
         "targetFilter": "player may put Pippin into their hand from their library",
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": "Partner with Pippin, Warden of Isengard (When this creature enters, target player may put Pippin into their hand from their library, then shuffle"
+          }
         }
       },
       {
@@ -222,7 +226,9 @@
         "targetFilter": "player may put Merry into their hand from their library",
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": "Partner with Merry, Warden of Isengard (When this creature enters, target player may put Merry into their hand from their library, then shuffle"
+          }
         }
       },
       {
@@ -251,7 +257,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": "{T}, Sacrifice four Foods: Other creatures you control get +3/+3 and gain haste until end of turn"
+          }
         }
       }
     ],
@@ -468,7 +476,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": ") Creatures with power less than this creature's power can't block it"
+          }
         }
       }
     ],
@@ -503,7 +513,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": "{2}, Sacrifice a Food: This creature gains indestructible until end of turn"
+          }
         }
       }
     ],
@@ -792,7 +804,9 @@
         "targetFilter": "creature with power 3 or less can't be blocked this turn",
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": "{3}, {T}: Target creature with power 3 or less can't be blocked this turn"
+          }
         }
       }
     ],
@@ -1389,7 +1403,9 @@
         "targetFilter": "creature can't be blocked this turn",
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": "{4}, {T}: Target creature can't be blocked this turn"
+          }
         }
       }
     ],
@@ -1762,7 +1778,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": "Activate only if you have 111 or more life"
+          }
         }
       }
     ],
@@ -1890,7 +1908,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": "Flying When this creature enters, creatures you control get +1/+0 and gain first strike until end of turn"
+          }
         }
       },
       {
@@ -1969,7 +1989,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": "When this creature enters, create X 1/1 white Halfling creature tokens and X Food tokens"
+          }
         }
       },
       {
@@ -2170,7 +2192,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": "Skulk (This creature can't be blocked by creatures with greater power"
+          }
         }
       },
       {
@@ -2256,7 +2280,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": "Flying Whenever Gwaihir attacks, target attacking creature gains flying until end of turn"
+          }
         }
       },
       {
@@ -2308,7 +2334,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": "Flying Whenever two or more creatures you control attack a player, target attacking creature without flying gains flying until end of turn"
+          }
         }
       }
     ],
@@ -2353,7 +2381,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": "{T}, Sacrifice an artifact: Choose one — • Until end of turn, you may play a card exiled with Lobelia without paying its mana cost"
+          }
         }
       },
       {
@@ -2521,7 +2551,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": "When this creature enters, create two Food tokens"
+          }
         }
       },
       {
@@ -2840,7 +2872,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": "Vigilance When this creature enters, you may sacrifice a token"
+          }
         }
       },
       {
@@ -2996,7 +3030,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": "Trample, ward {2} When Treebeard enters, create two Food tokens"
+          }
         }
       },
       {
@@ -3557,7 +3593,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": "This artifact can't be sacrificed"
+          }
         }
       },
       {
@@ -4032,7 +4070,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": "Sacrifice this enchantment: Create three tapped X/X green Treefolk creature tokens, where X is the amount of life you gained this turn"
+          }
         }
       },
       {
@@ -4087,7 +4127,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": "Creatures you control get +1/+1 for each unity counter on this enchantment"
+          }
         }
       }
     ],

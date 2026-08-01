@@ -23,7 +23,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": ") Whenever you cast an Eldrazi spell, you may pay {C}{C}"
+          }
         }
       },
       {
@@ -36,7 +38,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": "(Mana abilities can't be copied"
+          }
         }
       }
     ],
@@ -69,7 +73,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": "Whenever Azlask or another colorless creature you control dies, you get an experience counter"
+          }
         }
       }
     ],
@@ -390,7 +396,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": "Annihilator 2 (Whenever this creature attacks, defending player sacrifices two permanents of their choice"
+          }
         }
       }
     ],
@@ -542,7 +550,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": "Enchant creature Enchanted creature gets +10/+10 and has trample and annihilator 2"
+          }
         }
       },
       {
@@ -555,7 +565,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": "(Whenever it attacks, defending player sacrifices two permanents of their choice"
+          }
         }
       }
     ],
@@ -753,7 +765,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": ") When you cast this spell, for each opponent, choose a creature that player controls"
+          }
         }
       },
       {
@@ -800,7 +814,9 @@
         "targetFilter": "creature you control gains protection from each color until end of turn",
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": "Target creature you control gains protection from each color until end of turn"
+          }
         }
       }
     ],
@@ -864,7 +880,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": ") Flying, vigilance When this creature enters, sacrifice any number of creatures each with base power or toughness 1 or less"
+          }
         }
       }
     ],
@@ -931,7 +949,9 @@
         "targetFilter": "creature that player controls until end of turn",
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": ") When you cast this spell, for each opponent, gain control of up to one target creature that player controls until end of turn"
+          }
         }
       },
       {
@@ -944,7 +964,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": "They gain trample, haste, and annihilator 1 until end of turn"
+          }
         }
       },
       {
@@ -957,7 +979,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": "Trample, haste, annihilator 1 (Whenever this creature attacks, defending player sacrifices a permanent of their choice"
+          }
         }
       }
     ],
@@ -988,7 +1012,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": "Whenever you attack, choose odd or even"
+          }
         }
       },
       {
@@ -1001,7 +1027,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": "Creatures with mana value of that quality can't block this turn"
+          }
         }
       }
     ],
@@ -1035,7 +1063,9 @@
         "targetFilter": "permanent or opponent",
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": ") When you cast this spell, remove all counters from up to one target permanent or opponent"
+          }
         }
       }
     ],
@@ -1232,7 +1262,9 @@
         "targetFilter": "creature s until end of turn",
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": "At the beginning of combat on your turn, switch the power and toughness of each of any number of target creatures until end of turn"
+          }
         }
       }
     ],
@@ -1364,7 +1396,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": "Creatures you control get +1/+1 and have flying and indestructible"
+          }
         }
       },
       {
@@ -1377,7 +1411,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": "At the beginning of your upkeep, sacrifice a creature"
+          }
         }
       }
     ],
@@ -1524,7 +1560,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": ") When this creature enters, create two 1/1 colorless Eldrazi Scion creature tokens"
+          }
         }
       },
       {
@@ -1550,7 +1588,9 @@
         "targetFilter": "creature",
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": "\" Sacrifice an Eldrazi Scion: Tap target creature"
+          }
         }
       }
     ],
@@ -2469,7 +2509,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": "Other creatures you control of the chosen type get +1/+1"
+          }
         }
       }
     ],
@@ -2717,7 +2759,9 @@
         "targetFilter": "creature can't attack or block this turn",
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": "{C}, {T}: Target creature can't attack or block this turn"
+          }
         }
       },
       {
@@ -2828,7 +2872,9 @@
         "targetFilter": "creature can't be blocked this turn",
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": "{3}{C}: Target creature can't be blocked this turn"
+          }
         }
       }
     ],
@@ -2866,7 +2912,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": ") Flash When you cast this spell, you may pay {C}"
+          }
         }
       },
       {
@@ -3093,7 +3141,9 @@
         "targetFilter": "permanent s",
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": ") When you cast this spell, tap up to four target permanents"
+          }
         }
       }
     ],
@@ -3215,7 +3265,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": "Colorless creatures you control get +2/+2"
+          }
         }
       },
       {
@@ -3324,7 +3376,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": "At the beginning of your upkeep, look at the top card of your library"
+          }
         }
       }
     ],
@@ -3684,7 +3738,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": "{6}, {T}, Sacrifice this land: Create three 1/1 colorless Eldrazi Scion creature tokens"
+          }
         }
       },
       {
@@ -4640,7 +4696,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": "Annihilator 2 (Whenever this creature attacks, defending player sacrifices two permanents of their choice"
+          }
         }
       }
     ],
@@ -4686,7 +4744,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": "Creatures you control have trample"
+          }
         }
       },
       {

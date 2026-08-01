@@ -754,7 +754,9 @@
         "targetFilter": "player",
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": "Whenever a player casts their first spell each turn, choose another target player"
+          }
         }
       },
       {
@@ -928,7 +930,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": "At the beginning of your upkeep, remove a time counter"
+          }
         }
       },
       {
@@ -941,7 +945,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": "When the last is removed, you may cast it without paying its mana cost"
+          }
         }
       }
     ],
@@ -1057,7 +1063,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": "Menace Whenever this creature attacks, choose up to one target nonland permanent"
+          }
         }
       },
       {
@@ -1222,7 +1230,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": "At the beginning of your end step, you may sacrifice an artifact, creature, enchantment, land, or planeswalker"
+          }
         }
       },
       {
@@ -1279,7 +1289,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": "They can't be regenerated"
+          }
         }
       },
       {
@@ -1390,7 +1402,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": "Equipped creature has flying and lifelink"
+          }
         }
       },
       {
@@ -1403,7 +1417,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": "Whenever equipped creature dies, you may pay X life, where X is its power"
+          }
         }
       },
       {
@@ -1643,7 +1659,9 @@
         "targetFilter": "creature",
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": "{2}{R}, {T}: This creature fights another target creature"
+          }
         }
       }
     ],
@@ -1672,7 +1690,9 @@
         "targetFilter": "permanent shuffles it into their library",
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": "The owner of target permanent shuffles it into their library, then reveals the top card of their library"
+          }
         }
       }
     ],
@@ -2114,7 +2134,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": "Whenever you cast your first spell each turn, choose an opponent at random"
+          }
         }
       },
       {
@@ -2161,7 +2183,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": "Equipped creature has deathtouch and lifelink"
+          }
         }
       },
       {
@@ -2202,7 +2226,9 @@
         "targetFilter": "creature you control",
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": ") Equip {2} ({2}: Attach to target creature you control"
+          }
         }
       }
     ],
@@ -2674,7 +2700,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": "{R}, {T}: You may play the exiled card without paying its mana cost if an opponent was dealt 7 or more damage this turn"
+          }
         }
       }
     ],
@@ -2835,7 +2863,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": "{2}, {T}: Target commander gains lifelink until end of turn"
+          }
         }
       }
     ],
@@ -3096,7 +3126,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": "Equipped creature has haste and shroud"
+          }
         }
       },
       {
@@ -3109,7 +3141,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": "(It can't be the target of spells or abilities"
+          }
         }
       }
     ],
@@ -3479,7 +3513,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": "When Kardur enters, until your next turn, creatures your opponents control attack each combat if able and attack a player other than you if able"
+          }
         }
       },
       {

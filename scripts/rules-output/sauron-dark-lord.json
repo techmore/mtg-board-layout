@@ -39,7 +39,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": "Whenever the Ring tempts you, you may discard your hand"
+          }
         }
       },
       {
@@ -1242,7 +1244,9 @@
         "targetFilter": "creature can't be blocked this turn",
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": "{4}, {T}: Target creature can't be blocked this turn"
+          }
         }
       }
     ],
@@ -1493,7 +1497,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": "{1}{B}, {T}: Choose a player with the most life or tied for most life"
+          }
         }
       },
       {
@@ -1506,7 +1512,9 @@
         "targetFilter": "creature can't be blocked by creatures that player controls this turn",
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": "Target creature can't be blocked by creatures that player controls this turn"
+          }
         }
       }
     ],
@@ -1649,7 +1657,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": "It gains haste until end of turn"
+          }
         }
       }
     ],
@@ -1713,7 +1723,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": "When this creature enters, each player sacrifices a creature of their choice"
+          }
         }
       }
     ],
@@ -1815,7 +1827,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": "Trample Other Orcs and Goblins you control have trample"
+          }
         }
       },
       {
@@ -1828,7 +1842,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": "Whenever this creature attacks, it gets +X/+0 until end of turn, where X is the greatest power among creatures you control"
+          }
         }
       }
     ],
@@ -1879,7 +1895,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": "Haste As long as this card is in your graveyard and you control a Mountain, creatures you control have haste"
+          }
         }
       }
     ],
@@ -1911,7 +1929,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": "{2}{U}: Target Goblin, Orc, or Pirate can't be blocked this turn"
+          }
         }
       },
       {
@@ -1987,7 +2007,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": "Gríma can't be blocked"
+          }
         }
       },
       {
@@ -2104,7 +2126,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": "Whenever you cast a noncreature spell, amass Orcs X, where X is that spell's mana value"
+          }
         }
       },
       {
@@ -2208,7 +2232,9 @@
         "targetFilter": "creature card with mana value X exiled with Shelob onto the battlefield tapped under your control",
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": "{X}{1}{B}: Put target creature card with mana value X exiled with Shelob onto the battlefield tapped under your control"
+          }
         }
       }
     ],
@@ -2241,7 +2267,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": "Menace (This creature can't be blocked except by two or more creatures"
+          }
         }
       },
       {
@@ -2254,7 +2282,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": ") When this creature enters, you may cast target instant or sorcery card with mana value 3 or less from your graveyard without paying its mana cost"
+          }
         }
       },
       {
@@ -2298,7 +2328,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": "When Monstrosity of the Lake enters, you may pay {5}"
+          }
         }
       },
       {
@@ -2355,7 +2387,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": "When this creature enters, create three 1/1 red Goblin creature tokens"
+          }
         }
       },
       {
@@ -2400,7 +2434,9 @@
         "targetFilter": "player mills three cards",
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": "When The Mouth of Sauron enters, target player mills three cards"
+          }
         }
       },
       {
@@ -2524,7 +2560,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": ") Whenever this creature attacks for the first time each turn, if it's attacking the player with the most life or tied for most life, untap all attacking creatures"
+          }
         }
       }
     ],
@@ -2555,7 +2593,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": "This creature can't be blocked except by three or more creatures"
+          }
         }
       },
       {
@@ -2602,7 +2642,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": "Flying When this creature enters, each opponent sacrifices a creature of their choice"
+          }
         }
       },
       {
@@ -3315,7 +3357,9 @@
         "targetFilter": "player draws two cards",
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": "Target player draws two cards"
+          }
         }
       },
       {
@@ -3641,7 +3685,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": "They can't be regenerated"
+          }
         }
       },
       {
@@ -4004,7 +4050,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": "When this enchantment enters, the Ring tempts you"
+          }
         }
       },
       {
@@ -4058,7 +4106,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": "Enchant creature Enchanted creature gets +2/+2 and is goaded"
+          }
         }
       },
       {
@@ -4170,7 +4220,9 @@
         "targetFilter": "creature that player controls until end of turn",
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": "IV — For each opponent, gain control of up to one target creature that player controls until end of turn"
+          }
         }
       },
       {
@@ -4183,7 +4235,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "other",
-          "params": {}
+          "params": {
+            "description": "They gain haste until end of turn"
+          }
         }
       }
     ],
