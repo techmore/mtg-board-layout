@@ -38,7 +38,13 @@ export function effectLabelFor(kind: string, params: Record<string, unknown>): s
     put_counter: (p) => `Put ${(p as { amount?: number }).amount ?? 1} ${(p as { counterKind?: string }).counterKind ?? '-1/-1'} counter(s)`,
     lose_life: (p) => `Lose ${(p as { amount?: number }).amount ?? 1} life`,
     gain_life: (p) => `Gain ${(p as { amount?: number }).amount ?? 1} life`,
-    create_token: (p) => `Create${(p as { tokenName?: string }).tokenName ? ` ${(p as { tokenName?: string }).tokenName}` : ''} token`,
+    create_token: (p) => {
+      const tokenName = (p as { tokenName?: string }).tokenName
+      const power = (p as { tokenPower?: number }).tokenPower
+      const toughness = (p as { tokenToughness?: number }).tokenToughness
+      const stats = power !== undefined && toughness !== undefined ? ` ${power}/${toughness}` : ''
+      return `Create${tokenName ? ` ${tokenName}` : ''}${stats} token`
+    },
     destroy: () => 'Destroy target',
     add_mana: () => 'Add mana',
     exile: () => 'Exile',

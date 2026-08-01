@@ -103,6 +103,8 @@ export interface BoardCard {
   tapped: boolean
   counters: number
   damage?: number
+  powerBoost?: number
+  toughnessBoost?: number
   tokenCount?: number
   type: 'land' | 'creature' | 'instant' | 'sorcery' | 'enchantment' | 'artifact' | 'planeswalker' | 'battle' | 'other'
   revealed: boolean
@@ -117,6 +119,8 @@ export interface Token {
   imageUri: string
   counters: number
   tapped: boolean
+  power?: number
+  toughness?: number
 }
 
 export interface Deck {

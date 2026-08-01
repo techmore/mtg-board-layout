@@ -253,6 +253,11 @@ function PublicToken({ token }: { token: Token }) {
       <div style={{ marginTop: 3, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', color: '#e6edf3', fontSize: '0.62rem', textAlign: 'center' }}>
         {token.name}
       </div>
+      {token.power !== undefined && token.toughness !== undefined && (
+        <div style={{ position: 'absolute', bottom: -4, right: -4, minWidth: 18, height: 18, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '0 4px', borderRadius: 4, background: '#238636', color: '#fff', fontSize: '0.65rem', fontWeight: 700, boxSizing: 'border-box' }}>
+          {token.power}/{token.toughness}
+        </div>
+      )}
       {token.counters > 0 && (
         <span style={{ position: 'absolute', top: -4, right: -4, width: 18, height: 18, display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: '50%', background: '#d29922', color: '#000', fontSize: '0.65rem', fontWeight: 700 }}>
           {token.counters}

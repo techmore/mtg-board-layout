@@ -62,14 +62,32 @@ export function resolveTrigger(get: () => GameState, set: (partial: Partial<Game
         imageUri: CARD_BACK_URL,
         counters: 0,
         tapped: false,
+        power: params.tokenPower as number | undefined,
+        toughness: params.tokenToughness as number | undefined,
       }
       get().addToken(token)
       break
     }
-    case 'put_counter': {
-      get().addCounter(trigger.sourceCardId)
-      break
-    }
+      case 'put_counter': {
+        get().addCounter(trigger.sourceCardId)
+        break
+      }
+      case 'pump': {
+        // With no explicit targets the parser encodes mass pumps ("all creatures
+        // get +1/+1 until end of turn").
+        if (trigger.ability.targets > 0) break
+        const power = (params.power as number) ?? 0
+        const toughness = (params.toughness as number) ?? 0
+        const victims = state.cards.filter((c) => c.zone === 'battlefield' && c.type === 'creature')
+        set({
+          cards: state.cards.map((c) =>
+            victims.some((v) => v.id === c.id)
+              ? { ...c, powerBoost: (c.powerBoost ?? 0) + power, toughnessBoost: (c.toughnessBoost ?? 0) + toughness }
+              : c,
+          ),
+        })
+        break
+      }
     case 'sacrifice':
       get().moveCard(trigger.sourceCardId, 'graveyard')
       break
@@ -162,6 +180,18 @@ export function selectTarget(get: () => GameState, set: (partial: Partial<GameSt
       case 'put_counter':
         get().addCounter(cardId)
         break
+      case 'pump': {
+        const power = (params.power as number) ?? 0
+        const toughness = (params.toughness as number) ?? 0
+        set({
+          cards: state.cards.map((c) =>
+            c.id === cardId
+              ? { ...c, powerBoost: (c.powerBoost ?? 0) + power, toughnessBoost: (c.toughnessBoost ?? 0) + toughness }
+              : c,
+          ),
+        })
+        break
+      }
       case 'destroy': {
         const target = state.cards.find((c) => c.id === cardId)
         if (target) get().moveCard(cardId, 'graveyard')

@@ -110,6 +110,15 @@ describe('resolveTrigger', () => {
     expect(harness.state.triggerStack).toHaveLength(0)
   })
 
+  it('applies parsed power and toughness to the token', () => {
+    const harness = makeHarness({ triggerStack: [trigger('t1', { kind: 'create_token', params: { tokenName: 'Dragon', tokenPower: 4, tokenToughness: 4 } })] })
+
+    resolveTrigger(harness.get, harness.set, 't1')
+
+    expect(harness.addToken).toHaveBeenCalledWith(expect.objectContaining({ name: 'Dragon', power: 4, toughness: 4 }))
+    expect(harness.state.triggerStack).toHaveLength(0)
+  })
+
   it('adds mana for each color the source card produces', () => {
     const source = card({ id: 'source-1', manaProduction: { colors: ['W', 'U'], amount: 1 } })
     const harness = makeHarness({
