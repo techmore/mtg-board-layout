@@ -3,7 +3,7 @@ import type { BackgroundOption, BoardCard, CardScale, EffectHistoryEntry, ManaCo
 import { hydratePersistedBackgroundState, loadPersistedGameState, persistGameState, STORAGE_KEY } from './gamePersistence'
 import { reindexTriggers, buildTriggerInstances } from './triggerEngine'
 import { getCachedCardRules } from './cardRulesLoader'
-import { resolveTrigger as resolveTriggerImpl, selectTarget as selectTargetImpl } from './triggerActions'
+import { resolveTrigger as resolveTriggerImpl, selectTarget as selectTargetImpl, payWardImpl, refuseWardImpl } from './triggerActions'
 import { createUndoContext, createUndoActions, runUndoableAction } from './gameHistory'
 import { createTurnPhases } from './gameTurnPhases'
 import { createOpponentAI } from './gameOpponentAI'
@@ -84,6 +84,7 @@ export interface GameState {
   drawNotice: DrawNotice | null
   turnAnnouncement: TurnAnnouncement | null
   turnPrompt: TurnPrompt | null
+  wardPrompt: { triggerId: string; targetCardId: string; cost: number; spellName: string; targetName: string } | null
   broadcasting: boolean
   undoStack: GameSnapshot[]
   redoStack: GameSnapshot[]
@@ -112,6 +113,8 @@ export interface GameState {
   castSpell: (cardId: string) => boolean
   announceEndTurn: () => void
   cancelTurnPrompt: () => void
+  payWard: () => void
+  refuseWard: () => void
   overrideLandPlay: (cardId: string) => void
   resolveConditionalEntry: (cardId: string, tapped: boolean) => void
   discardForTurn: (cardId: string) => void
@@ -149,7 +152,7 @@ export interface GameState {
 
   emitGameEvent: (event: import('../types/card').GameEvent) => void
   resolveTrigger: (triggerId: string) => void
-  selectTarget: (triggerId: string, cardId: string) => void
+  selectTarget: (triggerId: string, cardId: string, bypassWard?: boolean) => void
   toggleProliferateTarget: (triggerId: string, cardId: string) => void
   confirmProliferate: (triggerId: string) => void
   toggleScryTarget: (triggerId: string, cardId: string) => void
@@ -172,6 +175,7 @@ export const useGameStore = create<GameState>((set, get) => {
     ...persistedGameState,
     drawNotice: null,
     turnPrompt: null,
+    wardPrompt: null,
     broadcasting: false,
     undoStack: [],
     redoStack: [],
@@ -251,7 +255,11 @@ export const useGameStore = create<GameState>((set, get) => {
 
     resolveTrigger: (triggerId) => resolveTriggerImpl(get, set, triggerId),
 
-    selectTarget: (triggerId, cardId) => selectTargetImpl(get, set, triggerId, cardId),
+    selectTarget: (triggerId, cardId, bypassWard) => selectTargetImpl(get, set, triggerId, cardId, bypassWard),
+
+    payWard: () => payWardImpl(get, set),
+
+    refuseWard: () => refuseWardImpl(get, set),
 
     toggleProliferateTarget: (triggerId, cardId) => {
       const state = get()

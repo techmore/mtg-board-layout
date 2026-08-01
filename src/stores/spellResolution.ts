@@ -45,7 +45,28 @@ export function resolveAISpellAbilities(set: SetFn, get: () => GameState, card: 
         .filter((c) => filterMatch(ability.targetFilter, c))
         .filter((c) => !(hasKeyword(c, 'hexproof') && (c.owner ?? 'player') !== 'opponent'))
       if (candidates.length === 0) continue
-      get().selectTarget(instance.id, candidates[0].id)
+      const target = candidates[0]
+
+      // Ward: the AI pays when it can afford it, otherwise the spell fizzles.
+      if (hasKeyword(target, 'ward') && (target.owner ?? 'player') !== 'opponent') {
+        const pool = get().opponentManaPool
+        const total = Object.values(pool).reduce((sum, amount) => sum + amount, 0)
+        if (total < 2) {
+          set((prev) => ({ triggerStack: prev.triggerStack.filter((t) => t.id !== instance.id) }))
+          continue
+        }
+        let remaining = 2
+        const nextPool = { ...pool }
+        for (const color of ['W', 'U', 'B', 'R', 'G', 'C'] as const) {
+          while (remaining > 0 && nextPool[color] > 0) {
+            nextPool[color] -= 1
+            remaining -= 1
+          }
+        }
+        set({ opponentManaPool: nextPool })
+      }
+
+      get().selectTarget(instance.id, target.id, true)
     } else {
       get().resolveTrigger(instance.id)
     }

@@ -680,6 +680,143 @@ describe('spell resolution', () => {
   })
 })
 
+describe('ward', () => {
+  const wardExileAbility = (): CardAbilityDef => ({
+    abilityType: 'spell',
+    triggerEvent: null,
+    triggerCondition: null,
+    isOptional: false,
+    cost: null,
+    targets: 1,
+    targetFilter: 'creature',
+    effect: { kind: 'exile', params: {} },
+  })
+
+  function castTargetedSpell(spellId: string, spellName: string, rules: Record<string, CardRuleEntry>) {
+    primeCardRules(rules)
+    const spell = card({ id: spellId, name: spellName, type: 'instant', typeLine: 'Instant', zone: 'hand' })
+    useGameStore.setState({ cards: [spell, ...useGameStore.getState().cards], manaPool: { ...emptyManaPool(), W: 5 } })
+    useGameStore.getState().castSpell(spellId)
+    const triggerId = useGameStore.getState().triggerStack[0].id
+    useGameStore.getState().resolveTrigger(triggerId)
+    return triggerId
+  }
+
+  it('defers targeting an opponent ward creature until payment', () => {
+    const warded = card({ id: 'warded', name: 'Warded', typeLine: '2/2', type: 'creature', zone: 'battlefield', owner: 'opponent' })
+    useGameStore.setState({ cards: [warded] })
+    const triggerId = castTargetedSpell('ex', 'Exile Spell', {
+      'Exile Spell': {
+        cardName: 'Exile Spell', manaCost: '{1}{W}', manaValue: 2, typeLine: 'Instant', cardType: 'instant', subtypes: [], keywords: [], manaProduction: null, entryTapRule: null, conditionalEntryText: null, oracleText: '', scryfallId: 's', abilities: [wardExileAbility()],
+      },
+      'Warded': ruleFor('Warded', ['ward']),
+    })
+    useGameStore.getState().selectTarget(triggerId, 'warded')
+
+    const state = useGameStore.getState()
+    expect(state.wardPrompt).not.toBeNull()
+    expect(state.wardPrompt?.cost).toBe(2)
+    expect(state.cards.find((c) => c.id === 'warded')?.zone).toBe('battlefield')
+    expect(state.triggerStack).toHaveLength(1)
+  })
+
+  it('pays ward and resolves the spell', () => {
+    const warded = card({ id: 'warded', name: 'Warded', typeLine: '2/2', type: 'creature', zone: 'battlefield', owner: 'opponent' })
+    useGameStore.setState({ cards: [warded], manaPool: { ...emptyManaPool(), W: 5 } })
+    const triggerId = castTargetedSpell('ex', 'Exile Spell', {
+      'Exile Spell': {
+        cardName: 'Exile Spell', manaCost: '{1}{W}', manaValue: 2, typeLine: 'Instant', cardType: 'instant', subtypes: [], keywords: [], manaProduction: null, entryTapRule: null, conditionalEntryText: null, oracleText: '', scryfallId: 's', abilities: [wardExileAbility()],
+      },
+      'Warded': ruleFor('Warded', ['ward']),
+    })
+    useGameStore.getState().selectTarget(triggerId, 'warded')
+    useGameStore.getState().payWard()
+
+    const state = useGameStore.getState()
+    expect(state.wardPrompt).toBeNull()
+    expect(state.cards.find((c) => c.id === 'warded')?.zone).toBe('exile')
+    expect(state.triggerStack).toHaveLength(0)
+    expect(state.manaPool.W).toBe(3)
+  })
+
+  it('counters the spell when ward is refused', () => {
+    const warded = card({ id: 'warded', name: 'Warded', typeLine: '2/2', type: 'creature', zone: 'battlefield', owner: 'opponent' })
+    useGameStore.setState({ cards: [warded], manaPool: { ...emptyManaPool(), W: 5 } })
+    const triggerId = castTargetedSpell('ex', 'Exile Spell', {
+      'Exile Spell': {
+        cardName: 'Exile Spell', manaCost: '{1}{W}', manaValue: 2, typeLine: 'Instant', cardType: 'instant', subtypes: [], keywords: [], manaProduction: null, entryTapRule: null, conditionalEntryText: null, oracleText: '', scryfallId: 's', abilities: [wardExileAbility()],
+      },
+      'Warded': ruleFor('Warded', ['ward']),
+    })
+    useGameStore.getState().selectTarget(triggerId, 'warded')
+    useGameStore.getState().refuseWard()
+
+    const state = useGameStore.getState()
+    expect(state.wardPrompt).toBeNull()
+    expect(state.cards.find((c) => c.id === 'warded')?.zone).toBe('battlefield')
+    expect(state.triggerStack).toHaveLength(0)
+    expect(state.manaPool.W).toBe(5)
+  })
+
+  it('does not trigger ward for your own creatures', () => {
+    const warded = card({ id: 'warded', name: 'Warded', typeLine: '2/2', type: 'creature', zone: 'battlefield' })
+    useGameStore.setState({ cards: [warded], manaPool: { ...emptyManaPool(), W: 5 } })
+    const triggerId = castTargetedSpell('ex', 'Exile Spell', {
+      'Exile Spell': {
+        cardName: 'Exile Spell', manaCost: '{1}{W}', manaValue: 2, typeLine: 'Instant', cardType: 'instant', subtypes: [], keywords: [], manaProduction: null, entryTapRule: null, conditionalEntryText: null, oracleText: '', scryfallId: 's', abilities: [wardExileAbility()],
+      },
+      'Warded': ruleFor('Warded', ['ward']),
+    })
+    useGameStore.getState().selectTarget(triggerId, 'warded')
+
+    const state = useGameStore.getState()
+    expect(state.wardPrompt).toBeNull()
+    expect(state.cards.find((c) => c.id === 'warded')?.zone).toBe('exile')
+  })
+
+  it('the AI pays ward when affordable and counters otherwise', () => {
+    const boltRule: CardRuleEntry = {
+      cardName: 'Bolt', manaCost: '{R}', manaValue: 1, typeLine: 'Instant', cardType: 'instant', subtypes: [], keywords: [], manaProduction: null, entryTapRule: null, conditionalEntryText: null, oracleText: '', scryfallId: 'b', abilities: [{
+        abilityType: 'spell',
+        triggerEvent: null,
+        triggerCondition: null,
+        isOptional: false,
+        cost: null,
+        targets: 1,
+        targetFilter: null,
+        effect: { kind: 'deal_damage', params: { amount: 3 } },
+      }],
+    }
+    primeCardRules({ 'Warded': ruleFor('Warded', ['ward']), 'Bolt': boltRule })
+    const aiBolt = card({ id: 'bolt', name: 'Bolt', type: 'instant', typeLine: 'Instant', zone: 'battlefield', owner: 'opponent' })
+    const warded = card({ id: 'warded', name: 'Warded', typeLine: '2/2', type: 'creature', zone: 'battlefield' })
+    useGameStore.setState({
+      cards: [aiBolt, warded],
+      opponentManaPool: { ...emptyManaPool(), R: 2 },
+    })
+
+    resolveAISpellAbilities(
+      (partial) => useGameStore.setState(partial as never),
+      () => useGameStore.getState(),
+      aiBolt,
+    )
+    expect(useGameStore.getState().opponentManaPool.R).toBe(0)
+    expect(useGameStore.getState().cards.find((c) => c.id === 'warded')?.zone).toBe('graveyard')
+
+    useGameStore.setState({
+      cards: [aiBolt, warded],
+      opponentManaPool: { ...emptyManaPool() },
+    })
+    resolveAISpellAbilities(
+      (partial) => useGameStore.setState(partial as never),
+      () => useGameStore.getState(),
+      aiBolt,
+    )
+    expect(useGameStore.getState().cards.find((c) => c.id === 'warded')?.zone).toBe('battlefield')
+    expect(useGameStore.getState().triggerStack).toHaveLength(0)
+  })
+})
+
 describe('loadOpponentDeck', () => {
   it('loads a simple commander deck with the commander in the command zone', () => {
     vi.useFakeTimers()

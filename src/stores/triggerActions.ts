@@ -1,6 +1,8 @@
 import type { GameState } from './gameStore'
-import type { Token } from '../types/card'
+import type { Token, TriggerInstance } from '../types/card'
 import { CARD_BACK_URL } from '../constants'
+import { canPayManaCost } from '../utils/misc'
+import { hasKeyword } from './cardRulesLoader'
 
 export function resolveTrigger(get: () => GameState, set: (partial: Partial<GameState>) => void, triggerId: string) {
   const state = get()
@@ -160,7 +162,7 @@ export function resolveTrigger(get: () => GameState, set: (partial: Partial<Game
   }
 }
 
-export function selectTarget(get: () => GameState, set: (partial: Partial<GameState>) => void, triggerId: string, cardId: string) {
+export function selectTarget(get: () => GameState, set: (partial: Partial<GameState>) => void, triggerId: string, cardId: string, bypassWard = false) {
   const state = get()
   const trigger = state.triggerStack.find((t) => t.id === triggerId)
   if (!trigger) return
@@ -174,48 +176,28 @@ export function selectTarget(get: () => GameState, set: (partial: Partial<GameSt
   }
 
   if (updated.selectedTargets.length >= needed) {
-    const effect = trigger.ability.effect
-    const params = effect.params as Record<string, unknown>
-    switch (effect.kind) {
-      case 'put_counter':
-        get().addCounter(cardId)
-        break
-      case 'pump': {
-        const power = (params.power as number) ?? 0
-        const toughness = (params.toughness as number) ?? 0
-        set({
-          cards: state.cards.map((c) =>
-            c.id === cardId
-              ? { ...c, powerBoost: (c.powerBoost ?? 0) + power, toughnessBoost: (c.toughnessBoost ?? 0) + toughness }
-              : c,
-          ),
-        })
-        break
-      }
-      case 'destroy': {
-        const target = state.cards.find((c) => c.id === cardId)
-        if (target) get().moveCard(cardId, 'graveyard')
-        break
-      }
-      case 'deal_damage': {
-        const amount = (params.amount as number) ?? 1
-        const target = state.cards.find((c) => c.id === cardId)
-        if (target) get().addDamage(cardId, amount)
-        break
-      }
-      case 'return_from_graveyard': {
-        const zone = (params.zone as string) ?? 'battlefield'
-        get().moveCard(cardId, zone as 'battlefield' | 'hand')
-        break
-      }
-      case 'exile':
-        get().moveCard(cardId, 'exile')
-        break
+    // Ward: a targeted permanent with ward counters the spell unless its
+    // controller pays. Defer resolution until the payer decides.
+    const target = state.cards.find((c) => c.id === cardId)
+    const source = state.cards.find((c) => c.id === trigger.sourceCardId)
+    const wardCost = target && hasKeyword(target, 'ward') ? 2 : 0
+    const wardTriggers = wardCost > 0 && !bypassWard && (source?.owner ?? 'player') !== (target?.owner ?? 'player')
+    if (wardTriggers && target) {
+      set({
+        triggerStack: state.triggerStack.map((t) =>
+          t.id === triggerId ? updated : t,
+        ),
+        wardPrompt: {
+          triggerId,
+          targetCardId: cardId,
+          cost: wardCost,
+          spellName: trigger.sourceCardName,
+          targetName: target.name,
+        },
+      })
+      return
     }
-    set({
-      triggerStack: state.triggerStack.filter((t) => t.id !== triggerId),
-    })
-    get().checkStateBasedActions()
+    applyTargetedEffect(get, set, state, trigger, cardId)
   } else {
     set({
       triggerStack: state.triggerStack.map((t) =>
@@ -223,4 +205,82 @@ export function selectTarget(get: () => GameState, set: (partial: Partial<GameSt
       ),
     })
   }
+}
+
+function applyTargetedEffect(get: () => GameState, set: (partial: Partial<GameState>) => void, state: GameState, trigger: TriggerInstance, cardId: string) {
+  const effect = trigger.ability.effect
+  const params = effect.params as Record<string, unknown>
+  switch (effect.kind) {
+    case 'put_counter':
+      get().addCounter(cardId)
+      break
+    case 'pump': {
+      const power = (params.power as number) ?? 0
+      const toughness = (params.toughness as number) ?? 0
+      set({
+        cards: state.cards.map((c) =>
+          c.id === cardId
+            ? { ...c, powerBoost: (c.powerBoost ?? 0) + power, toughnessBoost: (c.toughnessBoost ?? 0) + toughness }
+            : c,
+        ),
+      })
+      break
+    }
+    case 'destroy': {
+      const target = state.cards.find((c) => c.id === cardId)
+      if (target) get().moveCard(cardId, 'graveyard')
+      break
+    }
+    case 'deal_damage': {
+      const amount = (params.amount as number) ?? 1
+      const target = state.cards.find((c) => c.id === cardId)
+      if (target) get().addDamage(cardId, amount)
+      break
+    }
+    case 'return_from_graveyard': {
+      const zone = (params.zone as string) ?? 'battlefield'
+      get().moveCard(cardId, zone as 'battlefield' | 'hand')
+      break
+    }
+    case 'exile':
+      get().moveCard(cardId, 'exile')
+      break
+  }
+  set({
+    triggerStack: state.triggerStack.filter((t) => t.id !== trigger.id),
+  })
+  get().checkStateBasedActions()
+}
+
+export function payWardImpl(get: () => GameState, set: (partial: Partial<GameState>) => void) {
+  const state = get()
+  const prompt = state.wardPrompt
+  if (!prompt) return
+  const trigger = state.triggerStack.find((t) => t.id === prompt.triggerId)
+  if (!trigger) {
+    set({ wardPrompt: null })
+    return
+  }
+  const cost = `{${prompt.cost}}`
+  if (!canPayManaCost(state.manaPool, cost)) {
+    // Cannot pay — the spell is countered.
+    set({
+      wardPrompt: null,
+      triggerStack: state.triggerStack.filter((t) => t.id !== prompt.triggerId),
+    })
+    return
+  }
+  get().spendManaCost(cost, `Ward (${prompt.spellName})`)
+  applyTargetedEffect(get, set, get(), trigger, prompt.targetCardId)
+  set({ wardPrompt: null })
+}
+
+export function refuseWardImpl(get: () => GameState, set: (partial: Partial<GameState>) => void) {
+  const state = get()
+  const prompt = state.wardPrompt
+  if (!prompt) return
+  set({
+    wardPrompt: null,
+    triggerStack: state.triggerStack.filter((t) => t.id !== prompt.triggerId),
+  })
 }
