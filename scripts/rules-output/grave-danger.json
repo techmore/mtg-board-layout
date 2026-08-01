@@ -665,5 +665,3410 @@
     "abilities": [],
     "oracleText": "",
     "scryfallId": "4031e5e4-e573-4130-8d20-4a606edef0a0"
+  },
+  "The Master, Transcendent": {
+    "cardName": "The Master, Transcendent",
+    "manaCost": "{1}{B}{G}{U}",
+    "manaValue": 4,
+    "typeLine": "Legendary Artifact Creature — Mutant",
+    "cardType": "creature",
+    "subtypes": [
+      "Mutant"
+    ],
+    "keywords": [],
+    "manaProduction": null,
+    "entryTapRule": null,
+    "conditionalEntryText": null,
+    "abilities": [
+      {
+        "abilityType": "triggered",
+        "triggerEvent": "etb",
+        "triggerCondition": "The Master enters",
+        "isOptional": false,
+        "cost": null,
+        "targets": 1,
+        "targetFilter": "player gets two rad counters",
+        "effect": {
+          "kind": "other",
+          "params": {}
+        }
+      },
+      {
+        "abilityType": "activated",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": "{T}",
+        "targets": 1,
+        "targetFilter": "creature card in a graveyard that was milled this turn onto the battlefield under your control",
+        "effect": {
+          "kind": "other",
+          "params": {}
+        }
+      }
+    ],
+    "oracleText": "When The Master enters, target player gets two rad counters.\n{T}: Put target creature card in a graveyard that was milled this turn onto the battlefield under your control. It's a green Mutant with base power and toughness 3/3. (It loses its other colors and creature types.)",
+    "scryfallId": "5b0497da-670a-405c-a39c-97cae7942836"
+  },
+  "Jason Bright, Glowing Prophet": {
+    "cardName": "Jason Bright, Glowing Prophet",
+    "manaCost": "{2}{U}",
+    "manaValue": 3,
+    "typeLine": "Legendary Creature — Zombie Mutant Advisor",
+    "cardType": "creature",
+    "subtypes": [
+      "Zombie",
+      "Mutant",
+      "Advisor"
+    ],
+    "keywords": [
+      "flying"
+    ],
+    "manaProduction": null,
+    "entryTapRule": null,
+    "conditionalEntryText": null,
+    "abilities": [
+      {
+        "abilityType": "triggered",
+        "triggerEvent": "dies",
+        "triggerCondition": "a Zombie or Mutant you control dies",
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "draw_cards",
+          "params": {
+            "amount": 1
+          }
+        }
+      },
+      {
+        "abilityType": "activated",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": "{2}, Sacrifice",
+        "targets": 1,
+        "targetFilter": "creature you control",
+        "effect": {
+          "kind": "put_counter",
+          "params": {}
+        }
+      },
+      {
+        "abilityType": "static",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "other",
+          "params": {}
+        }
+      }
+    ],
+    "oracleText": "Whenever a Zombie or Mutant you control dies, if its power was different from its base power, draw a card.\nCome Fly With Me — {2}, Sacrifice a creature: Put a +1/+1 counter on target creature you control. It gains flying until end of turn.",
+    "scryfallId": "48313997-fd94-486a-bf30-e9143a155814"
+  },
+  "Mirelurk Queen": {
+    "cardName": "Mirelurk Queen",
+    "manaCost": "{4}{U}",
+    "manaValue": 5,
+    "typeLine": "Creature — Crab Mutant",
+    "cardType": "creature",
+    "subtypes": [
+      "Crab",
+      "Mutant"
+    ],
+    "keywords": [
+      "vigilance"
+    ],
+    "manaProduction": null,
+    "entryTapRule": null,
+    "conditionalEntryText": null,
+    "abilities": [
+      {
+        "abilityType": "triggered",
+        "triggerEvent": "etb",
+        "triggerCondition": "Vigilance When this creature enters",
+        "isOptional": false,
+        "cost": null,
+        "targets": 1,
+        "targetFilter": "player gets two rad counters",
+        "effect": {
+          "kind": "other",
+          "params": {}
+        }
+      },
+      {
+        "abilityType": "triggered",
+        "triggerEvent": "counter_placed",
+        "triggerCondition": "one or more nonland cards are milled",
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "put_counter",
+          "params": {}
+        }
+      }
+    ],
+    "oracleText": "Vigilance\nWhen this creature enters, target player gets two rad counters.\nWhenever one or more nonland cards are milled, draw a card, then put a +1/+1 counter on this creature. This ability triggers only once each turn.",
+    "scryfallId": "6e6d1843-9e05-4cdd-ad4e-15d7913d87f7"
+  },
+  "Piper Wright, Publick Reporter": {
+    "cardName": "Piper Wright, Publick Reporter",
+    "manaCost": "{1}{U}",
+    "manaValue": 2,
+    "typeLine": "Legendary Creature — Human Detective",
+    "cardType": "creature",
+    "subtypes": [
+      "Human",
+      "Detective"
+    ],
+    "keywords": [],
+    "manaProduction": null,
+    "entryTapRule": null,
+    "conditionalEntryText": null,
+    "abilities": [
+      {
+        "abilityType": "triggered",
+        "triggerEvent": "combat_damage",
+        "triggerCondition": "Piper Wright deals combat damage to a player",
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "deal_damage",
+          "params": {}
+        }
+      },
+      {
+        "abilityType": "triggered",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "create_token",
+          "params": {
+            "tokenName": "Clue",
+            "amount": 1
+          }
+        }
+      },
+      {
+        "abilityType": "activated",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": "{2}, Sacrifice",
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "draw_cards",
+          "params": {
+            "amount": 2
+          }
+        }
+      },
+      {
+        "abilityType": "triggered",
+        "triggerEvent": "counter_placed",
+        "triggerCondition": "\") Whenever you sacrifice a Clue",
+        "isOptional": false,
+        "cost": null,
+        "targets": 1,
+        "targetFilter": "creature you control",
+        "effect": {
+          "kind": "put_counter",
+          "params": {}
+        }
+      }
+    ],
+    "oracleText": "Whenever Piper Wright deals combat damage to a player, investigate that many times. (To investigate, create a Clue token. It's an artifact with \"{2}, Sacrifice this token: Draw a card.\")\nWhenever you sacrifice a Clue, put a +1/+1 counter on target creature you control.",
+    "scryfallId": "916bf331-455a-4694-93d3-15dcf6971072"
+  },
+  "Feral Ghoul": {
+    "cardName": "Feral Ghoul",
+    "manaCost": "{2}{B}",
+    "manaValue": 3,
+    "typeLine": "Creature — Zombie Mutant",
+    "cardType": "creature",
+    "subtypes": [
+      "Zombie",
+      "Mutant"
+    ],
+    "keywords": [
+      "menace"
+    ],
+    "manaProduction": null,
+    "entryTapRule": null,
+    "conditionalEntryText": null,
+    "abilities": [
+      {
+        "abilityType": "triggered",
+        "triggerEvent": "dies",
+        "triggerCondition": "Menace Whenever another creature you control dies",
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "put_counter",
+          "params": {}
+        }
+      },
+      {
+        "abilityType": "triggered",
+        "triggerEvent": "dies",
+        "triggerCondition": "this creature dies",
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "other",
+          "params": {}
+        }
+      }
+    ],
+    "oracleText": "Menace\nWhenever another creature you control dies, put a +1/+1 counter on this creature.\nWhen this creature dies, each opponent gets a number of rad counters equal to its power.",
+    "scryfallId": "fbdef99d-6ce9-495d-a55b-e6ba799d3da7"
+  },
+  "Hancock, Ghoulish Mayor": {
+    "cardName": "Hancock, Ghoulish Mayor",
+    "manaCost": "{2}{B}",
+    "manaValue": 3,
+    "typeLine": "Legendary Creature — Zombie Mutant Advisor",
+    "cardType": "creature",
+    "subtypes": [
+      "Zombie",
+      "Mutant",
+      "Advisor"
+    ],
+    "keywords": [
+      "undying"
+    ],
+    "manaProduction": null,
+    "entryTapRule": null,
+    "conditionalEntryText": null,
+    "abilities": [
+      {
+        "abilityType": "triggered",
+        "triggerEvent": "dies",
+        "triggerCondition": "Undying (When this creature dies",
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "return_from_graveyard",
+          "params": {}
+        }
+      }
+    ],
+    "oracleText": "Each other creature you control that's a Zombie or Mutant gets +X/+X, where X is the number of counters on Hancock.\nUndying (When this creature dies, if it had no +1/+1 counters on it, return it to the battlefield under its owner's control with a +1/+1 counter on it.)",
+    "scryfallId": "39bda1b4-3f02-4cbc-9573-f5b6e6c991d5"
+  },
+  "Screeching Scorchbeast": {
+    "cardName": "Screeching Scorchbeast",
+    "manaCost": "{4}{B}{B}",
+    "manaValue": 6,
+    "typeLine": "Creature — Bat Mutant",
+    "cardType": "creature",
+    "subtypes": [
+      "Bat",
+      "Mutant"
+    ],
+    "keywords": [
+      "flying",
+      "menace"
+    ],
+    "manaProduction": null,
+    "entryTapRule": null,
+    "conditionalEntryText": null,
+    "abilities": [
+      {
+        "abilityType": "triggered",
+        "triggerEvent": "attack",
+        "triggerCondition": "Flying",
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "other",
+          "params": {}
+        }
+      }
+    ],
+    "oracleText": "Flying, menace\nWhenever this creature attacks, each player gets two rad counters.\nWhenever one or more nonland cards are milled, you may create that many 2/2 black Zombie Mutant creature tokens. Do this only once each turn.",
+    "scryfallId": "967dbb24-3073-4c33-bfdf-b3eb9e8fe443"
+  },
+  "Harold and Bob, First Numens": {
+    "cardName": "Harold and Bob, First Numens",
+    "manaCost": "{2}{G}",
+    "manaValue": 3,
+    "typeLine": "Legendary Creature — Treefolk Mutant",
+    "cardType": "creature",
+    "subtypes": [
+      "Treefolk",
+      "Mutant"
+    ],
+    "keywords": [
+      "reach",
+      "vigilance"
+    ],
+    "manaProduction": null,
+    "entryTapRule": null,
+    "conditionalEntryText": null,
+    "abilities": [
+      {
+        "abilityType": "triggered",
+        "triggerEvent": "dies",
+        "triggerCondition": "Vigilance",
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "return_from_graveyard",
+          "params": {}
+        }
+      },
+      {
+        "abilityType": "activated",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": "{T}",
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "add_mana",
+          "params": {}
+        }
+      }
+    ],
+    "oracleText": "Vigilance, reach\nWhen Harold and Bob dies, if it was a creature, return it to the battlefield. It's an Aura enchantment with enchant Forest you control and \"Enchanted Forest has '{T}: Add three mana of any one color. You get two rad counters.'\" Harold and Bob loses all other abilities.",
+    "scryfallId": "d730ac69-20ec-4ef3-85ee-a5fd24e5f277"
+  },
+  "Lily Bowen, Raging Grandma": {
+    "cardName": "Lily Bowen, Raging Grandma",
+    "manaCost": "{3}{G}",
+    "manaValue": 4,
+    "typeLine": "Legendary Creature — Mutant Warrior",
+    "cardType": "creature",
+    "subtypes": [
+      "Mutant",
+      "Warrior"
+    ],
+    "keywords": [
+      "vigilance"
+    ],
+    "manaProduction": null,
+    "entryTapRule": null,
+    "conditionalEntryText": null,
+    "abilities": [
+      {
+        "abilityType": "triggered",
+        "triggerEvent": "upkeep",
+        "triggerCondition": "your upkeep",
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "other",
+          "params": {}
+        }
+      },
+      {
+        "abilityType": "static",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "gain_life",
+          "params": {
+            "amount": 1
+          }
+        }
+      }
+    ],
+    "oracleText": "Vigilance\nLily Bowen enters with two +1/+1 counters on it.\nAt the beginning of your upkeep, double the number of +1/+1 counters on Lily Bowen if its power is 16 or less. Otherwise, remove all but one +1/+1 counter from it, then you gain 1 life for each +1/+1 counter removed this way.",
+    "scryfallId": "052dc548-d356-43fe-9484-665db7e1f505"
+  },
+  "Rampaging Yao Guai": {
+    "cardName": "Rampaging Yao Guai",
+    "manaCost": "{X}{G}{G}{G}",
+    "manaValue": 3,
+    "typeLine": "Creature — Bear Mutant",
+    "cardType": "creature",
+    "subtypes": [
+      "Bear",
+      "Mutant"
+    ],
+    "keywords": [
+      "trample",
+      "vigilance"
+    ],
+    "manaProduction": null,
+    "entryTapRule": null,
+    "conditionalEntryText": null,
+    "abilities": [
+      {
+        "abilityType": "triggered",
+        "triggerEvent": "etb",
+        "triggerCondition": "this creature enters",
+        "isOptional": false,
+        "cost": null,
+        "targets": 1,
+        "targetFilter": "artifact s and/or enchantments with total mana value X or less",
+        "effect": {
+          "kind": "destroy",
+          "params": {
+            "targetHint": "target artifacts and"
+          }
+        }
+      }
+    ],
+    "oracleText": "Vigilance, trample\nThis creature enters with X +1/+1 counters on it.\nWhen this creature enters, destroy any number of target artifacts and/or enchantments with total mana value X or less.",
+    "scryfallId": "63619236-a27a-4fdd-add6-7a295901f906"
+  },
+  "Strong, the Brutish Thespian": {
+    "cardName": "Strong, the Brutish Thespian",
+    "manaCost": "{4}{G}{G}",
+    "manaValue": 6,
+    "typeLine": "Legendary Creature — Mutant Berserker",
+    "cardType": "creature",
+    "subtypes": [
+      "Mutant",
+      "Berserker"
+    ],
+    "keywords": [
+      "ward"
+    ],
+    "manaProduction": null,
+    "entryTapRule": null,
+    "conditionalEntryText": null,
+    "abilities": [
+      {
+        "abilityType": "triggered",
+        "triggerEvent": "counter_placed",
+        "triggerCondition": "Ward {2} Enrage — Whenever Strong is dealt damage",
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "put_counter",
+          "params": {}
+        }
+      },
+      {
+        "abilityType": "triggered",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "lose_life",
+          "params": {
+            "amount": 1
+          }
+        }
+      }
+    ],
+    "oracleText": "Ward {2}\nEnrage — Whenever Strong is dealt damage, you get three rad counters and put three +1/+1 counters on Strong.\nYou gain life rather than lose life from radiation.",
+    "scryfallId": "2bc79ed6-057b-439f-b2cd-58d5bcd8b551"
+  },
+  "Tato Farmer": {
+    "cardName": "Tato Farmer",
+    "manaCost": "{2}{G}",
+    "manaValue": 3,
+    "typeLine": "Creature — Zombie Mutant Peasant",
+    "cardType": "creature",
+    "subtypes": [
+      "Zombie",
+      "Mutant",
+      "Peasant"
+    ],
+    "keywords": [],
+    "manaProduction": null,
+    "entryTapRule": null,
+    "conditionalEntryText": null,
+    "abilities": [
+      {
+        "abilityType": "triggered",
+        "triggerEvent": "etb",
+        "triggerCondition": "Landfall — Whenever a land you control enters",
+        "isOptional": true,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "other",
+          "params": {}
+        }
+      },
+      {
+        "abilityType": "activated",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": "{T}",
+        "targets": 1,
+        "targetFilter": "land card in a graveyard that was milled this turn onto the battlefield under your control tapped",
+        "effect": {
+          "kind": "other",
+          "params": {}
+        }
+      }
+    ],
+    "oracleText": "Landfall — Whenever a land you control enters, you may get two rad counters.\n{T}: Put target land card in a graveyard that was milled this turn onto the battlefield under your control tapped.",
+    "scryfallId": "907bade4-7232-4808-af5c-2dbed4d5bf07"
+  },
+  "Watchful Radstag": {
+    "cardName": "Watchful Radstag",
+    "manaCost": "{2}{G}",
+    "manaValue": 3,
+    "typeLine": "Creature — Elk Mutant",
+    "cardType": "creature",
+    "subtypes": [
+      "Elk",
+      "Mutant"
+    ],
+    "keywords": [],
+    "manaProduction": null,
+    "entryTapRule": null,
+    "conditionalEntryText": null,
+    "abilities": [
+      {
+        "abilityType": "triggered",
+        "triggerEvent": "etb",
+        "triggerCondition": "Evolve (Whenever a creature you control enters",
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "put_counter",
+          "params": {}
+        }
+      },
+      {
+        "abilityType": "triggered",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "create_token",
+          "params": {
+            "tokenName": "a",
+            "amount": 1
+          }
+        }
+      }
+    ],
+    "oracleText": "Evolve (Whenever a creature you control enters, if that creature has greater power or toughness than this creature, put a +1/+1 counter on this creature.)\nWhenever this creature evolves, create a token that's a copy of it.",
+    "scryfallId": "be4151d4-4d35-48d2-9e72-c87014f79137"
+  },
+  "Agent Frank Horrigan": {
+    "cardName": "Agent Frank Horrigan",
+    "manaCost": "{5}{B}{G}",
+    "manaValue": 7,
+    "typeLine": "Legendary Creature — Mutant Warrior",
+    "cardType": "creature",
+    "subtypes": [
+      "Mutant",
+      "Warrior"
+    ],
+    "keywords": [
+      "indestructible",
+      "trample"
+    ],
+    "manaProduction": null,
+    "entryTapRule": null,
+    "conditionalEntryText": null,
+    "abilities": [
+      {
+        "abilityType": "triggered",
+        "triggerEvent": "etb",
+        "triggerCondition": "Agent Frank Horrigan enters or attacks",
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "proliferate",
+          "params": {}
+        }
+      },
+      {
+        "abilityType": "triggered",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "proliferate",
+          "params": {}
+        }
+      }
+    ],
+    "oracleText": "Trample\nAgent Frank Horrigan has indestructible as long as it attacked this turn.\nWhenever Agent Frank Horrigan enters or attacks, proliferate twice. (To proliferate, choose any number of permanents and/or players, then give each another counter of each kind already there.)",
+    "scryfallId": "91193a0b-9087-404f-b397-815e29d0fe12"
+  },
+  "Alpha Deathclaw": {
+    "cardName": "Alpha Deathclaw",
+    "manaCost": "{4}{B}{G}",
+    "manaValue": 6,
+    "typeLine": "Creature — Lizard Mutant",
+    "cardType": "creature",
+    "subtypes": [
+      "Lizard",
+      "Mutant"
+    ],
+    "keywords": [
+      "menace",
+      "trample"
+    ],
+    "manaProduction": null,
+    "entryTapRule": null,
+    "conditionalEntryText": null,
+    "abilities": [
+      {
+        "abilityType": "triggered",
+        "triggerEvent": "etb",
+        "triggerCondition": "Menace",
+        "isOptional": false,
+        "cost": null,
+        "targets": 1,
+        "targetFilter": "permanent",
+        "effect": {
+          "kind": "destroy",
+          "params": {
+            "targetHint": "target permanent"
+          }
+        }
+      },
+      {
+        "abilityType": "triggered",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "put_counter",
+          "params": {}
+        }
+      }
+    ],
+    "oracleText": "Menace, trample\nWhen this creature enters or becomes monstrous, destroy target permanent.\n{5}{B}{G}: Monstrosity 4. (If this creature isn't monstrous, put four +1/+1 counters on it and it becomes monstrous.)",
+    "scryfallId": "ca4c8b04-66af-4cb3-8003-9088d8344b20"
+  },
+  "Marcus, Mutant Mayor": {
+    "cardName": "Marcus, Mutant Mayor",
+    "manaCost": "{3}{G}{U}",
+    "manaValue": 5,
+    "typeLine": "Legendary Creature — Mutant Advisor",
+    "cardType": "creature",
+    "subtypes": [
+      "Mutant",
+      "Advisor"
+    ],
+    "keywords": [
+      "trample",
+      "vigilance"
+    ],
+    "manaProduction": null,
+    "entryTapRule": null,
+    "conditionalEntryText": null,
+    "abilities": [
+      {
+        "abilityType": "triggered",
+        "triggerEvent": "combat_damage",
+        "triggerCondition": "Vigilance",
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "deal_damage",
+          "params": {}
+        }
+      },
+      {
+        "abilityType": "triggered",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "put_counter",
+          "params": {}
+        }
+      }
+    ],
+    "oracleText": "Vigilance, trample\nWhenever a creature you control deals combat damage to a player, draw a card if that creature has a +1/+1 counter on it. If it doesn't, put a +1/+1 counter on it.",
+    "scryfallId": "15db5769-af10-4369-ab4c-db25adb22223"
+  },
+  "Tireless Tracker": {
+    "cardName": "Tireless Tracker",
+    "manaCost": "{2}{G}",
+    "manaValue": 3,
+    "typeLine": "Creature — Human Scout",
+    "cardType": "creature",
+    "subtypes": [
+      "Human",
+      "Scout"
+    ],
+    "keywords": [],
+    "manaProduction": null,
+    "entryTapRule": null,
+    "conditionalEntryText": null,
+    "abilities": [
+      {
+        "abilityType": "triggered",
+        "triggerEvent": "etb",
+        "triggerCondition": "Landfall — Whenever a land you control enters",
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "other",
+          "params": {}
+        }
+      },
+      {
+        "abilityType": "triggered",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "create_token",
+          "params": {
+            "tokenName": "Clue",
+            "amount": 1
+          }
+        }
+      },
+      {
+        "abilityType": "activated",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": "{2}, Sacrifice",
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "draw_cards",
+          "params": {
+            "amount": 2
+          }
+        }
+      },
+      {
+        "abilityType": "triggered",
+        "triggerEvent": "counter_placed",
+        "triggerCondition": "\") Whenever you sacrifice a Clue",
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "put_counter",
+          "params": {}
+        }
+      }
+    ],
+    "oracleText": "Landfall — Whenever a land you control enters, investigate. (Create a Clue token. It's an artifact with \"{2}, Sacrifice this token: Draw a card.\")\nWhenever you sacrifice a Clue, put a +1/+1 counter on this creature.",
+    "scryfallId": "66444549-ad9b-49c6-a7c6-34e977c1085d"
+  },
+  "Vexing Radgull": {
+    "cardName": "Vexing Radgull",
+    "manaCost": "{1}{U}",
+    "manaValue": 2,
+    "typeLine": "Creature — Bird Mutant",
+    "cardType": "creature",
+    "subtypes": [
+      "Bird",
+      "Mutant"
+    ],
+    "keywords": [
+      "flying"
+    ],
+    "manaProduction": null,
+    "entryTapRule": null,
+    "conditionalEntryText": null,
+    "abilities": [
+      {
+        "abilityType": "triggered",
+        "triggerEvent": "combat_damage",
+        "triggerCondition": "Flying Whenever this creature deals combat damage to a player",
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "deal_damage",
+          "params": {}
+        }
+      },
+      {
+        "abilityType": "triggered",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "proliferate",
+          "params": {}
+        }
+      }
+    ],
+    "oracleText": "Flying\nWhenever this creature deals combat damage to a player, that player gets two rad counters if they don't have any rad counters. Otherwise, proliferate. (Choose any number of permanents and/or players, then give each another counter of each kind already there.)",
+    "scryfallId": "91580910-fe0e-4cd9-9e73-821af23abfe7"
+  },
+  "Bloatfly Swarm": {
+    "cardName": "Bloatfly Swarm",
+    "manaCost": "{3}{B}",
+    "manaValue": 4,
+    "typeLine": "Creature — Insect Mutant",
+    "cardType": "creature",
+    "subtypes": [
+      "Insect",
+      "Mutant"
+    ],
+    "keywords": [
+      "flying"
+    ],
+    "manaProduction": null,
+    "entryTapRule": null,
+    "conditionalEntryText": null,
+    "abilities": [],
+    "oracleText": "Flying\nThis creature enters with five +1/+1 counters on it.\nIf damage would be dealt to this creature while it has a +1/+1 counter on it, prevent that damage, remove that many +1/+1 counters from it, then give each player a rad counter for each +1/+1 counter removed this way.",
+    "scryfallId": "2d90b839-0808-435d-bcf3-aa7af414c44b"
+  },
+  "Infesting Radroach": {
+    "cardName": "Infesting Radroach",
+    "manaCost": "{2}{B}",
+    "manaValue": 3,
+    "typeLine": "Creature — Insect Mutant",
+    "cardType": "creature",
+    "subtypes": [
+      "Insect",
+      "Mutant"
+    ],
+    "keywords": [
+      "flying"
+    ],
+    "manaProduction": null,
+    "entryTapRule": null,
+    "conditionalEntryText": null,
+    "abilities": [
+      {
+        "abilityType": "static",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "other",
+          "params": {}
+        }
+      },
+      {
+        "abilityType": "triggered",
+        "triggerEvent": "combat_damage",
+        "triggerCondition": "this creature deals combat damage to a player",
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "deal_damage",
+          "params": {}
+        }
+      },
+      {
+        "abilityType": "triggered",
+        "triggerEvent": "graveyard",
+        "triggerCondition": "an opponent mills a nonland card",
+        "isOptional": true,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "return_from_graveyard",
+          "params": {}
+        }
+      }
+    ],
+    "oracleText": "Flying\nThis creature can't block.\nWhenever this creature deals combat damage to a player, they get that many rad counters.\nWhenever an opponent mills a nonland card, if this creature is in your graveyard, you may return it to your hand.",
+    "scryfallId": "5b51b691-e226-44c9-b7cb-26f19c060597"
+  },
+  "Cathedral Acolyte": {
+    "cardName": "Cathedral Acolyte",
+    "manaCost": "{1}{G}",
+    "manaValue": 2,
+    "typeLine": "Creature — Human Cleric",
+    "cardType": "creature",
+    "subtypes": [
+      "Human",
+      "Cleric"
+    ],
+    "keywords": [
+      "ward"
+    ],
+    "manaProduction": null,
+    "entryTapRule": null,
+    "conditionalEntryText": null,
+    "abilities": [
+      {
+        "abilityType": "activated",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": "{T}",
+        "targets": 1,
+        "targetFilter": "creature that entered this turn",
+        "effect": {
+          "kind": "put_counter",
+          "params": {}
+        }
+      }
+    ],
+    "oracleText": "Each creature you control with a counter on it has ward {1}. (Whenever it becomes the target of a spell or ability an opponent controls, counter it unless that player pays {1}.)\n{T}: Put a +1/+1 counter on target creature that entered this turn.",
+    "scryfallId": "84118221-20a3-46a9-9e6e-a928b46a8633"
+  },
+  "Glowing One": {
+    "cardName": "Glowing One",
+    "manaCost": "{2}{G}",
+    "manaValue": 3,
+    "typeLine": "Creature — Zombie Mutant",
+    "cardType": "creature",
+    "subtypes": [
+      "Zombie",
+      "Mutant"
+    ],
+    "keywords": [
+      "deathtouch"
+    ],
+    "manaProduction": null,
+    "entryTapRule": null,
+    "conditionalEntryText": null,
+    "abilities": [
+      {
+        "abilityType": "triggered",
+        "triggerEvent": "combat_damage",
+        "triggerCondition": "Deathtouch Whenever this creature deals combat damage to a player",
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "deal_damage",
+          "params": {}
+        }
+      },
+      {
+        "abilityType": "static",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "gain_life",
+          "params": {
+            "amount": 1
+          }
+        }
+      }
+    ],
+    "oracleText": "Deathtouch\nWhenever this creature deals combat damage to a player, they get four rad counters.\nWhenever a player mills a nonland card, you gain 1 life.",
+    "scryfallId": "a1e36b92-aa88-4536-aebc-7e84a10d73fe"
+  },
+  "Lumbering Megasloth": {
+    "cardName": "Lumbering Megasloth",
+    "manaCost": "{10}{G}{G}",
+    "manaValue": 12,
+    "typeLine": "Creature — Sloth Mutant",
+    "cardType": "creature",
+    "subtypes": [
+      "Sloth",
+      "Mutant"
+    ],
+    "keywords": [
+      "trample"
+    ],
+    "manaProduction": null,
+    "entryTapRule": null,
+    "conditionalEntryText": null,
+    "abilities": [],
+    "oracleText": "This spell costs {1} less to cast for each counter among players and permanents.\nTrample\nThis creature enters tapped.",
+    "scryfallId": "53b92e8a-fadf-4568-8b30-2df68e6ff7cf"
+  },
+  "Nightkin Ambusher": {
+    "cardName": "Nightkin Ambusher",
+    "manaCost": "{2}{U}{B}",
+    "manaValue": 4,
+    "typeLine": "Creature — Mutant Warrior",
+    "cardType": "creature",
+    "subtypes": [
+      "Mutant",
+      "Warrior"
+    ],
+    "keywords": [
+      "ward"
+    ],
+    "manaProduction": null,
+    "entryTapRule": null,
+    "conditionalEntryText": null,
+    "abilities": [
+      {
+        "abilityType": "triggered",
+        "triggerEvent": "etb",
+        "triggerCondition": ") When this creature enters",
+        "isOptional": false,
+        "cost": null,
+        "targets": 1,
+        "targetFilter": "player gets four rad counters",
+        "effect": {
+          "kind": "other",
+          "params": {}
+        }
+      },
+      {
+        "abilityType": "static",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "other",
+          "params": {}
+        }
+      }
+    ],
+    "oracleText": "Ward {2} (Whenever this creature becomes the target of a spell or ability an opponent controls, counter it unless that player pays {2}.)\nWhen this creature enters, target player gets four rad counters.\nThis creature can't be blocked as long as defending player has a rad counter.",
+    "scryfallId": "ca7cfcb2-83fb-41ad-ae31-9c32c942506c"
+  },
+  "Raul, Trouble Shooter": {
+    "cardName": "Raul, Trouble Shooter",
+    "manaCost": "{1}{U}{B}",
+    "manaValue": 3,
+    "typeLine": "Legendary Creature — Zombie Mutant Rogue",
+    "cardType": "creature",
+    "subtypes": [
+      "Zombie",
+      "Mutant",
+      "Rogue"
+    ],
+    "keywords": [],
+    "manaProduction": null,
+    "entryTapRule": null,
+    "conditionalEntryText": null,
+    "abilities": [
+      {
+        "abilityType": "activated",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": "{T}",
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "other",
+          "params": {}
+        }
+      }
+    ],
+    "oracleText": "Once during each of your turns, you may cast a spell from among cards in your graveyard that were milled this turn.\n{T}: Each player mills a card. (They each put the top card of their library into their graveyard.)",
+    "scryfallId": "3b73a314-b197-4954-a242-7d9096a406c1"
+  },
+  "Young Deathclaws": {
+    "cardName": "Young Deathclaws",
+    "manaCost": "{2}{B}{G}",
+    "manaValue": 4,
+    "typeLine": "Creature — Lizard Mutant",
+    "cardType": "creature",
+    "subtypes": [
+      "Lizard",
+      "Mutant"
+    ],
+    "keywords": [
+      "menace"
+    ],
+    "manaProduction": null,
+    "entryTapRule": null,
+    "conditionalEntryText": null,
+    "abilities": [
+      {
+        "abilityType": "static",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "other",
+          "params": {}
+        }
+      },
+      {
+        "abilityType": "activated",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": null,
+        "targets": 1,
+        "targetFilter": "creature",
+        "effect": {
+          "kind": "put_counter",
+          "params": {}
+        }
+      }
+    ],
+    "oracleText": "Menace (This creature can't be blocked except by two or more creatures.)\nEach creature card in your graveyard has scavenge. The scavenge cost is equal to its mana cost. (Exile a creature card from your graveyard and pay its mana cost: Put a number of +1/+1 counters equal to that card's power on target creature. Scavenge only as a sorcery.)",
+    "scryfallId": "64d5e6bd-de46-4bc2-854b-cc6cae713f98"
+  },
+  "Corpsejack Menace": {
+    "cardName": "Corpsejack Menace",
+    "manaCost": "{2}{B}{G}",
+    "manaValue": 4,
+    "typeLine": "Creature — Fungus",
+    "cardType": "creature",
+    "subtypes": [
+      "Fungus"
+    ],
+    "keywords": [],
+    "manaProduction": null,
+    "entryTapRule": null,
+    "conditionalEntryText": null,
+    "abilities": [
+      {
+        "abilityType": "triggered",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "put_counter",
+          "params": {}
+        }
+      }
+    ],
+    "oracleText": "If one or more +1/+1 counters would be put on a creature you control, twice that many +1/+1 counters are put on it instead.",
+    "scryfallId": "29538ff4-e28f-44d9-af23-6796edd56268"
+  },
+  "Winding Constrictor": {
+    "cardName": "Winding Constrictor",
+    "manaCost": "{B}{G}",
+    "manaValue": 2,
+    "typeLine": "Creature — Snake",
+    "cardType": "creature",
+    "subtypes": [
+      "Snake"
+    ],
+    "keywords": [],
+    "manaProduction": null,
+    "entryTapRule": null,
+    "conditionalEntryText": null,
+    "abilities": [
+      {
+        "abilityType": "triggered",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "put_counter",
+          "params": {}
+        }
+      }
+    ],
+    "oracleText": "If one or more counters would be put on an artifact or creature you control, that many plus one of each of those kinds of counters are put on that permanent instead.\nIf you would get one or more counters, you get that many plus one of each of those kinds of counters instead.",
+    "scryfallId": "107c8aa8-c8f8-4cbf-821b-bd2cb33354f0"
+  },
+  "Atomize": {
+    "cardName": "Atomize",
+    "manaCost": "{2}{B}{G}",
+    "manaValue": 4,
+    "typeLine": "Instant",
+    "cardType": "instant",
+    "subtypes": [],
+    "keywords": [],
+    "manaProduction": null,
+    "entryTapRule": null,
+    "conditionalEntryText": null,
+    "abilities": [
+      {
+        "abilityType": "spell",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "destroy",
+          "params": {
+            "targetHint": "target nonland permanent"
+          }
+        }
+      },
+      {
+        "abilityType": "spell",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "proliferate",
+          "params": {}
+        }
+      }
+    ],
+    "oracleText": "Destroy target nonland permanent. Proliferate. (Choose any number of permanents and/or players, then give each another counter of each kind already there.)",
+    "scryfallId": "592cbafc-ab4e-461f-b64f-0bf9d83aaff3"
+  },
+  "Mutational Advantage": {
+    "cardName": "Mutational Advantage",
+    "manaCost": "{1}{G}{U}",
+    "manaValue": 3,
+    "typeLine": "Instant",
+    "cardType": "instant",
+    "subtypes": [],
+    "keywords": [
+      "hexproof",
+      "indestructible"
+    ],
+    "manaProduction": null,
+    "entryTapRule": null,
+    "conditionalEntryText": null,
+    "abilities": [
+      {
+        "abilityType": "spell",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "proliferate",
+          "params": {}
+        }
+      }
+    ],
+    "oracleText": "Permanents you control with counters on them gain hexproof and indestructible until end of turn. Prevent all damage that would be dealt to those permanents this turn. Proliferate. (Choose any number of permanents and/or players, then give each another counter of each kind already there.)",
+    "scryfallId": "4a778448-bcdd-4294-a947-fcadbffaac56"
+  },
+  "Biomass Mutation": {
+    "cardName": "Biomass Mutation",
+    "manaCost": "{X}{G/U}{G/U}",
+    "manaValue": 2,
+    "typeLine": "Instant",
+    "cardType": "instant",
+    "subtypes": [],
+    "keywords": [],
+    "manaProduction": null,
+    "entryTapRule": null,
+    "conditionalEntryText": null,
+    "abilities": [],
+    "oracleText": "Creatures you control have base power and toughness X/X until end of turn.",
+    "scryfallId": "9894bed2-c5dc-4569-9ed9-1d40df906f58"
+  },
+  "Contaminated Drink": {
+    "cardName": "Contaminated Drink",
+    "manaCost": "{X}{U}{B}",
+    "manaValue": 2,
+    "typeLine": "Instant",
+    "cardType": "instant",
+    "subtypes": [],
+    "keywords": [],
+    "manaProduction": null,
+    "entryTapRule": null,
+    "conditionalEntryText": null,
+    "abilities": [
+      {
+        "abilityType": "spell",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "draw_cards",
+          "params": {
+            "amount": "X"
+          }
+        }
+      }
+    ],
+    "oracleText": "Draw X cards, then you get half X rad counters, rounded up.",
+    "scryfallId": "bde9eb15-544a-462a-8ab8-86067840c083"
+  },
+  "Inspiring Call": {
+    "cardName": "Inspiring Call",
+    "manaCost": "{2}{G}",
+    "manaValue": 3,
+    "typeLine": "Instant",
+    "cardType": "instant",
+    "subtypes": [],
+    "keywords": [
+      "indestructible"
+    ],
+    "manaProduction": null,
+    "entryTapRule": null,
+    "conditionalEntryText": null,
+    "abilities": [
+      {
+        "abilityType": "spell",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "draw_cards",
+          "params": {
+            "amount": 1
+          }
+        }
+      },
+      {
+        "abilityType": "spell",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "destroy",
+          "params": {}
+        }
+      }
+    ],
+    "oracleText": "Draw a card for each creature you control with a +1/+1 counter on it. Those creatures gain indestructible until end of turn. (Damage and effects that say \"destroy\" don't destroy them.)",
+    "scryfallId": "2555ec7b-5cc2-4ffd-9344-6368019feff9"
+  },
+  "Putrefy": {
+    "cardName": "Putrefy",
+    "manaCost": "{1}{B}{G}",
+    "manaValue": 3,
+    "typeLine": "Instant",
+    "cardType": "instant",
+    "subtypes": [],
+    "keywords": [],
+    "manaProduction": null,
+    "entryTapRule": null,
+    "conditionalEntryText": null,
+    "abilities": [
+      {
+        "abilityType": "spell",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": null,
+        "targets": 1,
+        "targetFilter": "artifact or creature",
+        "effect": {
+          "kind": "destroy",
+          "params": {
+            "targetHint": "target artifact or"
+          }
+        }
+      },
+      {
+        "abilityType": "static",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "other",
+          "params": {}
+        }
+      }
+    ],
+    "oracleText": "Destroy target artifact or creature. It can't be regenerated.",
+    "scryfallId": "ad6ed9f1-2014-49e2-91c6-2b55c8d60cdc"
+  },
+  "Nuclear Fallout": {
+    "cardName": "Nuclear Fallout",
+    "manaCost": "{X}{B}{B}",
+    "manaValue": 2,
+    "typeLine": "Sorcery",
+    "cardType": "sorcery",
+    "subtypes": [],
+    "keywords": [],
+    "manaProduction": null,
+    "entryTapRule": null,
+    "conditionalEntryText": null,
+    "abilities": [],
+    "oracleText": "Each creature gets twice -X/-X until end of turn. Each player gets X rad counters.",
+    "scryfallId": "e717e4b0-a8c1-4411-b18a-1d17e7225503"
+  },
+  "Casualties of War": {
+    "cardName": "Casualties of War",
+    "manaCost": "{2}{B}{B}{G}{G}",
+    "manaValue": 6,
+    "typeLine": "Sorcery",
+    "cardType": "sorcery",
+    "subtypes": [],
+    "keywords": [],
+    "manaProduction": null,
+    "entryTapRule": null,
+    "conditionalEntryText": null,
+    "abilities": [
+      {
+        "abilityType": "spell",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": null,
+        "targets": 1,
+        "targetFilter": "artifact",
+        "effect": {
+          "kind": "destroy",
+          "params": {
+            "targetHint": "target artifact"
+          }
+        }
+      },
+      {
+        "abilityType": "spell",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": null,
+        "targets": 1,
+        "targetFilter": "creature",
+        "effect": {
+          "kind": "destroy",
+          "params": {
+            "targetHint": "target creature"
+          }
+        }
+      },
+      {
+        "abilityType": "spell",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": null,
+        "targets": 1,
+        "targetFilter": "enchantment",
+        "effect": {
+          "kind": "destroy",
+          "params": {
+            "targetHint": "target enchantment"
+          }
+        }
+      },
+      {
+        "abilityType": "spell",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": null,
+        "targets": 1,
+        "targetFilter": "land",
+        "effect": {
+          "kind": "destroy",
+          "params": {
+            "targetHint": "target land"
+          }
+        }
+      },
+      {
+        "abilityType": "spell",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": null,
+        "targets": 1,
+        "targetFilter": "planeswalker",
+        "effect": {
+          "kind": "destroy",
+          "params": {
+            "targetHint": "target planeswalker"
+          }
+        }
+      }
+    ],
+    "oracleText": "Choose one or more —\n• Destroy target artifact.\n• Destroy target creature.\n• Destroy target enchantment.\n• Destroy target land.\n• Destroy target planeswalker.",
+    "scryfallId": "2467f50a-bf45-4046-9086-1bfcf3438af4"
+  },
+  "Cultivate": {
+    "cardName": "Cultivate",
+    "manaCost": "{2}{G}",
+    "manaValue": 3,
+    "typeLine": "Sorcery",
+    "cardType": "sorcery",
+    "subtypes": [],
+    "keywords": [],
+    "manaProduction": null,
+    "entryTapRule": null,
+    "conditionalEntryText": null,
+    "abilities": [
+      {
+        "abilityType": "spell",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "search_library",
+          "params": {}
+        }
+      }
+    ],
+    "oracleText": "Search your library for up to two basic land cards, reveal those cards, put one onto the battlefield tapped and the other into your hand, then shuffle.",
+    "scryfallId": "e60deb92-f7dd-4f4e-9036-e47dd586f985"
+  },
+  "Farseek": {
+    "cardName": "Farseek",
+    "manaCost": "{1}{G}",
+    "manaValue": 2,
+    "typeLine": "Sorcery",
+    "cardType": "sorcery",
+    "subtypes": [],
+    "keywords": [],
+    "manaProduction": null,
+    "entryTapRule": null,
+    "conditionalEntryText": null,
+    "abilities": [
+      {
+        "abilityType": "spell",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "search_library",
+          "params": {}
+        }
+      }
+    ],
+    "oracleText": "Search your library for a Plains, Island, Swamp, or Mountain card, put it onto the battlefield tapped, then shuffle.",
+    "scryfallId": "c1aac0f5-1d01-4673-b8d3-878d9a1d423c"
+  },
+  "Harmonize": {
+    "cardName": "Harmonize",
+    "manaCost": "{2}{G}{G}",
+    "manaValue": 4,
+    "typeLine": "Sorcery",
+    "cardType": "sorcery",
+    "subtypes": [],
+    "keywords": [],
+    "manaProduction": null,
+    "entryTapRule": null,
+    "conditionalEntryText": null,
+    "abilities": [
+      {
+        "abilityType": "spell",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "draw_cards",
+          "params": {
+            "amount": 3
+          }
+        }
+      }
+    ],
+    "oracleText": "Draw three cards.",
+    "scryfallId": "bd7138fb-6aa7-455e-b1f7-ca08d747277d"
+  },
+  "Rampant Growth": {
+    "cardName": "Rampant Growth",
+    "manaCost": "{1}{G}",
+    "manaValue": 2,
+    "typeLine": "Sorcery",
+    "cardType": "sorcery",
+    "subtypes": [],
+    "keywords": [],
+    "manaProduction": null,
+    "entryTapRule": null,
+    "conditionalEntryText": null,
+    "abilities": [
+      {
+        "abilityType": "spell",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "search_library",
+          "params": {}
+        }
+      }
+    ],
+    "oracleText": "Search your library for a basic land card, put that card onto the battlefield tapped, then shuffle.",
+    "scryfallId": "b7c47024-5e08-4b17-b41a-7647f8b814b9"
+  },
+  "Struggle for Project Purity": {
+    "cardName": "Struggle for Project Purity",
+    "manaCost": "{3}{U}",
+    "manaValue": 4,
+    "typeLine": "Enchantment",
+    "cardType": "enchantment",
+    "subtypes": [],
+    "keywords": [],
+    "manaProduction": null,
+    "entryTapRule": null,
+    "conditionalEntryText": null,
+    "abilities": [
+      {
+        "abilityType": "triggered",
+        "triggerEvent": "upkeep",
+        "triggerCondition": "• Brotherhood — At the beginning of your upkeep",
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "other",
+          "params": {}
+        }
+      },
+      {
+        "abilityType": "triggered",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "draw_cards",
+          "params": {
+            "amount": 1
+          }
+        }
+      },
+      {
+        "abilityType": "triggered",
+        "triggerEvent": "attack",
+        "triggerCondition": "• Enclave — Whenever a player attacks you with one or more creatures",
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "other",
+          "params": {}
+        }
+      }
+    ],
+    "oracleText": "As this enchantment enters, choose Brotherhood or Enclave.\n• Brotherhood — At the beginning of your upkeep, each opponent draws a card. You draw a card for each card drawn this way.\n• Enclave — Whenever a player attacks you with one or more creatures, that player gets twice that many rad counters.",
+    "scryfallId": "04c60155-9337-4ea2-b9a2-5b72d96743ff"
+  },
+  "Vault 12: The Necropolis": {
+    "cardName": "Vault 12: The Necropolis",
+    "manaCost": "{4}{B}{B}",
+    "manaValue": 6,
+    "typeLine": "Enchantment — Saga",
+    "cardType": "enchantment",
+    "subtypes": [
+      "Saga"
+    ],
+    "keywords": [],
+    "manaProduction": null,
+    "entryTapRule": null,
+    "conditionalEntryText": null,
+    "abilities": [
+      {
+        "abilityType": "triggered",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "put_counter",
+          "params": {}
+        }
+      }
+    ],
+    "oracleText": "(As this Saga enters and after your draw step, add a lore counter. Sacrifice after III.)\nI — Each player gets three rad counters.\nII — Create X 2/2 black Zombie Mutant creature tokens, where X is the total number of rad counters among players.\nIII — Put two +1/+1 counters on each creature you control that's a Zombie or Mutant.",
+    "scryfallId": "144cd9eb-9b15-40ce-8a48-919e72dbaa67"
+  },
+  "Vault 87: Forced Evolution": {
+    "cardName": "Vault 87: Forced Evolution",
+    "manaCost": "{3}{G}{U}",
+    "manaValue": 5,
+    "typeLine": "Enchantment — Saga",
+    "cardType": "enchantment",
+    "subtypes": [
+      "Saga"
+    ],
+    "keywords": [],
+    "manaProduction": null,
+    "entryTapRule": null,
+    "conditionalEntryText": null,
+    "abilities": [
+      {
+        "abilityType": "triggered",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": null,
+        "targets": 1,
+        "targetFilter": "creature you control",
+        "effect": {
+          "kind": "put_counter",
+          "params": {}
+        }
+      },
+      {
+        "abilityType": "triggered",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "draw_cards",
+          "params": {
+            "amount": 1
+          }
+        }
+      }
+    ],
+    "oracleText": "(As this Saga enters and after your draw step, add a lore counter. Sacrifice after III.)\nI — Gain control of target non-Mutant creature for as long as you control this Saga.\nII — Put a +1/+1 counter on target creature you control. It becomes a Mutant in addition to its other types.\nIII — Draw cards equal to the greatest power among Mutants you control.",
+    "scryfallId": "33bf267b-f41c-447a-aa35-0c01aad8a489"
+  },
+  "Fraying Sanity": {
+    "cardName": "Fraying Sanity",
+    "manaCost": "{2}{U}",
+    "manaValue": 3,
+    "typeLine": "Enchantment — Aura Curse",
+    "cardType": "enchantment",
+    "subtypes": [
+      "Aura",
+      "Curse"
+    ],
+    "keywords": [],
+    "manaProduction": null,
+    "entryTapRule": null,
+    "conditionalEntryText": null,
+    "abilities": [
+      {
+        "abilityType": "triggered",
+        "triggerEvent": "end_of_turn",
+        "triggerCondition": "Enchant player At the beginning of each end step",
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "other",
+          "params": {}
+        }
+      }
+    ],
+    "oracleText": "Enchant player\nAt the beginning of each end step, enchanted player mills X cards, where X is the number of cards put into their graveyard from anywhere this turn.",
+    "scryfallId": "79e5c1ab-eebd-41ca-a1ca-29b00370f6e8"
+  },
+  "Inexorable Tide": {
+    "cardName": "Inexorable Tide",
+    "manaCost": "{3}{U}{U}",
+    "manaValue": 5,
+    "typeLine": "Enchantment",
+    "cardType": "enchantment",
+    "subtypes": [],
+    "keywords": [],
+    "manaProduction": null,
+    "entryTapRule": null,
+    "conditionalEntryText": null,
+    "abilities": [
+      {
+        "abilityType": "triggered",
+        "triggerEvent": "cast",
+        "triggerCondition": "you cast a spell",
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "proliferate",
+          "params": {}
+        }
+      }
+    ],
+    "oracleText": "Whenever you cast a spell, proliferate. (Choose any number of permanents and/or players, then give each another counter of each kind already there.)",
+    "scryfallId": "40441345-23ca-47e4-b349-bd13d986e41e"
+  },
+  "Branching Evolution": {
+    "cardName": "Branching Evolution",
+    "manaCost": "{2}{G}",
+    "manaValue": 3,
+    "typeLine": "Enchantment",
+    "cardType": "enchantment",
+    "subtypes": [],
+    "keywords": [],
+    "manaProduction": null,
+    "entryTapRule": null,
+    "conditionalEntryText": null,
+    "abilities": [
+      {
+        "abilityType": "triggered",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "put_counter",
+          "params": {}
+        }
+      }
+    ],
+    "oracleText": "If one or more +1/+1 counters would be put on a creature you control, twice that many +1/+1 counters are put on that creature instead.",
+    "scryfallId": "c0f1a736-8b12-4f58-a031-bf1733f65c51"
+  },
+  "Guardian Project": {
+    "cardName": "Guardian Project",
+    "manaCost": "{3}{G}",
+    "manaValue": 4,
+    "typeLine": "Enchantment",
+    "cardType": "enchantment",
+    "subtypes": [],
+    "keywords": [],
+    "manaProduction": null,
+    "entryTapRule": null,
+    "conditionalEntryText": null,
+    "abilities": [
+      {
+        "abilityType": "triggered",
+        "triggerEvent": "etb",
+        "triggerCondition": "a nontoken creature you control enters",
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "draw_cards",
+          "params": {
+            "amount": 1
+          }
+        }
+      }
+    ],
+    "oracleText": "Whenever a nontoken creature you control enters, if it doesn't have the same name as another creature you control or a creature card in your graveyard, draw a card.",
+    "scryfallId": "2c523ef7-d6c4-4887-9a4e-0c2bc6f63676"
+  },
+  "Hardened Scales": {
+    "cardName": "Hardened Scales",
+    "manaCost": "{G}",
+    "manaValue": 1,
+    "typeLine": "Enchantment",
+    "cardType": "enchantment",
+    "subtypes": [],
+    "keywords": [],
+    "manaProduction": null,
+    "entryTapRule": null,
+    "conditionalEntryText": null,
+    "abilities": [
+      {
+        "abilityType": "triggered",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "put_counter",
+          "params": {}
+        }
+      }
+    ],
+    "oracleText": "If one or more +1/+1 counters would be put on a creature you control, that many plus one +1/+1 counters are put on it instead.",
+    "scryfallId": "99cfd1a8-49fd-4cc0-96f2-f9f159ce5d55"
+  },
+  "Power Fist": {
+    "cardName": "Power Fist",
+    "manaCost": "{1}{G}",
+    "manaValue": 2,
+    "typeLine": "Artifact — Equipment",
+    "cardType": "artifact",
+    "subtypes": [
+      "Equipment"
+    ],
+    "keywords": [
+      "trample"
+    ],
+    "manaProduction": null,
+    "entryTapRule": null,
+    "conditionalEntryText": null,
+    "abilities": [
+      {
+        "abilityType": "static",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "put_counter",
+          "params": {}
+        }
+      }
+    ],
+    "oracleText": "Equipped creature has trample and \"Whenever this creature deals combat damage to a player, put that many +1/+1 counters on it.\"\nEquip {2}",
+    "scryfallId": "9e8f7fbc-bf2a-43c1-a88d-807c1e7dab69"
+  },
+  "Nuka-Nuke Launcher": {
+    "cardName": "Nuka-Nuke Launcher",
+    "manaCost": "{2}",
+    "manaValue": 2,
+    "typeLine": "Artifact — Equipment",
+    "cardType": "artifact",
+    "subtypes": [
+      "Equipment"
+    ],
+    "keywords": [
+      "intimidate"
+    ],
+    "manaProduction": null,
+    "entryTapRule": null,
+    "conditionalEntryText": null,
+    "abilities": [
+      {
+        "abilityType": "static",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "other",
+          "params": {}
+        }
+      },
+      {
+        "abilityType": "static",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "other",
+          "params": {}
+        }
+      },
+      {
+        "abilityType": "triggered",
+        "triggerEvent": "attack",
+        "triggerCondition": ") Whenever equipped creature attacks",
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "other",
+          "params": {}
+        }
+      }
+    ],
+    "oracleText": "Equipped creature gets +3/+0 and has intimidate. (It can't be blocked except by artifact creatures and/or creatures that share a color with it.)\nWhenever equipped creature attacks, until the end of defending player's next turn, that player gets two rad counters whenever they cast a spell.\nEquip {3}",
+    "scryfallId": "68d5835b-c206-4884-bdcf-38c7cdc703f4"
+  },
+  "Recon Craft Theta": {
+    "cardName": "Recon Craft Theta",
+    "manaCost": "{4}",
+    "manaValue": 4,
+    "typeLine": "Artifact — Vehicle",
+    "cardType": "artifact",
+    "subtypes": [
+      "Vehicle"
+    ],
+    "keywords": [
+      "flying"
+    ],
+    "manaProduction": null,
+    "entryTapRule": null,
+    "conditionalEntryText": null,
+    "abilities": [
+      {
+        "abilityType": "triggered",
+        "triggerEvent": "etb",
+        "triggerCondition": "Flying When this Vehicle enters",
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "create_token",
+          "params": {
+            "tokenPower": 0,
+            "tokenToughness": 0,
+            "tokenName": "Alien creature",
+            "amount": 1
+          }
+        }
+      },
+      {
+        "abilityType": "triggered",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "put_counter",
+          "params": {}
+        }
+      },
+      {
+        "abilityType": "triggered",
+        "triggerEvent": "attack",
+        "triggerCondition": "this Vehicle attacks",
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "proliferate",
+          "params": {}
+        }
+      }
+    ],
+    "oracleText": "Flying\nWhen this Vehicle enters, create a 0/0 blue Alien creature token. Put a +1/+1 counter on it.\nWhenever this Vehicle attacks, proliferate. (Choose any number of permanents and/or players, then give each another counter of each kind already there.)\nCrew 2",
+    "scryfallId": "21aa59d3-e786-4ba0-9802-01b57597cda2"
+  },
+  "Strength Bobblehead": {
+    "cardName": "Strength Bobblehead",
+    "manaCost": "{3}",
+    "manaValue": 3,
+    "typeLine": "Artifact — Bobblehead",
+    "cardType": "artifact",
+    "subtypes": [
+      "Bobblehead"
+    ],
+    "keywords": [],
+    "manaProduction": {
+      "colors": [
+        "W",
+        "U",
+        "B",
+        "R",
+        "G",
+        "C"
+      ],
+      "amount": 1
+    },
+    "entryTapRule": null,
+    "conditionalEntryText": null,
+    "abilities": [
+      {
+        "abilityType": "activated",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": "{T}",
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "add_mana",
+          "params": {}
+        }
+      },
+      {
+        "abilityType": "activated",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": "{T}, {3}",
+        "targets": 1,
+        "targetFilter": "creature",
+        "effect": {
+          "kind": "put_counter",
+          "params": {}
+        }
+      }
+    ],
+    "oracleText": "{T}: Add one mana of any color.\n{3}, {T}: Put X +1/+1 counters on target creature, where X is the number of Bobbleheads you control. Activate only as a sorcery.",
+    "scryfallId": "f9af73ad-625a-4260-8917-6a837f9fdf88"
+  },
+  "Contagion Clasp": {
+    "cardName": "Contagion Clasp",
+    "manaCost": "{2}",
+    "manaValue": 2,
+    "typeLine": "Artifact",
+    "cardType": "artifact",
+    "subtypes": [],
+    "keywords": [],
+    "manaProduction": null,
+    "entryTapRule": null,
+    "conditionalEntryText": null,
+    "abilities": [
+      {
+        "abilityType": "triggered",
+        "triggerEvent": "etb",
+        "triggerCondition": "this artifact enters",
+        "isOptional": false,
+        "cost": null,
+        "targets": 1,
+        "targetFilter": "creature",
+        "effect": {
+          "kind": "put_counter",
+          "params": {}
+        }
+      },
+      {
+        "abilityType": "activated",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": "{T}, {4}",
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "proliferate",
+          "params": {}
+        }
+      }
+    ],
+    "oracleText": "When this artifact enters, put a -1/-1 counter on target creature.\n{4}, {T}: Proliferate. (Choose any number of permanents and/or players, then give each another counter of each kind already there.)",
+    "scryfallId": "edd7f08a-3baf-4fb0-921e-b0e7b4a1a545"
+  },
+  "Talisman of Curiosity": {
+    "cardName": "Talisman of Curiosity",
+    "manaCost": "{2}",
+    "manaValue": 2,
+    "typeLine": "Artifact",
+    "cardType": "artifact",
+    "subtypes": [],
+    "keywords": [],
+    "manaProduction": {
+      "colors": [
+        "C",
+        "G",
+        "U"
+      ],
+      "amount": 2
+    },
+    "entryTapRule": null,
+    "conditionalEntryText": null,
+    "abilities": [
+      {
+        "abilityType": "activated",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": "{T}",
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "add_mana",
+          "params": {}
+        }
+      },
+      {
+        "abilityType": "activated",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": "{T}",
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "add_mana",
+          "params": {}
+        }
+      },
+      {
+        "abilityType": "triggered",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "deal_damage",
+          "params": {}
+        }
+      }
+    ],
+    "oracleText": "{T}: Add {C}.\n{T}: Add {G} or {U}. This artifact deals 1 damage to you.",
+    "scryfallId": "8388c4e8-bda1-47e5-8df2-ddec5babcaf9"
+  },
+  "Talisman of Dominance": {
+    "cardName": "Talisman of Dominance",
+    "manaCost": "{2}",
+    "manaValue": 2,
+    "typeLine": "Artifact",
+    "cardType": "artifact",
+    "subtypes": [],
+    "keywords": [],
+    "manaProduction": {
+      "colors": [
+        "C",
+        "U",
+        "B"
+      ],
+      "amount": 2
+    },
+    "entryTapRule": null,
+    "conditionalEntryText": null,
+    "abilities": [
+      {
+        "abilityType": "activated",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": "{T}",
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "add_mana",
+          "params": {}
+        }
+      },
+      {
+        "abilityType": "activated",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": "{T}",
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "add_mana",
+          "params": {}
+        }
+      },
+      {
+        "abilityType": "triggered",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "deal_damage",
+          "params": {}
+        }
+      }
+    ],
+    "oracleText": "{T}: Add {C}.\n{T}: Add {U} or {B}. This artifact deals 1 damage to you.",
+    "scryfallId": "00d4a1d4-b86a-4c05-9ecc-130e011e0486"
+  },
+  "Talisman of Resilience": {
+    "cardName": "Talisman of Resilience",
+    "manaCost": "{2}",
+    "manaValue": 2,
+    "typeLine": "Artifact",
+    "cardType": "artifact",
+    "subtypes": [],
+    "keywords": [],
+    "manaProduction": {
+      "colors": [
+        "C",
+        "B",
+        "G"
+      ],
+      "amount": 2
+    },
+    "entryTapRule": null,
+    "conditionalEntryText": null,
+    "abilities": [
+      {
+        "abilityType": "activated",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": "{T}",
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "add_mana",
+          "params": {}
+        }
+      },
+      {
+        "abilityType": "activated",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": "{T}",
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "add_mana",
+          "params": {}
+        }
+      },
+      {
+        "abilityType": "triggered",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "deal_damage",
+          "params": {}
+        }
+      }
+    ],
+    "oracleText": "{T}: Add {C}.\n{T}: Add {B} or {G}. This artifact deals 1 damage to you.",
+    "scryfallId": "eff598b0-0b32-41d0-b980-584576e58626"
+  },
+  "Mariposa Military Base": {
+    "cardName": "Mariposa Military Base",
+    "manaCost": "",
+    "manaValue": 0,
+    "typeLine": "Land",
+    "cardType": "land",
+    "subtypes": [],
+    "keywords": [],
+    "manaProduction": {
+      "colors": [
+        "C"
+      ],
+      "amount": 1
+    },
+    "entryTapRule": "conditional",
+    "conditionalEntryText": "You may have this land enter tapped",
+    "abilities": [
+      {
+        "abilityType": "activated",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": "{T}",
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "add_mana",
+          "params": {}
+        }
+      },
+      {
+        "abilityType": "activated",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": "{T}, {5}",
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "draw_cards",
+          "params": {
+            "amount": 5
+          }
+        }
+      }
+    ],
+    "oracleText": "You may have this land enter tapped. If you do, you get two rad counters.\n{T}: Add {C}.\n{5}, {T}: Draw a card. This ability costs {1} less to activate for each rad counter you have.",
+    "scryfallId": "cd7be9d4-f9fa-44a3-9902-7e9e226ccf56"
+  },
+  "Overflowing Basin": {
+    "cardName": "Overflowing Basin",
+    "manaCost": "",
+    "manaValue": 0,
+    "typeLine": "Land",
+    "cardType": "land",
+    "subtypes": [],
+    "keywords": [],
+    "manaProduction": {
+      "colors": [
+        "G",
+        "U"
+      ],
+      "amount": 2
+    },
+    "entryTapRule": null,
+    "conditionalEntryText": null,
+    "abilities": [
+      {
+        "abilityType": "activated",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": "{T}, {1}",
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "add_mana",
+          "params": {}
+        }
+      }
+    ],
+    "oracleText": "{1}, {T}: Add {G}{U}.",
+    "scryfallId": "6357d665-2b28-4747-ab43-b90176d78d42"
+  },
+  "Viridescent Bog": {
+    "cardName": "Viridescent Bog",
+    "manaCost": "",
+    "manaValue": 0,
+    "typeLine": "Land",
+    "cardType": "land",
+    "subtypes": [],
+    "keywords": [],
+    "manaProduction": {
+      "colors": [
+        "B",
+        "G"
+      ],
+      "amount": 2
+    },
+    "entryTapRule": null,
+    "conditionalEntryText": null,
+    "abilities": [
+      {
+        "abilityType": "activated",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": "{T}, {1}",
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "add_mana",
+          "params": {}
+        }
+      }
+    ],
+    "oracleText": "{1}, {T}: Add {B}{G}.",
+    "scryfallId": "54d852fc-0f3a-4791-a147-b21ca6964763"
+  },
+  "Darkwater Catacombs": {
+    "cardName": "Darkwater Catacombs",
+    "manaCost": "",
+    "manaValue": 0,
+    "typeLine": "Land",
+    "cardType": "land",
+    "subtypes": [],
+    "keywords": [],
+    "manaProduction": {
+      "colors": [
+        "U",
+        "B"
+      ],
+      "amount": 2
+    },
+    "entryTapRule": null,
+    "conditionalEntryText": null,
+    "abilities": [
+      {
+        "abilityType": "activated",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": "{T}, {1}",
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "add_mana",
+          "params": {}
+        }
+      }
+    ],
+    "oracleText": "{1}, {T}: Add {U}{B}.",
+    "scryfallId": "03fbf51d-f622-4629-a228-a03ce7caf500"
+  },
+  "Drowned Catacomb": {
+    "cardName": "Drowned Catacomb",
+    "manaCost": "",
+    "manaValue": 0,
+    "typeLine": "Land",
+    "cardType": "land",
+    "subtypes": [],
+    "keywords": [],
+    "manaProduction": {
+      "colors": [
+        "U",
+        "B"
+      ],
+      "amount": 2
+    },
+    "entryTapRule": "conditional",
+    "conditionalEntryText": "This land enters tapped unless you control an Island or a Swamp",
+    "abilities": [
+      {
+        "abilityType": "activated",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": "{T}",
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "add_mana",
+          "params": {}
+        }
+      }
+    ],
+    "oracleText": "This land enters tapped unless you control an Island or a Swamp.\n{T}: Add {U} or {B}.",
+    "scryfallId": "ebea49ab-e5cf-46d9-ae35-226a7321ede0"
+  },
+  "Exotic Orchard": {
+    "cardName": "Exotic Orchard",
+    "manaCost": "",
+    "manaValue": 0,
+    "typeLine": "Land",
+    "cardType": "land",
+    "subtypes": [],
+    "keywords": [],
+    "manaProduction": {
+      "colors": [
+        "W",
+        "U",
+        "B",
+        "R",
+        "G",
+        "C"
+      ],
+      "amount": 1
+    },
+    "entryTapRule": null,
+    "conditionalEntryText": null,
+    "abilities": [
+      {
+        "abilityType": "activated",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": "{T}",
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "add_mana",
+          "params": {}
+        }
+      }
+    ],
+    "oracleText": "{T}: Add one mana of any color that a land an opponent controls could produce.",
+    "scryfallId": "8853ff94-bf44-4cfd-9d3a-0743c361fb0d"
+  },
+  "Fetid Pools": {
+    "cardName": "Fetid Pools",
+    "manaCost": "",
+    "manaValue": 0,
+    "typeLine": "Land — Island Swamp",
+    "cardType": "land",
+    "subtypes": [
+      "Island",
+      "Swamp"
+    ],
+    "keywords": [],
+    "manaProduction": {
+      "colors": [
+        "U",
+        "B"
+      ],
+      "amount": 2
+    },
+    "entryTapRule": "always",
+    "conditionalEntryText": null,
+    "abilities": [
+      {
+        "abilityType": "activated",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": "{T}",
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "add_mana",
+          "params": {}
+        }
+      },
+      {
+        "abilityType": "triggered",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "draw_cards",
+          "params": {
+            "amount": 2
+          }
+        }
+      }
+    ],
+    "oracleText": "({T}: Add {U} or {B}.)\nThis land enters tapped.\nCycling {2} ({2}, Discard this card: Draw a card.)",
+    "scryfallId": "5fa4556f-2fdc-42e6-98cb-291cee2ca3ac"
+  },
+  "Hinterland Harbor": {
+    "cardName": "Hinterland Harbor",
+    "manaCost": "",
+    "manaValue": 0,
+    "typeLine": "Land",
+    "cardType": "land",
+    "subtypes": [],
+    "keywords": [],
+    "manaProduction": {
+      "colors": [
+        "G",
+        "U"
+      ],
+      "amount": 2
+    },
+    "entryTapRule": "conditional",
+    "conditionalEntryText": "This land enters tapped unless you control a Forest or an Island",
+    "abilities": [
+      {
+        "abilityType": "activated",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": "{T}",
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "add_mana",
+          "params": {}
+        }
+      }
+    ],
+    "oracleText": "This land enters tapped unless you control a Forest or an Island.\n{T}: Add {G} or {U}.",
+    "scryfallId": "892451a1-5527-4857-84f8-62028d147489"
+  },
+  "Nesting Grounds": {
+    "cardName": "Nesting Grounds",
+    "manaCost": "",
+    "manaValue": 0,
+    "typeLine": "Land",
+    "cardType": "land",
+    "subtypes": [],
+    "keywords": [],
+    "manaProduction": {
+      "colors": [
+        "C"
+      ],
+      "amount": 1
+    },
+    "entryTapRule": null,
+    "conditionalEntryText": null,
+    "abilities": [
+      {
+        "abilityType": "activated",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": "{T}",
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "add_mana",
+          "params": {}
+        }
+      },
+      {
+        "abilityType": "activated",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": "{T}, {1}",
+        "targets": 1,
+        "targetFilter": "permanent you control onto a second target permanent",
+        "effect": {
+          "kind": "other",
+          "params": {}
+        }
+      }
+    ],
+    "oracleText": "{T}: Add {C}.\n{1}, {T}: Move a counter from target permanent you control onto a second target permanent. Activate only as a sorcery.",
+    "scryfallId": "c25ad164-4076-496d-833c-d607391b1ac8"
+  },
+  "Sunken Hollow": {
+    "cardName": "Sunken Hollow",
+    "manaCost": "",
+    "manaValue": 0,
+    "typeLine": "Land — Island Swamp",
+    "cardType": "land",
+    "subtypes": [
+      "Island",
+      "Swamp"
+    ],
+    "keywords": [],
+    "manaProduction": {
+      "colors": [
+        "U",
+        "B"
+      ],
+      "amount": 2
+    },
+    "entryTapRule": "conditional",
+    "conditionalEntryText": ") This land enters tapped unless you control two or more basic lands",
+    "abilities": [
+      {
+        "abilityType": "activated",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": "{T}",
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "add_mana",
+          "params": {}
+        }
+      }
+    ],
+    "oracleText": "({T}: Add {U} or {B}.)\nThis land enters tapped unless you control two or more basic lands.",
+    "scryfallId": "3a8eef9b-9b03-42cd-a27a-07021bf0b33f"
+  },
+  "Temple of Deceit": {
+    "cardName": "Temple of Deceit",
+    "manaCost": "",
+    "manaValue": 0,
+    "typeLine": "Land",
+    "cardType": "land",
+    "subtypes": [],
+    "keywords": [],
+    "manaProduction": {
+      "colors": [
+        "U",
+        "B"
+      ],
+      "amount": 2
+    },
+    "entryTapRule": "always",
+    "conditionalEntryText": null,
+    "abilities": [
+      {
+        "abilityType": "triggered",
+        "triggerEvent": "etb",
+        "triggerCondition": "this land enters",
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "scry",
+          "params": {
+            "amount": 1
+          }
+        }
+      },
+      {
+        "abilityType": "activated",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": "{T}",
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "add_mana",
+          "params": {}
+        }
+      }
+    ],
+    "oracleText": "This land enters tapped.\nWhen this land enters, scry 1. (Look at the top card of your library. You may put that card on the bottom.)\n{T}: Add {U} or {B}.",
+    "scryfallId": "e18748ce-e52e-4cd1-89d4-cd2578a0d574"
+  },
+  "Temple of Malady": {
+    "cardName": "Temple of Malady",
+    "manaCost": "",
+    "manaValue": 0,
+    "typeLine": "Land",
+    "cardType": "land",
+    "subtypes": [],
+    "keywords": [],
+    "manaProduction": {
+      "colors": [
+        "B",
+        "G"
+      ],
+      "amount": 2
+    },
+    "entryTapRule": "always",
+    "conditionalEntryText": null,
+    "abilities": [
+      {
+        "abilityType": "triggered",
+        "triggerEvent": "etb",
+        "triggerCondition": "this land enters",
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "scry",
+          "params": {
+            "amount": 1
+          }
+        }
+      },
+      {
+        "abilityType": "activated",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": "{T}",
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "add_mana",
+          "params": {}
+        }
+      }
+    ],
+    "oracleText": "This land enters tapped.\nWhen this land enters, scry 1. (Look at the top card of your library. You may put that card on the bottom.)\n{T}: Add {B} or {G}.",
+    "scryfallId": "1ca36218-db87-4e44-8606-2a516504ed20"
+  },
+  "Temple of Mystery": {
+    "cardName": "Temple of Mystery",
+    "manaCost": "",
+    "manaValue": 0,
+    "typeLine": "Land",
+    "cardType": "land",
+    "subtypes": [],
+    "keywords": [],
+    "manaProduction": {
+      "colors": [
+        "G",
+        "U"
+      ],
+      "amount": 2
+    },
+    "entryTapRule": "always",
+    "conditionalEntryText": null,
+    "abilities": [
+      {
+        "abilityType": "triggered",
+        "triggerEvent": "etb",
+        "triggerCondition": "this land enters",
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "scry",
+          "params": {
+            "amount": 1
+          }
+        }
+      },
+      {
+        "abilityType": "activated",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": "{T}",
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "add_mana",
+          "params": {}
+        }
+      }
+    ],
+    "oracleText": "This land enters tapped.\nWhen this land enters, scry 1. (Look at the top card of your library. You may put that card on the bottom.)\n{T}: Add {G} or {U}.",
+    "scryfallId": "258077cf-edef-40fe-ab46-03c965ebe990"
+  },
+  "Woodland Cemetery": {
+    "cardName": "Woodland Cemetery",
+    "manaCost": "",
+    "manaValue": 0,
+    "typeLine": "Land",
+    "cardType": "land",
+    "subtypes": [],
+    "keywords": [],
+    "manaProduction": {
+      "colors": [
+        "B",
+        "G"
+      ],
+      "amount": 2
+    },
+    "entryTapRule": "conditional",
+    "conditionalEntryText": "This land enters tapped unless you control a Swamp or a Forest",
+    "abilities": [
+      {
+        "abilityType": "activated",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": "{T}",
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "add_mana",
+          "params": {}
+        }
+      }
+    ],
+    "oracleText": "This land enters tapped unless you control a Swamp or a Forest.\n{T}: Add {B} or {G}.",
+    "scryfallId": "4d6f6c96-f813-4864-b4e1-b2a0aa8be1e8"
+  },
+  "Ash Barrens": {
+    "cardName": "Ash Barrens",
+    "manaCost": "",
+    "manaValue": 0,
+    "typeLine": "Land",
+    "cardType": "land",
+    "subtypes": [],
+    "keywords": [],
+    "manaProduction": {
+      "colors": [
+        "C"
+      ],
+      "amount": 1
+    },
+    "entryTapRule": null,
+    "conditionalEntryText": null,
+    "abilities": [
+      {
+        "abilityType": "activated",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": "{T}",
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "add_mana",
+          "params": {}
+        }
+      },
+      {
+        "abilityType": "triggered",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "search_library",
+          "params": {}
+        }
+      }
+    ],
+    "oracleText": "{T}: Add {C}.\nBasic landcycling {1} ({1}, Discard this card: Search your library for a basic land card, reveal it, put it into your hand, then shuffle.)",
+    "scryfallId": "e8510205-4baa-4f1c-bf64-5d931e2ddf48"
+  },
+  "Evolving Wilds": {
+    "cardName": "Evolving Wilds",
+    "manaCost": "",
+    "manaValue": 0,
+    "typeLine": "Land",
+    "cardType": "land",
+    "subtypes": [],
+    "keywords": [],
+    "manaProduction": null,
+    "entryTapRule": null,
+    "conditionalEntryText": null,
+    "abilities": [
+      {
+        "abilityType": "activated",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": "{T}, Sacrifice",
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "search_library",
+          "params": {}
+        }
+      }
+    ],
+    "oracleText": "{T}, Sacrifice this land: Search your library for a basic land card, put it onto the battlefield tapped, then shuffle.",
+    "scryfallId": "c0318a48-30e4-4ef7-be3d-5e561c5ce428"
+  },
+  "Mortuary Mire": {
+    "cardName": "Mortuary Mire",
+    "manaCost": "",
+    "manaValue": 0,
+    "typeLine": "Land",
+    "cardType": "land",
+    "subtypes": [],
+    "keywords": [],
+    "manaProduction": {
+      "colors": [
+        "B"
+      ],
+      "amount": 1
+    },
+    "entryTapRule": "always",
+    "conditionalEntryText": null,
+    "abilities": [
+      {
+        "abilityType": "triggered",
+        "triggerEvent": "etb",
+        "triggerCondition": "this land enters",
+        "isOptional": true,
+        "cost": null,
+        "targets": 1,
+        "targetFilter": "creature card from your graveyard on top of your library",
+        "effect": {
+          "kind": "return_from_graveyard",
+          "params": {}
+        }
+      },
+      {
+        "abilityType": "activated",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": "{T}",
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "add_mana",
+          "params": {}
+        }
+      }
+    ],
+    "oracleText": "This land enters tapped.\nWhen this land enters, you may put target creature card from your graveyard on top of your library.\n{T}: Add {B}.",
+    "scryfallId": "058f30e5-64a9-4d6b-b7a6-0fd95d460cae"
+  },
+  "Opulent Palace": {
+    "cardName": "Opulent Palace",
+    "manaCost": "",
+    "manaValue": 0,
+    "typeLine": "Land",
+    "cardType": "land",
+    "subtypes": [],
+    "keywords": [],
+    "manaProduction": {
+      "colors": [
+        "B",
+        "G",
+        "U"
+      ],
+      "amount": 3
+    },
+    "entryTapRule": "always",
+    "conditionalEntryText": null,
+    "abilities": [
+      {
+        "abilityType": "activated",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": "{T}",
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "add_mana",
+          "params": {}
+        }
+      }
+    ],
+    "oracleText": "This land enters tapped.\n{T}: Add {B}, {G}, or {U}.",
+    "scryfallId": "f0001153-dbcb-44e5-99be-2c186c9b10b0"
+  },
+  "Path of Ancestry": {
+    "cardName": "Path of Ancestry",
+    "manaCost": "",
+    "manaValue": 0,
+    "typeLine": "Land",
+    "cardType": "land",
+    "subtypes": [],
+    "keywords": [],
+    "manaProduction": {
+      "colors": [
+        "W",
+        "U",
+        "B",
+        "R",
+        "G",
+        "C"
+      ],
+      "amount": 1
+    },
+    "entryTapRule": "always",
+    "conditionalEntryText": null,
+    "abilities": [
+      {
+        "abilityType": "activated",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": "{T}",
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "add_mana",
+          "params": {}
+        }
+      },
+      {
+        "abilityType": "triggered",
+        "triggerEvent": "cast",
+        "triggerCondition": "that mana is spent to cast a creature spell that shares a creature type with your commander",
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "scry",
+          "params": {
+            "amount": 1
+          }
+        }
+      }
+    ],
+    "oracleText": "This land enters tapped.\n{T}: Add one mana of any color in your commander's color identity. When that mana is spent to cast a creature spell that shares a creature type with your commander, scry 1. (Look at the top card of your library. You may put that card on the bottom.)",
+    "scryfallId": "836b8f52-10d2-4716-9f7b-38fb23bc68de"
+  },
+  "Tainted Isle": {
+    "cardName": "Tainted Isle",
+    "manaCost": "",
+    "manaValue": 0,
+    "typeLine": "Land",
+    "cardType": "land",
+    "subtypes": [],
+    "keywords": [],
+    "manaProduction": {
+      "colors": [
+        "C",
+        "U",
+        "B"
+      ],
+      "amount": 2
+    },
+    "entryTapRule": null,
+    "conditionalEntryText": null,
+    "abilities": [
+      {
+        "abilityType": "activated",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": "{T}",
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "add_mana",
+          "params": {}
+        }
+      },
+      {
+        "abilityType": "activated",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": "{T}",
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "add_mana",
+          "params": {}
+        }
+      }
+    ],
+    "oracleText": "{T}: Add {C}.\n{T}: Add {U} or {B}. Activate only if you control a Swamp.",
+    "scryfallId": "70e8e7e2-e9ea-4358-805e-c5110c8d8443"
+  },
+  "Tainted Wood": {
+    "cardName": "Tainted Wood",
+    "manaCost": "",
+    "manaValue": 0,
+    "typeLine": "Land",
+    "cardType": "land",
+    "subtypes": [],
+    "keywords": [],
+    "manaProduction": {
+      "colors": [
+        "C",
+        "B",
+        "G"
+      ],
+      "amount": 2
+    },
+    "entryTapRule": null,
+    "conditionalEntryText": null,
+    "abilities": [
+      {
+        "abilityType": "activated",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": "{T}",
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "add_mana",
+          "params": {}
+        }
+      },
+      {
+        "abilityType": "activated",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": "{T}",
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "add_mana",
+          "params": {}
+        }
+      }
+    ],
+    "oracleText": "{T}: Add {C}.\n{T}: Add {B} or {G}. Activate only if you control a Swamp.",
+    "scryfallId": "3da7ab6b-b10a-4786-b1eb-92de7e66690e"
+  },
+  "Temple of the False God": {
+    "cardName": "Temple of the False God",
+    "manaCost": "",
+    "manaValue": 0,
+    "typeLine": "Land",
+    "cardType": "land",
+    "subtypes": [],
+    "keywords": [],
+    "manaProduction": {
+      "colors": [
+        "C"
+      ],
+      "amount": 2
+    },
+    "entryTapRule": null,
+    "conditionalEntryText": null,
+    "abilities": [
+      {
+        "abilityType": "activated",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": "{T}",
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "add_mana",
+          "params": {}
+        }
+      }
+    ],
+    "oracleText": "{T}: Add {C}{C}. Activate only if you control five or more lands.",
+    "scryfallId": "1024f555-e0d7-48ac-b86e-c87290eac832"
+  },
+  "Terramorphic Expanse": {
+    "cardName": "Terramorphic Expanse",
+    "manaCost": "",
+    "manaValue": 0,
+    "typeLine": "Land",
+    "cardType": "land",
+    "subtypes": [],
+    "keywords": [],
+    "manaProduction": null,
+    "entryTapRule": null,
+    "conditionalEntryText": null,
+    "abilities": [
+      {
+        "abilityType": "activated",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": "{T}, Sacrifice",
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "search_library",
+          "params": {}
+        }
+      }
+    ],
+    "oracleText": "{T}, Sacrifice this land: Search your library for a basic land card, put it onto the battlefield tapped, then shuffle.",
+    "scryfallId": "a81f924b-0527-4311-8120-9bfff71524f6"
+  },
+  "Forest": {
+    "cardName": "Forest",
+    "manaCost": "",
+    "manaValue": 0,
+    "typeLine": "Basic Land — Forest",
+    "cardType": "land",
+    "subtypes": [
+      "Forest"
+    ],
+    "keywords": [],
+    "manaProduction": {
+      "colors": [
+        "G"
+      ],
+      "amount": 1
+    },
+    "entryTapRule": "never",
+    "conditionalEntryText": null,
+    "abilities": [],
+    "oracleText": "",
+    "scryfallId": "c3e84b42-5423-4d4d-b8fc-cfbb2c53a4ca"
   }
 }

@@ -127,23 +127,7 @@
     "manaProduction": null,
     "entryTapRule": null,
     "conditionalEntryText": null,
-    "abilities": [
-      {
-        "abilityType": "static",
-        "triggerEvent": null,
-        "triggerCondition": null,
-        "isOptional": false,
-        "cost": null,
-        "targets": 0,
-        "targetFilter": null,
-        "effect": {
-          "kind": "other",
-          "params": {
-            "description": "As long as Trazyn is on the battlefield, it has all activated abilities of all artifact cards in your graveyard"
-          }
-        }
-      }
-    ],
+    "abilities": [],
     "oracleText": "Deathtouch\nPrismatic Gallery — As long as Trazyn is on the battlefield, it has all activated abilities of all artifact cards in your graveyard.",
     "scryfallId": "1ae95cfb-1c3e-43cc-acfa-68f25b0f6e52"
   },
@@ -510,5 +494,2543 @@
     "oracleText": "",
     "scryfallId": null,
     "note": "MANUAL PLACEHOLDER: deck list entry is a product name, not a Magic card; no Scryfall data exists"
+  },
+  "Szarekh, the Silent King": {
+    "cardName": "Szarekh, the Silent King",
+    "manaCost": "{1}{B}{B}{B}",
+    "manaValue": 4,
+    "typeLine": "Legendary Artifact Creature — Necron",
+    "cardType": "creature",
+    "subtypes": [
+      "Necron"
+    ],
+    "keywords": [
+      "flying"
+    ],
+    "manaProduction": null,
+    "entryTapRule": null,
+    "conditionalEntryText": null,
+    "abilities": [
+      {
+        "abilityType": "triggered",
+        "triggerEvent": "attack",
+        "triggerCondition": "Flying My Will Be Done — Whenever Szarekh attacks",
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "other",
+          "params": {}
+        }
+      },
+      {
+        "abilityType": "triggered",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": true,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "return_from_graveyard",
+          "params": {}
+        }
+      }
+    ],
+    "oracleText": "Flying\nMy Will Be Done — Whenever Szarekh attacks, mill three cards. You may put an artifact creature card or Vehicle card from among the cards milled this way into your hand.",
+    "scryfallId": "e11174b2-2423-4a6e-9dcf-ff550eee7e5a"
+  },
+  "Chronomancer": {
+    "cardName": "Chronomancer",
+    "manaCost": "{1}{B}",
+    "manaValue": 2,
+    "typeLine": "Artifact Creature — Necron Wizard",
+    "cardType": "creature",
+    "subtypes": [
+      "Necron",
+      "Wizard"
+    ],
+    "keywords": [
+      "flying",
+      "haste"
+    ],
+    "manaProduction": null,
+    "entryTapRule": null,
+    "conditionalEntryText": null,
+    "abilities": [
+      {
+        "abilityType": "activated",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": "{T}, {1}, Sacrifice",
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "draw_cards",
+          "params": {
+            "amount": 1
+          }
+        }
+      },
+      {
+        "abilityType": "triggered",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "return_from_graveyard",
+          "params": {}
+        }
+      },
+      {
+        "abilityType": "static",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "other",
+          "params": {}
+        }
+      },
+      {
+        "abilityType": "triggered",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "exile",
+          "params": {}
+        }
+      }
+    ],
+    "oracleText": "Flying\nAtomic Transmutation — {1}, {T}, Sacrifice another artifact: Draw a card.\nUnearth {2}{B} ({2}{B}: Return this card from your graveyard to the battlefield. It gains haste. Exile it at the beginning of the next end step or if it would leave the battlefield. Unearth only as a sorcery.)",
+    "scryfallId": "a960acea-3404-4834-9296-d6715add49af"
+  },
+  "Cryptek": {
+    "cardName": "Cryptek",
+    "manaCost": "{3}{B}",
+    "manaValue": 4,
+    "typeLine": "Artifact Creature — Necron Wizard",
+    "cardType": "creature",
+    "subtypes": [
+      "Necron",
+      "Wizard"
+    ],
+    "keywords": [],
+    "manaProduction": null,
+    "entryTapRule": null,
+    "conditionalEntryText": null,
+    "abilities": [
+      {
+        "abilityType": "activated",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": "{T}, {1}{B}",
+        "targets": 1,
+        "targetFilter": "artifact creature you control",
+        "effect": {
+          "kind": "other",
+          "params": {}
+        }
+      },
+      {
+        "abilityType": "triggered",
+        "triggerEvent": "dies",
+        "triggerCondition": "that creature dies this turn",
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "return_from_graveyard",
+          "params": {}
+        }
+      }
+    ],
+    "oracleText": "{1}{B}, {T}: Choose another target artifact creature you control. When that creature dies this turn, return it to the battlefield tapped under your control.",
+    "scryfallId": "ea8483a2-9135-48d1-994d-9525d5ffcabb"
+  },
+  "Lokhust Heavy Destroyer": {
+    "cardName": "Lokhust Heavy Destroyer",
+    "manaCost": "{1}{B}{B}{B}",
+    "manaValue": 4,
+    "typeLine": "Artifact Creature — Necron",
+    "cardType": "creature",
+    "subtypes": [
+      "Necron"
+    ],
+    "keywords": [
+      "flying",
+      "haste"
+    ],
+    "manaProduction": null,
+    "entryTapRule": null,
+    "conditionalEntryText": null,
+    "abilities": [
+      {
+        "abilityType": "triggered",
+        "triggerEvent": "etb",
+        "triggerCondition": "Flying Enmitic Exterminator — When this creature enters",
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "other",
+          "params": {}
+        }
+      },
+      {
+        "abilityType": "triggered",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "return_from_graveyard",
+          "params": {}
+        }
+      },
+      {
+        "abilityType": "static",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "other",
+          "params": {}
+        }
+      },
+      {
+        "abilityType": "triggered",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "exile",
+          "params": {}
+        }
+      }
+    ],
+    "oracleText": "Flying\nEnmitic Exterminator — When this creature enters, each player sacrifices a creature of their choice.\nUnearth {5}{B}{B}{B} ({5}{B}{B}{B}: Return this card from your graveyard to the battlefield. It gains haste. Exile it at the beginning of the next end step or if it would leave the battlefield. Unearth only as a sorcery.)",
+    "scryfallId": "4665fa5d-37ea-4898-a4a4-7bc5311075de"
+  },
+  "Lychguard": {
+    "cardName": "Lychguard",
+    "manaCost": "{2}{B}",
+    "manaValue": 3,
+    "typeLine": "Artifact Creature — Necron",
+    "cardType": "creature",
+    "subtypes": [
+      "Necron"
+    ],
+    "keywords": [],
+    "manaProduction": null,
+    "entryTapRule": null,
+    "conditionalEntryText": null,
+    "abilities": [
+      {
+        "abilityType": "activated",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": "{3}{B}, Sacrifice",
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "return_from_graveyard",
+          "params": {}
+        }
+      }
+    ],
+    "oracleText": "Guardian Protocols — {3}{B}, Sacrifice this creature: Return all legendary creature cards from your graveyard to your hand.",
+    "scryfallId": "6737a276-b5e9-4c55-b995-ada96eca4e6e"
+  },
+  "Necron Deathmark": {
+    "cardName": "Necron Deathmark",
+    "manaCost": "{3}{B}{B}",
+    "manaValue": 5,
+    "typeLine": "Artifact Creature — Necron",
+    "cardType": "creature",
+    "subtypes": [
+      "Necron"
+    ],
+    "keywords": [
+      "flash"
+    ],
+    "manaProduction": null,
+    "entryTapRule": null,
+    "conditionalEntryText": null,
+    "abilities": [
+      {
+        "abilityType": "triggered",
+        "triggerEvent": "etb",
+        "triggerCondition": "Flash Synaptic Disintegrator — When this creature enters",
+        "isOptional": false,
+        "cost": null,
+        "targets": 1,
+        "targetFilter": "creature and target player mills three cards",
+        "effect": {
+          "kind": "destroy",
+          "params": {
+            "targetHint": "target creature and"
+          }
+        }
+      }
+    ],
+    "oracleText": "Flash\nSynaptic Disintegrator — When this creature enters, destroy up to one target creature and target player mills three cards.",
+    "scryfallId": "4129cb0d-eefe-4971-9db8-1196201ef353"
+  },
+  "Necron Overlord": {
+    "cardName": "Necron Overlord",
+    "manaCost": "{2}{B}{B}",
+    "manaValue": 4,
+    "typeLine": "Artifact Creature — Necron Noble",
+    "cardType": "creature",
+    "subtypes": [
+      "Necron",
+      "Noble"
+    ],
+    "keywords": [],
+    "manaProduction": null,
+    "entryTapRule": null,
+    "conditionalEntryText": null,
+    "abilities": [
+      {
+        "abilityType": "activated",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": "{T}, {X}",
+        "targets": 1,
+        "targetFilter": "opponent loses X life",
+        "effect": {
+          "kind": "lose_life",
+          "params": {
+            "amount": "X"
+          }
+        }
+      }
+    ],
+    "oracleText": "Relentless March — {X}, {T}, Tap X untapped artifacts you control: Target opponent loses X life.",
+    "scryfallId": "62d70fd2-de4e-41c6-b3e5-147fffca8a20"
+  },
+  "Royal Warden": {
+    "cardName": "Royal Warden",
+    "manaCost": "{3}{B}{B}",
+    "manaValue": 5,
+    "typeLine": "Artifact Creature — Necron",
+    "cardType": "creature",
+    "subtypes": [
+      "Necron"
+    ],
+    "keywords": [
+      "haste"
+    ],
+    "manaProduction": null,
+    "entryTapRule": null,
+    "conditionalEntryText": null,
+    "abilities": [
+      {
+        "abilityType": "triggered",
+        "triggerEvent": "etb",
+        "triggerCondition": "Phalanx Commander — When this creature enters",
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "other",
+          "params": {}
+        }
+      },
+      {
+        "abilityType": "triggered",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "return_from_graveyard",
+          "params": {}
+        }
+      },
+      {
+        "abilityType": "static",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "other",
+          "params": {}
+        }
+      },
+      {
+        "abilityType": "triggered",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "exile",
+          "params": {}
+        }
+      }
+    ],
+    "oracleText": "Phalanx Commander — When this creature enters, create two tapped 2/2 black Necron Warrior artifact creature tokens.\nUnearth {3}{B} ({3}{B}: Return this card from your graveyard to the battlefield. It gains haste. Exile it at the beginning of the next end step or if it would leave the battlefield. Unearth only as a sorcery.)",
+    "scryfallId": "0a968eac-2840-41ba-b7de-3182964d4913"
+  },
+  "Shard of the Nightbringer": {
+    "cardName": "Shard of the Nightbringer",
+    "manaCost": "{5}{B}{B}{B}",
+    "manaValue": 8,
+    "typeLine": "Creature — C'tan",
+    "cardType": "creature",
+    "subtypes": [
+      "C'tan"
+    ],
+    "keywords": [
+      "flying"
+    ],
+    "manaProduction": null,
+    "entryTapRule": null,
+    "conditionalEntryText": null,
+    "abilities": [
+      {
+        "abilityType": "triggered",
+        "triggerEvent": "etb",
+        "triggerCondition": "Flying Drain Life — When this creature enters",
+        "isOptional": false,
+        "cost": null,
+        "targets": 1,
+        "targetFilter": "opponent loses half their life",
+        "effect": {
+          "kind": "lose_life",
+          "params": {
+            "amount": 1
+          }
+        }
+      },
+      {
+        "abilityType": "triggered",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "gain_life",
+          "params": {
+            "amount": 1
+          }
+        }
+      }
+    ],
+    "oracleText": "Flying\nDrain Life — When this creature enters, if you cast it, target opponent loses half their life, rounded up. You gain life equal to the life lost this way.",
+    "scryfallId": "21e4140e-22b3-479f-a259-0f56ed02b8ad"
+  },
+  "Shard of the Void Dragon": {
+    "cardName": "Shard of the Void Dragon",
+    "manaCost": "{4}{B}{B}{B}",
+    "manaValue": 7,
+    "typeLine": "Creature — C'tan",
+    "cardType": "creature",
+    "subtypes": [
+      "C'tan"
+    ],
+    "keywords": [
+      "flying"
+    ],
+    "manaProduction": null,
+    "entryTapRule": null,
+    "conditionalEntryText": null,
+    "abilities": [
+      {
+        "abilityType": "triggered",
+        "triggerEvent": "attack",
+        "triggerCondition": "Flying Spear of the Void Dragon — Whenever this creature attacks",
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "other",
+          "params": {}
+        }
+      },
+      {
+        "abilityType": "triggered",
+        "triggerEvent": "dies",
+        "triggerCondition": "Matter Absorption — Whenever an artifact is put into a graveyard from the battlefield or is put into exile from the battlefield",
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "put_counter",
+          "params": {}
+        }
+      }
+    ],
+    "oracleText": "Flying\nSpear of the Void Dragon — Whenever this creature attacks, each opponent sacrifices a nonland permanent of their choice.\nMatter Absorption — Whenever an artifact is put into a graveyard from the battlefield or is put into exile from the battlefield, put two +1/+1 counters on this creature.",
+    "scryfallId": "41dd0b55-3dbb-4b65-a949-20c2a12f7edd"
+  },
+  "Skorpekh Lord": {
+    "cardName": "Skorpekh Lord",
+    "manaCost": "{2}{B}",
+    "manaValue": 3,
+    "typeLine": "Artifact Creature — Necron Noble",
+    "cardType": "creature",
+    "subtypes": [
+      "Necron",
+      "Noble"
+    ],
+    "keywords": [
+      "haste",
+      "menace"
+    ],
+    "manaProduction": null,
+    "entryTapRule": null,
+    "conditionalEntryText": null,
+    "abilities": [
+      {
+        "abilityType": "static",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "other",
+          "params": {}
+        }
+      },
+      {
+        "abilityType": "triggered",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "return_from_graveyard",
+          "params": {}
+        }
+      },
+      {
+        "abilityType": "static",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "other",
+          "params": {}
+        }
+      },
+      {
+        "abilityType": "triggered",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "exile",
+          "params": {}
+        }
+      }
+    ],
+    "oracleText": "Menace\nCommand Protocols — Other artifact creatures you control get +1/+0 and have menace.\nUnearth {2}{B} ({2}{B}: Return this card from your graveyard to the battlefield. It gains haste. Exile it at the beginning of the next end step or if it would leave the battlefield. Unearth only as a sorcery.)",
+    "scryfallId": "b768ec5f-771a-4acd-b3dd-85dea914689e"
+  },
+  "Technomancer": {
+    "cardName": "Technomancer",
+    "manaCost": "{5}{B}{B}",
+    "manaValue": 7,
+    "typeLine": "Artifact Creature — Necron Wizard",
+    "cardType": "creature",
+    "subtypes": [
+      "Necron",
+      "Wizard"
+    ],
+    "keywords": [],
+    "manaProduction": null,
+    "entryTapRule": null,
+    "conditionalEntryText": null,
+    "abilities": [
+      {
+        "abilityType": "triggered",
+        "triggerEvent": "etb",
+        "triggerCondition": "this creature enters",
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "return_from_graveyard",
+          "params": {}
+        }
+      }
+    ],
+    "oracleText": "When this creature enters, mill three cards, then return any number of artifact creature cards with total mana value 6 or less from your graveyard to the battlefield.",
+    "scryfallId": "c160c1f7-714e-444a-ab74-c64c3a099a48"
+  },
+  "Tomb Blade": {
+    "cardName": "Tomb Blade",
+    "manaCost": "{4}{B}{B}",
+    "manaValue": 6,
+    "typeLine": "Artifact Creature — Necron",
+    "cardType": "creature",
+    "subtypes": [
+      "Necron"
+    ],
+    "keywords": [
+      "flying"
+    ],
+    "manaProduction": null,
+    "entryTapRule": null,
+    "conditionalEntryText": null,
+    "abilities": [
+      {
+        "abilityType": "triggered",
+        "triggerEvent": "combat_damage",
+        "triggerCondition": "Flying Whenever this creature deals combat damage to a player",
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "deal_damage",
+          "params": {}
+        }
+      }
+    ],
+    "oracleText": "Flying\nWhenever this creature deals combat damage to a player, that player loses life equal to the number of creatures they control unless they sacrifice a creature of their choice.\nUnearth {6}{B}{B}",
+    "scryfallId": "2f5f2e19-41ce-40c6-9732-d0f88ad6735f"
+  },
+  "Triarch Stalker": {
+    "cardName": "Triarch Stalker",
+    "manaCost": "{3}{B}{B}",
+    "manaValue": 5,
+    "typeLine": "Artifact Creature — Necron",
+    "cardType": "creature",
+    "subtypes": [
+      "Necron"
+    ],
+    "keywords": [
+      "menace"
+    ],
+    "manaProduction": null,
+    "entryTapRule": null,
+    "conditionalEntryText": null,
+    "abilities": [],
+    "oracleText": "Targeting Relay — At the beginning of combat on your turn, choose an opponent.\nCreatures attacking the last chosen player have menace.",
+    "scryfallId": "fbe75aae-727b-4cb0-967c-477d5a08b8f7"
+  },
+  "Canoptek Spyder": {
+    "cardName": "Canoptek Spyder",
+    "manaCost": "{5}",
+    "manaValue": 5,
+    "typeLine": "Artifact Creature — Spider",
+    "cardType": "creature",
+    "subtypes": [
+      "Spider"
+    ],
+    "keywords": [
+      "flying"
+    ],
+    "manaProduction": null,
+    "entryTapRule": null,
+    "conditionalEntryText": null,
+    "abilities": [
+      {
+        "abilityType": "triggered",
+        "triggerEvent": "etb",
+        "triggerCondition": "Flying Fabricator Claw Array — Whenever another nontoken artifact creature or Vehicle you control enters",
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "draw_cards",
+          "params": {
+            "amount": 1
+          }
+        }
+      }
+    ],
+    "oracleText": "Flying\nFabricator Claw Array — Whenever another nontoken artifact creature or Vehicle you control enters, draw a card.",
+    "scryfallId": "56ae1e4b-b620-480b-b6fc-66f2137d7d89"
+  },
+  "Canoptek Wraith": {
+    "cardName": "Canoptek Wraith",
+    "manaCost": "{3}",
+    "manaValue": 3,
+    "typeLine": "Artifact Creature — Wraith",
+    "cardType": "creature",
+    "subtypes": [
+      "Wraith"
+    ],
+    "keywords": [],
+    "manaProduction": null,
+    "entryTapRule": null,
+    "conditionalEntryText": null,
+    "abilities": [
+      {
+        "abilityType": "static",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "other",
+          "params": {}
+        }
+      },
+      {
+        "abilityType": "triggered",
+        "triggerEvent": "combat_damage",
+        "triggerCondition": "Transdimensional Scout — When this creature deals combat damage to a player",
+        "isOptional": true,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "deal_damage",
+          "params": {}
+        }
+      },
+      {
+        "abilityType": "triggered",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "search_library",
+          "params": {}
+        }
+      }
+    ],
+    "oracleText": "Wraith Form — This creature can't be blocked.\nTransdimensional Scout — When this creature deals combat damage to a player, you may pay {3} and sacrifice it. If you do, choose a land you control. Then search your library for up to two basic land cards which have the same name as the chosen land, put them onto the battlefield tapped, then shuffle.",
+    "scryfallId": "06199f88-720f-484a-953e-9189bafbe173"
+  },
+  "Cryptothrall": {
+    "cardName": "Cryptothrall",
+    "manaCost": "{4}",
+    "manaValue": 4,
+    "typeLine": "Artifact Creature — Construct",
+    "cardType": "creature",
+    "subtypes": [
+      "Construct"
+    ],
+    "keywords": [
+      "hexproof"
+    ],
+    "manaProduction": null,
+    "entryTapRule": null,
+    "conditionalEntryText": null,
+    "abilities": [],
+    "oracleText": "Protector — Other artifact creatures you control have hexproof.",
+    "scryfallId": "086d94a0-763e-495e-b952-5c13383657c9"
+  },
+  "Flayed One": {
+    "cardName": "Flayed One",
+    "manaCost": "{2}{B}",
+    "manaValue": 3,
+    "typeLine": "Artifact Creature — Necron",
+    "cardType": "creature",
+    "subtypes": [
+      "Necron"
+    ],
+    "keywords": [
+      "lifelink"
+    ],
+    "manaProduction": null,
+    "entryTapRule": null,
+    "conditionalEntryText": null,
+    "abilities": [
+      {
+        "abilityType": "triggered",
+        "triggerEvent": "etb",
+        "triggerCondition": "Lifelink Flesh Flayer — When this creature enters",
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "other",
+          "params": {}
+        }
+      }
+    ],
+    "oracleText": "Lifelink\nFlesh Flayer — When this creature enters, mill three cards.",
+    "scryfallId": "b0ab96a5-0bcc-4732-8936-9522f3de3962"
+  },
+  "Hexmark Destroyer": {
+    "cardName": "Hexmark Destroyer",
+    "manaCost": "{4}{B}{B}",
+    "manaValue": 6,
+    "typeLine": "Artifact Creature — Necron",
+    "cardType": "creature",
+    "subtypes": [
+      "Necron"
+    ],
+    "keywords": [
+      "haste"
+    ],
+    "manaProduction": null,
+    "entryTapRule": null,
+    "conditionalEntryText": null,
+    "abilities": [
+      {
+        "abilityType": "static",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "other",
+          "params": {}
+        }
+      },
+      {
+        "abilityType": "triggered",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "return_from_graveyard",
+          "params": {}
+        }
+      },
+      {
+        "abilityType": "static",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "other",
+          "params": {}
+        }
+      },
+      {
+        "abilityType": "triggered",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "exile",
+          "params": {}
+        }
+      }
+    ],
+    "oracleText": "Multi-threat Eliminator — This creature can't be blocked except by six or more creatures.\nUnearth {4}{B}{B} ({4}{B}{B}: Return this card from your graveyard to the battlefield. It gains haste. Exile it at the beginning of the next end step or if it would leave the battlefield. Unearth only as a sorcery.)",
+    "scryfallId": "66a4e78b-9600-4fec-94f0-65cf8ffce2dc"
+  },
+  "Plasmancer": {
+    "cardName": "Plasmancer",
+    "manaCost": "{2}{B}{B}",
+    "manaValue": 4,
+    "typeLine": "Artifact Creature — Necron Wizard",
+    "cardType": "creature",
+    "subtypes": [
+      "Necron",
+      "Wizard"
+    ],
+    "keywords": [
+      "flying"
+    ],
+    "manaProduction": null,
+    "entryTapRule": null,
+    "conditionalEntryText": null,
+    "abilities": [
+      {
+        "abilityType": "triggered",
+        "triggerEvent": "etb",
+        "triggerCondition": "Flying Dynastic Advisor — When this creature enters",
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "search_library",
+          "params": {}
+        }
+      }
+    ],
+    "oracleText": "Flying\nDynastic Advisor — When this creature enters, search your library for a basic Swamp card, reveal it, put it into your hand, then shuffle.",
+    "scryfallId": "8deb5d3a-0762-4c4f-afef-fd86728914b4"
+  },
+  "Psychomancer": {
+    "cardName": "Psychomancer",
+    "manaCost": "{1}{B}",
+    "manaValue": 2,
+    "typeLine": "Artifact Creature — Necron Wizard",
+    "cardType": "creature",
+    "subtypes": [
+      "Necron",
+      "Wizard"
+    ],
+    "keywords": [
+      "flying"
+    ],
+    "manaProduction": null,
+    "entryTapRule": null,
+    "conditionalEntryText": null,
+    "abilities": [
+      {
+        "abilityType": "static",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": null,
+        "targets": 1,
+        "targetFilter": "opponent loses 1 life and you gain 1 life",
+        "effect": {
+          "kind": "exile",
+          "params": {
+            "targetHint": "target opponent loses"
+          }
+        }
+      }
+    ],
+    "oracleText": "Flying\nHarbinger of Despair — Whenever this creature or another nontoken artifact you control is put into a graveyard from the battlefield or is put into exile from the battlefield, target opponent loses 1 life and you gain 1 life.",
+    "scryfallId": "780743bf-e1a0-4114-9474-319632e0c775"
+  },
+  "Sautekh Immortal": {
+    "cardName": "Sautekh Immortal",
+    "manaCost": "{2}{B}",
+    "manaValue": 3,
+    "typeLine": "Artifact Creature — Necron",
+    "cardType": "creature",
+    "subtypes": [
+      "Necron"
+    ],
+    "keywords": [
+      "flash"
+    ],
+    "manaProduction": null,
+    "entryTapRule": null,
+    "conditionalEntryText": null,
+    "abilities": [],
+    "oracleText": "Flash\nElite Troops — This creature enters with a +1/+1 counter on it for each creature that died this turn.",
+    "scryfallId": "c57778d7-fbd7-482f-b895-c033592f7af6"
+  },
+  "Skorpekh Destroyer": {
+    "cardName": "Skorpekh Destroyer",
+    "manaCost": "{2}{B}{B}",
+    "manaValue": 4,
+    "typeLine": "Artifact Creature — Necron",
+    "cardType": "creature",
+    "subtypes": [
+      "Necron"
+    ],
+    "keywords": [
+      "deathtouch",
+      "first strike"
+    ],
+    "manaProduction": null,
+    "entryTapRule": null,
+    "conditionalEntryText": null,
+    "abilities": [
+      {
+        "abilityType": "static",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "other",
+          "params": {}
+        }
+      }
+    ],
+    "oracleText": "Deathtouch\nHyperphase Threshers — Whenever an artifact you control enters, this creature gains first strike until end of turn.",
+    "scryfallId": "b8c69031-588d-44a2-89b3-972a335541e5"
+  },
+  "Triarch Praetorian": {
+    "cardName": "Triarch Praetorian",
+    "manaCost": "{1}{B}",
+    "manaValue": 2,
+    "typeLine": "Artifact Creature — Necron",
+    "cardType": "creature",
+    "subtypes": [
+      "Necron"
+    ],
+    "keywords": [
+      "flying",
+      "haste"
+    ],
+    "manaProduction": null,
+    "entryTapRule": null,
+    "conditionalEntryText": null,
+    "abilities": [
+      {
+        "abilityType": "triggered",
+        "triggerEvent": "etb",
+        "triggerCondition": "Flying Dynastic Codes — When this creature enters from a graveyard",
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "draw_cards",
+          "params": {
+            "amount": 2
+          }
+        }
+      },
+      {
+        "abilityType": "triggered",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "return_from_graveyard",
+          "params": {}
+        }
+      },
+      {
+        "abilityType": "static",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "other",
+          "params": {}
+        }
+      },
+      {
+        "abilityType": "triggered",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "exile",
+          "params": {}
+        }
+      }
+    ],
+    "oracleText": "Flying\nDynastic Codes — When this creature enters from a graveyard, you draw two cards and you lose 2 life.\nUnearth {4}{B} ({4}{B}: Return this card from your graveyard to the battlefield. It gains haste. Exile it at the beginning of the next end step or if it would leave the battlefield. Unearth only as a sorcery.)",
+    "scryfallId": "5ad67a79-cb13-44b8-adac-36cfd211f2d3"
+  },
+  "Defile": {
+    "cardName": "Defile",
+    "manaCost": "{B}",
+    "manaValue": 1,
+    "typeLine": "Instant",
+    "cardType": "instant",
+    "subtypes": [],
+    "keywords": [],
+    "manaProduction": null,
+    "entryTapRule": null,
+    "conditionalEntryText": null,
+    "abilities": [
+      {
+        "abilityType": "spell",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": null,
+        "targets": 1,
+        "targetFilter": "creature gets -1/-1 until end of turn for each Swamp you control",
+        "effect": {
+          "kind": "other",
+          "params": {}
+        }
+      }
+    ],
+    "oracleText": "Target creature gets -1/-1 until end of turn for each Swamp you control.",
+    "scryfallId": "5bcb4398-edd1-41a7-a496-b12bce22ceb6"
+  },
+  "Darkness": {
+    "cardName": "Darkness",
+    "manaCost": "{B}",
+    "manaValue": 1,
+    "typeLine": "Instant",
+    "cardType": "instant",
+    "subtypes": [],
+    "keywords": [],
+    "manaProduction": null,
+    "entryTapRule": null,
+    "conditionalEntryText": null,
+    "abilities": [],
+    "oracleText": "Prevent all combat damage that would be dealt this turn.",
+    "scryfallId": "584834fb-b7b6-40eb-9fec-8df17172ce5f"
+  },
+  "Go for the Throat": {
+    "cardName": "Go for the Throat",
+    "manaCost": "{1}{B}",
+    "manaValue": 2,
+    "typeLine": "Instant",
+    "cardType": "instant",
+    "subtypes": [],
+    "keywords": [],
+    "manaProduction": null,
+    "entryTapRule": null,
+    "conditionalEntryText": null,
+    "abilities": [
+      {
+        "abilityType": "spell",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "destroy",
+          "params": {
+            "targetHint": "target nonartifact creature"
+          }
+        }
+      }
+    ],
+    "oracleText": "Destroy target nonartifact creature.",
+    "scryfallId": "5446e1ba-c745-45b2-ad05-b22abf04daec"
+  },
+  "Their Name Is Death": {
+    "cardName": "Their Name Is Death",
+    "manaCost": "{3}{B}{B}{B}",
+    "manaValue": 6,
+    "typeLine": "Sorcery",
+    "cardType": "sorcery",
+    "subtypes": [],
+    "keywords": [],
+    "manaProduction": null,
+    "entryTapRule": null,
+    "conditionalEntryText": null,
+    "abilities": [
+      {
+        "abilityType": "spell",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "destroy",
+          "params": {}
+        }
+      }
+    ],
+    "oracleText": "Destroy all nonartifact creatures.",
+    "scryfallId": "ea5ddc28-dfc1-4b96-b6e2-590fcb1f83ef"
+  },
+  "Their Number Is Legion": {
+    "cardName": "Their Number Is Legion",
+    "manaCost": "{X}{B}{B}{B}{B}",
+    "manaValue": 4,
+    "typeLine": "Sorcery",
+    "cardType": "sorcery",
+    "subtypes": [],
+    "keywords": [],
+    "manaProduction": null,
+    "entryTapRule": null,
+    "conditionalEntryText": null,
+    "abilities": [
+      {
+        "abilityType": "spell",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "gain_life",
+          "params": {
+            "amount": "X"
+          }
+        }
+      },
+      {
+        "abilityType": "spell",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "exile",
+          "params": {}
+        }
+      }
+    ],
+    "oracleText": "Create X tapped 2/2 black Necron Warrior artifact creature tokens, then you gain life equal to the number of artifacts you control. Exile Their Number Is Legion.\nYou may cast this card from your graveyard.",
+    "scryfallId": "f03c1eb4-1f47-4b65-8d8d-4057fb6997e1"
+  },
+  "Beacon of Unrest": {
+    "cardName": "Beacon of Unrest",
+    "manaCost": "{3}{B}{B}",
+    "manaValue": 5,
+    "typeLine": "Sorcery",
+    "cardType": "sorcery",
+    "subtypes": [],
+    "keywords": [],
+    "manaProduction": null,
+    "entryTapRule": null,
+    "conditionalEntryText": null,
+    "abilities": [
+      {
+        "abilityType": "spell",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": null,
+        "targets": 1,
+        "targetFilter": "artifact or creature card from a graveyard onto the battlefield under your control",
+        "effect": {
+          "kind": "return_from_graveyard",
+          "params": {}
+        }
+      }
+    ],
+    "oracleText": "Put target artifact or creature card from a graveyard onto the battlefield under your control. Shuffle Beacon of Unrest into its owner's library.",
+    "scryfallId": "06bd199b-1855-4208-8bf7-8930e91ab139"
+  },
+  "Living Death": {
+    "cardName": "Living Death",
+    "manaCost": "{3}{B}{B}",
+    "manaValue": 5,
+    "typeLine": "Sorcery",
+    "cardType": "sorcery",
+    "subtypes": [],
+    "keywords": [],
+    "manaProduction": null,
+    "entryTapRule": null,
+    "conditionalEntryText": null,
+    "abilities": [],
+    "oracleText": "Each player exiles all creature cards from their graveyard, then sacrifices all creatures they control, then puts all cards they exiled this way onto the battlefield.",
+    "scryfallId": "4ac29c46-f8ee-42ba-a98c-d785ba65485e"
+  },
+  "Mutilate": {
+    "cardName": "Mutilate",
+    "manaCost": "{2}{B}{B}",
+    "manaValue": 4,
+    "typeLine": "Sorcery",
+    "cardType": "sorcery",
+    "subtypes": [],
+    "keywords": [],
+    "manaProduction": null,
+    "entryTapRule": null,
+    "conditionalEntryText": null,
+    "abilities": [],
+    "oracleText": "All creatures get -1/-1 until end of turn for each Swamp you control.",
+    "scryfallId": "04587192-e5a6-46f6-98b5-3b349d618880"
+  },
+  "Dread Return": {
+    "cardName": "Dread Return",
+    "manaCost": "{2}{B}{B}",
+    "manaValue": 4,
+    "typeLine": "Sorcery",
+    "cardType": "sorcery",
+    "subtypes": [],
+    "keywords": [],
+    "manaProduction": null,
+    "entryTapRule": null,
+    "conditionalEntryText": null,
+    "abilities": [
+      {
+        "abilityType": "spell",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": null,
+        "targets": 1,
+        "targetFilter": "creature card from your graveyard to the battlefield",
+        "effect": {
+          "kind": "return_from_graveyard",
+          "params": {}
+        }
+      },
+      {
+        "abilityType": "spell",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "exile",
+          "params": {}
+        }
+      }
+    ],
+    "oracleText": "Return target creature card from your graveyard to the battlefield.\nFlashback—Sacrifice three creatures. (You may cast this card from your graveyard for its flashback cost. Then exile it.)",
+    "scryfallId": "34a87901-98bb-41dd-b566-bcb510c20022"
+  },
+  "Biotransference": {
+    "cardName": "Biotransference",
+    "manaCost": "{2}{B}{B}",
+    "manaValue": 4,
+    "typeLine": "Enchantment",
+    "cardType": "enchantment",
+    "subtypes": [],
+    "keywords": [],
+    "manaProduction": null,
+    "entryTapRule": null,
+    "conditionalEntryText": null,
+    "abilities": [
+      {
+        "abilityType": "triggered",
+        "triggerEvent": "cast",
+        "triggerCondition": "you cast an artifact spell",
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "create_token",
+          "params": {
+            "tokenPower": 2,
+            "tokenToughness": 2,
+            "tokenName": "artifact creature",
+            "amount": 1
+          }
+        }
+      }
+    ],
+    "oracleText": "Creatures you control are artifacts in addition to their other types. The same is true for creature spells you control and creature cards you own that aren't on the battlefield.\nWhenever you cast an artifact spell, you lose 1 life and create a 2/2 black Necron Warrior artifact creature token.",
+    "scryfallId": "75a787a3-5838-4121-bbaf-745d22c4b0bc"
+  },
+  "Out of the Tombs": {
+    "cardName": "Out of the Tombs",
+    "manaCost": "{2}{B}",
+    "manaValue": 3,
+    "typeLine": "Enchantment",
+    "cardType": "enchantment",
+    "subtypes": [],
+    "keywords": [],
+    "manaProduction": null,
+    "entryTapRule": null,
+    "conditionalEntryText": null,
+    "abilities": [
+      {
+        "abilityType": "triggered",
+        "triggerEvent": "upkeep",
+        "triggerCondition": "your upkeep",
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "put_counter",
+          "params": {}
+        }
+      },
+      {
+        "abilityType": "triggered",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "draw_cards",
+          "params": {
+            "amount": 1
+          }
+        }
+      }
+    ],
+    "oracleText": "At the beginning of your upkeep, put two eon counters on this enchantment, then mill cards equal to the number of eon counters on it.\nIf you would draw a card while your library has no cards in it, instead return a creature card from your graveyard to the battlefield. If you can't, you lose the game.",
+    "scryfallId": "f1170bfa-9623-44c3-a15e-bd8c2627fe6e"
+  },
+  "The War in Heaven": {
+    "cardName": "The War in Heaven",
+    "manaCost": "{3}{B}{B}{B}",
+    "manaValue": 6,
+    "typeLine": "Enchantment — Saga",
+    "cardType": "enchantment",
+    "subtypes": [
+      "Saga"
+    ],
+    "keywords": [],
+    "manaProduction": null,
+    "entryTapRule": null,
+    "conditionalEntryText": null,
+    "abilities": [
+      {
+        "abilityType": "triggered",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "draw_cards",
+          "params": {
+            "amount": 3
+          }
+        }
+      },
+      {
+        "abilityType": "triggered",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": null,
+        "targets": 1,
+        "targetFilter": "creature cards with total mana value 8 or less in your graveyard",
+        "effect": {
+          "kind": "other",
+          "params": {}
+        }
+      },
+      {
+        "abilityType": "triggered",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "return_from_graveyard",
+          "params": {}
+        }
+      }
+    ],
+    "oracleText": "(As this Saga enters and after your draw step, add a lore counter. Sacrifice after III.)\nI — You draw three cards and you lose 3 life.\nII — Mill three cards.\nIII — Choose up to three target creature cards with total mana value 8 or less in your graveyard. Return each of them to the battlefield with a necrodermis counter on it. They're artifacts in addition to their other types.",
+    "scryfallId": "cd556cd1-e33a-433d-ac18-4a4fd195c3ab"
+  },
+  "Convergence of Dominion": {
+    "cardName": "Convergence of Dominion",
+    "manaCost": "{3}",
+    "manaValue": 3,
+    "typeLine": "Artifact",
+    "cardType": "artifact",
+    "subtypes": [],
+    "keywords": [],
+    "manaProduction": null,
+    "entryTapRule": null,
+    "conditionalEntryText": null,
+    "abilities": [
+      {
+        "abilityType": "activated",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": "{T}, {3}",
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "other",
+          "params": {}
+        }
+      }
+    ],
+    "oracleText": "Dynastic Command Node — As long as you control your commander, activated abilities of cards in your graveyard cost {2} less to activate. This effect can't reduce the mana in that ability's activation cost to less than one mana.\nTranslocation Protocols — {3}, {T}: Mill three cards.",
+    "scryfallId": "e03d8676-f693-4155-b75f-dcbe2890ccb0"
+  },
+  "Ghost Ark": {
+    "cardName": "Ghost Ark",
+    "manaCost": "{4}",
+    "manaValue": 4,
+    "typeLine": "Artifact — Vehicle",
+    "cardType": "artifact",
+    "subtypes": [
+      "Vehicle"
+    ],
+    "keywords": [
+      "flying"
+    ],
+    "manaProduction": null,
+    "entryTapRule": null,
+    "conditionalEntryText": null,
+    "abilities": [
+      {
+        "abilityType": "triggered",
+        "triggerEvent": "graveyard",
+        "triggerCondition": "Flying Repair Barge — Whenever this Vehicle becomes crewed",
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "other",
+          "params": {}
+        }
+      }
+    ],
+    "oracleText": "Flying\nRepair Barge — Whenever this Vehicle becomes crewed, each artifact creature card in your graveyard gains unearth {3} until end of turn.\nCrew 2 (Tap any number of creatures you control with total power 2 or more: This Vehicle becomes an artifact creature until end of turn.)",
+    "scryfallId": "2c6865c1-8144-4b06-a599-a62382fe1124"
+  },
+  "Necron Monolith": {
+    "cardName": "Necron Monolith",
+    "manaCost": "{7}",
+    "manaValue": 7,
+    "typeLine": "Artifact — Vehicle",
+    "cardType": "artifact",
+    "subtypes": [
+      "Vehicle"
+    ],
+    "keywords": [
+      "flying",
+      "indestructible"
+    ],
+    "manaProduction": null,
+    "entryTapRule": null,
+    "conditionalEntryText": null,
+    "abilities": [
+      {
+        "abilityType": "triggered",
+        "triggerEvent": "attack",
+        "triggerCondition": "Flying",
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "other",
+          "params": {}
+        }
+      },
+      {
+        "abilityType": "triggered",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "create_token",
+          "params": {
+            "tokenPower": 2,
+            "tokenToughness": 2,
+            "tokenName": "artifact creature",
+            "amount": 1
+          }
+        }
+      }
+    ],
+    "oracleText": "Flying, indestructible\nEternity Gate — Whenever this Vehicle attacks, mill three cards. For each creature card milled this way, create a 2/2 black Necron Warrior artifact creature token.\nCrew 4 (Tap any number of creatures you control with total power 4 or more: This Vehicle becomes an artifact creature until end of turn.)",
+    "scryfallId": "9b1ecad3-8cec-4a18-9401-6eebc7feeacc"
+  },
+  "Resurrection Orb": {
+    "cardName": "Resurrection Orb",
+    "manaCost": "{2}",
+    "manaValue": 2,
+    "typeLine": "Artifact — Equipment",
+    "cardType": "artifact",
+    "subtypes": [
+      "Equipment"
+    ],
+    "keywords": [
+      "lifelink"
+    ],
+    "manaProduction": null,
+    "entryTapRule": null,
+    "conditionalEntryText": null,
+    "abilities": [
+      {
+        "abilityType": "static",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "other",
+          "params": {}
+        }
+      },
+      {
+        "abilityType": "triggered",
+        "triggerEvent": "dies",
+        "triggerCondition": "equipped creature dies",
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "return_from_graveyard",
+          "params": {}
+        }
+      },
+      {
+        "abilityType": "triggered",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": null,
+        "targets": 1,
+        "targetFilter": "creature you control",
+        "effect": {
+          "kind": "other",
+          "params": {}
+        }
+      }
+    ],
+    "oracleText": "Equipped creature has lifelink.\nWhenever equipped creature dies, return that card to the battlefield under its owner's control at the beginning of the next end step.\nEquip {4} ({4}: Attach to target creature you control. Equip only as a sorcery.)",
+    "scryfallId": "2d6209c8-9fa1-4f0a-ab65-ac2fedfcd09b"
+  },
+  "Sceptre of Eternal Glory": {
+    "cardName": "Sceptre of Eternal Glory",
+    "manaCost": "{4}",
+    "manaValue": 4,
+    "typeLine": "Legendary Artifact",
+    "cardType": "artifact",
+    "subtypes": [],
+    "keywords": [],
+    "manaProduction": {
+      "colors": [
+        "W",
+        "U",
+        "B",
+        "R",
+        "G",
+        "C"
+      ],
+      "amount": 3
+    },
+    "entryTapRule": null,
+    "conditionalEntryText": null,
+    "abilities": [
+      {
+        "abilityType": "activated",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": "{T}",
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "add_mana",
+          "params": {}
+        }
+      },
+      {
+        "abilityType": "activated",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": "{T}",
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "add_mana",
+          "params": {}
+        }
+      }
+    ],
+    "oracleText": "{T}: Add one mana of any color.\n{T}: Add three mana of any one color. Activate only if you control three or more lands with the same name.",
+    "scryfallId": "bc7f3009-c852-41e7-8e62-d2ee637b3998"
+  },
+  "Night Scythe": {
+    "cardName": "Night Scythe",
+    "manaCost": "{3}",
+    "manaValue": 3,
+    "typeLine": "Artifact — Vehicle",
+    "cardType": "artifact",
+    "subtypes": [
+      "Vehicle"
+    ],
+    "keywords": [
+      "flying"
+    ],
+    "manaProduction": null,
+    "entryTapRule": null,
+    "conditionalEntryText": null,
+    "abilities": [
+      {
+        "abilityType": "triggered",
+        "triggerEvent": "etb",
+        "triggerCondition": "Flying Invasion Beams — When this Vehicle enters",
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "create_token",
+          "params": {
+            "tokenPower": 2,
+            "tokenToughness": 2,
+            "tokenName": "artifact creature",
+            "amount": 1
+          }
+        }
+      }
+    ],
+    "oracleText": "Flying\nInvasion Beams — When this Vehicle enters, create a 2/2 black Necron Warrior artifact creature token.\nCrew 2 (Tap any number of creatures you control with total power 2 or more: This Vehicle becomes an artifact creature until end of turn.)",
+    "scryfallId": "9a71531f-d4b6-4cc7-8193-b2f5bce33b21"
+  },
+  "Caged Sun": {
+    "cardName": "Caged Sun",
+    "manaCost": "{6}",
+    "manaValue": 6,
+    "typeLine": "Artifact",
+    "cardType": "artifact",
+    "subtypes": [],
+    "keywords": [],
+    "manaProduction": null,
+    "entryTapRule": null,
+    "conditionalEntryText": null,
+    "abilities": [
+      {
+        "abilityType": "static",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "other",
+          "params": {}
+        }
+      },
+      {
+        "abilityType": "triggered",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "add_mana",
+          "params": {}
+        }
+      }
+    ],
+    "oracleText": "As this artifact enters, choose a color.\nCreatures you control of the chosen color get +1/+1.\nWhenever a land's ability causes you to add one or more mana of the chosen color, add an additional one mana of that color.",
+    "scryfallId": "dfe6f9ec-3b7f-4c11-acd1-440e14217e5d"
+  },
+  "Endless Atlas": {
+    "cardName": "Endless Atlas",
+    "manaCost": "{2}",
+    "manaValue": 2,
+    "typeLine": "Artifact",
+    "cardType": "artifact",
+    "subtypes": [],
+    "keywords": [],
+    "manaProduction": null,
+    "entryTapRule": null,
+    "conditionalEntryText": null,
+    "abilities": [
+      {
+        "abilityType": "activated",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": "{T}, {2}",
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "draw_cards",
+          "params": {
+            "amount": 2
+          }
+        }
+      }
+    ],
+    "oracleText": "{2}, {T}: Draw a card. Activate only if you control three or more lands with the same name.",
+    "scryfallId": "a30c2025-03cf-4c3d-9dd5-0d25f7019d25"
+  },
+  "Gilded Lotus": {
+    "cardName": "Gilded Lotus",
+    "manaCost": "{5}",
+    "manaValue": 5,
+    "typeLine": "Artifact",
+    "cardType": "artifact",
+    "subtypes": [],
+    "keywords": [],
+    "manaProduction": null,
+    "entryTapRule": null,
+    "conditionalEntryText": null,
+    "abilities": [
+      {
+        "abilityType": "activated",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": "{T}",
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "add_mana",
+          "params": {}
+        }
+      }
+    ],
+    "oracleText": "{T}: Add three mana of any one color.",
+    "scryfallId": "28e619e6-ecc1-49c3-8fa9-ce42becdb9ba"
+  },
+  "Mystic Forge": {
+    "cardName": "Mystic Forge",
+    "manaCost": "{4}",
+    "manaValue": 4,
+    "typeLine": "Artifact",
+    "cardType": "artifact",
+    "subtypes": [],
+    "keywords": [],
+    "manaProduction": null,
+    "entryTapRule": null,
+    "conditionalEntryText": null,
+    "abilities": [
+      {
+        "abilityType": "activated",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": "{T}, Pay 1 life",
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "exile",
+          "params": {}
+        }
+      }
+    ],
+    "oracleText": "You may look at the top card of your library any time.\nYou may cast artifact spells and colorless spells from the top of your library.\n{T}, Pay 1 life: Exile the top card of your library.",
+    "scryfallId": "bc0de77a-c503-4000-9eb5-aa28a5e91082"
+  },
+  "Sculpting Steel": {
+    "cardName": "Sculpting Steel",
+    "manaCost": "{3}",
+    "manaValue": 3,
+    "typeLine": "Artifact",
+    "cardType": "artifact",
+    "subtypes": [],
+    "keywords": [],
+    "manaProduction": null,
+    "entryTapRule": null,
+    "conditionalEntryText": null,
+    "abilities": [],
+    "oracleText": "You may have this artifact enter as a copy of any artifact on the battlefield.",
+    "scryfallId": "d1958f01-77e9-4976-b7f8-f9b62aa78edc"
+  },
+  "Cranial Plating": {
+    "cardName": "Cranial Plating",
+    "manaCost": "{2}",
+    "manaValue": 2,
+    "typeLine": "Artifact — Equipment",
+    "cardType": "artifact",
+    "subtypes": [
+      "Equipment"
+    ],
+    "keywords": [],
+    "manaProduction": null,
+    "entryTapRule": null,
+    "conditionalEntryText": null,
+    "abilities": [
+      {
+        "abilityType": "static",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "other",
+          "params": {}
+        }
+      },
+      {
+        "abilityType": "triggered",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": null,
+        "targets": 1,
+        "targetFilter": "creature you control",
+        "effect": {
+          "kind": "other",
+          "params": {}
+        }
+      }
+    ],
+    "oracleText": "Equipped creature gets +1/+0 for each artifact you control.\n{B}{B}: Attach this Equipment to target creature you control.\nEquip {1}",
+    "scryfallId": "e1375f17-bc25-4a65-98b7-4785bbdbe974"
+  },
+  "Hedron Archive": {
+    "cardName": "Hedron Archive",
+    "manaCost": "{4}",
+    "manaValue": 4,
+    "typeLine": "Artifact",
+    "cardType": "artifact",
+    "subtypes": [],
+    "keywords": [],
+    "manaProduction": {
+      "colors": [
+        "C"
+      ],
+      "amount": 2
+    },
+    "entryTapRule": null,
+    "conditionalEntryText": null,
+    "abilities": [
+      {
+        "abilityType": "activated",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": "{T}",
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "add_mana",
+          "params": {}
+        }
+      },
+      {
+        "abilityType": "activated",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": "{T}, {2}, Sacrifice",
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "draw_cards",
+          "params": {
+            "amount": 2
+          }
+        }
+      }
+    ],
+    "oracleText": "{T}: Add {C}{C}.\n{2}, {T}, Sacrifice this artifact: Draw two cards.",
+    "scryfallId": "535b9ac6-dba2-4162-86ed-df3e9fad0306"
+  },
+  "Mask of Memory": {
+    "cardName": "Mask of Memory",
+    "manaCost": "{2}",
+    "manaValue": 2,
+    "typeLine": "Artifact — Equipment",
+    "cardType": "artifact",
+    "subtypes": [
+      "Equipment"
+    ],
+    "keywords": [],
+    "manaProduction": null,
+    "entryTapRule": null,
+    "conditionalEntryText": null,
+    "abilities": [
+      {
+        "abilityType": "triggered",
+        "triggerEvent": "combat_damage",
+        "triggerCondition": "equipped creature deals combat damage to a player",
+        "isOptional": true,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "deal_damage",
+          "params": {}
+        }
+      },
+      {
+        "abilityType": "triggered",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": null,
+        "targets": 1,
+        "targetFilter": "creature you control",
+        "effect": {
+          "kind": "other",
+          "params": {}
+        }
+      }
+    ],
+    "oracleText": "Whenever equipped creature deals combat damage to a player, you may draw two cards. If you do, discard a card.\nEquip {1} ({1}: Attach to target creature you control. Equip only as a sorcery.)",
+    "scryfallId": "ba275c02-8581-46a0-9c7c-8baa0fdb4982"
+  },
+  "Commander's Sphere": {
+    "cardName": "Commander's Sphere",
+    "manaCost": "{3}",
+    "manaValue": 3,
+    "typeLine": "Artifact",
+    "cardType": "artifact",
+    "subtypes": [],
+    "keywords": [],
+    "manaProduction": {
+      "colors": [
+        "W",
+        "U",
+        "B",
+        "R",
+        "G",
+        "C"
+      ],
+      "amount": 1
+    },
+    "entryTapRule": null,
+    "conditionalEntryText": null,
+    "abilities": [
+      {
+        "abilityType": "activated",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": "{T}",
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "add_mana",
+          "params": {}
+        }
+      },
+      {
+        "abilityType": "activated",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": "Sacrifice",
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "draw_cards",
+          "params": {
+            "amount": 1
+          }
+        }
+      }
+    ],
+    "oracleText": "{T}: Add one mana of any color in your commander's color identity.\nSacrifice this artifact: Draw a card.",
+    "scryfallId": "a0d50603-e31f-4cd7-b4b6-49847d99eb2e"
+  },
+  "Mind Stone": {
+    "cardName": "Mind Stone",
+    "manaCost": "{2}",
+    "manaValue": 2,
+    "typeLine": "Artifact",
+    "cardType": "artifact",
+    "subtypes": [],
+    "keywords": [],
+    "manaProduction": {
+      "colors": [
+        "C"
+      ],
+      "amount": 1
+    },
+    "entryTapRule": null,
+    "conditionalEntryText": null,
+    "abilities": [
+      {
+        "abilityType": "activated",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": "{T}",
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "add_mana",
+          "params": {}
+        }
+      },
+      {
+        "abilityType": "activated",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": "{T}, {1}, Sacrifice",
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "draw_cards",
+          "params": {
+            "amount": 1
+          }
+        }
+      }
+    ],
+    "oracleText": "{T}: Add {C}.\n{1}, {T}, Sacrifice this artifact: Draw a card.",
+    "scryfallId": "ad881aa0-decc-447b-8c8a-983546a9a55a"
+  },
+  "Thought Vessel": {
+    "cardName": "Thought Vessel",
+    "manaCost": "{2}",
+    "manaValue": 2,
+    "typeLine": "Artifact",
+    "cardType": "artifact",
+    "subtypes": [],
+    "keywords": [],
+    "manaProduction": {
+      "colors": [
+        "C"
+      ],
+      "amount": 1
+    },
+    "entryTapRule": null,
+    "conditionalEntryText": null,
+    "abilities": [
+      {
+        "abilityType": "activated",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": "{T}",
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "add_mana",
+          "params": {}
+        }
+      }
+    ],
+    "oracleText": "You have no maximum hand size.\n{T}: Add {C}.",
+    "scryfallId": "6ec6a910-f6d0-4225-8b55-d329dc788c64"
+  },
+  "Unstable Obelisk": {
+    "cardName": "Unstable Obelisk",
+    "manaCost": "{3}",
+    "manaValue": 3,
+    "typeLine": "Artifact",
+    "cardType": "artifact",
+    "subtypes": [],
+    "keywords": [],
+    "manaProduction": {
+      "colors": [
+        "C"
+      ],
+      "amount": 1
+    },
+    "entryTapRule": null,
+    "conditionalEntryText": null,
+    "abilities": [
+      {
+        "abilityType": "activated",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": "{T}",
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "add_mana",
+          "params": {}
+        }
+      },
+      {
+        "abilityType": "activated",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": "{T}, {7}, Sacrifice",
+        "targets": 1,
+        "targetFilter": "permanent",
+        "effect": {
+          "kind": "destroy",
+          "params": {
+            "targetHint": "target permanent"
+          }
+        }
+      }
+    ],
+    "oracleText": "{T}: Add {C}.\n{7}, {T}, Sacrifice this artifact: Destroy target permanent.",
+    "scryfallId": "94eba26e-7c9e-46f3-ad13-aa684f3365cb"
+  },
+  "Wayfarer's Bauble": {
+    "cardName": "Wayfarer's Bauble",
+    "manaCost": "{1}",
+    "manaValue": 1,
+    "typeLine": "Artifact",
+    "cardType": "artifact",
+    "subtypes": [],
+    "keywords": [],
+    "manaProduction": null,
+    "entryTapRule": null,
+    "conditionalEntryText": null,
+    "abilities": [
+      {
+        "abilityType": "activated",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": "{T}, {2}, Sacrifice",
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "search_library",
+          "params": {}
+        }
+      }
+    ],
+    "oracleText": "{2}, {T}, Sacrifice this artifact: Search your library for a basic land card, put that card onto the battlefield tapped, then shuffle.",
+    "scryfallId": "b279f268-c37e-4a2d-8195-74f4881226fc"
+  },
+  "Vault of Whispers": {
+    "cardName": "Vault of Whispers",
+    "manaCost": "",
+    "manaValue": 0,
+    "typeLine": "Artifact Land",
+    "cardType": "land",
+    "subtypes": [],
+    "keywords": [],
+    "manaProduction": {
+      "colors": [
+        "B"
+      ],
+      "amount": 1
+    },
+    "entryTapRule": null,
+    "conditionalEntryText": null,
+    "abilities": [
+      {
+        "abilityType": "activated",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": "{T}",
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "add_mana",
+          "params": {}
+        }
+      }
+    ],
+    "oracleText": "{T}: Add {B}.",
+    "scryfallId": "e85e4098-f872-4aa4-a71a-208b6090be28"
+  },
+  "Tomb Fortress": {
+    "cardName": "Tomb Fortress",
+    "manaCost": "",
+    "manaValue": 0,
+    "typeLine": "Land",
+    "cardType": "land",
+    "subtypes": [],
+    "keywords": [],
+    "manaProduction": {
+      "colors": [
+        "B"
+      ],
+      "amount": 1
+    },
+    "entryTapRule": "always",
+    "conditionalEntryText": null,
+    "abilities": [
+      {
+        "abilityType": "activated",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": "{T}",
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "add_mana",
+          "params": {}
+        }
+      },
+      {
+        "abilityType": "activated",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": "{T}, {2}{B}{B}{B}",
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "exile",
+          "params": {}
+        }
+      }
+    ],
+    "oracleText": "This land enters tapped.\n{T}: Add {B}.\n{2}{B}{B}{B}, {T}, Exile this land: Mill four cards, then return a creature card from your graveyard to the battlefield. Activate only as a sorcery.",
+    "scryfallId": "5ffd1a43-5613-4058-9e51-fd3cc1585651"
+  },
+  "Barren Moor": {
+    "cardName": "Barren Moor",
+    "manaCost": "",
+    "manaValue": 0,
+    "typeLine": "Land",
+    "cardType": "land",
+    "subtypes": [],
+    "keywords": [],
+    "manaProduction": {
+      "colors": [
+        "B"
+      ],
+      "amount": 1
+    },
+    "entryTapRule": "always",
+    "conditionalEntryText": null,
+    "abilities": [
+      {
+        "abilityType": "activated",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": "{T}",
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "add_mana",
+          "params": {}
+        }
+      },
+      {
+        "abilityType": "triggered",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "draw_cards",
+          "params": {
+            "amount": 1
+          }
+        }
+      }
+    ],
+    "oracleText": "This land enters tapped.\n{T}: Add {B}.\nCycling {B} ({B}, Discard this card: Draw a card.)",
+    "scryfallId": "380eb7fd-bc79-4cad-9c2b-9b2b10761a72"
+  },
+  "Myriad Landscape": {
+    "cardName": "Myriad Landscape",
+    "manaCost": "",
+    "manaValue": 0,
+    "typeLine": "Land",
+    "cardType": "land",
+    "subtypes": [],
+    "keywords": [],
+    "manaProduction": {
+      "colors": [
+        "C"
+      ],
+      "amount": 1
+    },
+    "entryTapRule": "always",
+    "conditionalEntryText": null,
+    "abilities": [
+      {
+        "abilityType": "activated",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": "{T}",
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "add_mana",
+          "params": {}
+        }
+      },
+      {
+        "abilityType": "activated",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": "{T}, {2}, Sacrifice",
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "search_library",
+          "params": {}
+        }
+      }
+    ],
+    "oracleText": "This land enters tapped.\n{T}: Add {C}.\n{2}, {T}, Sacrifice this land: Search your library for up to two basic land cards that share a land type, put them onto the battlefield tapped, then shuffle.",
+    "scryfallId": "a0e2098f-1d94-491a-a7e9-a45a9f69e3a8"
+  },
+  "Reliquary Tower": {
+    "cardName": "Reliquary Tower",
+    "manaCost": "",
+    "manaValue": 0,
+    "typeLine": "Land",
+    "cardType": "land",
+    "subtypes": [],
+    "keywords": [],
+    "manaProduction": {
+      "colors": [
+        "C"
+      ],
+      "amount": 1
+    },
+    "entryTapRule": null,
+    "conditionalEntryText": null,
+    "abilities": [
+      {
+        "abilityType": "activated",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": "{T}",
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "add_mana",
+          "params": {}
+        }
+      }
+    ],
+    "oracleText": "You have no maximum hand size.\n{T}: Add {C}.",
+    "scryfallId": "e2a27742-08c1-4153-af7f-25a7a98f585e"
+  },
+  "Desert of the Glorified": {
+    "cardName": "Desert of the Glorified",
+    "manaCost": "",
+    "manaValue": 0,
+    "typeLine": "Land — Desert",
+    "cardType": "land",
+    "subtypes": [
+      "Desert"
+    ],
+    "keywords": [],
+    "manaProduction": {
+      "colors": [
+        "B"
+      ],
+      "amount": 1
+    },
+    "entryTapRule": "always",
+    "conditionalEntryText": null,
+    "abilities": [
+      {
+        "abilityType": "activated",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": "{T}",
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "add_mana",
+          "params": {}
+        }
+      },
+      {
+        "abilityType": "triggered",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "draw_cards",
+          "params": {
+            "amount": 1
+          }
+        }
+      }
+    ],
+    "oracleText": "This land enters tapped.\n{T}: Add {B}.\nCycling {1}{B} ({1}{B}, Discard this card: Draw a card.)",
+    "scryfallId": "04a19aea-209d-4354-8c59-d08244185eb8"
+  },
+  "Polluted Mire": {
+    "cardName": "Polluted Mire",
+    "manaCost": "",
+    "manaValue": 0,
+    "typeLine": "Land",
+    "cardType": "land",
+    "subtypes": [],
+    "keywords": [],
+    "manaProduction": {
+      "colors": [
+        "B"
+      ],
+      "amount": 1
+    },
+    "entryTapRule": "always",
+    "conditionalEntryText": null,
+    "abilities": [
+      {
+        "abilityType": "activated",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": "{T}",
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "add_mana",
+          "params": {}
+        }
+      },
+      {
+        "abilityType": "triggered",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "draw_cards",
+          "params": {
+            "amount": 2
+          }
+        }
+      }
+    ],
+    "oracleText": "This land enters tapped.\n{T}: Add {B}.\nCycling {2} ({2}, Discard this card: Draw a card.)",
+    "scryfallId": "bb724bec-3509-4f5f-84c0-b1b54063d06f"
   }
 }

@@ -1,67 +1,74 @@
-# Roadmap: Any Card / Feature Functional
+# Roadmap: Remaining Features & Abilities
 
-Execution tracker for the saved roadmap in `LOOPS.md` ("Universal Card Rules Roadmap", saved 2026-07-24). The saved loop is the canonical source of truth; this file tracks execution status and evidence.
+Goal: Every card and feature in the app is playable — abilities resolve mechanically,
+all 16 starter decks are complete and functional, and the game loop works end to end.
 
 Status legend: [x] done · [~] partial · [ ] not started
 
-## Phase 1: Universal Card Data Resolution
+## Phase A: Starter Deck Completion (highest priority)
 
-| # | Step | Status | Evidence |
-|---|------|--------|----------|
-| 1.1 | Oracle text via Scryfall collection endpoint | [x] | `scripts/parse-card-rules.mjs`, outputs for all 16 decks in `scripts/rules-output/` |
-| 1.2 | Expand `inferEntryTapRule` for all "enters tapped" variants | [~] | `src/data/cardRules.ts` covers common variants; parser adds ETB rules per card |
-| 1.3 | Expand `evaluateConditionalEntryTap` beyond 2 patterns | [~] | `src/data/cardFeatures.ts`; conditional ETB prompt exists in `BoardTurnPrompt` |
-| 1.4 | `inferManaAbility` beyond simple `{T}: Add {W}` | [~] | Parser extracts manaProduction per card into deck JSON |
-| 1.5 | Rule override UI backed by `cardRuleStore` | [x] | SettingsPage "Card Rule Database" editor |
-| 1.6 | Migrate rule cache to IndexedDB | [~] | Backgrounds migrated; card images via `cardImageCache.ts` (IndexedDB) |
+All 16 prebuilt decks become complete, official, playable 100-card lists.
 
-## Phase 2: Game Engine — Stack, Triggers, State-Based Actions
+| Deck | Status |
+|------|--------|
+| Blight Curse | [x] complete |
+| Draconic Destruction (AI) | [x] complete |
+| Dance of the Elements | [ ] |
+| Cairo's Monument | [ ] |
+| Enduring Enchantments | [ ] |
+| Sauron, the Dark Lord | [ ] |
+| Food & Fellowship | [ ] |
+| Creative Energy | [ ] |
+| Eldrazi Incursion | [ ] |
+| Squirreled Away | [ ] |
+| Jump Scare | [ ] |
+| Endless Punishment | [ ] |
+| Eldrazi Unbound | [ ] |
+| Grave Danger | [ ] |
+| Mutant Menace | [ ] |
+| Glory Dog | [ ] |
+| Necron Dynasties | [ ] |
 
-| # | Step | Status | Evidence |
-|---|------|--------|----------|
-| 2.1 | `TriggeredAbility` model | [x] | `TriggerInstance`/`CardAbilityDef` in `src/types/card.ts` |
-| 2.2 | Trigger stack UI | [x] | `TriggerStack.tsx`/`TriggerItem.tsx`, wired via `gameStore` |
-| 2.3 | State-based actions loop | [ ] | No SBA loop found (lethal damage / 0-toughness deaths) |
-| 2.4 | Continuous/temporary effects | [~] | `EffectHistoryEntry` exists; temporary effects not modeled |
+Steps per deck: fetch official list → validate every name against Scryfall → land
+in `src/data/decklists/<id>.json` (single source for app + parser) → run card-rule
+parser → verify rules output complete → play test (import, board, vs AI).
 
-## Phase 3: Combat
+## Phase B: Ability Engine
 
-| # | Step | Status | Evidence |
-|---|------|--------|----------|
-| 3.1 | Combat phase in turn model | [~] | `gameTurnPhases.ts` exists; verify combat steps present |
-| 3.2 | Attack/block declaration UI | [ ] | Not found |
-| 3.3 | Combat damage + SBA cleanup | [ ] | Not found |
+| # | Ability | Mechanic needed | Status |
+|---|---------|-----------------|--------|
+| B1 | Keywords (flying, trample, lifelink, deathtouch, haste, vigilance, reach, first strike, ward, indestructible, hexproof) | Parse keywords from rules JSON; combat modifiers (flying/reach blocking, trample overflow, lifelink heal, deathtouch lethal, indestructible survival, haste/vigilance attack rules) | [ ] |
+| B2 | Targeting | `TargetCard.tsx` exists — wire target-selection step into cast/resolve flow for spells and abilities that target | [~] |
+| B3 | Continuous / temporary effects | `EffectHistoryEntry` exists — model "until end of turn", pump spells, auras | [~] |
+| B4 | Modal spells & kicker | Cost-choice UI before resolution | [ ] |
+| B5 | Token generation from abilities | Trigger effects already produce tokens via `triggerActions` — audit coverage | [~] |
+| B6 | Combat steps | Formalize declare-attackers/blockers/damage steps with pass-priority gaps; auto-enter combat from main phase | [~] |
+| B7 | Priority system | Who-has-priority model + instant-speed windows | [ ] |
 
-## Phase 4: Advanced Abilities
+## Phase C: Opponent & Multiplayer Playability
 
-| # | Step | Status | Evidence |
-|---|------|--------|----------|
-| 4.1 | Targeting model | [ ] | `TargetCard.tsx` exists — verify wiring |
-| 4.2 | Keyword resolution (flying, trample, etc.) | [ ] | Display only |
-| 4.3 | Token generation from abilities | [ ] | Manual tokens only |
-| 4.4 | Modal/cost choices (kicker, choose one) | [ ] | Not found |
+| # | Item | Status |
+|---|------|--------|
+| C1 | AI opponent deck selection (choose any imported/prebuilt deck for the AI) | [ ] |
+| C2 | AI improvement: cast instants during combat, use commander more, keep 2+ land types for color fixing | [~] |
+| C3 | AI opponent in multiplayer? (solo AI only today) | [ ] |
+| C4 | Multiplayer rules parity: trigger engine + SBA server-side (protocol Phase 6) | [ ] |
+| C5 | Deck import polish: Moxfield/Archidekt raw list handling, import validation errors surfaced | [~] |
 
-## Phase 5: Priority & Turn Structure
+## Phase D: Data & Content Infrastructure
 
-| # | Step | Status | Evidence |
-|---|------|--------|----------|
-| 5.1 | Priority system | [ ] | Not found |
-| 5.2 | Instant-speed play | [ ] | Not found |
-| 5.3 | Full turn structure | [~] | `gameTurnPhases.ts` + `PhaseBar.tsx`/`PhaseSidebar.tsx` |
+| # | Item | Status |
+|---|------|--------|
+| D1 | Move decklists to `src/data/decklists/*.json` (single source for app + parser script) | [ ] |
+| D2 | Local card images for all deck cards (extend `public/cards/` catalog + `localCardImages.ts`) | [ ] |
+| D3 | Card rules cache migration localStorage → IndexedDB | [~] |
+| D4 | Scryfall bulk-data offline mirror (optional) | [ ] |
 
-## Phase 6: Broadcaster & Multiplayer Rules Sync
+## Phase E: Verification
 
-| # | Step | Status | Evidence |
-|---|------|--------|----------|
-| 6.1 | Rules engine to shared protocol package | [ ] | Still duplicated client/server |
-| 6.2 | Server-authoritative resolution | [ ] | `GameRoom.ts` lacks `overrideLandPlay` handler, `gameEnded` emission, land-limit enforcement, commander tax |
-
-## Additional hygiene (from refactor loop)
-
-- [x] Split BoardPage.tsx (1231 -> 446 lines) — components extracted, committed
-- [x] Test suite started (`vitest`, `src/stores/gameStore.test.ts`, 5 tests, green)
-- [ ] Code-split >500 KB production bundle (dynamic import pages)
-- [ ] Complete 15 placeholder prebuilt decks
-- [ ] Deck builder UI (`src/components/DeckBuilder/` empty)
-- [ ] Multiplayer name/deck selection (hardcoded `'Player'`/`decks[0]`)
-- [ ] Chat UI (server event wired, no client UI)
+| # | Item | Status |
+|---|------|--------|
+| E1 | Per-deck playability test (import → board → draw 7 → advance turns) | [ ] |
+| E2 | Deck-vs-AI smoke test (load deck, play 3 turns each side) | [ ] |
+| E3 | Regression suite: SBA, combat, triggers, mana, rules parser (grow beyond 138 tests) | [~] |
+| E4 | README + docs/API.md update (overrideLandPlay now implemented, deck builder, AI opponent) | [ ] |

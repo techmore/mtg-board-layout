@@ -8,7 +8,7 @@
  *   node scripts/parse-card-rules.mjs [--deck blight-curse] [--resume]
  */
 
-import { readFileSync, writeFileSync, mkdirSync, existsSync } from 'fs'
+import { readFileSync, writeFileSync, mkdirSync, existsSync, readdirSync } from 'fs'
 import { resolve, dirname } from 'path'
 import { fileURLToPath } from 'url'
 
@@ -236,6 +236,18 @@ const prebuiltDecks = {
       'Swamp', 'Mountain',
     ],
   },
+}
+
+// Authoritative decklists live in src/data/decklists/*.json (shared with the app).
+// Override the inline placeholder copies above so the parser stays in sync.
+const DECKLISTS_DIR = resolve(__dirname, '../src/data/decklists')
+for (const file of readdirSync(DECKLISTS_DIR).filter((f) => f.endsWith('.json'))) {
+  const deck = JSON.parse(readFileSync(resolve(DECKLISTS_DIR, file), 'utf8'))
+  prebuiltDecks[deck.id] = {
+    commander: deck.commander,
+    partners: deck.partners ?? [],
+    cards: deck.cards,
+  }
 }
 
 function getUniqueCards(deckName) {
