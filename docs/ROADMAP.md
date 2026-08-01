@@ -40,7 +40,7 @@ DFC names normalized to front faces; arena-only printings excluded.
 |---|---------|-----------------|--------|
 | B1 | Keywords (flying, trample, lifelink, deathtouch, haste, vigilance, reach, first strike, ward, indestructible, hexproof) | **All combat keywords DONE**: flying, trample, lifelink, deathtouch, indestructible, haste, reach, first strike, double strike (two damage steps + SBA between). Hexproof/ward (targeting) pending — need B2 targeting model first | [~] |
 | B2 | Targeting | `TargetCard.tsx` exists — wire target-selection step into cast/resolve flow for spells and abilities that target | [~] |
-| B3 | Continuous / temporary effects | `EffectHistoryEntry` exists — model "until end of turn", pump spells, auras | [~] |
+| B3 | Continuous / temporary effects | **"Until end of turn" pumps DONE**: parser extracts `+N/+N until end of turn` (25 cards), powerBoost/toughnessBoost on BoardCard, combat/SBA/AI use boosted stats, boosts clear on untap/zone change, green badge on card. Auras / lasting continuous effects pending | [~] |
 | B4 | Modal spells & kicker | Cost-choice UI before resolution | [ ] |
 | B5 | Token generation from abilities | Trigger effects already produce tokens via `triggerActions` — audit coverage | [x] `create_token` wired + tested, token power/toughness now parsed and applied (`Token` gains `power`/`toughness`, shown on broadcast) |
 | B6 | Combat steps | Formalize declare-attackers/blockers/damage steps with pass-priority gaps; auto-enter combat from main phase | [~] |
