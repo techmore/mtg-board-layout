@@ -1,5 +1,6 @@
 import type { BoardCard, ManaColor } from '../types/card'
-import { canPayManaCost } from '../utils/misc'
+import { canPayManaCost, getCreaturePower } from '../utils/misc'
+import { hasKeyword } from './cardRulesLoader'
 
 export function pickLand(hand: BoardCard[]): BoardCard | null {
   const lands = hand.filter((c) => c.type === 'land')
@@ -25,7 +26,8 @@ export function pickCommanderCast(commandCards: BoardCard[], manaPool: Record<Ma
 
 export function pickAttackers(battlefield: BoardCard[], currentTurn: number): string[] {
   return battlefield
-    .filter((c) => c.type === 'creature' && !c.tapped && c.enteredAtTurn !== currentTurn)
+    .filter((c) => c.type === 'creature' && !c.tapped)
+    .filter((c) => c.enteredAtTurn === currentTurn ? hasKeyword(c, 'haste') : true)
     .map((c) => c.id)
 }
 
@@ -44,16 +46,23 @@ export function pickBlockers(
   for (const attId of playerAttackers) {
     const attacker = allCards.find((c) => c.id === attId)
     if (!attacker) continue
-    const attPower = parseInt(attacker.typeLine?.match(/(\d+)\//)?.[1] ?? '0')
+    const attPower = getCreaturePower(attacker.typeLine)
     if (attPower === 0) continue
+    const attackerFlying = hasKeyword(attacker, 'flying')
+    const attackerDeathtouch = hasKeyword(attacker, 'deathtouch')
 
     const candidates = available
       .filter((b) => !used.has(b.id))
+      .filter((b) => !attackerFlying || hasKeyword(b, 'flying') || hasKeyword(b, 'reach'))
       .sort((a, b) => {
         const aTough = parseInt(a.typeLine?.match(/\/(\d+)/)?.[1] ?? '0')
         const bTough = parseInt(b.typeLine?.match(/\/(\d+)/)?.[1] ?? '0')
-        const aSurvives = aTough >= attPower ? 1 : 0
-        const bSurvives = bTough >= attPower ? 1 : 0
+        const aSurvives = attackerDeathtouch ? 0 : aTough >= attPower ? 1 : 0
+        const bSurvives = attackerDeathtouch ? 0 : bTough >= attPower ? 1 : 0
+        // Against deathtouch every blocker dies, so prefer the smallest trade.
+        if (attackerDeathtouch) {
+          return (parseInt(a.typeLine?.match(/(\d+)\//)?.[1] ?? '0') - parseInt(b.typeLine?.match(/(\d+)\//)?.[1] ?? '0'))
+        }
         return bSurvives - aSurvives || (parseInt(a.typeLine?.match(/(\d+)\//)?.[1] ?? '0') - parseInt(b.typeLine?.match(/(\d+)\//)?.[1] ?? '0'))
       })
 

@@ -24,3 +24,17 @@ export function getCardRule(
     (r) => r.cardName.toLowerCase() === cardName.toLowerCase(),
   )
 }
+
+export function getCardKeywords(card: { name: string }): Set<string> {
+  const rule = getCardRule(card.name, rulesCache)
+  return new Set(rule?.keywords ?? [])
+}
+
+export function hasKeyword(card: { name: string }, keyword: string): boolean {
+  return getCardKeywords(card).has(keyword)
+}
+
+/** Test hook: seed the rules cache without a fetch. */
+export function primeCardRules(rules: Record<string, CardRuleEntry>): void {
+  rulesCache = rules
+}

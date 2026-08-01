@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import { useGameStore } from '../../stores/gameStore'
 import { useDeckStore } from '../../stores/deckStore'
 import type { CardScale, ManaUsageKind } from '../../types/card'
@@ -5,8 +6,8 @@ import { CARD_SCALE_OPTIONS } from '../../layout/cardSizing'
 import { BoardBtn } from './BoardBtn'
 import ManaPoolArtifact from './ManaPoolArtifact'
 import { ManaUsageLog } from './ManaUsageLog'
+import { OpponentSetupDialog } from './OpponentSetupDialog'
 import { PhaseBar } from './PhaseBar'
-import { DRACONIC_DESTRUCTION_DECK } from '../../data/prebuiltDecks'
 
 interface BoardControlsProps {
   handleDeckChange: (deckId: string) => Promise<void>
@@ -47,6 +48,7 @@ export function BoardControls({
   const setLife = useGameStore((s) => s.setLife)
   const showOpponent = useGameStore((s) => s.showOpponent)
   const toggleOpponent = useGameStore((s) => s.toggleOpponent)
+  const [opponentSetupOpen, setOpponentSetupOpen] = useState(false)
   const combatState = useGameStore((s) => s.combatState)
   const toggleCombat = useGameStore((s) => s.toggleCombat)
   const resolveCombat = useGameStore((s) => s.resolveCombat)
@@ -168,15 +170,15 @@ export function BoardControls({
         />
       )}
 
+      <OpponentSetupDialog open={opponentSetupOpen} onClose={() => setOpponentSetupOpen(false)} />
+
       <div style={{ flex: 1 }} />
 
       <div style={{ display: 'flex', gap: 4, alignItems: 'center' }}>
         {!showOpponent && (
           <button
-            title="Load AI opponent (Draconic Destruction)"
-            onClick={() => {
-              useGameStore.getState().loadOpponentDeck(DRACONIC_DESTRUCTION_DECK.commanderNames, DRACONIC_DESTRUCTION_DECK.cards, DRACONIC_DESTRUCTION_DECK.name)
-            }}
+            title="Choose AI opponent deck"
+            onClick={() => setOpponentSetupOpen(true)}
             style={{
               padding: '4px 10px',
               borderRadius: 4,

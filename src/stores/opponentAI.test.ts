@@ -1,6 +1,7 @@
-import { describe, expect, it } from 'vitest'
-import type { BoardCard, ManaPool } from '../types/card'
-import { pickCommanderCast } from './opponentAI'
+import { afterEach, beforeEach, describe, expect, it } from 'vitest'
+import type { BoardCard, CardRuleEntry, ManaPool } from '../types/card'
+import { pickAttackers, pickBlockers, pickCommanderCast } from './opponentAI'
+import { primeCardRules } from './cardRulesLoader'
 
 const manaPool = (overrides: Partial<ManaPool> = {}): ManaPool => ({ W: 0, U: 0, B: 0, R: 0, G: 0, C: 0, ...overrides })
 
@@ -22,6 +23,33 @@ function commander(overrides: Partial<BoardCard> = {}): BoardCard {
     ...overrides,
   }
 }
+
+function creature(overrides: Partial<BoardCard> = {}): BoardCard {
+  return {
+    id: 'creature',
+    scryfallId: 'sf-c',
+    name: 'Creature',
+    imageUri: '',
+    typeLine: '1/1',
+    subtypes: [],
+    isBasicLand: false,
+    zone: 'battlefield',
+    tapped: false,
+    counters: 0,
+    type: 'creature',
+    revealed: true,
+    owner: 'opponent',
+    ...overrides,
+  }
+}
+
+beforeEach(() => {
+  primeCardRules({})
+})
+
+afterEach(() => {
+  primeCardRules({})
+})
 
 describe('pickCommanderCast', () => {
   it('returns null when the commander is unaffordable', () => {
@@ -51,5 +79,47 @@ describe('pickCommanderCast', () => {
   it('skips commanders without a mana cost', () => {
     const card = commander({ manaCost: undefined })
     expect(pickCommanderCast([card], manaPool())).toBeNull()
+  })
+})
+
+describe('pickAttackers', () => {
+  it('lets creatures with haste attack the turn they entered', () => {
+    primeCardRules({ 'Rager': { cardName: 'Rager', manaCost: '', manaValue: 2, typeLine: 'Creature', cardType: 'creature', subtypes: [], keywords: ['haste'], manaProduction: null, entryTapRule: null, conditionalEntryText: null, oracleText: '', scryfallId: 'r', abilities: [] } as CardRuleEntry })
+    const attackers = pickAttackers([
+      creature({ id: 'rager', name: 'Rager', enteredAtTurn: 5 }),
+      creature({ id: 'bear', name: 'Bear', enteredAtTurn: 5 }),
+    ], 5)
+    expect(attackers).toContain('rager')
+    expect(attackers).not.toContain('bear')
+  })
+
+  it('skips tapped creatures and those that entered this turn without haste', () => {
+    const attackers = pickAttackers([
+      creature({ id: 'tapped', tapped: true, enteredAtTurn: 4 }),
+      creature({ id: 'fresh', enteredAtTurn: 5 }),
+      creature({ id: 'ready', enteredAtTurn: 4 }),
+    ], 5)
+    expect(attackers).toEqual(['ready'])
+  })
+})
+
+describe('pickBlockers', () => {
+  it('refuses to block a flying attacker without flying or reach', () => {
+    primeCardRules({ 'Drake': { cardName: 'Drake', manaCost: '', manaValue: 3, typeLine: 'Creature', cardType: 'creature', subtypes: [], keywords: ['flying'], manaProduction: null, entryTapRule: null, conditionalEntryText: null, oracleText: '', scryfallId: 'd', abilities: [] } as CardRuleEntry })
+    const wall = creature({ id: 'wall', name: 'Wall' })
+    const drake = creature({ id: 'drake', name: 'Drake', owner: 'player' })
+    const result = pickBlockers(['drake'], [wall], [wall, drake], 5)
+    expect(result.drake).toBeUndefined()
+  })
+
+  it('blocks a flying attacker with a reach creature', () => {
+    primeCardRules({
+      'Drake': { cardName: 'Drake', manaCost: '', manaValue: 3, typeLine: 'Creature', cardType: 'creature', subtypes: [], keywords: ['flying'], manaProduction: null, entryTapRule: null, conditionalEntryText: null, oracleText: '', scryfallId: 'd', abilities: [] } as CardRuleEntry,
+      'Web': { cardName: 'Web', manaCost: '', manaValue: 2, typeLine: 'Creature', cardType: 'creature', subtypes: [], keywords: ['reach'], manaProduction: null, entryTapRule: null, conditionalEntryText: null, oracleText: '', scryfallId: 'w', abilities: [] } as CardRuleEntry,
+    })
+    const web = creature({ id: 'web', name: 'Web', typeLine: '2/4' })
+    const drake = creature({ id: 'drake', name: 'Drake', owner: 'player' })
+    const result = pickBlockers(['drake'], [web], [web, drake], 5)
+    expect(result.drake).toEqual(['web'])
   })
 })

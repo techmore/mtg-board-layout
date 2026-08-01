@@ -1,8 +1,27 @@
-import { afterEach, describe, expect, it, vi } from 'vitest'
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { useGameStore } from './gameStore'
-import type { BoardCard, DeckCard, ManaPool } from '../types/card'
+import { primeCardRules } from './cardRulesLoader'
+import type { BoardCard, CardRuleEntry, DeckCard, ManaPool } from '../types/card'
 
 const emptyManaPool = (): ManaPool => ({ W: 0, U: 0, B: 0, R: 0, G: 0, C: 0 })
+
+function ruleFor(name: string, keywords: string[] = []): CardRuleEntry {
+  return {
+    cardName: name,
+    manaCost: '{1}',
+    manaValue: 2,
+    typeLine: 'Creature',
+    cardType: 'creature',
+    subtypes: [],
+    keywords,
+    manaProduction: null,
+    entryTapRule: null,
+    conditionalEntryText: null,
+    oracleText: '',
+    scryfallId: `sf-${name}`,
+    abilities: [],
+  }
+}
 
 function deckCard(name: string, typeLine: string, quantity = 1): DeckCard {
   return {
@@ -63,6 +82,10 @@ function resetStore() {
 }
 
 afterEach(resetStore)
+
+beforeEach(() => {
+  primeCardRules({})
+})
 
 describe('game over', () => {
   it('marks the opponent as winner when player life reaches zero', () => {
@@ -194,6 +217,96 @@ describe('state-based actions', () => {
     })
     useGameStore.getState().removeCounter('bear')
     expect(useGameStore.getState().cards.find((c) => c.id === 'bear')?.zone).toBe('graveyard')
+  })
+})
+
+describe('combat keywords', () => {
+  function startCombat(cards: BoardCard[], rules: CardRuleEntry[], attackerIds: string[], blockers: Record<string, string[]> = {}) {
+    primeCardRules(Object.fromEntries(rules.map((r) => [r.cardName, r])))
+    useGameStore.setState({
+      cards,
+      combatState: { active: true, attackers: attackerIds, blockers },
+    })
+  }
+
+  it('lifelink heals the attacker controller for unblocked damage', () => {
+    startCombat(
+      [card({ id: 'vamp', name: 'Vampire', typeLine: '2/2', type: 'creature', zone: 'battlefield', tapped: true })],
+      [ruleFor('Vampire', ['lifelink'])],
+      ['vamp'],
+    )
+    useGameStore.getState().resolveCombat()
+    expect(useGameStore.getState().opponentLifeTotal).toBe(38)
+    expect(useGameStore.getState().lifeTotal).toBe(42)
+  })
+
+  it('a non-flying blocker cannot block a flying attacker', () => {
+    startCombat(
+      [
+        card({ id: 'drake', name: 'Drake', typeLine: '3/2', type: 'creature', zone: 'battlefield', tapped: true }),
+        card({ id: 'wall', name: 'Wall', typeLine: '0/4', type: 'creature', zone: 'battlefield', owner: 'opponent' }),
+      ],
+      [ruleFor('Drake', ['flying'])],
+      ['drake'],
+      { drake: ['wall'] },
+    )
+    useGameStore.getState().resolveCombat()
+    const wall = useGameStore.getState().cards.find((c) => c.id === 'wall')
+    expect(wall?.zone).toBe('battlefield')
+    expect(wall?.damage ?? 0).toBe(0)
+    expect(useGameStore.getState().opponentLifeTotal).toBe(37)
+  })
+
+  it('trample sends excess damage to the defending player', () => {
+    startCombat(
+      [
+        card({ id: 'stamp', name: 'Stampede', typeLine: '5/3', type: 'creature', zone: 'battlefield', tapped: true }),
+        card({ id: 'chump', name: 'Chump', typeLine: '2/2', type: 'creature', zone: 'battlefield', owner: 'opponent' }),
+      ],
+      [ruleFor('Stampede', ['trample'])],
+      ['stamp'],
+      { stamp: ['chump'] },
+    )
+    useGameStore.getState().resolveCombat()
+    expect(useGameStore.getState().cards.find((c) => c.id === 'chump')?.zone).toBe('graveyard')
+    expect(useGameStore.getState().opponentLifeTotal).toBe(37)
+  })
+
+  it('indestructible creatures survive lethal damage', () => {
+    primeCardRules({ 'Darksteel': ruleFor('Darksteel', ['indestructible']) })
+    useGameStore.setState({
+      cards: [card({ id: 'steel', name: 'Darksteel', typeLine: '2/2', type: 'creature', zone: 'battlefield', damage: 2 })],
+    })
+    useGameStore.getState().checkStateBasedActions()
+    expect(useGameStore.getState().cards.find((c) => c.id === 'steel')?.zone).toBe('battlefield')
+  })
+
+  it('deathtouch lets a small attacker kill a bigger blocker', () => {
+    startCombat(
+      [
+        card({ id: 'cobra', name: 'Cobra', typeLine: '1/1', type: 'creature', zone: 'battlefield', tapped: true }),
+        card({ id: 'giant', name: 'Giant', typeLine: '6/6', type: 'creature', zone: 'battlefield', owner: 'opponent' }),
+      ],
+      [ruleFor('Cobra', ['deathtouch'])],
+      ['cobra'],
+      { cobra: ['giant'] },
+    )
+    useGameStore.getState().resolveCombat()
+    expect(useGameStore.getState().cards.find((c) => c.id === 'giant')?.zone).toBe('graveyard')
+    expect(useGameStore.getState().opponentLifeTotal).toBe(40)
+  })
+
+  it('every attacker deals damage in a multi-attacker combat', () => {
+    startCombat(
+      [
+        card({ id: 'a1', name: 'Grizzly Bears', typeLine: '2/2', type: 'creature', zone: 'battlefield', tapped: true }),
+        card({ id: 'a2', name: 'Hill Giant', typeLine: '3/3', type: 'creature', zone: 'battlefield', tapped: true }),
+      ],
+      [],
+      ['a1', 'a2'],
+    )
+    useGameStore.getState().resolveCombat()
+    expect(useGameStore.getState().opponentLifeTotal).toBe(35)
   })
 })
 
