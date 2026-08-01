@@ -756,6 +756,56 @@ describe('spell resolution', () => {
   })
 })
 
+describe('static effects', () => {
+  function anthemRule(): CardRuleEntry {
+    return {
+      cardName: 'Anthem', manaCost: '{1}{W}{W}', manaValue: 3, typeLine: 'Enchantment', cardType: 'enchantment', subtypes: [], keywords: [], manaProduction: null, entryTapRule: null, conditionalEntryText: null, oracleText: 'Creatures you control get +1/+1.', scryfallId: 'a', abilities: [{
+        abilityType: 'static',
+        triggerEvent: null,
+        triggerCondition: null,
+        isOptional: false,
+        cost: null,
+        targets: 0,
+        targetFilter: null,
+        effect: { kind: 'pump', params: { power: 1, toughness: 1 } },
+      }],
+    }
+  }
+
+  it('a static anthem pumps friendly creatures in combat', () => {
+    primeCardRules({ 'Anthem': anthemRule() })
+    const anthem = card({ id: 'anthem', name: 'Anthem', typeLine: 'Enchantment', type: 'enchantment', zone: 'battlefield' })
+    const bear = card({ id: 'bear', name: 'Bear', typeLine: '2/2', type: 'creature', zone: 'battlefield', tapped: true })
+    const chump = card({ id: 'chump', name: 'Chump', typeLine: '2/2', type: 'creature', zone: 'battlefield', owner: 'opponent' })
+    useGameStore.setState({
+      cards: [anthem, bear, chump],
+      combatState: { active: true, attackers: ['bear'], blockers: { bear: ['chump'] } },
+    })
+    useGameStore.getState().resolveCombat()
+    // Bear is effectively 3/3: kills the 2/2 chump and survives its 2 damage.
+    expect(useGameStore.getState().cards.find((c) => c.id === 'chump')?.zone).toBe('graveyard')
+    expect(useGameStore.getState().cards.find((c) => c.id === 'bear')?.zone).toBe('battlefield')
+  })
+
+  it('an anthem does not pump the opponent\'s creatures', () => {
+    primeCardRules({ 'Anthem': anthemRule() })
+    const anthem = card({ id: 'anthem', name: 'Anthem', typeLine: 'Enchantment', type: 'enchantment', zone: 'battlefield' })
+    const enemyBear = card({ id: 'bear', name: 'Bear', typeLine: '2/2', type: 'creature', zone: 'battlefield', owner: 'opponent', damage: 2 })
+    useGameStore.setState({ cards: [anthem, enemyBear] })
+    useGameStore.getState().checkStateBasedActions()
+    expect(useGameStore.getState().cards.find((c) => c.id === 'bear')?.zone).toBe('graveyard')
+  })
+
+  it('a static anthem saves a creature from lethal damage', () => {
+    primeCardRules({ 'Anthem': anthemRule() })
+    const anthem = card({ id: 'anthem', name: 'Anthem', typeLine: 'Enchantment', type: 'enchantment', zone: 'battlefield' })
+    const bear = card({ id: 'bear', name: 'Bear', typeLine: '2/2', type: 'creature', zone: 'battlefield', damage: 2 })
+    useGameStore.setState({ cards: [anthem, bear] })
+    useGameStore.getState().checkStateBasedActions()
+    expect(useGameStore.getState().cards.find((c) => c.id === 'bear')?.zone).toBe('battlefield')
+  })
+})
+
 describe('ward', () => {
   const wardExileAbility = (): CardAbilityDef => ({
     abilityType: 'spell',

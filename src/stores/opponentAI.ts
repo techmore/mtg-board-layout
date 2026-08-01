@@ -1,6 +1,6 @@
 import type { BoardCard, ManaColor } from '../types/card'
 import { canPayManaCost, getCardPower, getCardToughness } from '../utils/misc'
-import { hasKeyword } from './cardRulesLoader'
+import { hasKeyword, computeStaticPump } from './cardRulesLoader'
 
 export function pickLand(hand: BoardCard[]): BoardCard | null {
   const lands = hand.filter((c) => c.type === 'land')
@@ -43,8 +43,8 @@ export function pickAttackers(battlefield: BoardCard[], currentTurn: number, def
   )
   const ground = candidates.filter((c) => !flyers.includes(c))
 
-  const ourPower = ground.reduce((sum, c) => sum + getCardPower(c), 0)
-  const theirPower = threats.reduce((sum, c) => sum + getCardPower(c), 0)
+  const ourPower = ground.reduce((sum, c) => sum + getCardPower(c) + computeStaticPump(battlefield, c).power, 0)
+  const theirPower = threats.reduce((sum, c) => sum + getCardPower(c) + computeStaticPump(defenders, c).power, 0)
 
   // Attack on the ground only when the trade is not clearly unfavorable.
   const ids = ourPower >= theirPower ? ground.map((c) => c.id) : []
@@ -75,8 +75,8 @@ export function pickBlockers(
       .filter((b) => !used.has(b.id))
       .filter((b) => !attackerFlying || hasKeyword(b, 'flying') || hasKeyword(b, 'reach'))
       .sort((a, b) => {
-        const aTough = getCardToughness(a)
-        const bTough = getCardToughness(b)
+        const aTough = getCardToughness(a) + computeStaticPump(allCards, a).toughness
+        const bTough = getCardToughness(b) + computeStaticPump(allCards, b).toughness
         const aSurvives = attackerDeathtouch ? 0 : aTough >= attPower ? 1 : 0
         const bSurvives = attackerDeathtouch ? 0 : bTough >= attPower ? 1 : 0
         // Against deathtouch every blocker dies, so prefer the smallest trade.
