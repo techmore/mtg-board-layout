@@ -44,7 +44,11 @@ export function parseDeckList(
 
   for (const rawLine of text.replace(/\r\n?/g, '\n').split('\n')) {
     let line = rawLine.trim()
-    if (!line || line.startsWith('#') || line.startsWith('//')) continue
+    if (!line) {
+      if (section !== 'main') section = 'main'
+      continue
+    }
+    if (line.startsWith('#') || line.startsWith('//')) continue
     line = line.replace(/^(?:[-•])\s+/, '')
 
     const decoratedHeader = line.match(/^[-=]{2,}\s*(.*?)\s*[-=]{2,}$/)

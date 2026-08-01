@@ -40,6 +40,26 @@ describe('parseDeckList — plain text formats', () => {
     expect(deck.cards).toEqual([{ name: 'Plains', quantity: 99 }])
   })
 
+  it('returns to the main section after a blank line following commander entries', () => {
+    const deck = parseDeckList('Commander\nAtarka, World Render\n\n4 Lightning Bolt\n20 Mountain')
+    expect(deck.commanderNames).toEqual(['Atarka, World Render'])
+    expect(deck.cards).toEqual([
+      { name: 'Lightning Bolt', quantity: 4 },
+      { name: 'Mountain', quantity: 20 },
+    ])
+  })
+
+  it('returns to the main section after a blank line following sideboard entries', () => {
+    const deck = parseDeckList('Sideboard\n3 Stifle\n\n1 Forest')
+    expect(deck.cards).toEqual([{ name: 'Forest', quantity: 1 }])
+  })
+
+  it('keeps consecutive partners as commanders without blank lines between them', () => {
+    const deck = parseDeckList('Commander\nHaldan, Avid Arcanist\nPako, Arcane Retriever\n\n40 Island')
+    expect(deck.commanderNames).toEqual(['Haldan, Avid Arcanist', 'Pako, Arcane Retriever'])
+    expect(deck.cards).toEqual([{ name: 'Island', quantity: 40 }])
+  })
+
   it('drops sideboard cards and keeps duplicates of partners', () => {
     const deck = parseDeckList('Sideboard\n15 Stifle\n\nCommander\nHaldan, Avid Arcanist\nPako, Arcane Retriever\n\nDeck\n40 Island')
     expect(deck.commanderNames).toEqual(['Haldan, Avid Arcanist', 'Pako, Arcane Retriever'])
