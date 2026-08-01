@@ -107,6 +107,24 @@ export default function MultiplayerBoardPage() {
       <section style={positionedTableStyle(me.positionX, me.positionY)}>
         <h2 style={sectionTitle}>Your battlefield</h2>
         <CardRow cards={me.battlefield} empty="No permanents yet" onCard={(card) => sendAction({ type: 'tapCard', cardId: card.id })} />
+        {me.tokens.length > 0 && (
+          <div style={tokenRowStyle}>
+            {me.tokens.map((token) => (
+              <div key={token.id} style={tokenStyle(token.tapped)} title={token.name}>
+                <span style={{ fontSize: '0.68rem', fontWeight: 700 }}>{token.name}</span>
+                <span style={mutedStyle}>
+                  {token.tapped ? '⤓ ' : ''}{token.counters !== 0 ? `${token.counters}` : ''}
+                </span>
+                <div style={{ display: 'flex', gap: 3 }}>
+                  <button onClick={() => sendAction({ type: 'toggleTokenTap', tokenId: token.id })} style={tinyButtonStyle}>⤓</button>
+                  <button onClick={() => sendAction({ type: 'addTokenCounter', tokenId: token.id })} style={tinyButtonStyle}>+1</button>
+                  <button onClick={() => sendAction({ type: 'removeTokenCounter', tokenId: token.id })} style={tinyButtonStyle}>−1</button>
+                  <button onClick={() => sendAction({ type: 'removeToken', tokenId: token.id })} style={{ ...tinyButtonStyle, color: '#f85149' }}>×</button>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
         <div style={zoneSummaryStyle}>
           <span>Command {me.command.length}</span>
           <span>Graveyard {me.graveyard.length}</span>
@@ -129,6 +147,21 @@ export default function MultiplayerBoardPage() {
         <div style={controlGroupStyle}>
           <button onClick={() => sendAction({ type: 'drawCards', count: 1 })} disabled={!isMyTurn || finished} style={smallButtonStyle}>Draw</button>
           <button onClick={() => sendAction({ type: 'endTurn' })} disabled={!isMyTurn || finished} style={primaryButtonStyle}>{isMyTurn ? 'End Turn' : 'Opponent Turn'}</button>
+        </div>
+        <div style={controlGroupStyle}>
+          <strong>Token</strong>
+          {(['Treasure', 'Soldier', 'Spirit', 'Goat'] as const).map((name) => (
+            <button
+              key={name}
+              onClick={() => sendAction({
+                type: 'addToken',
+                token: { id: crypto.randomUUID(), name, imageUri: '', counters: 0, tapped: false },
+              })}
+              style={smallButtonStyle}
+            >
+              +{name}
+            </button>
+          ))}
         </div>
         <div style={controlGroupStyle}>
           <strong>Seat</strong>
@@ -179,6 +212,15 @@ function PlayerPanel({ player, opponent }: { player: RoomPlayerInfo; opponent?: 
       <span style={mutedStyle}>Life {player.lifeTotal} · Hand {player.handCount}</span>
     </div>
     <CardRow cards={player.battlefield} empty="No permanents" />
+    {player.tokens.length > 0 && (
+      <div style={{ display: 'flex', flexWrap: 'wrap', gap: 4, marginTop: 6 }}>
+        {player.tokens.map((token) => (
+          <span key={token.id} style={{ ...tokenStyle(token.tapped), fontSize: '0.6rem', padding: '2px 7px' }} title={token.name}>
+            {token.name}{token.counters !== 0 ? ` ${token.counters}` : ''}{token.tapped ? ' ⤓' : ''}
+          </span>
+        ))}
+      </div>
+    )}
   </div>
 }
 
@@ -211,6 +253,15 @@ const chatLogStyle: React.CSSProperties = { display: 'flex', flexDirection: 'col
 const chatEntryStyle: React.CSSProperties = { lineHeight: 1.4 }
 const chatNameStyle: React.CSSProperties = { color: '#58a6ff', fontWeight: 700 }
 const chatInputStyle: React.CSSProperties = { flex: 1, padding: '8px 10px', borderRadius: 6, border: '1px solid #30363d', background: '#161b22', color: '#e6edf3', fontSize: '0.78rem' }
+const tokenRowStyle: React.CSSProperties = { display: 'flex', flexWrap: 'wrap', gap: 6, marginTop: 8 }
+const tokenStyle = (tapped: boolean): React.CSSProperties => ({
+  display: 'flex', flexDirection: 'column', gap: 3, alignItems: 'center',
+  padding: '6px 10px', borderRadius: 7,
+  border: `1px solid ${tapped ? 'rgba(210,153,34,0.6)' : 'rgba(88,166,255,0.3)'}`,
+  background: tapped ? 'rgba(210,153,34,0.12)' : 'rgba(88,166,255,0.08)',
+  color: '#e6edf3',
+})
+const tinyButtonStyle: React.CSSProperties = { padding: '1px 6px', borderRadius: 4, border: '1px solid #30363d', background: 'rgba(255,255,255,0.04)', color: '#d0d7de', cursor: 'pointer', fontSize: '0.62rem' }
 const mutedStyle: React.CSSProperties = { color: '#8b949e', fontSize: '0.78rem' }
 const activeBadgeStyle: React.CSSProperties = { color: '#3fb950', fontWeight: 700, fontSize: '0.78rem' }
 const smallButtonStyle: React.CSSProperties = { padding: '6px 9px', borderRadius: 6, border: '1px solid #30363d', background: '#161b22', color: '#e6edf3', cursor: 'pointer', fontSize: '0.72rem' }
