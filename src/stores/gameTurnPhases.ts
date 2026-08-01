@@ -1,5 +1,5 @@
 import type { GameState } from './gameStore'
-import { advanceTurnState, emptyManaPool, moveCastSpellsToGraveyard, prepareCardPlay, pushUndo } from './gameRules'
+import { emptyManaPool, moveCastSpellsToGraveyard, prepareCardPlay, pushUndo } from './gameRules'
 
 type SetFn = (partial: GameState | Partial<GameState> | ((state: GameState) => Partial<GameState>)) => void
 
@@ -10,6 +10,17 @@ export function createTurnPhases(set: SetFn, get: () => GameState): Pick<GameSta
       const isPlayer = state.activePlayer === 'player'
 
       if (isPlayer) {
+        const handSize = state.cards.filter((c) => c.zone === 'hand').length
+        const undo = pushUndo(state)
+        // Hand-size rule applies regardless of how the turn ends (button or
+        // phase advance): discard to 7 before handing off.
+        if (handSize > 7) {
+          set({
+            ...undo,
+            turnPrompt: { action: 'advance', reason: 'discard' },
+          })
+          return
+        }
         set((prev) => ({
           ...pushUndo(prev),
           manaPool: emptyManaPool(),
@@ -167,17 +178,29 @@ export function createTurnPhases(set: SetFn, get: () => GameState): Pick<GameSta
             : candidate,
         )
         const resolvedCards = moveCastSpellsToGraveyard(cards)
-        const nextState = { ...state, cards: resolvedCards }
         const undo = pushUndo(state)
         if (resolvedCards.filter((candidate) => candidate.zone === 'hand').length > 7) {
           return { ...undo, cards: resolvedCards, turnPrompt: { id: Date.now(), action: state.turnPrompt.action, reason: 'discard' } }
         }
         return action === 'advance'
-          ? { ...undo, ...advanceTurnState(nextState) }
+          ? {
+              ...undo,
+              cards: resolvedCards,
+              manaPool: emptyManaPool(),
+              potentialMana: [],
+              landPlaysThisTurn: 0,
+              activePlayer: 'opponent' as const,
+              currentPhase: 'beginning' as const,
+              turnAnnouncement: { id: Date.now(), text: "OPPONENT'S TURN" },
+              turnPrompt: null,
+            }
           : { ...undo, cards: resolvedCards, turnPrompt: null, turnAnnouncement: { id: Date.now(), text: 'END TURN' } }
       })
       if (discarded) {
         get().emitGameEvent({ type: 'discard', cardId, cardName: discarded.name })
+      }
+      if (action === 'advance' && !get().turnPrompt) {
+        get().runOpponentTurn()
       }
       if (action === 'end' && !get().turnPrompt) {
         get().emitGameEvent({ type: 'end_of_turn' })

@@ -166,6 +166,44 @@ describe('deck-out', () => {
   })
 })
 
+describe('end-of-turn discard', () => {
+  it('prompts to discard to 7 before handing off when advancing phases', () => {
+    const cards = Array.from({ length: 10 }, (_, i) =>
+      card({ id: `c${i}`, name: `Card ${i}`, typeLine: 'Creature', type: 'creature', zone: 'hand' }),
+    )
+    useGameStore.setState({ cards })
+    useGameStore.getState().advanceTurn()
+    const state = useGameStore.getState()
+    expect(state.turnPrompt?.reason).toBe('discard')
+    expect(state.turnPrompt?.action).toBe('advance')
+    expect(state.activePlayer).toBe('player')
+  })
+
+  it('hands off to the AI after the discard is resolved', () => {
+    vi.useFakeTimers()
+    try {
+      const cards = Array.from({ length: 9 }, (_, i) =>
+        card({ id: `c${i}`, name: `Card ${i}`, typeLine: 'Creature', type: 'creature', zone: 'hand' }),
+      )
+      useGameStore.setState({ cards })
+      useGameStore.getState().advanceTurn()
+      const prompt = useGameStore.getState().turnPrompt
+      expect(prompt?.reason).toBe('discard')
+      useGameStore.getState().discardForTurn('c0')
+      useGameStore.getState().discardForTurn('c1')
+      expect(useGameStore.getState().turnPrompt).toBeNull()
+      expect(useGameStore.getState().activePlayer).toBe('opponent')
+      expect(useGameStore.getState().cards.filter((c) => c.zone === 'hand')).toHaveLength(7)
+      // The AI turn chain started (its untap/draw step fires shortly).
+      vi.advanceTimersByTime(500)
+      expect(useGameStore.getState().gameOver).toBeNull()
+    } finally {
+      vi.clearAllTimers()
+      vi.useRealTimers()
+    }
+  })
+})
+
 beforeEach(() => {
   primeCardRules({})
 })
