@@ -1,7 +1,7 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { useGameStore } from './gameStore'
 import { primeCardRules } from './cardRulesLoader'
-import type { BoardCard, CardRuleEntry, DeckCard, ManaPool } from '../types/card'
+import type { BoardCard, CardAbilityDef, CardRuleEntry, DeckCard, ManaPool } from '../types/card'
 
 const emptyManaPool = (): ManaPool => ({ W: 0, U: 0, B: 0, R: 0, G: 0, C: 0 })
 
@@ -414,6 +414,118 @@ describe('combat damage steps', () => {
     )
     useGameStore.getState().resolveCombat()
     expect(useGameStore.getState().opponentLifeTotal).toBe(34)
+  })
+})
+
+describe('spell resolution', () => {
+  function spellRule(name: string, ability: CardAbilityDef): CardRuleEntry {
+    return {
+      cardName: name,
+      manaCost: '{1}{W}',
+      manaValue: 2,
+      typeLine: 'Instant',
+      cardType: 'instant',
+      subtypes: [],
+      keywords: [],
+      manaProduction: null,
+      entryTapRule: null,
+      conditionalEntryText: null,
+      oracleText: '',
+      scryfallId: `sf-${name}`,
+      abilities: [ability],
+    }
+  }
+
+  const exileAbility = (): CardAbilityDef => ({
+    abilityType: 'spell',
+    triggerEvent: null,
+    triggerCondition: null,
+    isOptional: false,
+    cost: null,
+    targets: 1,
+    targetFilter: 'creature',
+    effect: { kind: 'exile', params: { targetHint: 'target creature' } },
+  })
+
+  const destroyAllAbility = (): CardAbilityDef => ({
+    abilityType: 'spell',
+    triggerEvent: null,
+    triggerCondition: null,
+    isOptional: false,
+    cost: null,
+    targets: 0,
+    targetFilter: null,
+    effect: { kind: 'destroy', params: {} },
+  })
+
+  const dealDamageAbility = (): CardAbilityDef => ({
+    abilityType: 'spell',
+    triggerEvent: null,
+    triggerCondition: null,
+    isOptional: false,
+    cost: null,
+    targets: 1,
+    targetFilter: null,
+    effect: { kind: 'deal_damage', params: { amount: 3 } },
+  })
+
+  it('casting a spell enqueues its spell abilities on the trigger stack', () => {
+    primeCardRules({ 'Path to Exile': spellRule('Path to Exile', exileAbility()) })
+    const spell = card({ id: 'path', name: 'Path to Exile', type: 'instant', typeLine: 'Instant', zone: 'hand' })
+    useGameStore.setState({ cards: [spell], manaPool: { ...emptyManaPool(), W: 5 } })
+
+    useGameStore.getState().castSpell('path')
+
+    const stack = useGameStore.getState().triggerStack
+    expect(stack).toHaveLength(1)
+    expect(stack[0].sourceCardName).toBe('Path to Exile')
+    expect(stack[0].ability.abilityType).toBe('spell')
+    expect(stack[0].event).toBe('cast')
+  })
+
+  it('a targeted exile spell removes its target from the game', () => {
+    primeCardRules({ 'Path to Exile': spellRule('Path to Exile', exileAbility()) })
+    const spell = card({ id: 'path', name: 'Path to Exile', type: 'instant', typeLine: 'Instant', zone: 'hand' })
+    const victim = card({ id: 'victim', name: 'Grizzly Bears', typeLine: '2/2', type: 'creature', zone: 'battlefield' })
+    useGameStore.setState({ cards: [spell, victim], manaPool: { ...emptyManaPool(), W: 5 } })
+
+    useGameStore.getState().castSpell('path')
+    const triggerId = useGameStore.getState().triggerStack[0].id
+    useGameStore.getState().resolveTrigger(triggerId)
+    useGameStore.getState().selectTarget(triggerId, 'victim')
+
+    expect(useGameStore.getState().cards.find((c) => c.id === 'victim')?.zone).toBe('exile')
+    expect(useGameStore.getState().triggerStack).toHaveLength(0)
+  })
+
+  it('a mass-destruction spell kills all creatures', () => {
+    primeCardRules({ 'Wrath of God': spellRule('Wrath of God', destroyAllAbility()) })
+    const spell = card({ id: 'wrath', name: 'Wrath of God', type: 'sorcery', typeLine: 'Sorcery', zone: 'hand' })
+    const bear = card({ id: 'bear', name: 'Bear', typeLine: '2/2', type: 'creature', zone: 'battlefield' })
+    const land = card({ id: 'land', name: 'Forest', typeLine: 'Basic Land', type: 'land', zone: 'battlefield' })
+    useGameStore.setState({ cards: [spell, bear, land], manaPool: { ...emptyManaPool(), W: 5 } })
+
+    useGameStore.getState().castSpell('wrath')
+    const triggerId = useGameStore.getState().triggerStack[0].id
+    useGameStore.getState().resolveTrigger(triggerId)
+
+    expect(useGameStore.getState().cards.find((c) => c.id === 'bear')?.zone).toBe('graveyard')
+    expect(useGameStore.getState().cards.find((c) => c.id === 'land')?.zone).toBe('battlefield')
+  })
+
+  it('damage from a spell kills a creature through state-based actions', () => {
+    primeCardRules({ 'Bolt': spellRule('Bolt', dealDamageAbility()) })
+    const spell = card({ id: 'bolt', name: 'Bolt', type: 'instant', typeLine: 'Instant', zone: 'hand' })
+    const victim = card({ id: 'victim', name: 'Bird', typeLine: '1/1', type: 'creature', zone: 'battlefield' })
+    useGameStore.setState({ cards: [spell, victim], manaPool: { ...emptyManaPool(), R: 5 } })
+
+    useGameStore.getState().castSpell('bolt')
+    const triggerId = useGameStore.getState().triggerStack[0].id
+    useGameStore.getState().resolveTrigger(triggerId)
+    useGameStore.getState().selectTarget(triggerId, 'victim')
+
+    expect(useGameStore.getState().cards.find((c) => c.id === 'victim')?.zone).toBe('graveyard')
+    expect(useGameStore.getState().cards.find((c) => c.id === 'victim')?.damage).toBe(0)
   })
 })
 

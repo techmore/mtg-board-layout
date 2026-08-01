@@ -52,6 +52,8 @@ interface Harness {
   addCounter: ReturnType<typeof vi.fn>
   moveCard: ReturnType<typeof vi.fn>
   addMana: ReturnType<typeof vi.fn>
+  addDamage: ReturnType<typeof vi.fn>
+  checkStateBasedActions: ReturnType<typeof vi.fn>
 }
 
 function makeHarness(initial: Partial<GameState> = {}): Harness {
@@ -62,6 +64,8 @@ function makeHarness(initial: Partial<GameState> = {}): Harness {
     addCounter: vi.fn(),
     moveCard: vi.fn(),
     addMana: vi.fn(),
+    addDamage: vi.fn(),
+    checkStateBasedActions: vi.fn(),
   }
   const state = {
     triggerStack: [],
@@ -240,8 +244,9 @@ describe('selectTarget', () => {
 
     selectTarget(harness.get, harness.set, 't1', 'target-1')
 
-    expect(harness.addCounter).toHaveBeenCalledTimes(2)
-    expect(harness.addCounter).toHaveBeenCalledWith('target-1')
+    expect(harness.addDamage).toHaveBeenCalledWith('target-1', 2)
+    expect(harness.addCounter).not.toHaveBeenCalled()
+    expect(harness.checkStateBasedActions).toHaveBeenCalled()
     expect(harness.state.triggerStack).toHaveLength(0)
   })
 })

@@ -1,4 +1,4 @@
-import type { BoardCard } from '../types/card'
+import type { BoardCard, TriggerEvent, TriggerInstance } from '../types/card'
 import type { GameState } from './gameStore'
 import { shuffle, classifyType, canPayManaCost } from '../utils/misc'
 import { emptyManaPool, moveCastSpellsToGraveyard, pushUndo, resetAndDealCards } from './gameRules'
@@ -6,6 +6,7 @@ import { resolveCardRules } from '../data/cardRules'
 import { getCardTypeFeatures } from '../data/cardFeatures'
 import { localCardImage } from '../data/localCardImages'
 import { cacheDeckImages } from '../services/cardImageCache'
+import { getCachedCardRules, getCardRule } from './cardRulesLoader'
 
 type SetFn = (partial: GameState | Partial<GameState> | ((state: GameState) => Partial<GameState>)) => void
 
@@ -194,6 +195,21 @@ export function createDeckActions(set: SetFn, get: () => GameState): Pick<GameSt
       get().emitGameEvent({ type: 'cast', cardId: card.id, cardName: card.name })
       if (card.type !== 'instant' && card.type !== 'sorcery') {
         get().emitGameEvent({ type: 'etb', cardId: card.id, cardName: card.name })
+      }
+
+      // Enqueue the spell's own abilities on the stack so they can be resolved.
+      const rule = getCardRule(card.name, getCachedCardRules())
+      const spellAbilities = (rule?.abilities ?? []).filter((a) => a.abilityType === 'spell')
+      if (spellAbilities.length > 0) {
+        const instances: TriggerInstance[] = spellAbilities.map((ability) => ({
+          id: crypto.randomUUID(),
+          sourceCardId: card.id,
+          sourceCardName: card.name,
+          ability,
+          event: 'cast' as TriggerEvent,
+          context: {},
+        }))
+        set((prev) => ({ triggerStack: [...prev.triggerStack, ...instances] }))
       }
       return true
     },

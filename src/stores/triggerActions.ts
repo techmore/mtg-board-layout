@@ -63,10 +63,27 @@ export function resolveTrigger(get: () => GameState, set: (partial: Partial<Game
     case 'sacrifice':
       get().moveCard(trigger.sourceCardId, 'graveyard')
       break
-    case 'deal_damage':
-    case 'destroy':
-    case 'exile':
+    case 'deal_damage': {
+      // With no explicit targets the parser encodes mass effects (e.g. "deals 3
+      // damage to each creature").
+      if (trigger.ability.targets > 0) break
+      const amount = (params.amount as number) ?? 1
+      const victims = state.cards.filter((c) => c.zone === 'battlefield' && c.type === 'creature')
+      for (const victim of victims) get().addDamage(victim.id, amount)
       break
+    }
+    case 'destroy': {
+      if (trigger.ability.targets > 0) break
+      const victims = state.cards.filter((c) => c.zone === 'battlefield' && c.type === 'creature')
+      for (const victim of victims) get().moveCard(victim.id, 'graveyard')
+      break
+    }
+    case 'exile': {
+      if (trigger.ability.targets > 0) break
+      const victims = state.cards.filter((c) => c.zone === 'battlefield' && c.type === 'creature')
+      for (const victim of victims) get().moveCard(victim.id, 'exile')
+      break
+    }
     case 'return_from_graveyard': {
       const zone = (params.zone as string) ?? 'battlefield'
       get().moveCard(trigger.sourceCardId, zone as 'battlefield' | 'hand')
@@ -143,9 +160,7 @@ export function selectTarget(get: () => GameState, set: (partial: Partial<GameSt
       case 'deal_damage': {
         const amount = (params.amount as number) ?? 1
         const target = state.cards.find((c) => c.id === cardId)
-        if (target) {
-          for (let i = 0; i < amount; i++) get().addCounter(cardId)
-        }
+        if (target) get().addDamage(cardId, amount)
         break
       }
       case 'return_from_graveyard': {
@@ -160,6 +175,7 @@ export function selectTarget(get: () => GameState, set: (partial: Partial<GameSt
     set({
       triggerStack: state.triggerStack.filter((t) => t.id !== triggerId),
     })
+    get().checkStateBasedActions()
   } else {
     set({
       triggerStack: state.triggerStack.map((t) =>
