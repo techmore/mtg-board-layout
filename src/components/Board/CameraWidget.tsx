@@ -205,7 +205,7 @@ export default function CameraWidget() {
       )}
       <div style={{ position: 'absolute', bottom: 4, left: 4, right: 4, display: 'flex', gap: 4, pointerEvents: 'auto' }}
         onPointerDown={(e) => e.stopPropagation()}>
-        <button onClick={toggle}
+        <button type="button" onClick={toggle} aria-pressed={active}
           style={{
             background: active ? 'rgba(248,81,73,0.8)' : 'rgba(35,134,54,0.8)',
             border: 'none', borderRadius: 6, color: '#fff', cursor: 'pointer',
@@ -214,7 +214,7 @@ export default function CameraWidget() {
         >
           {active ? 'Stop' : 'Start'}
         </button>
-        <button onClick={() => setShowCrop(!showCrop)}
+        <button type="button" onClick={() => setShowCrop(!showCrop)} aria-pressed={showCrop}
           style={{
             background: showCrop ? 'rgba(56,139,253,0.5)' : 'rgba(255,255,255,0.1)',
             border: 'none', borderRadius: 6, color: '#fff', cursor: 'pointer',
@@ -227,6 +227,12 @@ export default function CameraWidget() {
       {/* Resize handle */}
       <div
         onPointerDown={(e) => { e.stopPropagation(); onPointerDown('resize', e) }}
+        role="slider"
+        aria-label="Resize camera"
+        aria-valuemin={120}
+        aria-valuemax={1200}
+        aria-valuenow={size.w}
+        aria-orientation="horizontal"
         style={{
           position: 'absolute', bottom: 0, right: 0, width: 14, height: 14,
           cursor: 'nwse-resize', pointerEvents: 'auto',
