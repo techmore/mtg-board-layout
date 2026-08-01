@@ -49,8 +49,6 @@ export function TurnTimerPill() {
 
   return (
     <div
-      role="status"
-      aria-live="polite"
       title="Current turn timer and each player's total turn time"
       style={{
         position: 'absolute',
@@ -88,6 +86,8 @@ export function TurnTimerPill() {
         }}
       />
       <strong
+        role="status"
+        aria-live="polite"
         style={{
           color: isPlayerTurn ? '#79c0ff' : '#ff7b72',
           fontSize: '0.78rem',
@@ -99,6 +99,7 @@ export function TurnTimerPill() {
         {isPlayerTurn ? 'YOUR TURN' : `${(opponentName ?? 'OPPONENT').toUpperCase()}'S TURN`}
       </strong>
       <span
+        aria-hidden="true"
         style={{
           color: '#e6edf3',
           fontSize: '0.85rem',
@@ -110,6 +111,7 @@ export function TurnTimerPill() {
         {segment}
       </span>
       <span
+        aria-hidden="true"
         style={{
           color: '#8b949e',
           fontSize: '0.66rem',
