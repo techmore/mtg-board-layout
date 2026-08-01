@@ -60,16 +60,16 @@ DFC names normalized to front faces; arena-only printings excluded.
 
 | # | Item | Status |
 |---|------|--------|
-| D1 | Move decklists to `src/data/decklists/*.json` (single source for app + parser script) | [ ] |
-| D2 | Local card images for all deck cards (extend `public/cards/` catalog + `localCardImages.ts`) | [ ] |
-| D3 | Card rules cache migration localStorage → IndexedDB | [~] |
+| D1 | Move decklists to `src/data/decklists/*.json` (single source for app + parser script) | [x] app (`prebuiltDecks.ts`) and parser (`scripts/parse-card-rules.mjs`) both read `src/data/decklists/*.json` |
+| D2 | Local card images for all deck cards (extend `public/cards/` catalog + `localCardImages.ts`) | [x] 143 images in `public/cards/` + `localCardImages.ts`, superseded at runtime by on-demand IndexedDB image cache (`cardImageCache.ts`, `CachedImg`) |
+| D3 | Card rules cache migration localStorage → IndexedDB | [x] `cardRuleStore` migrated to IndexedDB (`src/services/idb.ts`) with localStorage migration + fallback |
 | D4 | Scryfall bulk-data offline mirror (optional) | [ ] |
 
 ## Phase E: Verification
 
 | # | Item | Status |
 |---|------|--------|
-| E1 | Per-deck playability test (import → board → draw 7 → advance turns) | [ ] |
-| E2 | Deck-vs-AI smoke test (load deck, play 3 turns each side) | [ ] |
-| E3 | Regression suite: SBA, combat, triggers, mana, rules parser (grow beyond 138 tests) | [~] |
-| E4 | README + docs/API.md update (overrideLandPlay now implemented, deck builder, AI opponent) | [ ] |
+| E1 | Per-deck playability test (import → board → draw 7 → advance turns) | [x] `deckSmoke.test.ts` — all 16 prebuilt decks |
+| E2 | Deck-vs-AI smoke test (load deck, play 3 turns each side) | [x] `deckSmoke.test.ts` — full AI turn with fake timers |
+| E3 | Regression suite: SBA, combat, triggers, mana, rules parser (grow beyond 138 tests) | [x] 209 tests across 10 files (SBA, combat keywords, triggers, undo, rules parser, deck import, scryfall, IndexedDB persistence, per-deck smoke) |
+| E4 | README + docs/API.md update (overrideLandPlay now implemented, deck builder, AI opponent) | [x] README (decks, builder, AI, keywords, SBA, caching, tests); API.md verified current |
