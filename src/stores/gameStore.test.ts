@@ -1,7 +1,7 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { useGameStore } from './gameStore'
 import { primeCardRules } from './cardRulesLoader'
-import { resolveAISpellAbilities, resolveAIAutoAbilities } from './spellResolution'
+import { resolveAISpellAbilities, resolveAIAutoAbilities, resolveAITriggerInstances } from './spellResolution'
 import type { BoardCard, CardAbilityDef, CardRuleEntry, DeckCard, ManaPool } from '../types/card'
 
 const emptyManaPool = (): ManaPool => ({ W: 0, U: 0, B: 0, R: 0, G: 0, C: 0 })
@@ -1153,6 +1153,69 @@ describe('modal spells', () => {
     )
 
     // The trigger resolved against the AI: it drew a card into its hand.
+    const state = useGameStore.getState()
+    expect(state.cards.filter((c) => (c.owner ?? 'player') === 'opponent' && c.zone === 'hand')).toHaveLength(1)
+    expect(state.triggerStack).toHaveLength(0)
+  })
+
+  it('the AI resolves its attack triggers', () => {
+    const attackRule: CardRuleEntry = {
+      cardName: 'Raid Leader', manaCost: '{2}{R}', manaValue: 3, typeLine: 'Creature — Goblin', cardType: 'creature', subtypes: [], keywords: [], manaProduction: null, entryTapRule: null, conditionalEntryText: null, oracleText: 'Whenever Raid Leader attacks, it gets +1/+0 until end of turn.', scryfallId: 'r', abilities: [{
+        abilityType: 'triggered',
+        triggerEvent: 'attack',
+        triggerCondition: null,
+        isOptional: false,
+        cost: null,
+        targets: 0,
+        targetFilter: null,
+        effect: { kind: 'pump', params: { power: 1, toughness: 0 } },
+      }],
+    }
+    primeCardRules({ 'Raid Leader': attackRule })
+    const attacker = card({ id: 'raid', name: 'Raid Leader', type: 'creature', typeLine: 'Creature — Goblin', zone: 'battlefield', owner: 'opponent' })
+    useGameStore.setState({ cards: [attacker] })
+
+    resolveAIAutoAbilities(
+      (partial) => useGameStore.setState(partial as never),
+      () => useGameStore.getState(),
+      attacker,
+      'attack',
+    )
+
+    const boosted = useGameStore.getState().cards.find((c) => c.id === 'raid')
+    expect(boosted?.powerBoost).toBe(1)
+    expect(useGameStore.getState().triggerStack).toHaveLength(0)
+  })
+
+  it('AI death triggers auto-resolve off the stack', () => {
+    const diesRule: CardRuleEntry = {
+      cardName: 'Mourner', manaCost: '{2}{B}', manaValue: 3, typeLine: 'Creature — Zombie', cardType: 'creature', subtypes: [], keywords: [], manaProduction: null, entryTapRule: null, conditionalEntryText: null, oracleText: 'When Mourner dies, you draw a card.', scryfallId: 'm', abilities: [{
+        abilityType: 'triggered',
+        triggerEvent: 'dies',
+        triggerCondition: null,
+        isOptional: false,
+        cost: null,
+        targets: 0,
+        targetFilter: null,
+        effect: { kind: 'draw_cards', params: { amount: 1 } },
+      }],
+    }
+    primeCardRules({ 'Mourner': diesRule })
+    const mourner = card({ id: 'mourner', name: 'Mourner', type: 'creature', typeLine: 'Creature — Zombie', zone: 'battlefield', owner: 'opponent', damage: 2 })
+    const libraryCard = card({ id: 'lib', name: 'Library Card', type: 'creature', typeLine: 'Creature', zone: 'library', owner: 'opponent' })
+    useGameStore.setState({ cards: [mourner, libraryCard] })
+
+    // Death fires through the normal SBA + trigger-stack path, then the AI's
+    // instances are swept off the stack automatically.
+    useGameStore.getState().checkStateBasedActions()
+    expect(useGameStore.getState().cards.find((c) => c.id === 'mourner')?.zone).toBe('graveyard')
+    expect(useGameStore.getState().triggerStack.length).toBeGreaterThan(0)
+
+    resolveAITriggerInstances(
+      (partial) => useGameStore.setState(partial as never),
+      () => useGameStore.getState(),
+    )
+
     const state = useGameStore.getState()
     expect(state.cards.filter((c) => (c.owner ?? 'player') === 'opponent' && c.zone === 'hand')).toHaveLength(1)
     expect(state.triggerStack).toHaveLength(0)

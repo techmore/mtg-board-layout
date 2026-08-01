@@ -1,8 +1,8 @@
 import { create } from 'zustand'
 import type { BackgroundOption, BoardCard, CardScale, EffectHistoryEntry, ManaColor, ManaLogEntry, ManaPool, ManaUsageKind, PotentialManaSource, Token, Zone, DeckCard, TriggerInstance } from '../types/card'
 import { hydratePersistedBackgroundState, loadPersistedGameState, persistGameState, STORAGE_KEY } from './gamePersistence'
-import { reindexTriggers, buildTriggerInstances } from './triggerEngine'
-import { getCachedCardRules } from './cardRulesLoader'
+import { reindexTriggers, buildTriggerInstances, registerDiesTriggers } from './triggerEngine'
+import { getCachedCardRules, getCardRule } from './cardRulesLoader'
 import { resolveTrigger as resolveTriggerImpl, selectTarget as selectTargetImpl, payWardImpl, refuseWardImpl } from './triggerActions'
 import { createUndoContext, createUndoActions, runUndoableAction } from './gameHistory'
 import { createTurnPhases } from './gameTurnPhases'
@@ -248,7 +248,15 @@ export const useGameStore = create<GameState>((set, get) => {
     emitGameEvent: (event) =>
       set((state) => {
         const rules = getCachedCardRules()
-        if (rules) reindexTriggers(state.cards, rules)
+        if (rules) {
+          reindexTriggers(state.cards, rules)
+          // The dying card has already left the battlefield, so the registry
+          // built above skips it — register its dies triggers explicitly.
+          if (event.type === 'dies') {
+            const rule = getCardRule(event.cardName, rules)
+            if (rule) registerDiesTriggers(event.cardId, event.cardName, rule)
+          }
+        }
         const { stack, newTriggers } = buildTriggerInstances(event, state.triggerStack)
         if (newTriggers === 0) return {}
         return { triggerStack: stack }

@@ -83,3 +83,58 @@ export function resolveAIAutoAbilities(set: SetFn, get: () => GameState, card: B
 export function resolveAISpellAbilities(set: SetFn, get: () => GameState, card: BoardCard) {
   return resolveAIAutoAbilities(set, get, card, 'cast')
 }
+
+/**
+ * Auto-resolve any trigger-stack instances that belong to the AI (e.g. its
+ * death triggers fired during combat resolution), so they never land on the
+ * player's stack UI.
+ */
+export function resolveAITriggerInstances(set: SetFn, get: () => GameState) {
+  const state = get()
+  const aiInstances = state.triggerStack.filter((t) => {
+    const source = state.cards.find((c) => c.id === t.sourceCardId)
+    return (source?.owner ?? 'player') === 'opponent'
+  })
+  if (aiInstances.length === 0) return
+
+  for (const instance of aiInstances) {
+    const source = get().cards.find((c) => c.id === instance.sourceCardId)
+    if (!source) {
+      set((prev) => ({ triggerStack: prev.triggerStack.filter((t) => t.id !== instance.id) }))
+      continue
+    }
+    const ability = instance.ability
+    if (ability.targets > 0) {
+      const candidates = targetsForEffect(ability.effect.kind, get().cards)
+        .filter((c) => c.id !== source.id)
+        .filter((c) => filterMatch(ability.targetFilter, c))
+        .filter((c) => !(hasKeyword(c, 'hexproof') && (c.owner ?? 'player') !== 'opponent'))
+      if (candidates.length === 0) {
+        set((prev) => ({ triggerStack: prev.triggerStack.filter((t) => t.id !== instance.id) }))
+        continue
+      }
+      const target = candidates[0]
+      if (hasKeyword(target, 'ward') && (target.owner ?? 'player') !== 'opponent') {
+        const pool = get().opponentManaPool
+        const total = Object.values(pool).reduce((sum, amount) => sum + amount, 0)
+        if (total >= 2) {
+          let remaining = 2
+          const nextPool = { ...pool }
+          for (const color of ['W', 'U', 'B', 'R', 'G', 'C'] as const) {
+            while (remaining > 0 && nextPool[color] > 0) {
+              nextPool[color] -= 1
+              remaining -= 1
+            }
+          }
+          set({ opponentManaPool: nextPool })
+        } else {
+          set((prev) => ({ triggerStack: prev.triggerStack.filter((t) => t.id !== instance.id) }))
+          continue
+        }
+      }
+      get().selectTarget(instance.id, target.id, true)
+    } else {
+      get().resolveTrigger(instance.id)
+    }
+  }
+}

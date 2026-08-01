@@ -8,7 +8,7 @@ import { getCachedCardRules } from './cardRulesLoader'
 import { localCardImage } from '../data/localCardImages'
 import { cacheDeckImages } from '../services/cardImageCache'
 import { pickSpell, pickAttackers, pickCommanderCast } from './opponentAI'
-import { resolveAISpellAbilities, resolveAIAutoAbilities } from './spellResolution'
+import { resolveAISpellAbilities, resolveAIAutoAbilities, resolveAITriggerInstances } from './spellResolution'
 
 type SetFn = (partial: GameState | Partial<GameState> | ((state: GameState) => Partial<GameState>)) => void
 
@@ -185,6 +185,12 @@ export function createOpponentAI(set: SetFn, get: () => GameState): Pick<GameSta
                   : 'OPPONENT has no attackers' },
               })
 
+              // Fire the AI's attack triggers ("whenever this attacks, ...").
+              for (const id of attackerIds) {
+                const attacker = get().cards.find((c) => c.id === id)
+                if (attacker) resolveAIAutoAbilities(set, get, attacker, 'attack')
+              }
+
               // Give the player a full blocking window only when they actually
               // have something that could block; otherwise resolve quickly.
               const playerCanBlock = get().cards.some(
@@ -195,6 +201,7 @@ export function createOpponentAI(set: SetFn, get: () => GameState): Pick<GameSta
                 const s5 = get()
                 if (s5.activePlayer !== 'opponent' || s5.gameOver) return
                 get().resolveCombat()
+                resolveAITriggerInstances(set, get)
 
                 // End-of-turn cleanup: discard down to a 7-card hand.
                 const oppHand = s5.cards.filter((c) => (c.owner ?? 'player') === 'opponent' && c.zone === 'hand')

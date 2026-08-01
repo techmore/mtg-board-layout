@@ -33,6 +33,15 @@ export function unregisterCardTriggers(cardId: string) {
   triggerRegistry = triggerRegistry.filter((t) => t.cardId !== cardId)
 }
 
+/** Register a card's dies triggers after it has already left the battlefield. */
+export function registerDiesTriggers(cardId: string, cardName: string, rules: CardRuleEntry) {
+  for (const ability of rules.abilities) {
+    if (ability.abilityType === 'triggered' && ability.triggerEvent === 'dies') {
+      triggerRegistry.push({ cardId, cardName, ability, event: 'dies' })
+    }
+  }
+}
+
 export function reindexTriggers(cards: BoardCard[], rulesMap: Record<string, CardRuleEntry> | null) {
   triggerRegistry = []
   for (const card of cards) {
