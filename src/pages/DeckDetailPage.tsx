@@ -5,6 +5,19 @@ import { useGameStore } from '../stores/gameStore'
 import { prebuiltDecks } from '../data/prebuiltDecks'
 import { deckNeedsRuleHydration, fetchDeckCards, hydrateDeckRules } from '../services/deckImport'
 import { prebuiltToDeckDefinition } from '../services/deckList'
+import { CARD_BACK_URL } from '../constants'
+
+function DeckCardImage({ uri, name, style }: { uri: string; name: string; style?: React.CSSProperties }) {
+  const [imgError, setImgError] = useState(false)
+  return (
+    <img
+      src={imgError ? CARD_BACK_URL : (uri || CARD_BACK_URL)}
+      alt={name}
+      onError={() => setImgError(true)}
+      style={style}
+    />
+  )
+}
 
 function classifyCard(typeLine: string): string {
   const tl = typeLine.toLowerCase()
@@ -170,7 +183,7 @@ export default function DeckDetailPage() {
                 }}
                 onMouseLeave={() => setHoverCard(null)}
               >
-                <img src={c.imageUri} alt={c.name} style={{ width: '100%', borderRadius: 10, display: 'block', boxShadow: '0 2px 10px rgba(0,0,0,0.3)' }} />
+                <DeckCardImage uri={c.imageUri} name={c.name} style={{ width: '100%', borderRadius: 10, display: 'block', boxShadow: '0 2px 10px rgba(0,0,0,0.3)' }} />
                 <div style={{ fontSize: '0.7rem', marginTop: 6, textAlign: 'center', color: '#e6edf3', lineHeight: 1.2 }}>
                   {c.name}
                 </div>
@@ -213,7 +226,7 @@ export default function DeckDetailPage() {
                     setHoverCard(null)
                   }}
                 >
-                  <img src={c.imageUri} alt={c.name} style={{ width: '100%', display: 'block' }} />
+                  <DeckCardImage uri={c.imageUri} name={c.name} style={{ width: '100%', display: 'block' }} />
                   <div style={{
                     padding: '2px 4px', fontSize: '0.6rem', lineHeight: 1.2,
                     color: '#e6edf3', whiteSpace: 'nowrap', overflow: 'hidden',
