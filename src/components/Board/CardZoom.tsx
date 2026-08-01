@@ -1,19 +1,22 @@
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { useGameStore } from '../../stores/gameStore'
+import { CARD_BACK_URL } from '../../constants'
 
 export default function CardZoom() {
+  const [imgError, setImgError] = useState(false)
   const overlay = useGameStore((s) => s.overlay)
   const setOverlay = useGameStore((s) => s.setOverlay)
   const cards = useGameStore((s) => s.cards)
 
   useEffect(() => {
     if (overlay.type !== 'zoom') return
+    setImgError(false)
     const onKeyDown = (event: KeyboardEvent) => {
       if (event.key === 'Escape') setOverlay({ type: null })
     }
     document.addEventListener('keydown', onKeyDown)
     return () => document.removeEventListener('keydown', onKeyDown)
-  }, [overlay.type, setOverlay])
+  }, [overlay.type, overlay.cardId, setOverlay])
 
   if (overlay.type !== 'zoom' || !overlay.cardId) return null
 
@@ -51,8 +54,9 @@ export default function CardZoom() {
         }}
       >
         <img
-          src={card.imageUri}
+          src={imgError ? CARD_BACK_URL : (card.imageUri || CARD_BACK_URL)}
           alt={card.name}
+          onError={() => setImgError(true)}
           style={{
             maxWidth: '100%',
             maxHeight: '85vh',

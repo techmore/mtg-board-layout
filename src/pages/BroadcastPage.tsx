@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { useGameStore } from '../stores/gameStore'
 import type { BoardCard, Token } from '../types/card'
 import ManaPoolArtifact from '../components/Board/ManaPoolArtifact'
@@ -185,11 +185,13 @@ export default function BroadcastPage() {
 }
 
 function PublicCard({ card }: { card: BoardCard }) {
+  const [imgError, setImgError] = useState(false)
   return (
     <div style={{ width: STREAM_CARD_WIDTH, flexShrink: 0, position: 'relative' }}>
       <img
-        src={card.imageUri}
+        src={imgError ? CARD_BACK_URL : (card.imageUri || CARD_BACK_URL)}
         alt={card.name}
+        onError={() => setImgError(true)}
         style={{
           width: '100%',
           aspectRatio: '5 / 7',

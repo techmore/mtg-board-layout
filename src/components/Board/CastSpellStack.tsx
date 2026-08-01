@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import type { BoardCard } from '../../types/card'
+import { CARD_BACK_URL } from '../../constants'
 
 export function CastSpellStack({
   cards,
@@ -19,6 +20,7 @@ export function CastSpellStack({
   onContextMenu: (event: React.MouseEvent, cardId: string) => void
 }) {
   const [expanded, setExpanded] = useState(false)
+  const [imgError, setImgError] = useState(false)
   if (cards.length === 0) return null
 
   const width = Math.max(230, Math.round(baseWidth * 1.35))
@@ -80,8 +82,9 @@ export function CastSpellStack({
           onContextMenu={(event) => onContextMenu(event, card.id)}
         >
           <img
-            src={card.imageUri}
+            src={imgError ? CARD_BACK_URL : (card.imageUri || CARD_BACK_URL)}
             alt={card.name}
+            onError={() => setImgError(true)}
             style={{
               width: '100%',
               height: '100%',

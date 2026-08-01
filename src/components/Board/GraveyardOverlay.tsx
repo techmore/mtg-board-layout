@@ -1,14 +1,17 @@
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { useGameStore } from '../../stores/gameStore'
+import { CARD_BACK_URL } from '../../constants'
 
 export default function GraveyardOverlay() {
   const overlay = useGameStore((s) => s.overlay)
   const setOverlay = useGameStore((s) => s.setOverlay)
   const cards = useGameStore((s) => s.cards)
   const moveCard = useGameStore((s) => s.moveCard)
+  const [imgErrors, setImgErrors] = useState<Set<string>>(new Set())
 
   useEffect(() => {
     if (overlay.type !== 'graveyard') return
+    setImgErrors(new Set())
     const onKeyDown = (event: KeyboardEvent) => {
       if (event.key === 'Escape') setOverlay({ type: null })
     }
@@ -96,8 +99,9 @@ export default function GraveyardOverlay() {
                 }}
               >
                 <img
-                  src={card.imageUri}
+                  src={imgErrors.has(card.id) ? CARD_BACK_URL : (card.imageUri || CARD_BACK_URL)}
                   alt={card.name}
+                  onError={() => setImgErrors((prev) => new Set(prev).add(card.id))}
                   style={{
                     width: 40,
                     height: 56,
