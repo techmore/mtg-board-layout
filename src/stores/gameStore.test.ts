@@ -697,6 +697,21 @@ describe('spell resolution', () => {
     useGameStore.getState().resolveCombat()
     expect(useGameStore.getState().cards.find((c) => c.id === 'sent')?.tapped).toBe(false)
   })
+
+  it('tapped creatures cannot block', () => {
+    useGameStore.setState({
+      cards: [
+        card({ id: 'attacker', name: 'Attacker', typeLine: '3/3', type: 'creature', zone: 'battlefield', tapped: true }),
+        card({ id: 'tapped-blocker', name: 'Sleepy', typeLine: '1/4', type: 'creature', zone: 'battlefield', tapped: true, owner: 'opponent' }),
+      ],
+      combatState: { active: true, attackers: ['attacker'], blockers: { attacker: ['tapped-blocker'] } },
+    })
+    useGameStore.getState().resolveCombat()
+    const blocker = useGameStore.getState().cards.find((c) => c.id === 'tapped-blocker')
+    expect(blocker?.zone).toBe('battlefield')
+    expect(blocker?.damage ?? 0).toBe(0)
+    expect(useGameStore.getState().opponentLifeTotal).toBe(37)
+  })
 })
 
 describe('ward', () => {
@@ -882,7 +897,7 @@ describe('loadOpponentDeck', () => {
       ]
       useGameStore.getState().loadOpponentDeck(['Atarka, World Render'], cards, 'Draconic Destruction')
 
-      vi.advanceTimersByTime(3200)
+      vi.advanceTimersByTime(10500)
 
       const state = useGameStore.getState()
       expect(state.turn).toBe(2)

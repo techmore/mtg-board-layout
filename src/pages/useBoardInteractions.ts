@@ -28,6 +28,7 @@ export function useBoardInteractions() {
   const opponentLifeTotal = useGameStore((s) => s.opponentLifeTotal)
   const activePlayer = useGameStore((s) => s.activePlayer)
   const advancePhase = useGameStore((s) => s.advancePhase)
+  const combatState = useGameStore((s) => s.combatState)
   const broadcasting = useGameStore((s) => s.broadcasting)
   const backgroundImage = useGameStore((s) => s.backgroundImage)
   const decks = useDeckStore((s) => s.decks)
@@ -183,6 +184,7 @@ export function useBoardInteractions() {
     discardForTurn, setOverlay, toggleTap, moveCard,
     reorderBattlefield, loadDeck,
     showOpponent, opponentLifeTotal, activePlayer, advancePhase,
+    combatState,
     handCards, handStacks, creatureCards, planeswalkerCards,
     battleCards, spellCards, artifactCards, enchantmentCards,
     landCards, landStacks, otherPermanents,

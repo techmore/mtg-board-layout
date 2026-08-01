@@ -149,7 +149,7 @@ describe('E2: deck-vs-AI smoke test', () => {
         })
       }
 
-      vi.advanceTimersByTime(3200)
+      vi.advanceTimersByTime(10500)
 
       const state = useGameStore.getState()
       expect(state.activePlayer).toBe('player')

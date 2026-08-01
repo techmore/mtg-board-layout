@@ -68,10 +68,14 @@ export function createCombatActions(set: SetFn, get: () => GameState): Pick<Game
         if (!attacker) continue
         if (getCardPower(attacker) === 0) continue
         let assigned: string[] | undefined = finalBlockers[attackerId]
-        if (hasKeyword(attacker, 'flying') && assigned && assigned.length > 0) {
+        if (assigned && assigned.length > 0) {
           const valid = assigned.filter((blockerId) => {
             const blocker = get().cards.find((c) => c.id === blockerId)
-            return blocker ? hasKeyword(blocker, 'flying') || hasKeyword(blocker, 'reach') : false
+            if (!blocker || blocker.tapped || blocker.zone !== 'battlefield') return false
+            if (hasKeyword(attacker, 'flying')) {
+              return hasKeyword(blocker, 'flying') || hasKeyword(blocker, 'reach')
+            }
+            return true
           })
           assigned = valid.length > 0 ? valid : undefined
         }

@@ -25,6 +25,7 @@ export default function BoardPage() {
     discardForTurn, setOverlay, toggleTap, moveCard,
     reorderBattlefield,
     showOpponent, opponentLifeTotal, activePlayer,
+    combatState,
     handCards, handStacks, creatureCards, planeswalkerCards,
     battleCards, spellCards, artifactCards, enchantmentCards,
     landCards, landStacks, otherPermanents,
@@ -258,6 +259,30 @@ export default function BoardPage() {
             </div>
           )}
           <TurnTimerPill />
+          {combatState.active && activePlayer === 'opponent' && combatState.attackers.length > 0 && (
+            <div
+              role="status"
+              style={{
+                position: 'absolute',
+                top: 46,
+                left: '50%',
+                transform: 'translateX(-50%)',
+                zIndex: 25,
+                padding: '5px 12px',
+                borderRadius: 999,
+                background: 'rgba(248,81,73,0.92)',
+                color: '#fff',
+                fontSize: '0.72rem',
+                fontWeight: 800,
+                letterSpacing: '0.4px',
+                whiteSpace: 'nowrap',
+                boxShadow: '0 3px 12px rgba(0,0,0,0.45)',
+                pointerEvents: 'none',
+              }}
+            >
+              ⚔ DEFEND — right-click your creatures to block ({combatState.attackers.length} attacking)
+            </div>
+          )}
 
           <BoardControls
             handleDeckChange={handleDeckChange}

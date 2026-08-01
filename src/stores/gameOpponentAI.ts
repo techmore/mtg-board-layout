@@ -165,7 +165,7 @@ export function createOpponentAI(set: SetFn, get: () => GameState): Pick<GameSta
                 combatState: { active: true, attackers: attackerIds, blockers: {} },
                 currentPhase: 'combat',
                 turnAnnouncement: { id: Date.now(), text: attackerIds.length > 0
-                  ? `OPPONENT attacks with ${attackerIds.length} creature(s)`
+                  ? `OPPONENT attacks with ${attackerIds.length} creature(s) — right-click your creatures to block`
                   : 'OPPONENT has no attackers' },
               })
 
@@ -174,7 +174,7 @@ export function createOpponentAI(set: SetFn, get: () => GameState): Pick<GameSta
                 if (s5.activePlayer !== 'opponent') return
                 get().resolveCombat()
                 get().advanceTurn()
-              }, 1200)
+              }, 8000)
             }, 600)
           }, 600)
         }, 400)
