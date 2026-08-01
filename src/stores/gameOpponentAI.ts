@@ -84,10 +84,19 @@ export function createOpponentAI(set: SetFn, get: () => GameState): Pick<GameSta
         const libraryCard = oppCards.find((c) => c.zone === 'library')
         if (libraryCard) {
           set({ cards: s.cards.map((c) => c.id === libraryCard.id ? { ...c, zone: 'hand' as const } : c) })
+        } else if (oppCards.length > 0) {
+          // Opponent tried to draw from an empty library — it loses.
+          set({
+            gameOver: { winner: 'player' },
+            turnPrompt: null,
+            turnAnnouncement: { id: Date.now(), text: 'OPPONENT DEFEATED — library empty' },
+          })
+          return
         }
         set({ turnAnnouncement: { id: Date.now(), text: 'OPPONENT untaps and draws' } })
 
         setTimeout(() => {
+          if (get().gameOver) return
           const s2 = get()
           const oppHand = s2.cards.filter((c) => (c.owner ?? 'player') === 'opponent' && c.zone === 'hand')
           const land = oppHand.find((c) => c.type === 'land')
@@ -100,6 +109,7 @@ export function createOpponentAI(set: SetFn, get: () => GameState): Pick<GameSta
           }
 
           setTimeout(() => {
+            if (get().gameOver) return
             const s3 = get()
             const oppHand2 = s3.cards.filter((c) => (c.owner ?? 'player') === 'opponent' && c.zone === 'hand')
             const oppBattlefield = s3.cards.filter((c) => (c.owner ?? 'player') === 'opponent' && c.zone === 'battlefield')
@@ -137,6 +147,7 @@ export function createOpponentAI(set: SetFn, get: () => GameState): Pick<GameSta
             }
 
             setTimeout(() => {
+              if (get().gameOver) return
               const s4 = get()
               const oppBattlefield2 = s4.cards.filter((c) => (c.owner ?? 'player') === 'opponent' && c.zone === 'battlefield')
               const playerDefenders = s4.cards.filter((c) => (c.owner ?? 'player') === 'player' && c.zone === 'battlefield')
@@ -171,7 +182,7 @@ export function createOpponentAI(set: SetFn, get: () => GameState): Pick<GameSta
 
               setTimeout(() => {
                 const s5 = get()
-                if (s5.activePlayer !== 'opponent') return
+                if (s5.activePlayer !== 'opponent' || s5.gameOver) return
                 get().resolveCombat()
                 get().advanceTurn()
               }, 8000)

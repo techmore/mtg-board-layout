@@ -124,6 +124,48 @@ describe('turn timer', () => {
   })
 })
 
+describe('deck-out', () => {
+  it('the player loses when drawing from an empty library', () => {
+    useGameStore.setState({ cards: [] })
+    useGameStore.getState().drawCards(1)
+    const state = useGameStore.getState()
+    expect(state.gameOver).toEqual({ winner: 'opponent' })
+    expect(state.turnAnnouncement?.text).toContain('library empty')
+  })
+
+  it('partial draws do not cause a loss', () => {
+    const cards = [
+      card({ id: 'c1', name: 'One', typeLine: 'Creature', type: 'creature', zone: 'library' }),
+      card({ id: 'c2', name: 'Two', typeLine: 'Creature', type: 'creature', zone: 'library' }),
+      card({ id: 'c3', name: 'Three', typeLine: 'Creature', type: 'creature', zone: 'library' }),
+    ]
+    useGameStore.setState({ cards })
+    useGameStore.getState().drawCards(7)
+    const state = useGameStore.getState()
+    expect(state.gameOver).toBeNull()
+    expect(state.cards.filter((c) => c.zone === 'hand')).toHaveLength(3)
+  })
+
+  it('the AI loses when its library is empty at the draw step', () => {
+    vi.useFakeTimers()
+    try {
+      const cards = [
+        deckCard('Atarka, World Render', 'Legendary Creature — Dragon'),
+        deckCard('Mountain', 'Land', 3),
+        deckCard('Bear', 'Creature', 4),
+      ]
+      useGameStore.getState().loadOpponentDeck(['Atarka, World Render'], cards, 'Test')
+      vi.advanceTimersByTime(500)
+      const state = useGameStore.getState()
+      expect(state.gameOver).toEqual({ winner: 'player' })
+      expect(state.turnAnnouncement?.text).toContain('library empty')
+    } finally {
+      vi.clearAllTimers()
+      vi.useRealTimers()
+    }
+  })
+})
+
 beforeEach(() => {
   primeCardRules({})
 })

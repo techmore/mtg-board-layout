@@ -132,7 +132,7 @@ export function createDeckActions(set: SetFn, get: () => GameState): Pick<GameSt
       }),
 
     drawCards: (count = 1) => {
-      const drawn = get().cards.filter((c) => c.zone === 'library').length
+      const libraryCount = get().cards.filter((c) => c.zone === 'library').length
       set((state) => {
         let remaining = Math.max(0, Math.floor(count))
         let drawnCount = 0
@@ -147,13 +147,21 @@ export function createDeckActions(set: SetFn, get: () => GameState): Pick<GameSt
           return card
         })
         const undo = pushUndo(state)
+        const deckedOut = count > 0 && drawnCount === 0 && libraryCount === 0
         return {
           ...undo,
           cards,
           drawNotice: drawnCount > 0 ? { id: Date.now(), count: drawnCount, cardNames } : state.drawNotice,
+          ...(deckedOut
+            ? {
+                gameOver: { winner: 'opponent' },
+                turnPrompt: null,
+                turnAnnouncement: { id: Date.now(), text: 'DEFEATED — library empty' },
+              }
+            : {}),
         }
       })
-      get().emitGameEvent({ type: 'card_drawn', count: Math.min(count, drawn) })
+      get().emitGameEvent({ type: 'card_drawn', count: Math.min(count, libraryCount) })
     },
 
     castSpell: (cardId) => {
