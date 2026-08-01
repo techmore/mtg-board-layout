@@ -12,6 +12,60 @@ import { resolveAISpellAbilities } from './spellResolution'
 
 type SetFn = (partial: GameState | Partial<GameState> | ((state: GameState) => Partial<GameState>)) => void
 
+/**
+ * Tap untapped opponent lands to pay a mana cost. Returns the updated card
+ * list (tapped lands), the resulting mana pool after payment, and whether the
+ * cost was fully payable.
+ */
+function tapLandsForCost(cards: BoardCard[], cost: string | undefined): { updated: BoardCard[]; pool: ManaPool; paid: boolean } {
+  const empty = { W: 0, U: 0, B: 0, R: 0, G: 0, C: 0 } as ManaPool
+  if (!cost) return { updated: cards, pool: empty, paid: true }
+  const lands = cards.filter((c) => (c.owner ?? 'player') === 'opponent' && c.zone === 'battlefield' && c.type === 'land' && !c.tapped)
+
+  const parsed = parseManaCost(cost)
+  const remainingColor: Record<string, number> = {}
+  for (const p of parsed.colored) remainingColor[p.color] = (remainingColor[p.color] ?? 0) + p.count
+  let genericRemaining = parsed.generic
+  const landsToTap: string[] = []
+  const pool = { ...empty }
+
+  for (const color of ['W', 'U', 'B', 'R', 'G', 'C'] as const) {
+    let need = remainingColor[color] ?? 0
+    for (const l of lands) {
+      if (need <= 0) break
+      if (landsToTap.includes(l.id)) continue
+      if (l.manaProduction?.colors.includes(color)) {
+        landsToTap.push(l.id)
+        need--
+        pool[color] = (pool[color] ?? 0) + l.manaProduction!.amount
+      }
+    }
+    if (need > 0) return { updated: cards, pool, paid: false }
+  }
+
+  if (genericRemaining > 0) {
+    for (const l of lands) {
+      if (genericRemaining <= 0) break
+      if (landsToTap.includes(l.id)) continue
+      landsToTap.push(l.id)
+      genericRemaining--
+      const color = l.manaProduction?.colors[0]
+      if (color) pool[color] = (pool[color] ?? 0) + (l.manaProduction?.amount ?? 1)
+    }
+    if (genericRemaining > 0) return { updated: cards, pool, paid: false }
+  }
+
+  const bp = parseManaCost(cost)
+  for (const p of bp.colored) pool[p.color] = Math.max(0, (pool[p.color] ?? 0) - p.count)
+  let g = bp.generic
+  for (const color of ['W', 'U', 'B', 'R', 'G', 'C'] as const) {
+    while (g > 0 && (pool[color] ?? 0) > 0) { pool[color]!--; g-- }
+  }
+
+  const updated = cards.map((c) => landsToTap.includes(c.id) ? { ...c, tapped: true } : c)
+  return { updated, pool, paid: true }
+}
+
 export function createOpponentAI(set: SetFn, get: () => GameState): Pick<GameState, 'runOpponentTurn' | 'loadOpponentDeck'> {
   return {
     runOpponentTurn: () => {
@@ -64,64 +118,18 @@ export function createOpponentAI(set: SetFn, get: () => GameState): Pick<GameSta
               ? commanderCast && toCast.id === commanderCast.card.id ? commanderCast.cost : toCast.manaCost
               : undefined
             if (toCast && castCost) {
-              const parsed = parseManaCost(castCost)
-              const remainingColor: Record<string, number> = {}
-              for (const p of parsed.colored) remainingColor[p.color] = (remainingColor[p.color] ?? 0) + p.count
-              let genericRemaining = parsed.generic
-
+              const isCommanderCast = commanderCast !== null && toCast.id === commanderCast.card.id
               set((prev) => {
-                const landsToTap: string[] = []
-                const newPool = { ...prev.opponentManaPool } as ManaPool
-                const updatedCards = [...prev.cards]
-
-                for (const color of ['W', 'U', 'B', 'R', 'G', 'C'] as const) {
-                  const need = remainingColor[color] ?? 0
-                  let have = need
-                  for (const l of oppLands) {
-                    if (have <= 0) break
-                    if (l.tapped || landsToTap.includes(l.id)) break
-                    if (l.manaProduction?.colors.includes(color)) {
-                      landsToTap.push(l.id)
-                      have--
-                      newPool[color] = (newPool[color] ?? 0) + l.manaProduction!.amount
-                    }
-                  }
-                }
-
-                if (genericRemaining > 0) {
-                  for (const l of oppLands) {
-                    if (genericRemaining <= 0) break
-                    if (l.tapped || landsToTap.includes(l.id)) continue
-                    landsToTap.push(l.id)
-                    genericRemaining--
-                    if (l.manaProduction) {
-                      const c = l.manaProduction.colors[0]
-                      newPool[c] = (newPool[c] ?? 0) + l.manaProduction.amount
-                    }
-                  }
-                }
-
-                for (const lid of landsToTap) {
-                  const idx = updatedCards.findIndex((c) => c.id === lid)
-                  if (idx >= 0) updatedCards[idx] = { ...updatedCards[idx], tapped: true }
-                }
-
-                if (castCost) {
-                  const bp = parseManaCost(castCost)
-                  for (const p of bp.colored) newPool[p.color] = Math.max(0, (newPool[p.color] ?? 0) - p.count)
-                  let g = bp.generic
-                  for (const color of ['W', 'U', 'B', 'R', 'G', 'C'] as const) {
-                    while (g > 0 && (newPool[color] ?? 0) > 0) { newPool[color]!--; g-- }
-                  }
-                }
-
-                const isCommanderCast = commanderCast !== null && toCast.id === commanderCast.card.id
-                const idx = updatedCards.findIndex((c) => c.id === toCast.id)
-                if (idx >= 0) updatedCards[idx] = { ...updatedCards[idx], zone: 'battlefield' as const, tapped: false, revealed: false, enteredAtTurn: prev.turn, commanderTax: isCommanderCast ? (toCast.commanderTax ?? 0) + 1 : (updatedCards[idx].commanderTax ?? 0) }
-
+                const { updated, pool, paid } = tapLandsForCost(prev.cards, castCost)
+                if (!paid) return {}
+                const cards = updated.map((c) =>
+                  c.id === toCast.id
+                    ? { ...c, zone: 'battlefield' as const, tapped: false, revealed: false, enteredAtTurn: prev.turn, commanderTax: isCommanderCast ? (toCast.commanderTax ?? 0) + 1 : (c.commanderTax ?? 0) }
+                    : c,
+                )
                 return {
-                  cards: updatedCards,
-                  opponentManaPool: newPool,
+                  cards,
+                  opponentManaPool: pool,
                   turnAnnouncement: { id: Date.now(), text: `OPPONENT casts ${toCast.name}` },
                 }
               })
@@ -133,6 +141,26 @@ export function createOpponentAI(set: SetFn, get: () => GameState): Pick<GameSta
               const oppBattlefield2 = s4.cards.filter((c) => (c.owner ?? 'player') === 'opponent' && c.zone === 'battlefield')
               const playerDefenders = s4.cards.filter((c) => (c.owner ?? 'player') === 'player' && c.zone === 'battlefield')
               const attackerIds = pickAttackers(oppBattlefield2, s4.turn, playerDefenders)
+
+              // Combat trick: cast the first affordable instant before attacking.
+              const oppHand3 = s4.cards.filter((c) => (c.owner ?? 'player') === 'opponent' && c.zone === 'hand' && c.type === 'instant')
+              for (const trick of oppHand3) {
+                if (!trick.manaCost) continue
+                const { updated, pool, paid } = tapLandsForCost(s4.cards, trick.manaCost)
+                if (!paid) continue
+                set((prev) => ({
+                  cards: updated.map((c) =>
+                    c.id === trick.id
+                      ? { ...c, zone: 'battlefield' as const, tapped: false, revealed: false, enteredAtTurn: prev.turn }
+                      : c,
+                  ),
+                  opponentManaPool: pool,
+                  turnAnnouncement: { id: Date.now(), text: `OPPONENT casts ${trick.name}` },
+                }))
+                resolveAISpellAbilities(set, get, trick)
+                break
+              }
+
               set({
                 combatState: { active: true, attackers: attackerIds, blockers: {} },
                 currentPhase: 'combat',

@@ -78,6 +78,16 @@ export function createCombatActions(set: SetFn, get: () => GameState): Pick<Game
         pairs.push({ attacker, blockerId: assigned?.[0] })
       }
 
+      // Attackers tap when they attack — vigilance keeps them untapped.
+      const tappingIds = pairs
+        .filter((p) => !hasKeyword(p.attacker, 'vigilance'))
+        .map((p) => p.attacker.id)
+      if (tappingIds.length > 0) {
+        set({
+          cards: get().cards.map((c) => tappingIds.includes(c.id) ? { ...c, tapped: true } : c),
+        })
+      }
+
       const fast = (card: BoardCard | undefined) =>
         card ? hasKeyword(card, 'first strike') || hasKeyword(card, 'double strike') : false
       const dealsInRegularStep = (card: BoardCard | undefined) =>

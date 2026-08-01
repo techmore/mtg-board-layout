@@ -678,6 +678,25 @@ describe('spell resolution', () => {
     expect(pumped?.zone).toBe('battlefield')
     expect(pumped?.damage).toBe(2)
   })
+
+  it('attackers tap when they attack', () => {
+    useGameStore.setState({
+      cards: [card({ id: 'bear', name: 'Bear', typeLine: '2/2', type: 'creature', zone: 'battlefield', tapped: false })],
+      combatState: { active: true, attackers: ['bear'], blockers: {} },
+    })
+    useGameStore.getState().resolveCombat()
+    expect(useGameStore.getState().cards.find((c) => c.id === 'bear')?.tapped).toBe(true)
+  })
+
+  it('vigilant attackers stay untapped after attacking', () => {
+    primeCardRules({ 'Sentinel': ruleFor('Sentinel', ['vigilance']) })
+    useGameStore.setState({
+      cards: [card({ id: 'sent', name: 'Sentinel', typeLine: '2/2', type: 'creature', zone: 'battlefield', tapped: false })],
+      combatState: { active: true, attackers: ['sent'], blockers: {} },
+    })
+    useGameStore.getState().resolveCombat()
+    expect(useGameStore.getState().cards.find((c) => c.id === 'sent')?.tapped).toBe(false)
+  })
 })
 
 describe('ward', () => {
