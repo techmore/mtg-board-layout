@@ -38,7 +38,7 @@ DFC names normalized to front faces; arena-only printings excluded.
 
 | # | Ability | Mechanic needed | Status |
 |---|---------|-----------------|--------|
-| B1 | Keywords (flying, trample, lifelink, deathtouch, haste, vigilance, reach, first strike, ward, indestructible, hexproof) | **flying (blocking validity), trample (damage overflow), lifelink (heal), deathtouch (lethal mark), indestructible (survives SBA), haste (attack same turn), reach (blocks fliers) DONE in combat + AI.** First strike / double strike (damage priority) and hexproof/ward (targeting) pending | [~] |
+| B1 | Keywords (flying, trample, lifelink, deathtouch, haste, vigilance, reach, first strike, ward, indestructible, hexproof) | **All combat keywords DONE**: flying, trample, lifelink, deathtouch, indestructible, haste, reach, first strike, double strike (two damage steps + SBA between). Hexproof/ward (targeting) pending — need B2 targeting model first | [~] |
 | B2 | Targeting | `TargetCard.tsx` exists — wire target-selection step into cast/resolve flow for spells and abilities that target | [~] |
 | B3 | Continuous / temporary effects | `EffectHistoryEntry` exists — model "until end of turn", pump spells, auras | [~] |
 | B4 | Modal spells & kicker | Cost-choice UI before resolution | [ ] |
