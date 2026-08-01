@@ -42,7 +42,7 @@ DFC names normalized to front faces; arena-only printings excluded.
 | B2 | Targeting | `TargetCard.tsx` exists — wire target-selection step into cast/resolve flow for spells and abilities that target | [~] |
 | B3 | Continuous / temporary effects | `EffectHistoryEntry` exists — model "until end of turn", pump spells, auras | [~] |
 | B4 | Modal spells & kicker | Cost-choice UI before resolution | [ ] |
-| B5 | Token generation from abilities | Trigger effects already produce tokens via `triggerActions` — audit coverage | [~] |
+| B5 | Token generation from abilities | Trigger effects already produce tokens via `triggerActions` — audit coverage | [~] audited: `create_token` wired + tested; gap — token power/toughness parsed but not applied (`Token` has no stat fields; `triggerActions.ts` is active WIP) |
 | B6 | Combat steps | Formalize declare-attackers/blockers/damage steps with pass-priority gaps; auto-enter combat from main phase | [~] |
 | B7 | Priority system | Who-has-priority model + instant-speed windows | [ ] |
 
