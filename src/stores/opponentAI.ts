@@ -24,11 +24,31 @@ export function pickCommanderCast(commandCards: BoardCard[], manaPool: Record<Ma
   return null
 }
 
-export function pickAttackers(battlefield: BoardCard[], currentTurn: number): string[] {
-  return battlefield
+export function pickAttackers(battlefield: BoardCard[], currentTurn: number, defenders: BoardCard[] = []): string[] {
+  const candidates = battlefield
     .filter((c) => c.type === 'creature' && !c.tapped)
     .filter((c) => c.enteredAtTurn === currentTurn ? hasKeyword(c, 'haste') : true)
-    .map((c) => c.id)
+  if (candidates.length === 0) return []
+
+  const threats = defenders.filter(
+    (c) => c.type === 'creature' && !c.tapped && c.enteredAtTurn !== currentTurn && getCardPower(c) > 0,
+  )
+
+  // Free swing when the opponent can't block.
+  if (threats.length === 0) return candidates.map((c) => c.id)
+
+  // Fliers that no defender can block always attack.
+  const flyers = candidates.filter((c) =>
+    hasKeyword(c, 'flying') && !threats.some((d) => hasKeyword(d, 'flying') || hasKeyword(d, 'reach')),
+  )
+  const ground = candidates.filter((c) => !flyers.includes(c))
+
+  const ourPower = ground.reduce((sum, c) => sum + getCardPower(c), 0)
+  const theirPower = threats.reduce((sum, c) => sum + getCardPower(c), 0)
+
+  // Attack on the ground only when the trade is not clearly unfavorable.
+  const ids = ourPower >= theirPower ? ground.map((c) => c.id) : []
+  return [...ids, ...flyers.map((c) => c.id)]
 }
 
 export function pickBlockers(

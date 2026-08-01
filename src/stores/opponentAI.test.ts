@@ -101,6 +101,48 @@ describe('pickAttackers', () => {
     ], 5)
     expect(attackers).toEqual(['ready'])
   })
+
+  it('swings freely when the opponent has no blockers', () => {
+    const attackers = pickAttackers([
+      creature({ id: 'a', enteredAtTurn: 4 }),
+      creature({ id: 'b', enteredAtTurn: 4 }),
+    ], 5, [])
+    expect(attackers).toHaveLength(2)
+  })
+
+  it('holds back from an unfavorable ground trade', () => {
+    const attackers = pickAttackers(
+      [creature({ id: 'weak', typeLine: '2/2', enteredAtTurn: 4 })],
+      5,
+      [creature({ id: 'big', name: 'Big', typeLine: '6/6', enteredAtTurn: 4, owner: 'player' })],
+    )
+    expect(attackers).toHaveLength(0)
+  })
+
+  it('attacks when the ground trade is at least even', () => {
+    const attackers = pickAttackers(
+      [creature({ id: 'a', typeLine: '4/4', enteredAtTurn: 4 })],
+      5,
+      [creature({ id: 'd', name: 'Defender', typeLine: '4/4', enteredAtTurn: 4, owner: 'player' })],
+    )
+    expect(attackers).toEqual(['a'])
+  })
+
+  it('sends fliers even when the ground is blocked', () => {
+    primeCardRules({
+      'Flyer': { cardName: 'Flyer', manaCost: '', manaValue: 3, typeLine: 'Creature', cardType: 'creature', subtypes: [], keywords: ['flying'], manaProduction: null, entryTapRule: null, conditionalEntryText: null, oracleText: '', scryfallId: 'f', abilities: [] } as CardRuleEntry,
+    })
+    const attackers = pickAttackers(
+      [
+        creature({ id: 'flyer', name: 'Flyer', typeLine: '3/3', enteredAtTurn: 4 }),
+        creature({ id: 'ground', name: 'Ground', typeLine: '2/2', enteredAtTurn: 4 }),
+      ],
+      5,
+      [creature({ id: 'wall', name: 'Wall', typeLine: '6/6', enteredAtTurn: 4, owner: 'player' })],
+    )
+    expect(attackers).toContain('flyer')
+    expect(attackers).not.toContain('ground')
+  })
 })
 
 describe('pickBlockers', () => {

@@ -61,9 +61,16 @@ Clients send an action using its `type` as the Colyseus message name and the com
 
 The server validates action fields, zones, mana colors, text length, numeric ranges, and card payload size. Invalid actions are ignored rather than mutating state.
 
+## Game rules enforced server-side
+
+- **Win condition**: `setLife` at or below 0 sets the room to `finished` and broadcasts `gameEnded` with the winning player and reason `life`.
+- **Land-drop limit**: `playCard` rejects a land from hand when the player has already played one this turn (an `error` event is sent to that client only).
+- **Commander tax**: playing from the command zone increments the card's `commanderTax` each time.
+- **Land override**: `overrideLandPlay` lets a player play a second land (moving it from hand to battlefield, incrementing the counter) and announces the turn end.
+
 ## Server events
 
-The server broadcasts `gameStarted`, `gameEnded`, `chatMessage`, `turnChanged`, `turnAnnouncement`, `diceRolled`, and `coinFlipped`. `privateState` is sent only to the requesting player's connection.
+The server broadcasts `gameStarted`, `gameEnded` (when a player's life reaches 0), `chatMessage`, `turnChanged`, `turnAnnouncement`, `diceRolled`, and `coinFlipped`. `privateState` is sent only to the requesting player's connection.
 
 ## Stability and security boundaries
 

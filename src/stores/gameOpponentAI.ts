@@ -131,7 +131,8 @@ export function createOpponentAI(set: SetFn, get: () => GameState): Pick<GameSta
             setTimeout(() => {
               const s4 = get()
               const oppBattlefield2 = s4.cards.filter((c) => (c.owner ?? 'player') === 'opponent' && c.zone === 'battlefield')
-              const attackerIds = pickAttackers(oppBattlefield2, s4.turn)
+              const playerDefenders = s4.cards.filter((c) => (c.owner ?? 'player') === 'player' && c.zone === 'battlefield')
+              const attackerIds = pickAttackers(oppBattlefield2, s4.turn, playerDefenders)
               set({
                 combatState: { active: true, attackers: attackerIds, blockers: {} },
                 currentPhase: 'combat',
