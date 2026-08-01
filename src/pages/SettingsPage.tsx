@@ -2,6 +2,7 @@ import { useMemo, useRef, useState } from 'react'
 import { useGameStore } from '../stores/gameStore'
 import { useDeckStore } from '../stores/deckStore'
 import { useCardRuleStore } from '../stores/cardRuleStore'
+import { CARD_BACK_URL } from '../constants'
 import type { DeckCard, EntryTapMode } from '../types/card'
 
 const ENTRY_TAP_OPTIONS: { value: EntryTapMode; label: string; description: string }[] = [
@@ -72,7 +73,13 @@ function CardRuleDatabase() {
                 key={card.scryfallId}
                 style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '8px 10px', border: '1px solid #30363d', borderRadius: 8, background: '#161b22' }}
               >
-                <img src={card.imageUri} alt="" aria-hidden="true" style={{ width: 34, height: 48, objectFit: 'cover', borderRadius: 3, flexShrink: 0 }} />
+                <img
+                  src={card.imageUri || CARD_BACK_URL}
+                  alt=""
+                  aria-hidden="true"
+                  onError={(e) => { e.currentTarget.src = CARD_BACK_URL }}
+                  style={{ width: 34, height: 48, objectFit: 'cover', borderRadius: 3, flexShrink: 0 }}
+                />
                 <div style={{ minWidth: 0, flex: 1 }}>
                   <div style={{ fontSize: '0.82rem', fontWeight: 700, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{card.name}</div>
                   <div style={{ color: '#8b949e', fontSize: '0.68rem', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }} title={deckNames.join(', ')}>
