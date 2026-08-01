@@ -126,6 +126,44 @@ describe('E1: per-deck playability smoke test', () => {
 })
 
 describe('E2: deck-vs-AI smoke test', () => {
+  it.each(prebuiltDecks.map((d) => [d.name, d] as const))(
+    '%s survives a full AI turn when played against the AI',
+    async (_, deck) => {
+      const { cards } = await fetchDeckCards(deckDefinition(deck))
+
+      useGameStore.getState().loadDeck([deck.commander, ...(deck.partners ?? [])], cards, deck.id)
+
+      vi.useFakeTimers()
+      try {
+        const { cards: aiCards } = await fetchDeckCards(deckDefinition(deck))
+        useGameStore.getState().loadOpponentDeck([deck.commander, ...(deck.partners ?? [])], aiCards, deck.name)
+
+        // Guarantee the AI has a land to play — random draws can otherwise produce
+        // landless hands (the mock only classifies basic lands as lands).
+        const preState = useGameStore.getState()
+        const oppLand = preState.cards.find(
+          (c) => (c.owner ?? 'player') === 'opponent' && c.zone === 'library' && c.type === 'land',
+        )
+        if (oppLand) {
+          useGameStore.setState({
+            cards: preState.cards.map((c) => c.id === oppLand.id ? { ...c, zone: 'hand' as const } : c),
+          })
+        }
+
+        vi.advanceTimersByTime(10500)
+
+        const state = useGameStore.getState()
+        expect(state.activePlayer).toBe('player')
+        expect(state.turn).toBe(2)
+        expect(state.gameOver).toBeNull()
+        expect(state.triggerStack).toHaveLength(0)
+      } finally {
+        vi.clearAllTimers()
+        vi.useRealTimers()
+      }
+    },
+  )
+
   it('a resolved deck loads against the AI and survives a full AI turn', async () => {
     const deck = prebuiltDecks.find((d) => d.id === 'blight-curse') ?? prebuiltDecks[0]
     const { cards } = await fetchDeckCards(deckDefinition(deck))
