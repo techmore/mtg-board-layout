@@ -28,6 +28,7 @@ The client defaults to `ws://localhost:2567`. Set `VITE_COLYSEUS_URL` in a local
 ```sh
 npm run build
 npm run lint
+npm test          # vitest — 166 tests (rules, SBA, combat, triggers, undo, per-deck smoke tests)
 npm audit --omit=dev
 ```
 
@@ -48,7 +49,13 @@ npm audit --omit=dev
 - **Card rule database**: Per-card enters-tapped override with search/filter
 - **Local card catalog**: Checked-in card metadata for special lands, images, Oracle snippets, and gameplay features; Scryfall refreshes generic card data
 - **Persistent state**: All game state and decks saved to localStorage, cross-tab sync
-- **16 prebuilt Commander decks**: Blight Curse has a full 100-card list; 15 others are WIP placeholders
+- **16 complete prebuilt Commander decks**: Official 100-card lists (Commander Masters, Tales of Middle-earth, MH3, Bloomburrow, Duskmourn, Fallout, and more) sourced from `src/data/decklists/*.json`, shared with the trigger-engine rules feed
+- **Deck builder**: Scryfall search, add/remove cards, commander selection, save/delete/rename imported decks
+- **AI opponent**: Plays a real deck (any prebuilt or imported) with automated turns — casts spells, plays lands, attacks, blocks, uses its commander, tracks commander tax
+- **Combat keywords**: Flying (blocking validity), trample (damage overflow), lifelink (healing), deathtouch (lethal mark), indestructible (survives SBA), haste (attacks the turn it enters), reach (blocks fliers); first strike/double strike and hexproof/ward pending
+- **State-based actions**: Lethal damage destroys creatures, 0-loyalty planeswalkers die, counters and damage are cleaned up at the start of each turn
+- **Card image caching**: Scryfall-resolved images are downloaded once into an IndexedDB cache and served locally on every subsequent load; 143 pre-bundled card images ship in `public/cards/`
+- **Game over flow**: Life reaching zero ends the game with a winner banner and replay option
 
 ## Deck import
 
@@ -69,9 +76,7 @@ The browser button controls the public-output window and shows when it is active
 
 ## Known Issues
 
-- BoardPage.tsx still large — CameraWidget extracted, more splitting needed
-- 15 of 16 prebuilt decks have placeholder card lists (only Blight Curse is complete)
 - Backgrounds stored as data URLs in localStorage (~5MB limit)
 - No toast/notification system; errors are inline or in console
-- No test suite yet
 - Multiplayer room access is code-based and does not provide authentication; add auth/rate limiting before public deployment
+- First-strike/double-strike damage priority and hexproof/ward targeting not yet modeled
