@@ -38,12 +38,12 @@ DFC names normalized to front faces; arena-only printings excluded.
 
 | # | Ability | Mechanic needed | Status |
 |---|---------|-----------------|--------|
-| B1 | Keywords (flying, trample, lifelink, deathtouch, haste, vigilance, reach, first strike, ward, indestructible, hexproof) | **All combat keywords DONE**: flying, trample, lifelink, deathtouch, indestructible, haste, reach, first strike, double strike (two damage steps + SBA between). Hexproof/ward (targeting) pending — need B2 targeting model first | [~] |
-| B2 | Targeting | `TargetCard.tsx` exists — wire target-selection step into cast/resolve flow for spells and abilities that target | [~] |
-| B3 | Continuous / temporary effects | **"Until end of turn" pumps DONE**: parser extracts `+N/+N until end of turn` (25 cards), powerBoost/toughnessBoost on BoardCard, combat/SBA/AI use boosted stats, boosts clear on untap/zone change, green badge on card. Auras / lasting continuous effects pending | [~] |
-| B4 | Modal spells & kicker | Cost-choice UI before resolution | [ ] |
+| B1 | Keywords (flying, trample, lifelink, deathtouch, haste, vigilance, reach, first strike, ward, indestructible, hexproof) | **All combat keywords DONE**: flying, trample, lifelink, deathtouch, indestructible, haste, reach, first strike, double strike (two damage steps + SBA between). **Ward/hexproof DONE**: ward prompts a pay-or-counter choice (`WardPrompt`), targeting is hexproof-aware. | [x] |
+| B2 | Targeting | `TargetCard.tsx` exists — wire target-selection step into cast/resolve flow for spells and abilities that target | [x] AI resolves spells with hexproof-aware targeting; ward pay/counter flow wired |
+| B3 | Continuous / temporary effects | **"Until end of turn" pumps DONE**; **Auras DONE**: auras attach on entry, pump only the enchanted creature, die with it (`attachedTo`), static anthems apply to friendly creatures in combat/SBA/AI. | [x] |
+| B4 | Modal spells & kicker | Cost-choice UI before resolution | [x] parser marks modes optional, Skip button on the stack |
 | B5 | Token generation from abilities | Trigger effects already produce tokens via `triggerActions` — audit coverage | [x] `create_token` wired + tested, token power/toughness now parsed and applied (`Token` gains `power`/`toughness`, shown on broadcast) |
-| B6 | Combat steps | Formalize declare-attackers/blockers/damage steps with pass-priority gaps; auto-enter combat from main phase | [~] |
+| B6 | Combat steps | Formalize declare-attackers/blockers/damage steps with pass-priority gaps; auto-enter combat from main phase | [~] player can block AI attacks (DEFEND banner, tapped blockers ignored), damage steps + SBA between passes; priority gaps pending |
 | B7 | Priority system | Who-has-priority model + instant-speed windows | [ ] |
 
 ## Phase C: Opponent & Multiplayer Playability
@@ -51,7 +51,7 @@ DFC names normalized to front faces; arena-only printings excluded.
 | # | Item | Status |
 |---|------|--------|
 | C1 | AI opponent deck selection (choose any imported/prebuilt deck for the AI) | [x] OpponentSetupDialog — pick from all 16 prebuilt or imported decks |
-| C2 | AI improvement: cast instants during combat, use commander more, keep 2+ land types for color fixing | [~] |
+| C2 | AI improvement: cast instants during combat, use commander more, keep 2+ land types for color fixing | [~] AI resolves its ETB triggers, smart combat pacing skips block window with no blockers, discards to 7 at end of turn, free-swing/avoid-bad-trades attack choices; instants-during-combat + color fixing pending |
 | C3 | AI opponent in multiplayer? (solo AI only today) | [ ] |
 | C4 | Multiplayer rules parity: trigger engine + SBA server-side (protocol Phase 6) | [ ] |
 | C5 | Deck import polish: Moxfield/Archidekt raw list handling, import validation errors surfaced | [x] section handling fixed (blank line returns to main after Commander/Sideboard; partners stay), notFound errors surfaced in DecksPage |
@@ -70,6 +70,6 @@ DFC names normalized to front faces; arena-only printings excluded.
 | # | Item | Status |
 |---|------|--------|
 | E1 | Per-deck playability test (import → board → draw 7 → advance turns) | [x] `deckSmoke.test.ts` — all 16 prebuilt decks |
-| E2 | Deck-vs-AI smoke test (load deck, play 3 turns each side) | [x] `deckSmoke.test.ts` — full AI turn with fake timers |
-| E3 | Regression suite: SBA, combat, triggers, mana, rules parser (grow beyond 138 tests) | [x] 209 tests across 10 files (SBA, combat keywords, triggers, undo, rules parser, deck import, scryfall, IndexedDB persistence, per-deck smoke) |
+| E2 | Deck-vs-AI smoke test (load deck, play 3 turns each side) | [x] `deckSmoke.test.ts` — full AI turn with fake timers, extended to all 16 decks |
+| E3 | Regression suite: SBA, combat, triggers, mana, rules parser (grow beyond 138 tests) | [x] 268 tests across 11 files (SBA, combat keywords, triggers, undo, rules parser, deck import, scryfall, IndexedDB persistence, per-deck smoke, AI turn for all decks) |
 | E4 | README + docs/API.md update (overrideLandPlay now implemented, deck builder, AI opponent) | [x] README (decks, builder, AI, keywords, SBA, caching, tests); API.md verified current |
