@@ -166,13 +166,18 @@ export function createCardMovement(set: SetFn, get: () => GameState): Pick<GameS
       if (card) get().emitGameEvent({ type: 'counter_placed', cardId, cardName: card.name, kind: '+1/+1' })
     },
 
-    removeCounter: (cardId) =>
+    removeCounter: (cardId) => {
+      const card = get().cards.find((c) => c.id === cardId)
       set((state) => ({
         ...pushUndo(state),
         cards: state.cards.map((c) =>
           c.id === cardId ? { ...c, counters: c.counters - 1 } : c
         ),
-      })),
+      }))
+      if (card && card.zone === 'battlefield' && (card.type === 'creature' || card.type === 'planeswalker')) {
+        get().checkStateBasedActions()
+      }
+    },
 
     addDamage: (cardId, amount) =>
       set((state) => ({

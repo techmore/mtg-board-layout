@@ -179,6 +179,22 @@ describe('state-based actions', () => {
     useGameStore.getState().undo()
     expect(useGameStore.getState().cards.find((c) => c.id === 'bear')?.zone).toBe('battlefield')
   })
+
+  it('kills a planeswalker whose loyalty drops to zero', () => {
+    useGameStore.setState({
+      cards: [card({ id: 'walk', name: 'Chandra', typeLine: 'Planeswalker', type: 'planeswalker', zone: 'battlefield', counters: 1 })],
+    })
+    useGameStore.getState().removeCounter('walk')
+    expect(useGameStore.getState().cards.find((c) => c.id === 'walk')?.zone).toBe('graveyard')
+  })
+
+  it('kills a creature when counter removal drops its toughness below one', () => {
+    useGameStore.setState({
+      cards: [card({ id: 'bear', name: 'Bear', typeLine: '1/1', type: 'creature', zone: 'battlefield', counters: 0 })],
+    })
+    useGameStore.getState().removeCounter('bear')
+    expect(useGameStore.getState().cards.find((c) => c.id === 'bear')?.zone).toBe('graveyard')
+  })
 })
 
 describe('loadOpponentDeck', () => {

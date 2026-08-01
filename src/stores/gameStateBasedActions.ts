@@ -6,7 +6,9 @@ import { getCreatureToughness } from '../utils/misc'
 type SetFn = (partial: GameState | Partial<GameState> | ((state: GameState) => Partial<GameState>)) => void
 
 function isDead(card: BoardCard): boolean {
-  if (card.zone !== 'battlefield' || card.type !== 'creature') return false
+  if (card.zone !== 'battlefield') return false
+  if (card.type === 'planeswalker') return (card.counters ?? 0) <= 0
+  if (card.type !== 'creature') return false
   const toughness = getCreatureToughness(card.typeLine) + card.counters
   if (toughness < 1) return true
   return (card.damage ?? 0) >= toughness
