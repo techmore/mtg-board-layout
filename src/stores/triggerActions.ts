@@ -33,7 +33,22 @@ export function resolveTrigger(get: () => GameState, set: (partial: Partial<Game
 
   switch (effect.kind) {
     case 'draw_cards': {
-      get().drawCards((params.amount as number) ?? 1)
+      const amount = (params.amount as number) ?? 1
+      const source = state.cards.find((c) => c.id === trigger.sourceCardId)
+      if ((source?.owner ?? 'player') === 'opponent') {
+        let remaining = Math.max(0, Math.floor(amount))
+        set({
+          cards: state.cards.map((c) => {
+            if (remaining > 0 && (c.owner ?? 'player') === 'opponent' && c.zone === 'library') {
+              remaining--
+              return { ...c, zone: 'hand' as const }
+            }
+            return c
+          }),
+        })
+      } else {
+        get().drawCards(amount)
+      }
       break
     }
     case 'gain_life': {

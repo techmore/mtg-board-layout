@@ -1,7 +1,7 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { useGameStore } from './gameStore'
 import { primeCardRules } from './cardRulesLoader'
-import { resolveAISpellAbilities } from './spellResolution'
+import { resolveAISpellAbilities, resolveAIAutoAbilities } from './spellResolution'
 import type { BoardCard, CardAbilityDef, CardRuleEntry, DeckCard, ManaPool } from '../types/card'
 
 const emptyManaPool = (): ManaPool => ({ W: 0, U: 0, B: 0, R: 0, G: 0, C: 0 })
@@ -1016,6 +1016,37 @@ describe('modal spells', () => {
     // Skip the draw mode.
     useGameStore.getState().skipTrigger(drawTrigger.id)
     expect(useGameStore.getState().triggerStack).toHaveLength(0)
+  })
+
+  it('the AI auto-resolves ETB triggers on permanents it casts', () => {
+    const etbDrawRule: CardRuleEntry = {
+      cardName: 'Solemn Simulacrum', manaCost: '{4}', manaValue: 4, typeLine: 'Artifact Creature — Golem', cardType: 'creature', subtypes: [], keywords: [], manaProduction: null, entryTapRule: null, conditionalEntryText: null, oracleText: 'When Solemn Simulacrum enters the battlefield, you may draw a card.', scryfallId: 's', abilities: [{
+        abilityType: 'triggered',
+        triggerEvent: 'etb',
+        triggerCondition: null,
+        isOptional: false,
+        cost: null,
+        targets: 0,
+        targetFilter: null,
+        effect: { kind: 'draw_cards', params: { amount: 1 } },
+      }],
+    }
+    primeCardRules({ 'Solemn Simulacrum': etbDrawRule })
+    const simulacrum = card({ id: 'sim', name: 'Solemn Simulacrum', type: 'creature', typeLine: 'Artifact Creature — Golem', zone: 'battlefield', owner: 'opponent' })
+    const libraryCard = card({ id: 'lib', name: 'Library Card', type: 'creature', typeLine: 'Creature', zone: 'library', owner: 'opponent' })
+    useGameStore.setState({ cards: [simulacrum, libraryCard] })
+
+    resolveAIAutoAbilities(
+      (partial) => useGameStore.setState(partial as never),
+      () => useGameStore.getState(),
+      simulacrum,
+      'etb',
+    )
+
+    // The trigger resolved against the AI: it drew a card into its hand.
+    const state = useGameStore.getState()
+    expect(state.cards.filter((c) => (c.owner ?? 'player') === 'opponent' && c.zone === 'hand')).toHaveLength(1)
+    expect(state.triggerStack).toHaveLength(0)
   })
 })
 

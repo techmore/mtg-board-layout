@@ -283,6 +283,30 @@ export default function BoardPage() {
               ⚔ DEFEND — right-click your creatures to block ({combatState.attackers.length} attacking)
             </div>
           )}
+          {combatState.active && activePlayer === 'player' && (
+            <div
+              role="status"
+              style={{
+                position: 'absolute',
+                top: 46,
+                left: '50%',
+                transform: 'translateX(-50%)',
+                zIndex: 25,
+                padding: '5px 12px',
+                borderRadius: 999,
+                background: 'rgba(88,166,255,0.92)',
+                color: '#fff',
+                fontSize: '0.72rem',
+                fontWeight: 800,
+                letterSpacing: '0.4px',
+                whiteSpace: 'nowrap',
+                boxShadow: '0 3px 12px rgba(0,0,0,0.45)',
+                pointerEvents: 'none',
+              }}
+            >
+              ⚔ Choose attackers — click your creatures, then Resolve Combat
+            </div>
+          )}
 
           <BoardControls
             handleDeckChange={handleDeckChange}

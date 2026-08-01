@@ -22,13 +22,20 @@ export function enqueueSpellAbilities(set: SetFn, _get: () => GameState, card: B
 }
 
 /**
- * Resolve a spell the AI cast, automatically. Targeted abilities pick the first
- * valid target (respecting the target filter and hexproof); untargeted abilities
- * resolve immediately. Unknown effect kinds fizzle silently.
+ * Auto-resolve abilities for a card the AI just cast or put onto the
+ * battlefield. For a cast spell this resolves its spell abilities; for a
+ * permanent entering the battlefield it resolves its ETB triggered abilities.
+ * Targeted abilities pick the first valid target (respecting the target filter,
+ * hexproof, and ward payment); untargeted abilities resolve immediately.
+ * Unknown effect kinds fizzle silently.
  */
-export function resolveAISpellAbilities(set: SetFn, get: () => GameState, card: BoardCard) {
+export function resolveAIAutoAbilities(set: SetFn, get: () => GameState, card: BoardCard, event: 'cast' | TriggerEvent) {
   const rule = getCardRule(card.name, getCachedCardRules())
-  const abilities = (rule?.abilities ?? []).filter((a) => a.abilityType === 'spell')
+  const abilities = (rule?.abilities ?? []).filter((a) =>
+    a.abilityType === 'spell'
+      ? event === 'cast'
+      : a.abilityType === 'triggered' && a.triggerEvent === event,
+  )
   for (const ability of abilities) {
     const instance: TriggerInstance = {
       id: crypto.randomUUID(),
@@ -71,4 +78,8 @@ export function resolveAISpellAbilities(set: SetFn, get: () => GameState, card: 
       get().resolveTrigger(instance.id)
     }
   }
+}
+
+export function resolveAISpellAbilities(set: SetFn, get: () => GameState, card: BoardCard) {
+  return resolveAIAutoAbilities(set, get, card, 'cast')
 }

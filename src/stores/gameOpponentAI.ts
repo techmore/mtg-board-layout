@@ -1,14 +1,14 @@
 import type { BoardCard, ManaPool, Zone } from '../types/card'
 import type { ActivePlayer } from './gameStore'
 import type { GameState } from './gameStore'
-import { shuffle, classifyType, parseManaCost } from '../utils/misc'
+import { shuffle, classifyType, parseManaCost, getCardPower } from '../utils/misc'
 import { pushUndo } from './gameRules'
 import { getCardTypeFeatures } from '../data/cardFeatures'
 import { getCachedCardRules } from './cardRulesLoader'
 import { localCardImage } from '../data/localCardImages'
 import { cacheDeckImages } from '../services/cardImageCache'
 import { pickSpell, pickAttackers, pickCommanderCast } from './opponentAI'
-import { resolveAISpellAbilities } from './spellResolution'
+import { resolveAISpellAbilities, resolveAIAutoAbilities } from './spellResolution'
 
 type SetFn = (partial: GameState | Partial<GameState> | ((state: GameState) => Partial<GameState>)) => void
 
@@ -144,6 +144,9 @@ export function createOpponentAI(set: SetFn, get: () => GameState): Pick<GameSta
                 }
               })
               resolveAISpellAbilities(set, get, toCast)
+              if (toCast.type !== 'instant' && toCast.type !== 'sorcery') {
+                resolveAIAutoAbilities(set, get, toCast, 'etb')
+              }
             }
 
             setTimeout(() => {
@@ -180,12 +183,18 @@ export function createOpponentAI(set: SetFn, get: () => GameState): Pick<GameSta
                   : 'OPPONENT has no attackers' },
               })
 
+              // Give the player a full blocking window only when they actually
+              // have something that could block; otherwise resolve quickly.
+              const playerCanBlock = get().cards.some(
+                (c) => (c.owner ?? 'player') === 'player' && c.zone === 'battlefield' && c.type === 'creature' && !c.tapped && getCardPower(c) > 0,
+              )
+              const resolveDelay = attackerIds.length > 0 && playerCanBlock ? 8000 : 1500
               setTimeout(() => {
                 const s5 = get()
                 if (s5.activePlayer !== 'opponent' || s5.gameOver) return
                 get().resolveCombat()
                 get().advanceTurn()
-              }, 8000)
+              }, resolveDelay)
             }, 600)
           }, 600)
         }, 400)
