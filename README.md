@@ -28,7 +28,7 @@ The client defaults to `ws://localhost:2567`. Set `VITE_COLYSEUS_URL` in a local
 ```sh
 npm run build
 npm run lint
-npm test          # vitest — 166 tests (rules, SBA, combat, triggers, undo, per-deck smoke tests)
+npm test          # vitest — 268 tests (rules, SBA, combat, triggers, undo, deck import, AI turns, per-deck smoke)
 npm audit --omit=dev
 ```
 
@@ -51,8 +51,10 @@ npm audit --omit=dev
 - **Persistent state**: All game state and decks saved to localStorage, cross-tab sync
 - **16 complete prebuilt Commander decks**: Official 100-card lists (Commander Masters, Tales of Middle-earth, MH3, Bloomburrow, Duskmourn, Fallout, and more) sourced from `src/data/decklists/*.json`, shared with the trigger-engine rules feed
 - **Deck builder**: Scryfall search, add/remove cards, commander selection, save/delete/rename imported decks
-- **AI opponent**: Plays a real deck (any prebuilt or imported) with automated turns — casts spells, plays lands, attacks, blocks, uses its commander, tracks commander tax
-- **Combat keywords**: Flying (blocking validity), trample (damage overflow), lifelink (healing), deathtouch (lethal mark), indestructible (survives SBA), haste (attacks the turn it enters), reach (blocks fliers); first strike/double strike and hexproof/ward pending
+- **AI opponent**: Plays a real deck (any prebuilt or imported) with automated turns — casts spells, resolves its ETB triggers, plays lands, attacks (free swings, avoids bad trades), blocks, uses its commander, tracks commander tax, discards to 7, and loses on deck-out
+- **Combat keywords**: Flying (blocking validity), trample (damage overflow), lifelink (healing), deathtouch (lethal mark), indestructible (survives SBA), haste (attacks the turn it enters), reach (blocks fliers), vigilance, first strike & double strike (two damage steps with SBA between), ward (pay-or-counter prompt), hexproof-aware targeting
+- **Auras & pumps**: Auras attach on entry, pump only the enchanted creature, and die with it; "until end of turn" pumps show a green badge; static anthems apply in combat/SBA/AI
+- **Modal spells & kicker**: Parser marks optional modes; Skip button on the stack for unplayed modes
 - **State-based actions**: Lethal damage destroys creatures, 0-loyalty planeswalkers die, counters and damage are cleaned up at the start of each turn
 - **Card image caching**: Scryfall-resolved images are downloaded once into an IndexedDB cache and served locally on every subsequent load; 143 pre-bundled card images ship in `public/cards/`
 - **Game over flow**: Life reaching zero ends the game with a winner banner and replay option
@@ -79,4 +81,4 @@ The browser button controls the public-output window and shows when it is active
 - Backgrounds stored as data URLs in localStorage (~5MB limit)
 - No toast/notification system; errors are inline or in console
 - Multiplayer room access is code-based and does not provide authentication; add auth/rate limiting before public deployment
-- First-strike/double-strike damage priority and hexproof/ward targeting not yet modeled
+- Full priority system (instant-speed windows) not yet modeled
