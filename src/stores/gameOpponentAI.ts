@@ -8,6 +8,7 @@ import { getCachedCardRules } from './cardRulesLoader'
 import { localCardImage } from '../data/localCardImages'
 import { cacheDeckImages } from '../services/cardImageCache'
 import { pickSpell, pickAttackers, pickCommanderCast } from './opponentAI'
+import { resolveAISpellAbilities } from './spellResolution'
 
 type SetFn = (partial: GameState | Partial<GameState> | ((state: GameState) => Partial<GameState>)) => void
 
@@ -124,6 +125,7 @@ export function createOpponentAI(set: SetFn, get: () => GameState): Pick<GameSta
                   turnAnnouncement: { id: Date.now(), text: `OPPONENT casts ${toCast.name}` },
                 }
               })
+              resolveAISpellAbilities(set, get, toCast)
             }
 
             setTimeout(() => {

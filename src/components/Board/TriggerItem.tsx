@@ -1,5 +1,6 @@
 import type { BoardCard, TriggerInstance } from '../../types/card'
 import { effectLabelFor, targetsForEffect, filterMatch } from './triggerUtils'
+import { hasKeyword } from '../../stores/cardRulesLoader'
 import { TargetCard } from './TargetCard'
 
 type TriggerAction = (triggerId: string) => void
@@ -329,7 +330,9 @@ export function TriggerItem({
           </div>
           <div style={{ display: 'flex', flexWrap: 'wrap', gap: 4 }}>
             {targetCards
+              .filter((card) => card.id !== trigger.sourceCardId)
               .filter((card) => filterMatch(targetHint, card))
+              .filter((card) => !(hasKeyword(card, 'hexproof') && (card.owner ?? 'player') === 'opponent'))
               .map((card) => (
                 <TargetCard
                   key={card.id}

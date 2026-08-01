@@ -36,12 +36,22 @@ export function resolveTrigger(get: () => GameState, set: (partial: Partial<Game
     }
     case 'gain_life': {
       const amount = (params.amount as number) ?? 1
-      get().setLife(state.lifeTotal + amount)
+      const source = state.cards.find((c) => c.id === trigger.sourceCardId)
+      if ((source?.owner ?? 'player') === 'opponent') {
+        get().setOpponentLife(state.opponentLifeTotal + amount)
+      } else {
+        get().setLife(state.lifeTotal + amount)
+      }
       break
     }
     case 'lose_life': {
       const amount = (params.amount as number) ?? 1
-      get().setLife(state.lifeTotal - amount)
+      const source = state.cards.find((c) => c.id === trigger.sourceCardId)
+      if ((source?.owner ?? 'player') === 'opponent') {
+        get().setOpponentLife(state.opponentLifeTotal - amount)
+      } else {
+        get().setLife(state.lifeTotal - amount)
+      }
       break
     }
     case 'create_token': {

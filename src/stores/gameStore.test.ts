@@ -1,6 +1,7 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { useGameStore } from './gameStore'
 import { primeCardRules } from './cardRulesLoader'
+import { resolveAISpellAbilities } from './spellResolution'
 import type { BoardCard, CardAbilityDef, CardRuleEntry, DeckCard, ManaPool } from '../types/card'
 
 const emptyManaPool = (): ManaPool => ({ W: 0, U: 0, B: 0, R: 0, G: 0, C: 0 })
@@ -526,6 +527,67 @@ describe('spell resolution', () => {
 
     expect(useGameStore.getState().cards.find((c) => c.id === 'victim')?.zone).toBe('graveyard')
     expect(useGameStore.getState().cards.find((c) => c.id === 'victim')?.damage).toBe(0)
+  })
+
+  it('an AI-cast spell resolves automatically against the player', () => {
+    primeCardRules({ 'Bolt': spellRule('Bolt', dealDamageAbility()) })
+    const aiBolt = card({ id: 'bolt', name: 'Bolt', type: 'instant', typeLine: 'Instant', zone: 'battlefield', owner: 'opponent' })
+    const victim = card({ id: 'victim', name: 'Bird', typeLine: '1/1', type: 'creature', zone: 'battlefield' })
+    useGameStore.setState({ cards: [aiBolt, victim] })
+
+    resolveAISpellAbilities(
+      (partial) => useGameStore.setState(partial as never),
+      () => useGameStore.getState(),
+      aiBolt,
+    )
+
+    expect(useGameStore.getState().cards.find((c) => c.id === 'victim')?.zone).toBe('graveyard')
+    expect(useGameStore.getState().triggerStack).toHaveLength(0)
+  })
+
+  it('the AI avoids hexproof creatures when auto-targeting', () => {
+    primeCardRules({ 'Bolt': spellRule('Bolt', dealDamageAbility()) })
+    const aiBolt = card({ id: 'bolt', name: 'Bolt', type: 'instant', typeLine: 'Instant', zone: 'battlefield', owner: 'opponent' })
+    const hexproof = card({ id: 'hex', name: 'Mist', typeLine: '1/1', type: 'creature', zone: 'battlefield' })
+    const plain = card({ id: 'plain', name: 'Bear', typeLine: '1/1', type: 'creature', zone: 'battlefield' })
+    primeCardRules({ 'Bolt': spellRule('Bolt', dealDamageAbility()), 'Mist': ruleFor('Mist', ['hexproof']) })
+    useGameStore.setState({ cards: [aiBolt, hexproof, plain] })
+
+    resolveAISpellAbilities(
+      (partial) => useGameStore.setState(partial as never),
+      () => useGameStore.getState(),
+      aiBolt,
+    )
+
+    expect(useGameStore.getState().cards.find((c) => c.id === 'hex')?.zone).toBe('battlefield')
+    expect(useGameStore.getState().cards.find((c) => c.id === 'plain')?.zone).toBe('graveyard')
+  })
+
+  it('an AI life-gain spell heals the opponent, not the player', () => {
+    primeCardRules({
+      'Heal': spellRule('Heal', {
+        abilityType: 'spell',
+        triggerEvent: null,
+        triggerCondition: null,
+        isOptional: false,
+        cost: null,
+        targets: 0,
+        targetFilter: null,
+        effect: { kind: 'gain_life', params: { amount: 4 } },
+      }),
+    })
+    const aiHeal = card({ id: 'heal', name: 'Heal', type: 'instant', typeLine: 'Instant', zone: 'battlefield', owner: 'opponent' })
+    useGameStore.setState({ cards: [aiHeal] })
+
+    resolveAISpellAbilities(
+      (partial) => useGameStore.setState(partial as never),
+      () => useGameStore.getState(),
+      aiHeal,
+    )
+
+    const state = useGameStore.getState()
+    expect(state.lifeTotal).toBe(40)
+    expect(state.opponentLifeTotal).toBe(44)
   })
 })
 
