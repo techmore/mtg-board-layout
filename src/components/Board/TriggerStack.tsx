@@ -6,6 +6,7 @@ export function TriggerStack() {
   const cards = useGameStore((s) => s.cards)
   const resolveTrigger = useGameStore((s) => s.resolveTrigger)
   const selectTarget = useGameStore((s) => s.selectTarget)
+  const skipTrigger = useGameStore((s) => s.skipTrigger)
   const toggleProliferateTarget = useGameStore((s) => s.toggleProliferateTarget)
   const confirmProliferate = useGameStore((s) => s.confirmProliferate)
   const toggleScryTarget = useGameStore((s) => s.toggleScryTarget)
@@ -74,6 +75,7 @@ export function TriggerStack() {
               cards={cards}
               resolveTrigger={resolveTrigger}
               selectTarget={selectTarget}
+              skipTrigger={skipTrigger}
               toggleProliferateTarget={toggleProliferateTarget}
               confirmProliferate={confirmProliferate}
               toggleScryTarget={toggleScryTarget}

@@ -558,6 +558,12 @@ function parseAbilities(oracleText, typeLine) {
 
   const sentences = text.split(/[.;\n]/).map(s => s.trim()).filter(Boolean)
 
+  // Modal ("Choose one —") and kicker cards: each mode is a choice, so spell
+  // abilities on these cards are optional — the player picks one and skips the rest.
+  const hasChoices = /\bchoose one\b|\bchoose two\b|\bkicker\b|\bwas kicked\b/i.test(text)
+  const optionalSentence = (sentence) =>
+    hasChoices || /\b(may|you may)\b/i.test(sentence) || /^or\b/i.test(sentence)
+
   for (const sentence of sentences) {
     // Skip reminder text in parentheses
     const cleanSentence = sentence.replace(/\([^)]*\)/g, '').trim()
@@ -573,7 +579,7 @@ function parseAbilities(oracleText, typeLine) {
         abilityType: 'static',
         triggerEvent: null,
         triggerCondition: null,
-        isOptional: /\b(may|you may)\b/i.test(cleanSentence),
+        isOptional: optionalSentence(cleanSentence),
         cost: null,
         targets: tgt.targets,
         targetFilter: tgt.targetFilter,
@@ -591,7 +597,7 @@ function parseAbilities(oracleText, typeLine) {
         abilityType: 'activated',
         triggerEvent: null,
         triggerCondition: null,
-        isOptional: /\b(may|you may)\b/i.test(cleanSentence),
+        isOptional: optionalSentence(cleanSentence),
         cost,
         targets: tgt.targets,
         targetFilter: tgt.targetFilter,
@@ -612,7 +618,7 @@ function parseAbilities(oracleText, typeLine) {
           abilityType: 'triggered',
           triggerEvent: tp.event,
           triggerCondition: cond || null,
-          isOptional: /\b(may|you may)\b/i.test(cleanSentence),
+          isOptional: optionalSentence(cleanSentence),
           cost: null,
           targets: tgt.targets,
           targetFilter: tgt.targetFilter,
@@ -633,7 +639,7 @@ function parseAbilities(oracleText, typeLine) {
         abilityType: classifyType(typeLine) === 'instant' || classifyType(typeLine) === 'sorcery' ? 'spell' : 'triggered',
         triggerEvent: null,
         triggerCondition: null,
-        isOptional: /\b(may|you may)\b/i.test(cleanSentence),
+        isOptional: optionalSentence(cleanSentence),
         cost: !isActivated(cleanSentence) ? null : c,
         targets: tgt.targets,
         targetFilter: tgt.targetFilter,

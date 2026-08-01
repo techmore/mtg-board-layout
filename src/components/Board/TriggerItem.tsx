@@ -11,6 +11,7 @@ interface TriggerItemProps {
   cards: BoardCard[]
   resolveTrigger: TriggerAction
   selectTarget: TargetAction
+  skipTrigger: TriggerAction
   toggleProliferateTarget: TargetAction
   confirmProliferate: TriggerAction
   toggleScryTarget: TargetAction
@@ -24,6 +25,7 @@ export function TriggerItem({
   cards,
   resolveTrigger,
   selectTarget,
+  skipTrigger,
   toggleProliferateTarget,
   confirmProliferate,
   toggleScryTarget,
@@ -378,6 +380,25 @@ export function TriggerItem({
           >
             Resolve
           </button>
+          {trigger.ability.isOptional && (
+            <button
+              type="button"
+              onClick={() => skipTrigger(trigger.id)}
+              title="Skip this optional mode (modal spells / kicker)"
+              style={{
+                padding: '5px 14px',
+                borderRadius: 6,
+                border: '1px solid #484f58',
+                background: 'transparent',
+                color: '#8b949e',
+                cursor: 'pointer',
+                fontSize: '0.75rem',
+                fontWeight: 600,
+              }}
+            >
+              Skip
+            </button>
+          )}
         </div>
       )}
     </div>

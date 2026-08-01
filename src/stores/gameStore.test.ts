@@ -851,6 +851,82 @@ describe('ward', () => {
   })
 })
 
+describe('modal spells', () => {
+  function modalRule(name: string, modes: CardAbilityDef[]): CardRuleEntry {
+    return {
+      cardName: name,
+      manaCost: '{1}{R}',
+      manaValue: 2,
+      typeLine: 'Instant',
+      cardType: 'instant',
+      subtypes: [],
+      keywords: [],
+      manaProduction: null,
+      entryTapRule: null,
+      conditionalEntryText: null,
+      oracleText: 'Choose one —',
+      scryfallId: `sf-${name}`,
+      abilities: modes,
+    }
+  }
+
+  const damageMode = (): CardAbilityDef => ({
+    abilityType: 'spell',
+    triggerEvent: null,
+    triggerCondition: null,
+    isOptional: true,
+    cost: null,
+    targets: 1,
+    targetFilter: 'creature',
+    effect: { kind: 'deal_damage', params: { amount: 3 } },
+  })
+
+  const drawMode = (): CardAbilityDef => ({
+    abilityType: 'spell',
+    triggerEvent: null,
+    triggerCondition: null,
+    isOptional: true,
+    cost: null,
+    targets: 0,
+    targetFilter: null,
+    effect: { kind: 'draw_cards', params: { amount: 2 } },
+  })
+
+  it('enqueues every mode of a modal spell as an optional ability', () => {
+    primeCardRules({ 'Pyre': modalRule('Pyre', [damageMode(), drawMode()]) })
+    const spell = card({ id: 'pyre', name: 'Pyre', type: 'instant', typeLine: 'Instant', zone: 'hand' })
+    const victim = card({ id: 'victim', name: 'Bird', typeLine: '1/1', type: 'creature', zone: 'battlefield' })
+    useGameStore.setState({ cards: [spell, victim], manaPool: { ...emptyManaPool(), R: 5 } })
+
+    useGameStore.getState().castSpell('pyre')
+
+    const stack = useGameStore.getState().triggerStack
+    expect(stack).toHaveLength(2)
+    expect(stack.every((t) => t.ability.isOptional)).toBe(true)
+  })
+
+  it('resolves one mode and skips the others', () => {
+    primeCardRules({ 'Pyre': modalRule('Pyre', [damageMode(), drawMode()]) })
+    const spell = card({ id: 'pyre', name: 'Pyre', type: 'instant', typeLine: 'Instant', zone: 'hand' })
+    const victim = card({ id: 'victim', name: 'Bird', typeLine: '1/1', type: 'creature', zone: 'battlefield' })
+    useGameStore.setState({ cards: [spell, victim], manaPool: { ...emptyManaPool(), R: 5 } })
+
+    useGameStore.getState().castSpell('pyre')
+    const stack = useGameStore.getState().triggerStack
+    const damageTrigger = stack[0]
+    const drawTrigger = stack[1]
+
+    // Resolve the damage mode (target the bird).
+    useGameStore.getState().resolveTrigger(damageTrigger.id)
+    useGameStore.getState().selectTarget(damageTrigger.id, 'victim')
+    expect(useGameStore.getState().cards.find((c) => c.id === 'victim')?.zone).toBe('graveyard')
+
+    // Skip the draw mode.
+    useGameStore.getState().skipTrigger(drawTrigger.id)
+    expect(useGameStore.getState().triggerStack).toHaveLength(0)
+  })
+})
+
 describe('loadOpponentDeck', () => {
   it('loads a simple commander deck with the commander in the command zone', () => {
     vi.useFakeTimers()

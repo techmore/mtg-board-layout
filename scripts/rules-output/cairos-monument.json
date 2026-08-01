@@ -3254,7 +3254,7 @@
         "abilityType": "activated",
         "triggerEvent": null,
         "triggerCondition": null,
-        "isOptional": false,
+        "isOptional": true,
         "cost": "{T}",
         "targets": 0,
         "targetFilter": null,

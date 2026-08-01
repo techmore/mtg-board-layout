@@ -160,6 +160,7 @@ export interface GameState {
   confirmSearchLibrary: (triggerId: string) => void
   selectSearchLibraryTarget: (triggerId: string, cardId: string) => void
   clearTriggerStack: () => void
+  skipTrigger: (triggerId: string) => void
   toggleCombat: () => void
   toggleAttacker: (cardId: string) => void
   assignBlocker: (attackerId: string, blockerId: string) => void
@@ -371,6 +372,8 @@ export const useGameStore = create<GameState>((set, get) => {
     },
 
     clearTriggerStack: () => set({ triggerStack: [] }),
+    skipTrigger: (triggerId) =>
+      set((state) => ({ triggerStack: state.triggerStack.filter((t) => t.id !== triggerId) })),
   }
 
   // Wrap undoable actions with undo history tracking
