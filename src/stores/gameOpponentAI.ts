@@ -19,7 +19,7 @@ export function createOpponentAI(set: SetFn, get: () => GameState): Pick<GameSta
       set((prev) => {
         const cards = prev.cards.map((c) =>
           (c.owner ?? 'player') === 'opponent' && c.zone === 'battlefield'
-            ? { ...c, tapped: false, damage: 0 } : c
+            ? { ...c, tapped: false, damage: 0, powerBoost: 0, toughnessBoost: 0 } : c
         )
         return { cards, opponentManaPool: emptyManaPool(), opponentPotentialMana: [], opponentLandPlaysThisTurn: 0 }
       })

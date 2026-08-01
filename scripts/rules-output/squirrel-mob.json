@@ -858,8 +858,11 @@
         "targets": 1,
         "targetFilter": "creature gets -2/-2 until end of turn",
         "effect": {
-          "kind": "other",
-          "params": {}
+          "kind": "pump",
+          "params": {
+            "power": -2,
+            "toughness": -2
+          }
         }
       }
     ],
@@ -992,7 +995,24 @@
     "manaProduction": null,
     "entryTapRule": null,
     "conditionalEntryText": null,
-    "abilities": [],
+    "abilities": [
+      {
+        "abilityType": "spell",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "pump",
+          "params": {
+            "power": -1,
+            "toughness": -1
+          }
+        }
+      }
+    ],
     "oracleText": "Create two 1/1 green Squirrel creature tokens. Then each creature that isn't an Insect, Rat, Spider, or Squirrel gets -1/-1 until end of turn for each creature you control that's an Insect, Rat, Spider, or Squirrel.",
     "scryfallId": "8486f472-afad-4fdd-a57a-d20d8871b543"
   },
@@ -1245,6 +1265,22 @@
           "kind": "draw_cards",
           "params": {
             "amount": 3
+          }
+        }
+      },
+      {
+        "abilityType": "spell",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "pump",
+          "params": {
+            "power": -2,
+            "toughness": -2
           }
         }
       }

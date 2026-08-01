@@ -114,6 +114,30 @@ export function BoardCardComponent({
             {card.damage}✕
           </div>
         )}
+        {((card.powerBoost ?? 0) !== 0 || (card.toughnessBoost ?? 0) !== 0) && (
+          <div
+            style={{
+              position: 'absolute',
+              bottom: 4,
+              left: 4,
+              minWidth: 22,
+              height: 22,
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              borderRadius: 999,
+              padding: '0 5px',
+              boxSizing: 'border-box',
+              background: 'rgba(63,185,80,0.92)',
+              color: '#fff',
+              fontSize: '0.65rem',
+              fontWeight: 800,
+            }}
+            title="Pumped until end of turn"
+          >
+            {card.powerBoost! > 0 ? '+' : ''}{card.powerBoost}/{card.toughnessBoost! > 0 ? '+' : ''}{card.toughnessBoost}
+          </div>
+        )}
         <TokenBadge count={card.tokenCount} />
         {card.manaCost && (
           <div

@@ -3836,8 +3836,11 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
-          "params": {}
+          "kind": "pump",
+          "params": {
+            "power": 3,
+            "toughness": 3
+          }
         }
       }
     ],

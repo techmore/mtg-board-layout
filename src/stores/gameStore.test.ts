@@ -589,6 +589,68 @@ describe('spell resolution', () => {
     expect(state.lifeTotal).toBe(40)
     expect(state.opponentLifeTotal).toBe(44)
   })
+
+  it('a pump spell boosts its target until end of turn', () => {
+    primeCardRules({
+      'Giant Growth': spellRule('Giant Growth', {
+        abilityType: 'spell',
+        triggerEvent: null,
+        triggerCondition: null,
+        isOptional: false,
+        cost: null,
+        targets: 1,
+        targetFilter: 'creature',
+        effect: { kind: 'pump', params: { power: 3, toughness: 3 } },
+      }),
+    })
+    const spell = card({ id: 'gg', name: 'Giant Growth', type: 'instant', typeLine: 'Instant', zone: 'hand' })
+    const bear = card({ id: 'bear', name: 'Bear', typeLine: '2/2', type: 'creature', zone: 'battlefield' })
+    useGameStore.setState({ cards: [spell, bear], manaPool: { ...emptyManaPool(), G: 5 } })
+
+    useGameStore.getState().castSpell('gg')
+    const triggerId = useGameStore.getState().triggerStack[0].id
+    useGameStore.getState().resolveTrigger(triggerId)
+    useGameStore.getState().selectTarget(triggerId, 'bear')
+
+    const pumped = useGameStore.getState().cards.find((c) => c.id === 'bear')
+    expect(pumped?.powerBoost).toBe(3)
+    expect(pumped?.toughnessBoost).toBe(3)
+  })
+
+  it('a boosted creature survives lethal damage', () => {
+    primeCardRules({})
+    useGameStore.setState({
+      cards: [card({ id: 'bear', name: 'Bear', typeLine: '2/2', type: 'creature', zone: 'battlefield', damage: 2, powerBoost: 3, toughnessBoost: 3 })],
+    })
+    useGameStore.getState().checkStateBasedActions()
+    expect(useGameStore.getState().cards.find((c) => c.id === 'bear')?.zone).toBe('battlefield')
+  })
+
+  it('boosts are cleared at the beginning of the next turn', () => {
+    useGameStore.setState({
+      cards: [card({ id: 'bear', name: 'Bear', typeLine: '2/2', type: 'creature', zone: 'battlefield', powerBoost: 3, toughnessBoost: 3 })],
+      currentPhase: 'beginning',
+    })
+    useGameStore.getState().advancePhase()
+    const after = useGameStore.getState().cards.find((c) => c.id === 'bear')
+    expect(after?.powerBoost).toBe(0)
+    expect(after?.toughnessBoost).toBe(0)
+  })
+
+  it('combat damage uses boosted power and toughness', () => {
+    useGameStore.setState({
+      cards: [
+        card({ id: 'pumped', name: 'Pumped', typeLine: '2/2', type: 'creature', zone: 'battlefield', tapped: true, powerBoost: 3, toughnessBoost: 3 }),
+        card({ id: 'chump', name: 'Chump', typeLine: '2/2', type: 'creature', zone: 'battlefield', owner: 'opponent' }),
+      ],
+      combatState: { active: true, attackers: ['pumped'], blockers: { pumped: ['chump'] } },
+    })
+    useGameStore.getState().resolveCombat()
+    expect(useGameStore.getState().cards.find((c) => c.id === 'chump')?.zone).toBe('graveyard')
+    const pumped = useGameStore.getState().cards.find((c) => c.id === 'pumped')
+    expect(pumped?.zone).toBe('battlefield')
+    expect(pumped?.damage).toBe(2)
+  })
 })
 
 describe('loadOpponentDeck', () => {

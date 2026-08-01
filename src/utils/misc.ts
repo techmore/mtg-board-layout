@@ -38,6 +38,14 @@ export function getCreatureToughness(typeLine: string | undefined): number {
   return parseInt(typeLine?.match(/\/(\d+)/)?.[1] ?? '0', 10)
 }
 
+export function getCardPower(card: { typeLine: string | undefined; powerBoost?: number }): number {
+  return getCreaturePower(card.typeLine) + (card.powerBoost ?? 0)
+}
+
+export function getCardToughness(card: { typeLine: string | undefined; toughnessBoost?: number; counters?: number }): number {
+  return getCreatureToughness(card.typeLine) + (card.toughnessBoost ?? 0) + (card.counters ?? 0)
+}
+
 export function parseManaCost(cost: string) {
   const symbols = cost.match(/\{[^}]+\}/g) ?? []
   const colored: Record<string, number> = { W: 0, U: 0, B: 0, R: 0, G: 0, C: 0 }

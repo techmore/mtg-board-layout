@@ -1596,8 +1596,11 @@
         "targets": 1,
         "targetFilter": "creature gets -1/-1 until end of turn for each Swamp you control",
         "effect": {
-          "kind": "other",
-          "params": {}
+          "kind": "pump",
+          "params": {
+            "power": -1,
+            "toughness": -1
+          }
         }
       }
     ],
@@ -1778,7 +1781,24 @@
     "manaProduction": null,
     "entryTapRule": null,
     "conditionalEntryText": null,
-    "abilities": [],
+    "abilities": [
+      {
+        "abilityType": "spell",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "pump",
+          "params": {
+            "power": -1,
+            "toughness": -1
+          }
+        }
+      }
+    ],
     "oracleText": "All creatures get -1/-1 until end of turn for each Swamp you control.",
     "scryfallId": "04587192-e5a6-46f6-98b5-3b349d618880"
   },

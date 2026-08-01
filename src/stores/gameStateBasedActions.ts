@@ -1,7 +1,7 @@
 import type { BoardCard, Zone } from '../types/card'
 import type { GameState } from './gameStore'
 import { pushUndo } from './gameRules'
-import { getCreatureToughness } from '../utils/misc'
+import { getCardToughness } from '../utils/misc'
 import { hasKeyword } from './cardRulesLoader'
 
 type SetFn = (partial: GameState | Partial<GameState> | ((state: GameState) => Partial<GameState>)) => void
@@ -11,7 +11,7 @@ function isDead(card: BoardCard): boolean {
   if (hasKeyword(card, 'indestructible')) return false
   if (card.type === 'planeswalker') return (card.counters ?? 0) <= 0
   if (card.type !== 'creature') return false
-  const toughness = getCreatureToughness(card.typeLine) + card.counters
+  const toughness = getCardToughness(card)
   if (toughness < 1) return true
   return (card.damage ?? 0) >= toughness
 }

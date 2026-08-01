@@ -2461,8 +2461,11 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
-          "params": {}
+          "kind": "pump",
+          "params": {
+            "power": 1,
+            "toughness": 0
+          }
         }
       },
       {
@@ -3343,7 +3346,24 @@
     "manaProduction": null,
     "entryTapRule": null,
     "conditionalEntryText": null,
-    "abilities": [],
+    "abilities": [
+      {
+        "abilityType": "spell",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "pump",
+          "params": {
+            "power": -4,
+            "toughness": -4
+          }
+        }
+      }
+    ],
     "oracleText": "All creatures get -4/-4 until end of turn.",
     "scryfallId": "e8701682-5b74-4855-adcf-7a1cf0c8cb41"
   },
@@ -3651,6 +3671,22 @@
           "kind": "draw_cards",
           "params": {
             "amount": 3
+          }
+        }
+      },
+      {
+        "abilityType": "spell",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "pump",
+          "params": {
+            "power": -2,
+            "toughness": -2
           }
         }
       }

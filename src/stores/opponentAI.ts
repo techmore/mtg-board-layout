@@ -1,5 +1,5 @@
 import type { BoardCard, ManaColor } from '../types/card'
-import { canPayManaCost, getCreaturePower } from '../utils/misc'
+import { canPayManaCost, getCardPower, getCardToughness } from '../utils/misc'
 import { hasKeyword } from './cardRulesLoader'
 
 export function pickLand(hand: BoardCard[]): BoardCard | null {
@@ -46,7 +46,7 @@ export function pickBlockers(
   for (const attId of playerAttackers) {
     const attacker = allCards.find((c) => c.id === attId)
     if (!attacker) continue
-    const attPower = getCreaturePower(attacker.typeLine)
+    const attPower = getCardPower(attacker)
     if (attPower === 0) continue
     const attackerFlying = hasKeyword(attacker, 'flying')
     const attackerDeathtouch = hasKeyword(attacker, 'deathtouch')
@@ -55,15 +55,15 @@ export function pickBlockers(
       .filter((b) => !used.has(b.id))
       .filter((b) => !attackerFlying || hasKeyword(b, 'flying') || hasKeyword(b, 'reach'))
       .sort((a, b) => {
-        const aTough = parseInt(a.typeLine?.match(/\/(\d+)/)?.[1] ?? '0')
-        const bTough = parseInt(b.typeLine?.match(/\/(\d+)/)?.[1] ?? '0')
+        const aTough = getCardToughness(a)
+        const bTough = getCardToughness(b)
         const aSurvives = attackerDeathtouch ? 0 : aTough >= attPower ? 1 : 0
         const bSurvives = attackerDeathtouch ? 0 : bTough >= attPower ? 1 : 0
         // Against deathtouch every blocker dies, so prefer the smallest trade.
         if (attackerDeathtouch) {
-          return (parseInt(a.typeLine?.match(/(\d+)\//)?.[1] ?? '0') - parseInt(b.typeLine?.match(/(\d+)\//)?.[1] ?? '0'))
+          return (getCardPower(a) - getCardPower(b))
         }
-        return bSurvives - aSurvives || (parseInt(a.typeLine?.match(/(\d+)\//)?.[1] ?? '0') - parseInt(b.typeLine?.match(/(\d+)\//)?.[1] ?? '0'))
+        return bSurvives - aSurvives || (getCardPower(a) - getCardPower(b))
       })
 
     if (candidates.length > 0) {

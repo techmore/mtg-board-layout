@@ -24,6 +24,8 @@ export function createCardMovement(set: SetFn, get: () => GameState): Pick<GameS
           tapped: preparation?.entersBattlefield ? preparation.entersTapped : false,
           revealed: zone !== 'hand' && zone !== 'library',
           damage: zone === 'battlefield' ? current.damage ?? 0 : 0,
+          powerBoost: zone === 'battlefield' ? current.powerBoost ?? 0 : 0,
+          toughnessBoost: zone === 'battlefield' ? current.toughnessBoost ?? 0 : 0,
           counters: current.type === 'planeswalker' && zone === 'battlefield' && current.counters === 0 ? 5 : current.counters,
         }
         if (preparation?.blockReason === 'land') {

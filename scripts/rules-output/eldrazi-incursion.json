@@ -1068,8 +1068,11 @@
         "targets": 1,
         "targetFilter": "creature gets +3/-3 until end of turn",
         "effect": {
-          "kind": "other",
-          "params": {}
+          "kind": "pump",
+          "params": {
+            "power": 3,
+            "toughness": -3
+          }
         }
       },
       {
@@ -1590,8 +1593,11 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
-          "params": {}
+          "kind": "pump",
+          "params": {
+            "power": 3,
+            "toughness": 3
+          }
         }
       }
     ],

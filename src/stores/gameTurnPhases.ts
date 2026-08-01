@@ -51,7 +51,7 @@ export function createTurnPhases(set: SetFn, get: () => GameState): Pick<GameSta
           set((prev) => ({
             cards: prev.cards.map((c) =>
               (c.owner ?? 'player') === 'player' && c.zone === 'battlefield'
-                ? { ...c, tapped: false, damage: 0 }
+                ? { ...c, tapped: false, damage: 0, powerBoost: 0, toughnessBoost: 0 }
                 : c,
             ),
           }))

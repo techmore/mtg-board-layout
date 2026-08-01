@@ -1542,8 +1542,11 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
-          "params": {}
+          "kind": "pump",
+          "params": {
+            "power": 1,
+            "toughness": 0
+          }
         }
       }
     ],
@@ -1589,8 +1592,11 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
-          "params": {}
+          "kind": "pump",
+          "params": {
+            "power": 1,
+            "toughness": 1
+          }
         }
       },
       {
@@ -2751,8 +2757,11 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
-          "params": {}
+          "kind": "pump",
+          "params": {
+            "power": 2,
+            "toughness": 2
+          }
         }
       }
     ],

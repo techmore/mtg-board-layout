@@ -428,6 +428,7 @@ const EFFECT_PATTERNS = [
   { kind: 'scry', regex: /\bscry\b\s*\d*/i },
   { kind: 'proliferate', regex: /\bproliferate\b/i },
   { kind: 'fight', regex: /\bfight\b/i },
+  { kind: 'pump', regex: /(?:gets|gain(?:s)?|get)\s*[^.,;]*?([-−+]?\d+)\s*\/\s*([-−+]?\d+)\s*until end of turn/i },
 ]
 
 function parseEffect(sentence) {
@@ -471,6 +472,14 @@ function parseEffect(sentence) {
       if (['destroy', 'exile'].includes(ep.kind)) {
         const perm = sentence.match(/\b(target\s+\w+(?:\s+\w+)?)/i)
         if (perm) params.targetHint = perm[1]
+      }
+      // Until-end-of-turn pump
+      if (ep.kind === 'pump') {
+        const m = sentence.match(/([-−+]?\d+)\s*\/\s*([-−+]?\d+)\s*until end of turn/i)
+        if (m) {
+          params.power = parseInt(m[1].replace(/[−]/g, '-'), 10)
+          params.toughness = parseInt(m[2].replace(/[−]/g, '-'), 10)
+        }
       }
       return { kind: ep.kind, params }
     }

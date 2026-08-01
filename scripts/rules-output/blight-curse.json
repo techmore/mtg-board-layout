@@ -3,7 +3,7 @@
     "cardName": "Auntie Ool, Cursewretch",
     "manaCost": "{1}{B}{R}{G}",
     "manaValue": 4,
-    "typeLine": "Legendary Creature \u2014 Goblin Warlock",
+    "typeLine": "Legendary Creature — Goblin Warlock",
     "cardType": "creature",
     "subtypes": [
       "Goblin",
@@ -47,14 +47,14 @@
         }
       }
     ],
-    "oracleText": "Ward\u2014Blight 2. (To blight 2, a player puts two -1/-1 counters on a creature they control.)\nWhenever one or more -1/-1 counters are put on a creature, draw a card if you control that creature. If you don't control it, its controller loses 1 life.",
+    "oracleText": "Ward—Blight 2. (To blight 2, a player puts two -1/-1 counters on a creature they control.)\nWhenever one or more -1/-1 counters are put on a creature, draw a card if you control that creature. If you don't control it, its controller loses 1 life.",
     "scryfallId": "9a2e4252-9fbc-4d43-8935-db2cafaa7b5f"
   },
   "The Reaper, King No More": {
     "cardName": "The Reaper, King No More",
     "manaCost": "{2/B}{2/R}{2/G}",
     "manaValue": 6,
-    "typeLine": "Legendary Artifact Creature \u2014 Scarecrow",
+    "typeLine": "Legendary Artifact Creature — Scarecrow",
     "cardType": "creature",
     "subtypes": [
       "Scarecrow"
@@ -86,10 +86,8 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "return_from_graveyard",
-          "params": {
-            "zone": "battlefield"
-          }
+          "kind": "other",
+          "params": {}
         }
       }
     ],
@@ -154,9 +152,7 @@
         "targetFilter": null,
         "effect": {
           "kind": "other",
-          "params": {
-            "description": "activated ability"
-          }
+          "params": {}
         }
       }
     ],
@@ -167,7 +163,7 @@
     "cardName": "Sinister Gnarlbark",
     "manaCost": "{2}{B}",
     "manaValue": 3,
-    "typeLine": "Creature \u2014 Treefolk Warlock",
+    "typeLine": "Creature — Treefolk Warlock",
     "cardType": "creature",
     "subtypes": [
       "Treefolk",
@@ -274,7 +270,7 @@
     "cardName": "Dread Tiller",
     "manaCost": "{1}{B}{G}",
     "manaValue": 3,
-    "typeLine": "Artifact Creature \u2014 Scarecrow",
+    "typeLine": "Artifact Creature — Scarecrow",
     "cardType": "creature",
     "subtypes": [
       "Scarecrow"
@@ -336,9 +332,7 @@
         "targetFilter": null,
         "effect": {
           "kind": "other",
-          "params": {
-            "description": "becomes the monarch"
-          }
+          "params": {}
         }
       },
       {
@@ -377,7 +371,7 @@
     "cardName": "Oft-Nabbed Goat",
     "manaCost": "{1}{B}",
     "manaValue": 2,
-    "typeLine": "Creature \u2014 Goat",
+    "typeLine": "Creature — Goat",
     "cardType": "creature",
     "subtypes": [
       "Goat"
@@ -438,7 +432,7 @@
     "cardName": "Village Pillagers",
     "manaCost": "{3}{R}{R}",
     "manaValue": 5,
-    "typeLine": "Creature \u2014 Goblin Warrior",
+    "typeLine": "Creature — Goblin Warrior",
     "cardType": "creature",
     "subtypes": [
       "Goblin",
@@ -530,7 +524,7 @@
     "cardName": "Ferrafor, Young Yew",
     "manaCost": "{6}{G}",
     "manaValue": 7,
-    "typeLine": "Legendary Creature \u2014 Treefolk Druid",
+    "typeLine": "Legendary Creature — Treefolk Druid",
     "cardType": "creature",
     "subtypes": [
       "Treefolk",
@@ -551,9 +545,7 @@
         "targetFilter": "player controls",
         "effect": {
           "kind": "other",
-          "params": {
-            "description": "activated: double counters on target creature"
-          }
+          "params": {}
         }
       },
       {
@@ -566,9 +558,7 @@
         "targetFilter": "creature",
         "effect": {
           "kind": "other",
-          "params": {
-            "description": "activated: double counters on target creature"
-          }
+          "params": {}
         }
       }
     ],
@@ -579,7 +569,7 @@
     "cardName": "Tree of Perdition",
     "manaCost": "{3}{B}",
     "manaValue": 4,
-    "typeLine": "Creature \u2014 Plant",
+    "typeLine": "Creature — Plant",
     "cardType": "creature",
     "subtypes": [
       "Plant"
@@ -601,9 +591,7 @@
         "targetFilter": "opponent 's life total with this creature's toughness",
         "effect": {
           "kind": "other",
-          "params": {
-            "description": "exchange toughness with life total"
-          }
+          "params": {}
         }
       }
     ],
@@ -614,7 +602,7 @@
     "cardName": "Vernal Fen",
     "manaCost": "",
     "manaValue": 0,
-    "typeLine": "Land \u2014 Swamp Forest",
+    "typeLine": "Land — Swamp Forest",
     "cardType": "land",
     "subtypes": [
       "Swamp",
@@ -652,7 +640,7 @@
     "cardName": "Festering Thicket",
     "manaCost": "",
     "manaValue": 0,
-    "typeLine": "Land \u2014 Swamp Forest",
+    "typeLine": "Land — Swamp Forest",
     "cardType": "land",
     "subtypes": [
       "Swamp",
@@ -705,7 +693,7 @@
     "cardName": "Necroskitter",
     "manaCost": "{1}{B}{B}",
     "manaValue": 3,
-    "typeLine": "Creature \u2014 Elemental",
+    "typeLine": "Creature — Elemental",
     "cardType": "creature",
     "subtypes": [
       "Elemental"
@@ -751,7 +739,7 @@
     "cardName": "Ignoble Hierarch",
     "manaCost": "{G}",
     "manaValue": 1,
-    "typeLine": "Creature \u2014 Goblin Shaman",
+    "typeLine": "Creature — Goblin Shaman",
     "cardType": "creature",
     "subtypes": [
       "Goblin",
@@ -780,9 +768,10 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
+          "kind": "pump",
           "params": {
-            "description": "exalted"
+            "power": 1,
+            "toughness": 1
           }
         }
       },
@@ -843,9 +832,7 @@
         "targetFilter": "permanent you control onto a second target permanent",
         "effect": {
           "kind": "other",
-          "params": {
-            "description": "move a counter between target permanents"
-          }
+          "params": {}
         }
       }
     ],
@@ -856,7 +843,7 @@
     "cardName": "Massacre Girl, Known Killer",
     "manaCost": "{2}{B}{B}",
     "manaValue": 4,
-    "typeLine": "Legendary Creature \u2014 Human Assassin",
+    "typeLine": "Legendary Creature — Human Assassin",
     "cardType": "creature",
     "subtypes": [
       "Human",
@@ -906,7 +893,7 @@
     "cardName": "Grave Titan",
     "manaCost": "{4}{B}{B}",
     "manaValue": 6,
-    "typeLine": "Creature \u2014 Giant",
+    "typeLine": "Creature — Giant",
     "cardType": "creature",
     "subtypes": [
       "Giant"
@@ -927,13 +914,8 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "create_token",
-          "params": {
-            "tokenName": "Zombie",
-            "tokenPower": 2,
-            "tokenToughness": 2,
-            "amount": 2
-          }
+          "kind": "other",
+          "params": {}
         }
       }
     ],
@@ -944,7 +926,7 @@
     "cardName": "Vraska, Betrayal's Sting",
     "manaCost": "{4}{B}{B/P}",
     "manaValue": 6,
-    "typeLine": "Legendary Planeswalker \u2014 Vraska",
+    "typeLine": "Legendary Planeswalker — Vraska",
     "cardType": "planeswalker",
     "subtypes": [
       "Vraska"
@@ -969,7 +951,7 @@
         "triggerEvent": null,
         "triggerCondition": null,
         "isOptional": false,
-        "cost": "\u22122",
+        "cost": "−2",
         "targets": 1,
         "targetFilter": "creature becomes a Treasure artifact with \"{T}",
         "effect": {
@@ -982,25 +964,23 @@
         "triggerEvent": null,
         "triggerCondition": null,
         "isOptional": false,
-        "cost": "\u22129",
+        "cost": "−9",
         "targets": 1,
         "targetFilter": "player has fewer than nine poison counters",
         "effect": {
           "kind": "other",
-          "params": {
-            "description": "planeswalker loyalty abilities"
-          }
+          "params": {}
         }
       }
     ],
-    "oracleText": "Compleated ({B/P} can be paid with {B} or 2 life. If life was paid, this planeswalker enters with two fewer loyalty counters.)\n0: You draw a card and lose 1 life. Proliferate.\n\u22122: Target creature becomes a Treasure artifact with \"{T}, Sacrifice this artifact: Add one mana of any color\" and loses all other card types and abilities.\n\u22129: If target player has fewer than nine poison counters, they get a number of poison counters equal to the difference.",
+    "oracleText": "Compleated ({B/P} can be paid with {B} or 2 life. If life was paid, this planeswalker enters with two fewer loyalty counters.)\n0: You draw a card and lose 1 life. Proliferate.\n−2: Target creature becomes a Treasure artifact with \"{T}, Sacrifice this artifact: Add one mana of any color\" and loses all other card types and abilities.\n−9: If target player has fewer than nine poison counters, they get a number of poison counters equal to the difference.",
     "scryfallId": "9f1fa1c5-ff87-4bbc-89aa-dbebc91eada0"
   },
   "The Scorpion God": {
     "cardName": "The Scorpion God",
     "manaCost": "{3}{B}{R}",
     "manaValue": 5,
-    "typeLine": "Legendary Creature \u2014 God",
+    "typeLine": "Legendary Creature — God",
     "cardType": "creature",
     "subtypes": [
       "God"
@@ -1059,7 +1039,7 @@
     "cardName": "Liliana, Death Wielder",
     "manaCost": "{5}{B}{B}",
     "manaValue": 7,
-    "typeLine": "Legendary Planeswalker \u2014 Liliana",
+    "typeLine": "Legendary Planeswalker — Liliana",
     "cardType": "planeswalker",
     "subtypes": [
       "Liliana"
@@ -1087,7 +1067,7 @@
         "triggerEvent": null,
         "triggerCondition": null,
         "isOptional": false,
-        "cost": "\u22123",
+        "cost": "−3",
         "targets": 1,
         "targetFilter": "creature with a -1/-1 counter on it",
         "effect": {
@@ -1102,7 +1082,7 @@
         "triggerEvent": null,
         "triggerCondition": null,
         "isOptional": false,
-        "cost": "\u221210",
+        "cost": "−10",
         "targets": 0,
         "targetFilter": null,
         "effect": {
@@ -1111,7 +1091,7 @@
         }
       }
     ],
-    "oracleText": "+2: Put a -1/-1 counter on up to one target creature.\n\u22123: Destroy target creature with a -1/-1 counter on it.\n\u221210: Return all creature cards from your graveyard to the battlefield.",
+    "oracleText": "+2: Put a -1/-1 counter on up to one target creature.\n−3: Destroy target creature with a -1/-1 counter on it.\n−10: Return all creature cards from your graveyard to the battlefield.",
     "scryfallId": "6f874b0e-32e3-421f-8109-522638b3f38d"
   },
   "Chimil, the Inner Sun": {
@@ -1136,9 +1116,7 @@
         "targetFilter": null,
         "effect": {
           "kind": "other",
-          "params": {
-            "description": "spells you control cant be countered"
-          }
+          "params": {}
         }
       },
       {
@@ -1151,9 +1129,7 @@
         "targetFilter": null,
         "effect": {
           "kind": "other",
-          "params": {
-            "description": "spells you control cant be countered"
-          }
+          "params": {}
         }
       },
       {
@@ -1177,7 +1153,7 @@
     "cardName": "Carnifex Demon",
     "manaCost": "{4}{B}{B}",
     "manaValue": 6,
-    "typeLine": "Creature \u2014 Phyrexian Demon",
+    "typeLine": "Creature — Phyrexian Demon",
     "cardType": "creature",
     "subtypes": [
       "Phyrexian",
@@ -1211,7 +1187,7 @@
     "cardName": "Puppeteer Clique",
     "manaCost": "{3}{B}{B}",
     "manaValue": 5,
-    "typeLine": "Creature \u2014 Faerie Wizard",
+    "typeLine": "Creature — Faerie Wizard",
     "cardType": "creature",
     "subtypes": [
       "Faerie",
@@ -1249,9 +1225,7 @@
         "targetFilter": null,
         "effect": {
           "kind": "other",
-          "params": {
-            "description": "persist"
-          }
+          "params": {}
         }
       },
       {
@@ -1288,7 +1262,7 @@
     "cardName": "Dusk Urchins",
     "manaCost": "{2}{B}",
     "manaValue": 3,
-    "typeLine": "Creature \u2014 Ouphe",
+    "typeLine": "Creature — Ouphe",
     "cardType": "creature",
     "subtypes": [
       "Ouphe"
@@ -1387,7 +1361,7 @@
         }
       }
     ],
-    "oracleText": "Converge \u2014 You draw X cards and lose X life, where X is the number of colors of mana spent to cast this spell.",
+    "oracleText": "Converge — You draw X cards and lose X life, where X is the number of colors of mana spent to cast this spell.",
     "scryfallId": "faa82f09-0693-4cc6-8770-8c6a35aa627b"
   },
   "Persist": {
@@ -1423,7 +1397,7 @@
     "cardName": "Midnight Banshee",
     "manaCost": "{3}{B}{B}{B}",
     "manaValue": 6,
-    "typeLine": "Creature \u2014 Spirit",
+    "typeLine": "Creature — Spirit",
     "cardType": "creature",
     "subtypes": [
       "Spirit"
@@ -1498,7 +1472,7 @@
     "cardName": "Archfiend of Ifnir",
     "manaCost": "{3}{B}{B}",
     "manaValue": 5,
-    "typeLine": "Creature \u2014 Demon",
+    "typeLine": "Creature — Demon",
     "cardType": "creature",
     "subtypes": [
       "Demon"
@@ -1546,7 +1520,7 @@
     "cardName": "Channeler Initiate",
     "manaCost": "{1}{G}",
     "manaValue": 2,
-    "typeLine": "Creature \u2014 Human Druid",
+    "typeLine": "Creature — Human Druid",
     "cardType": "creature",
     "subtypes": [
       "Human",
@@ -1601,7 +1575,7 @@
     "cardName": "Hapatra, Vizier of Poisons",
     "manaCost": "{B}{G}",
     "manaValue": 2,
-    "typeLine": "Legendary Creature \u2014 Human Cleric",
+    "typeLine": "Legendary Creature — Human Cleric",
     "cardType": "creature",
     "subtypes": [
       "Human",
@@ -1654,7 +1628,7 @@
     "cardName": "Glissa Sunslayer",
     "manaCost": "{1}{B}{G}",
     "manaValue": 3,
-    "typeLine": "Legendary Creature \u2014 Phyrexian Zombie Elf",
+    "typeLine": "Legendary Creature — Phyrexian Zombie Elf",
     "cardType": "creature",
     "subtypes": [
       "Phyrexian",
@@ -1707,13 +1681,11 @@
         "targetFilter": "permanent",
         "effect": {
           "kind": "other",
-          "params": {
-            "description": "modal: draw+life OR destroy artifact/enchantment OR put counter"
-          }
+          "params": {}
         }
       }
     ],
-    "oracleText": "First strike, deathtouch\nWhenever Glissa Sunslayer deals combat damage to a player, choose one \u2014\n\u2022 You draw a card and lose 1 life.\n\u2022 Destroy target enchantment.\n\u2022 Remove up to three counters from target permanent.",
+    "oracleText": "First strike, deathtouch\nWhenever Glissa Sunslayer deals combat damage to a player, choose one —\n• You draw a card and lose 1 life.\n• Destroy target enchantment.\n• Remove up to three counters from target permanent.",
     "scryfallId": "682b1b62-338a-49d1-9d4e-2d8ee2e6fc76"
   },
   "Everlasting Torment": {
@@ -1755,9 +1727,7 @@
         "targetFilter": null,
         "effect": {
           "kind": "other",
-          "params": {
-            "description": "damage prevention replacement + wither"
-          }
+          "params": {}
         }
       },
       {
@@ -1825,7 +1795,7 @@
     "cardName": "Grim Poppet",
     "manaCost": "{7}",
     "manaValue": 7,
-    "typeLine": "Artifact Creature \u2014 Scarecrow",
+    "typeLine": "Artifact Creature — Scarecrow",
     "cardType": "creature",
     "subtypes": [
       "Scarecrow"
@@ -1856,7 +1826,7 @@
     "cardName": "Canyon Slough",
     "manaCost": "",
     "manaValue": 0,
-    "typeLine": "Land \u2014 Swamp Mountain",
+    "typeLine": "Land — Swamp Mountain",
     "cardType": "land",
     "subtypes": [
       "Swamp",
@@ -1909,7 +1879,7 @@
     "cardName": "Sheltered Thicket",
     "manaCost": "",
     "manaValue": 0,
-    "typeLine": "Land \u2014 Mountain Forest",
+    "typeLine": "Land — Mountain Forest",
     "cardType": "land",
     "subtypes": [
       "Mountain",
@@ -2001,7 +1971,7 @@
     "cardName": "Smoldering Marsh",
     "manaCost": "",
     "manaValue": 0,
-    "typeLine": "Land \u2014 Swamp Mountain",
+    "typeLine": "Land — Swamp Mountain",
     "cardType": "land",
     "subtypes": [
       "Swamp",
@@ -2039,7 +2009,7 @@
     "cardName": "Cinder Glade",
     "manaCost": "",
     "manaValue": 0,
-    "typeLine": "Land \u2014 Mountain Forest",
+    "typeLine": "Land — Mountain Forest",
     "cardType": "land",
     "subtypes": [
       "Mountain",
@@ -2498,7 +2468,7 @@
     "cardName": "Skinrender",
     "manaCost": "{2}{B}{B}",
     "manaValue": 4,
-    "typeLine": "Creature \u2014 Phyrexian Zombie",
+    "typeLine": "Creature — Phyrexian Zombie",
     "cardType": "creature",
     "subtypes": [
       "Phyrexian",
@@ -2530,7 +2500,7 @@
     "cardName": "Soul Snuffers",
     "manaCost": "{2}{B}{B}",
     "manaValue": 4,
-    "typeLine": "Creature \u2014 Elemental Shaman",
+    "typeLine": "Creature — Elemental Shaman",
     "cardType": "creature",
     "subtypes": [
       "Elemental",
@@ -2637,7 +2607,7 @@
     "cardName": "Evolution Sage",
     "manaCost": "{2}{G}",
     "manaValue": 3,
-    "typeLine": "Creature \u2014 Elf Druid",
+    "typeLine": "Creature — Elf Druid",
     "cardType": "creature",
     "subtypes": [
       "Elf",
@@ -2651,7 +2621,7 @@
       {
         "abilityType": "triggered",
         "triggerEvent": "etb",
-        "triggerCondition": "Landfall \u2014 Whenever a land you control enters",
+        "triggerCondition": "Landfall — Whenever a land you control enters",
         "isOptional": false,
         "cost": null,
         "targets": 0,
@@ -2662,14 +2632,14 @@
         }
       }
     ],
-    "oracleText": "Landfall \u2014 Whenever a land you control enters, proliferate. (Choose any number of permanents and/or players, then give each another counter of each kind already there.)",
+    "oracleText": "Landfall — Whenever a land you control enters, proliferate. (Choose any number of permanents and/or players, then give each another counter of each kind already there.)",
     "scryfallId": "1d58d08d-cd62-416d-8d8e-7d9c56d5c4da"
   },
   "Devoted Druid": {
     "cardName": "Devoted Druid",
     "manaCost": "{1}{G}",
     "manaValue": 2,
-    "typeLine": "Creature \u2014 Elf Druid",
+    "typeLine": "Creature — Elf Druid",
     "cardType": "creature",
     "subtypes": [
       "Elf",
@@ -2817,10 +2787,8 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "destroy",
-          "params": {
-            "targetHint": "target artifact or creature"
-          }
+          "kind": "other",
+          "params": {}
         }
       }
     ],
@@ -2831,7 +2799,7 @@
     "cardName": "Binding the Old Gods",
     "manaCost": "{2}{B}{G}",
     "manaValue": 4,
-    "typeLine": "Enchantment \u2014 Saga",
+    "typeLine": "Enchantment — Saga",
     "cardType": "enchantment",
     "subtypes": [
       "Saga"
@@ -2880,19 +2848,19 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "destroy",
+          "kind": "other",
           "params": {}
         }
       }
     ],
-    "oracleText": "(As this Saga enters and after your draw step, add a lore counter. Sacrifice after III.)\nI \u2014 Destroy target nonland permanent an opponent controls.\nII \u2014 Search your library for a Forest card, put it onto the battlefield tapped, then shuffle.\nIII \u2014 Creatures you control gain deathtouch until end of turn.",
+    "oracleText": "(As this Saga enters and after your draw step, add a lore counter. Sacrifice after III.)\nI — Destroy target nonland permanent an opponent controls.\nII — Search your library for a Forest card, put it onto the battlefield tapped, then shuffle.\nIII — Creatures you control gain deathtouch until end of turn.",
     "scryfallId": "41802f18-7d46-431a-acb3-dbcc82eb415a"
   },
   "Kulrath Knight": {
     "cardName": "Kulrath Knight",
     "manaCost": "{3}{B/R}{B/R}",
     "manaValue": 5,
-    "typeLine": "Creature \u2014 Elemental Knight",
+    "typeLine": "Creature — Elemental Knight",
     "cardType": "creature",
     "subtypes": [
       "Elemental",
@@ -2929,9 +2897,7 @@
         "targetFilter": null,
         "effect": {
           "kind": "other",
-          "params": {
-            "description": "creatures with counters cant attack or block"
-          }
+          "params": {}
         }
       }
     ],
@@ -3020,7 +2986,7 @@
     "cardName": "Ifnir Deadlands",
     "manaCost": "",
     "manaValue": 0,
-    "typeLine": "Land \u2014 Desert",
+    "typeLine": "Land — Desert",
     "cardType": "land",
     "subtypes": [
       "Desert"
@@ -3108,13 +3074,13 @@
       }
     ],
     "oracleText": "You draw two cards and lose 2 life.",
-    "scryfallId": "1ed2b60b-5f20-4ae6-93fb-51540ad9c9e7"
+    "scryfallId": "e8399c2e-ecc8-41c9-a690-a0eeafb27f77"
   },
   "Wickerbough Elder": {
     "cardName": "Wickerbough Elder",
     "manaCost": "{3}{G}",
     "manaValue": 4,
-    "typeLine": "Creature \u2014 Treefolk Shaman",
+    "typeLine": "Creature — Treefolk Shaman",
     "cardType": "creature",
     "subtypes": [
       "Treefolk",
@@ -3180,10 +3146,8 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "destroy",
-          "params": {
-            "targetHint": "target creature"
-          }
+          "kind": "other",
+          "params": {}
         }
       }
     ],
@@ -3285,7 +3249,7 @@
         }
       }
     ],
-    "oracleText": "Choose one \u2014\n\u2022 Cathartic Pyre deals 3 damage to target creature or planeswalker.\n\u2022 Discard up to two cards, then draw that many cards.",
+    "oracleText": "Choose one —\n• Cathartic Pyre deals 3 damage to target creature or planeswalker.\n• Discard up to two cards, then draw that many cards.",
     "scryfallId": "0d762a71-ee49-49fd-a54a-0c066277c88c"
   },
   "Evolving Wilds": {
@@ -3421,10 +3385,8 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "search_library",
-          "params": {
-            "description": "sacrifice, search basic land"
-          }
+          "kind": "other",
+          "params": {}
         }
       },
       {
@@ -3594,7 +3556,7 @@
     "cardName": "Swamp",
     "manaCost": "",
     "manaValue": 0,
-    "typeLine": "Basic Land \u2014 Swamp",
+    "typeLine": "Basic Land — Swamp",
     "cardType": "land",
     "subtypes": [
       "Swamp"
@@ -3610,13 +3572,13 @@
     "conditionalEntryText": null,
     "abilities": [],
     "oracleText": "",
-    "scryfallId": "74414c62-4b68-4e1b-9241-feff3231b9ee"
+    "scryfallId": "4031e5e4-e573-4130-8d20-4a606edef0a0"
   },
   "Mountain": {
     "cardName": "Mountain",
     "manaCost": "",
     "manaValue": 0,
-    "typeLine": "Basic Land \u2014 Mountain",
+    "typeLine": "Basic Land — Mountain",
     "cardType": "land",
     "subtypes": [
       "Mountain"
@@ -3632,13 +3594,13 @@
     "conditionalEntryText": null,
     "abilities": [],
     "oracleText": "",
-    "scryfallId": "426b0211-3d5d-4e53-bcf6-21823c655ffd"
+    "scryfallId": "c49d378e-9549-4320-b3c6-1aeb216d1e98"
   },
   "Forest": {
     "cardName": "Forest",
     "manaCost": "",
     "manaValue": 0,
-    "typeLine": "Basic Land \u2014 Forest",
+    "typeLine": "Basic Land — Forest",
     "cardType": "land",
     "subtypes": [
       "Forest"
@@ -3654,6 +3616,6 @@
     "conditionalEntryText": null,
     "abilities": [],
     "oracleText": "",
-    "scryfallId": "22463284-2478-4b1e-9a37-6dd2383266cf"
+    "scryfallId": "c3e84b42-5423-4d4d-b8fc-cfbb2c53a4ca"
   }
 }

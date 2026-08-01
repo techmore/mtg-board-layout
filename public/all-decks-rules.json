@@ -86,10 +86,8 @@
     "targets": 0,
     "targetFilter": null,
     "effect": {
-     "kind": "return_from_graveyard",
-     "params": {
-      "zone": "battlefield"
-     }
+     "kind": "other",
+     "params": {}
     }
    }
   ],
@@ -154,9 +152,7 @@
     "targetFilter": null,
     "effect": {
      "kind": "other",
-     "params": {
-      "description": "activated ability"
-     }
+     "params": {}
     }
    }
   ],
@@ -336,9 +332,7 @@
     "targetFilter": null,
     "effect": {
      "kind": "other",
-     "params": {
-      "description": "becomes the monarch"
-     }
+     "params": {}
     }
    },
    {
@@ -551,9 +545,7 @@
     "targetFilter": "player controls",
     "effect": {
      "kind": "other",
-     "params": {
-      "description": "activated: double counters on target creature"
-     }
+     "params": {}
     }
    },
    {
@@ -566,9 +558,7 @@
     "targetFilter": "creature",
     "effect": {
      "kind": "other",
-     "params": {
-      "description": "activated: double counters on target creature"
-     }
+     "params": {}
     }
    }
   ],
@@ -601,9 +591,7 @@
     "targetFilter": "opponent 's life total with this creature's toughness",
     "effect": {
      "kind": "other",
-     "params": {
-      "description": "exchange toughness with life total"
-     }
+     "params": {}
     }
    }
   ],
@@ -780,9 +768,10 @@
     "targets": 0,
     "targetFilter": null,
     "effect": {
-     "kind": "other",
+     "kind": "pump",
      "params": {
-      "description": "exalted"
+      "power": 1,
+      "toughness": 1
      }
     }
    },
@@ -925,13 +914,8 @@
     "targets": 0,
     "targetFilter": null,
     "effect": {
-     "kind": "create_token",
-     "params": {
-      "tokenName": "Zombie",
-      "tokenPower": 2,
-      "tokenToughness": 2,
-      "amount": 2
-     }
+     "kind": "other",
+     "params": {}
     }
    }
   ],
@@ -985,9 +969,7 @@
     "targetFilter": "player has fewer than nine poison counters",
     "effect": {
      "kind": "other",
-     "params": {
-      "description": "planeswalker loyalty abilities"
-     }
+     "params": {}
     }
    }
   ],
@@ -1134,9 +1116,7 @@
     "targetFilter": null,
     "effect": {
      "kind": "other",
-     "params": {
-      "description": "spells you control cant be countered"
-     }
+     "params": {}
     }
    },
    {
@@ -1149,9 +1129,7 @@
     "targetFilter": null,
     "effect": {
      "kind": "other",
-     "params": {
-      "description": "spells you control cant be countered"
-     }
+     "params": {}
     }
    },
    {
@@ -1247,9 +1225,7 @@
     "targetFilter": null,
     "effect": {
      "kind": "other",
-     "params": {
-      "description": "persist"
-     }
+     "params": {}
     }
    },
    {
@@ -1705,9 +1681,7 @@
     "targetFilter": "permanent",
     "effect": {
      "kind": "other",
-     "params": {
-      "description": "modal: draw+life OR destroy artifact/enchantment OR put counter"
-     }
+     "params": {}
     }
    }
   ],
@@ -1753,9 +1727,7 @@
     "targetFilter": null,
     "effect": {
      "kind": "other",
-     "params": {
-      "description": "damage prevention replacement + wither"
-     }
+     "params": {}
     }
    },
    {
@@ -2925,9 +2897,7 @@
     "targetFilter": null,
     "effect": {
      "kind": "other",
-     "params": {
-      "description": "creatures with counters cant attack or block"
-     }
+     "params": {}
     }
    }
   ],
@@ -3176,10 +3146,8 @@
     "targets": 0,
     "targetFilter": null,
     "effect": {
-     "kind": "destroy",
-     "params": {
-      "targetHint": "target creature"
-     }
+     "kind": "other",
+     "params": {}
     }
    }
   ],
@@ -3417,10 +3385,8 @@
     "targets": 0,
     "targetFilter": null,
     "effect": {
-     "kind": "search_library",
-     "params": {
-      "description": "sacrifice, search basic land"
-     }
+     "kind": "other",
+     "params": {}
     }
    },
    {
@@ -14196,8 +14162,11 @@
     "targets": 0,
     "targetFilter": null,
     "effect": {
-     "kind": "other",
-     "params": {}
+     "kind": "pump",
+     "params": {
+      "power": 3,
+      "toughness": 3
+     }
     }
    }
   ],
@@ -15239,8 +15208,11 @@
     "targets": 1,
     "targetFilter": "creature gets +3/-3 until end of turn",
     "effect": {
-     "kind": "other",
-     "params": {}
+     "kind": "pump",
+     "params": {
+      "power": 3,
+      "toughness": -3
+     }
     }
    },
    {
@@ -19531,8 +19503,11 @@
     "targets": 0,
     "targetFilter": null,
     "effect": {
-     "kind": "other",
-     "params": {}
+     "kind": "pump",
+     "params": {
+      "power": 1,
+      "toughness": 0
+     }
     }
    },
    {
@@ -20338,8 +20313,11 @@
     "targets": 1,
     "targetFilter": "creature gets +3/-3 until end of turn",
     "effect": {
-     "kind": "other",
-     "params": {}
+     "kind": "pump",
+     "params": {
+      "power": 3,
+      "toughness": -3
+     }
     }
    }
   ],
@@ -22203,6 +22181,22 @@
       "amount": 3
      }
     }
+   },
+   {
+    "abilityType": "spell",
+    "triggerEvent": null,
+    "triggerCondition": null,
+    "isOptional": false,
+    "cost": null,
+    "targets": 0,
+    "targetFilter": null,
+    "effect": {
+     "kind": "pump",
+     "params": {
+      "power": -2,
+      "toughness": -2
+     }
+    }
    }
   ],
   "oracleText": "Destroy all creatures. They can't be regenerated. Draw a card for each creature destroyed this way.\nCycling {3}{B}{B} ({3}{B}{B}, Discard this card: Draw a card.)\nWhen you cycle this card, all creatures get -2/-2 until end of turn.",
@@ -22327,8 +22321,11 @@
     "targets": 0,
     "targetFilter": null,
     "effect": {
-     "kind": "other",
-     "params": {}
+     "kind": "pump",
+     "params": {
+      "power": -1,
+      "toughness": -1
+     }
     }
    },
    {
@@ -22340,8 +22337,11 @@
     "targets": 0,
     "targetFilter": null,
     "effect": {
-     "kind": "other",
-     "params": {}
+     "kind": "pump",
+     "params": {
+      "power": -1,
+      "toughness": -1
+     }
     }
    }
   ],
@@ -22372,8 +22372,11 @@
     "targets": 0,
     "targetFilter": null,
     "effect": {
-     "kind": "other",
-     "params": {}
+     "kind": "pump",
+     "params": {
+      "power": -2,
+      "toughness": -2
+     }
     }
    },
    {
@@ -24379,8 +24382,11 @@
     "targets": 0,
     "targetFilter": null,
     "effect": {
-     "kind": "other",
-     "params": {}
+     "kind": "pump",
+     "params": {
+      "power": -1,
+      "toughness": -1
+     }
     }
    }
   ],
@@ -25661,8 +25667,11 @@
     "targets": 1,
     "targetFilter": "creature gets -2/-1 until end of turn",
     "effect": {
-     "kind": "other",
-     "params": {}
+     "kind": "pump",
+     "params": {
+      "power": -2,
+      "toughness": -1
+     }
     }
    }
   ],
@@ -28868,8 +28877,11 @@
     "targets": 1,
     "targetFilter": "player controls get +2/+2 until end of turn",
     "effect": {
-     "kind": "other",
-     "params": {}
+     "kind": "pump",
+     "params": {
+      "power": 2,
+      "toughness": 2
+     }
     }
    }
   ],
@@ -29083,8 +29095,27 @@
     "targets": 0,
     "targetFilter": null,
     "effect": {
-     "kind": "other",
-     "params": {}
+     "kind": "pump",
+     "params": {
+      "power": 1,
+      "toughness": 1
+     }
+    }
+   },
+   {
+    "abilityType": "triggered",
+    "triggerEvent": null,
+    "triggerCondition": null,
+    "isOptional": false,
+    "cost": null,
+    "targets": 0,
+    "targetFilter": null,
+    "effect": {
+     "kind": "pump",
+     "params": {
+      "power": 2,
+      "toughness": 2
+     }
     }
    }
   ],
@@ -38062,8 +38093,11 @@
     "targets": 0,
     "targetFilter": null,
     "effect": {
-     "kind": "other",
-     "params": {}
+     "kind": "pump",
+     "params": {
+      "power": 2,
+      "toughness": 2
+     }
     }
    }
   ],
@@ -40362,8 +40396,11 @@
     "targets": 0,
     "targetFilter": null,
     "effect": {
-     "kind": "other",
-     "params": {}
+     "kind": "pump",
+     "params": {
+      "power": 1,
+      "toughness": 0
+     }
     }
    }
   ],
@@ -40409,8 +40446,11 @@
     "targets": 0,
     "targetFilter": null,
     "effect": {
-     "kind": "other",
-     "params": {}
+     "kind": "pump",
+     "params": {
+      "power": 1,
+      "toughness": 1
+     }
     }
    },
    {
@@ -41491,8 +41531,11 @@
     "targets": 0,
     "targetFilter": null,
     "effect": {
-     "kind": "other",
-     "params": {}
+     "kind": "pump",
+     "params": {
+      "power": 2,
+      "toughness": 2
+     }
     }
    }
   ],
@@ -43503,8 +43546,11 @@
     "targets": 1,
     "targetFilter": "creature gets -1/-1 until end of turn for each Swamp you control",
     "effect": {
-     "kind": "other",
-     "params": {}
+     "kind": "pump",
+     "params": {
+      "power": -1,
+      "toughness": -1
+     }
     }
    }
   ],
@@ -43654,7 +43700,24 @@
   "manaProduction": null,
   "entryTapRule": null,
   "conditionalEntryText": null,
-  "abilities": [],
+  "abilities": [
+   {
+    "abilityType": "spell",
+    "triggerEvent": null,
+    "triggerCondition": null,
+    "isOptional": false,
+    "cost": null,
+    "targets": 0,
+    "targetFilter": null,
+    "effect": {
+     "kind": "pump",
+     "params": {
+      "power": -1,
+      "toughness": -1
+     }
+    }
+   }
+  ],
   "oracleText": "All creatures get -1/-1 until end of turn for each Swamp you control.",
   "scryfallId": "04587192-e5a6-46f6-98b5-3b349d618880"
  },
@@ -46254,8 +46317,11 @@
     "targets": 0,
     "targetFilter": null,
     "effect": {
-     "kind": "other",
-     "params": {}
+     "kind": "pump",
+     "params": {
+      "power": 1,
+      "toughness": 0
+     }
     }
    },
    {
@@ -47090,7 +47156,24 @@
   "manaProduction": null,
   "entryTapRule": null,
   "conditionalEntryText": null,
-  "abilities": [],
+  "abilities": [
+   {
+    "abilityType": "spell",
+    "triggerEvent": null,
+    "triggerCondition": null,
+    "isOptional": false,
+    "cost": null,
+    "targets": 0,
+    "targetFilter": null,
+    "effect": {
+     "kind": "pump",
+     "params": {
+      "power": -4,
+      "toughness": -4
+     }
+    }
+   }
+  ],
   "oracleText": "All creatures get -4/-4 until end of turn.",
   "scryfallId": "e8701682-5b74-4855-adcf-7a1cf0c8cb41"
  },
@@ -48259,8 +48342,11 @@
     "targets": 1,
     "targetFilter": "creature gets -2/-2 until end of turn",
     "effect": {
-     "kind": "other",
-     "params": {}
+     "kind": "pump",
+     "params": {
+      "power": -2,
+      "toughness": -2
+     }
     }
    }
   ],
@@ -48393,7 +48479,24 @@
   "manaProduction": null,
   "entryTapRule": null,
   "conditionalEntryText": null,
-  "abilities": [],
+  "abilities": [
+   {
+    "abilityType": "spell",
+    "triggerEvent": null,
+    "triggerCondition": null,
+    "isOptional": false,
+    "cost": null,
+    "targets": 0,
+    "targetFilter": null,
+    "effect": {
+     "kind": "pump",
+     "params": {
+      "power": -1,
+      "toughness": -1
+     }
+    }
+   }
+  ],
   "oracleText": "Create two 1/1 green Squirrel creature tokens. Then each creature that isn't an Insect, Rat, Spider, or Squirrel gets -1/-1 until end of turn for each creature you control that's an Insect, Rat, Spider, or Squirrel.",
   "scryfallId": "8486f472-afad-4fdd-a57a-d20d8871b543"
  },
