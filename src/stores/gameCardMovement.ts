@@ -1,6 +1,7 @@
 import type { BoardCard } from '../types/card'
 import type { GameState } from './gameStore'
-import { pushUndo, prepareCardPlay, generatedManaState, attachAuras } from './gameRules'
+import { pushUndo, prepareCardPlay, generatedManaState, attachAuras, isAura } from './gameRules'
+import { getCardPower } from '../utils/misc'
 
 type SetFn = (partial: GameState | Partial<GameState> | ((state: GameState) => Partial<GameState>)) => void
 
@@ -54,13 +55,37 @@ export function createCardMovement(set: SetFn, get: () => GameState): Pick<GameS
           return {
             ...undo,
             manaPool: nextManaPool,
-            cards: attachAuras(applyUpdated([...state.cards.filter((card) => card.id !== cardId), updated])),
+            cards: attachAuras(applyUpdated([...state.cards.filter((card) => card.id !== cardId), updated]), { deferUnattached: true }),
             landPlaysThisTurn: nextLandPlaysThisTurn,
           }
         }
 
-        return { ...undo, manaPool: nextManaPool, cards: attachAuras(applyUpdated(state.cards)), landPlaysThisTurn: nextLandPlaysThisTurn }
+        return { ...undo, manaPool: nextManaPool, cards: attachAuras(applyUpdated(state.cards), { deferUnattached: true }), landPlaysThisTurn: nextLandPlaysThisTurn }
       })
+      // Player aura entry: let the player choose what the aura enchants.
+      if (zone === 'battlefield' && cardBefore && isAura(cardBefore)) {
+        const state = get()
+        const aura = state.cards.find((c) => c.id === cardId)
+        if (aura && aura.zone === 'battlefield' && !aura.enchantsCardId) {
+          const owner = aura.owner ?? 'player'
+          const candidates = state.cards.filter(
+            (c) => c.zone === 'battlefield' && (c.owner ?? 'player') === owner && c.type === 'creature' && c.id !== aura.id,
+          )
+          if (candidates.length > 0) {
+            set({
+              auraPrompt: {
+                auraCardId: cardId,
+                auraName: aura.name,
+                candidates: candidates
+                  .sort((a, b) => getCardPower(b) - getCardPower(a))
+                  .map((c) => ({ id: c.id, name: c.name, power: getCardPower(c) })),
+              },
+            })
+          } else {
+            set({ cards: get().cards.map((c) => c.id === cardId ? { ...c, zone: 'graveyard' as const, revealed: true } : c) })
+          }
+        }
+      }
       if (zone === 'battlefield' && cardBefore && cardBefore.zone !== 'battlefield') {
         get().emitGameEvent({ type: 'etb', cardId, cardName: cardBefore.name })
       }

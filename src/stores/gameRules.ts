@@ -108,17 +108,26 @@ export function isAura(card: Pick<BoardCard, 'type' | 'typeLine'>): boolean {
 
 /**
  * Attach unattached battlefield auras to a friendly creature (the strongest
- * one). Auras with no valid creature die. Returns the updated card list.
+ * one by default, or a preferred target). Auras with no valid creature die.
+ * With `deferUnattached`, unattached auras are left untouched for a caller
+ * that wants to prompt the player first.
  */
-export function attachAuras(cards: BoardCard[]): BoardCard[] {
+export function attachAuras(
+  cards: BoardCard[],
+  options: { deferUnattached?: boolean; preferredTargetId?: string } = {},
+): BoardCard[] {
   let changed = false
   const updated = cards.map((card) => {
     if (!isAura(card) || card.zone !== 'battlefield' || card.enchantsCardId) return card
+    if (options.deferUnattached) return card
     const owner = card.owner ?? 'player'
     const candidates = cards.filter(
       (c) => c.zone === 'battlefield' && (c.owner ?? 'player') === owner && c.type === 'creature' && c.id !== card.id,
     )
-    const target = candidates.sort((a, b) => getCardPower(b) - getCardPower(a))[0]
+    const preferred = options.preferredTargetId
+      ? candidates.find((c) => c.id === options.preferredTargetId)
+      : undefined
+    const target = preferred ?? candidates.sort((a, b) => getCardPower(b) - getCardPower(a))[0]
     if (target) {
       changed = true
       return { ...card, enchantsCardId: target.id, enchantsCardName: target.name }

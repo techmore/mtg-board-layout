@@ -1005,14 +1005,15 @@ describe('auras', () => {
     return card({ id, name: 'Giant Strength', typeLine: 'Enchantment — Aura', type: 'enchantment', zone: 'battlefield', ...overrides })
   }
 
-  it('attaches to a friendly creature when it enters the battlefield', () => {
+  it('prompts for a target when it enters the battlefield via drag/drop', () => {
     useGameStore.setState({
       cards: [auraCard('aura', { zone: 'hand' }), card({ id: 'bear', name: 'Bear', typeLine: '2/2', type: 'creature', zone: 'battlefield' })],
     })
     useGameStore.getState().moveCard('aura', 'battlefield')
     const attached = useGameStore.getState().cards.find((c) => c.id === 'aura')
     expect(attached?.zone).toBe('battlefield')
-    expect(attached?.enchantsCardId).toBe('bear')
+    expect(attached?.enchantsCardId).toBeUndefined()
+    expect(useGameStore.getState().auraPrompt).not.toBeNull()
   })
 
   it('dies when there is no creature to enchant', () => {
@@ -1032,27 +1033,29 @@ describe('auras', () => {
     })
     useGameStore.getState().castSpell('aura')
 
-    const prompt = useGameStore.getState().auraTargetPrompt
-    expect(prompt).toEqual({ auraCardId: 'aura', auraName: 'Giant Strength' })
+    const prompt = useGameStore.getState().auraPrompt
+    expect(prompt?.auraCardId).toBe('aura')
+    expect(prompt?.auraName).toBe('Giant Strength')
+    expect(prompt?.candidates.map((c) => c.id).sort()).toEqual(['bear', 'wolf'])
     expect(useGameStore.getState().cards.find((c) => c.id === 'aura')?.zone).toBe('battlefield')
     expect(useGameStore.getState().cards.find((c) => c.id === 'aura')?.enchantsCardId).toBeUndefined()
 
-    useGameStore.getState().resolveAuraTarget('wolf')
-    expect(useGameStore.getState().auraTargetPrompt).toBeNull()
+    useGameStore.getState().attachAuraTo('aura', 'wolf')
+    expect(useGameStore.getState().auraPrompt).toBeNull()
     expect(useGameStore.getState().cards.find((c) => c.id === 'aura')?.enchantsCardId).toBe('wolf')
   })
 
-  it('cancelAuraTarget leaves the aura unattached', () => {
+  it('declining the aura prompt sends it to the graveyard', () => {
     useGameStore.setState({
       manaPool: { ...emptyManaPool(), G: 2 },
       cards: [auraCard('aura', { zone: 'hand' }), card({ id: 'bear', name: 'Bear', typeLine: '2/2', type: 'creature', zone: 'battlefield' })],
     })
     useGameStore.getState().castSpell('aura')
-    expect(useGameStore.getState().auraTargetPrompt).not.toBeNull()
+    expect(useGameStore.getState().auraPrompt).not.toBeNull()
 
-    useGameStore.getState().cancelAuraTarget()
-    expect(useGameStore.getState().auraTargetPrompt).toBeNull()
-    expect(useGameStore.getState().cards.find((c) => c.id === 'aura')?.enchantsCardId).toBeUndefined()
+    useGameStore.getState().declineAura('aura')
+    expect(useGameStore.getState().auraPrompt).toBeNull()
+    expect(useGameStore.getState().cards.find((c) => c.id === 'aura')?.zone).toBe('graveyard')
   })
 
   it('does not prompt when no friendly creature is on the battlefield', () => {
@@ -1061,7 +1064,9 @@ describe('auras', () => {
       cards: [auraCard('aura', { zone: 'hand' })],
     })
     useGameStore.getState().castSpell('aura')
-    expect(useGameStore.getState().auraTargetPrompt).toBeNull()
+    expect(useGameStore.getState().auraPrompt).toBeNull()
+    // With no valid target the aura goes straight to the graveyard.
+    expect(useGameStore.getState().cards.find((c) => c.id === 'aura')?.zone).toBe('graveyard')
   })
 
   it('pumps only the enchanted creature', () => {

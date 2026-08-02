@@ -1,6 +1,6 @@
 import type { BoardCard } from '../types/card'
 import type { GameState } from './gameStore'
-import { shuffle, classifyType, canPayManaCost } from '../utils/misc'
+import { shuffle, classifyType, canPayManaCost, getCardPower } from '../utils/misc'
 import { emptyManaPool, isAura, moveCastSpellsToGraveyard, pushUndo, resetAndDealCards } from './gameRules'
 import { resolveCardRules } from '../data/cardRules'
 import { getCardTypeFeatures } from '../data/cardFeatures'
@@ -207,11 +207,22 @@ export function createDeckActions(set: SetFn, get: () => GameState): Pick<GameSt
       // Aura cast: let the player choose which creature to enchant instead of
       // auto-attaching to the strongest one.
       if (isAura(card)) {
-        const onBoard = get().cards.filter((c) => c.zone === 'battlefield' && (c.owner ?? 'player') === 'player' && c.type === 'creature')
+        const onBoard = get().cards.filter((c) => c.zone === 'battlefield' && (c.owner ?? 'player') === 'player' && c.type === 'creature' && c.id !== card.id)
         if (onBoard.length > 0) {
-          set({ auraTargetPrompt: { auraCardId: card.id, auraName: card.name } })
+          set({
+            auraPrompt: {
+              auraCardId: card.id,
+              auraName: card.name,
+              candidates: onBoard
+                .sort((a, b) => getCardPower(b) - getCardPower(a))
+                .map((c) => ({ id: c.id, name: c.name, power: getCardPower(c) })),
+            },
+          })
           return true
         }
+        // No creature to enchant: the aura falls off immediately.
+        set({ cards: get().cards.map((c) => c.id === card.id ? { ...c, zone: 'graveyard' as const, revealed: true } : c) })
+        return true
       }
 
       // Enqueue the spell's own abilities on the stack so they can be resolved.
