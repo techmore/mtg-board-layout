@@ -58,11 +58,16 @@ export function BoardOpponentZone({
   const opponentName = useGameStore((s) => s.opponentName)
   const opponentManaPool = useGameStore((s) => s.opponentManaPool)
   const opponentPotentialMana = useGameStore((s) => s.opponentPotentialMana)
+  const commanderDamage = useGameStore((s) => s.commanderDamage)
+  const cards = useGameStore((s) => s.cards)
   const cardFactor = 0.45 + ratio * 0.55
   const miniWidth = Math.round(cardWidth * cardFactor)
   const miniHeight = Math.round(cardHeight * cardFactor)
   const commander = opponentViewModel.commandCards[0]
   const displayName = opponentName ?? 'Opponent'
+  const aiCommanderDamage = commanderDamage[commander?.id ?? ''] ?? 0
+  const playerCommanders = cards.filter((c) => (c.owner ?? 'player') === 'player' && c.isCommander)
+  const playerCommanderDamage = playerCommanders.reduce((sum, c) => sum + (commanderDamage[c.id] ?? 0), 0)
   return (
     <div
       style={{
@@ -101,6 +106,40 @@ export function BoardOpponentZone({
         <span style={{ fontSize: '0.95rem', fontWeight: 700, fontVariantNumeric: 'tabular-nums', color: opponentLifeTotal <= 0 ? '#f85149' : opponentLifeTotal <= 5 ? '#d29922' : '#e6edf3', minWidth: 24 }}>
           {opponentLifeTotal}
         </span>
+        {aiCommanderDamage > 0 && (
+          <span
+            title={`Commander damage dealt to you (21 loses): ${aiCommanderDamage}/21`}
+            style={{
+              fontSize: '0.65rem',
+              fontWeight: 800,
+              padding: '2px 7px',
+              borderRadius: 999,
+              background: aiCommanderDamage >= 18 ? 'rgba(248,81,73,0.25)' : 'rgba(210,153,34,0.15)',
+              border: `1px solid ${aiCommanderDamage >= 18 ? 'rgba(248,81,73,0.6)' : 'rgba(210,153,34,0.45)'}`,
+              color: aiCommanderDamage >= 18 ? '#ff7b72' : '#ffd33d',
+              whiteSpace: 'nowrap',
+            }}
+          >
+            CD {aiCommanderDamage}/21
+          </span>
+        )}
+        {playerCommanderDamage > 0 && (
+          <span
+            title={`Your commander damage dealt (they lose at 21): ${playerCommanderDamage}/21`}
+            style={{
+              fontSize: '0.65rem',
+              fontWeight: 800,
+              padding: '2px 7px',
+              borderRadius: 999,
+              background: 'rgba(63,185,80,0.15)',
+              border: '1px solid rgba(63,185,80,0.45)',
+              color: '#56d364',
+              whiteSpace: 'nowrap',
+            }}
+          >
+            Your CD {playerCommanderDamage}/21
+          </span>
+        )}
         <span style={{ color: '#8b949e', fontSize: '0.65rem' }}>Hand ({opponentViewModel.handCards.length})</span>
         <span style={{ color: '#8b949e', fontSize: '0.65rem' }}>GY ({opponentViewModel.graveyardCards.length})</span>
         <span style={{ color: '#8b949e', fontSize: '0.65rem' }}>Library ({opponentViewModel.libraryCards.length})</span>
