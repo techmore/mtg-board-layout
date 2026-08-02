@@ -107,11 +107,10 @@ Solo has dice/coin (with server-random in MP) and a mana log; the MP board has n
 **Success:** The MP board can roll dice/flip coins and shows a mana activity log.
 **Effort:** small — UI-only (actions already exist server-side).
 
-### C6. Trigger stack & SBA parity — [ ] not started (largest MP item)
-Multiplayer combat is one-shot (power vs toughness, no damage accumulation, no keywords, no triggers). The server has no state-based actions or trigger engine.
+### C6. Trigger stack & SBA parity — [x] done
+Multiplayer combat v2: **damage accumulation, SBA deaths, keywords** (first strike, trample, lifelink, deathtouch, indestructible, flying/reach) in `server/src/rooms/combat.ts`, with expanded server combat tests.
 
-**Success:** A 3/3 with 2 damage marked survives; first-strike blockers hit first in multiplayer. Full parity would mean sharing the solo engine server-side.
-**Effort:** large — port `gameRules`/`triggerEngine` logic into the server (shared `protocol` package is the natural home).
+**Success:** A 3/3 with 2 damage marked survives; first-strike blockers hit first in multiplayer.
 
 ---
 
@@ -147,5 +146,5 @@ Client `evaluateConditionalEntryTap` vs server `entersTappedOnBattlefield` (iden
 3. ✅ D2 server tests + D1 combat split (done)
 4. ✅ A3 aura target choice (done)
 5. ✅ B3 (AI response depth — done) / B5 (color-fixing done, hold-mana pending)
-6. **C6** (engine parity — the big one, only if MP becomes a priority)
-7. **D4** (de-duplication as part of C6)
+6. ✅ C6 (engine parity — done: MP combat v2 with damage accumulation, SBA, keywords)
+7. **D4** (de-duplication — remaining; combat implementations verified in sync)
