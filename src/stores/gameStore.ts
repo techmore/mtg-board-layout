@@ -47,6 +47,7 @@ export interface CombatState {
   active: boolean
   attackers: string[]
   blockers: Record<string, string[]>
+  resolveAt?: number
 }
 
 export type ActivePlayer = 'player' | 'opponent'

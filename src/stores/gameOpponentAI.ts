@@ -324,6 +324,9 @@ export function createOpponentAI(set: SetFn, get: () => GameState): Pick<GameSta
                 (c) => (c.owner ?? 'player') === 'player' && c.zone === 'battlefield' && c.type === 'creature' && !c.tapped && getCardPower(c) > 0,
               )
               const resolveDelay = attackerIds.length > 0 && playerCanBlock ? 8000 : 1500
+              set({
+                combatState: { ...get().combatState, resolveAt: Date.now() + resolveDelay },
+              })
               setTimeout(() => {
                 const s5 = get()
                 if (s5.activePlayer !== 'opponent' || s5.gameOver) return

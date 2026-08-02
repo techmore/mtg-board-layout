@@ -1575,6 +1575,28 @@ describe('loadOpponentDeck', () => {
     }
   })
 
+  it('sets a resolve deadline on the block window during the AI attack', () => {
+    vi.useFakeTimers()
+    try {
+      const cards = [
+        deckCard('Atarka, World Render', 'Legendary Creature — Dragon'),
+        ...Array.from({ length: 8 }, () => deckCard('Mountain', 'Land')),
+        deckCard('Dragon Whelp', 'Creature — Dragon'),
+      ]
+      useGameStore.getState().loadOpponentDeck(['Atarka, World Render'], cards, 'Draconic Destruction')
+
+      vi.advanceTimersByTime(2600)
+
+      const state = useGameStore.getState()
+      expect(state.combatState.active).toBe(true)
+      expect(state.combatState.resolveAt).toBeGreaterThan(Date.now())
+      expect(state.combatState.resolveAt! - Date.now()).toBeLessThanOrEqual(8000)
+    } finally {
+      vi.clearAllTimers()
+      vi.useRealTimers()
+    }
+  })
+
   it('discards down to a 7-card hand at the end of its turn', () => {
     vi.useFakeTimers()
     try {

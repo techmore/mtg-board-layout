@@ -46,6 +46,18 @@ export default function BoardPage() {
 
   const boardAreaRef = useRef<HTMLDivElement>(null)
   const [resizing, setResizing] = useState(false)
+  const [blockSecondsLeft, setBlockSecondsLeft] = useState<number | null>(null)
+
+  useEffect(() => {
+    if (!combatState.resolveAt) { setBlockSecondsLeft(null); return }
+    const tick = () => {
+      const left = Math.ceil((combatState.resolveAt! - Date.now()) / 1000)
+      setBlockSecondsLeft(left > 0 ? left : 0)
+    }
+    tick()
+    const id = window.setInterval(tick, 500)
+    return () => window.clearInterval(id)
+  }, [combatState.resolveAt])
 
   useEffect(() => {
     if (!resizing) return
@@ -282,6 +294,9 @@ export default function BoardPage() {
               }}
             >
               ⚔ DEFEND — right-click your creatures to block ({combatState.attackers.length} attacking)
+              {blockSecondsLeft !== null && blockSecondsLeft > 0 && (
+                <span style={{ opacity: 0.85, marginLeft: 6 }}>· {blockSecondsLeft}s</span>
+              )}
             </div>
           )}
           {combatState.active && activePlayer === 'player' && (
