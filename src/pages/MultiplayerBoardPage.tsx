@@ -286,18 +286,26 @@ export default function MultiplayerBoardPage() {
             </button>
           )}
           {combatMode === 'attack' && (
-            <button
-              onClick={() => {
-                if (combatSelection.length === 0) return
-                sendAction({ type: 'declareAttackers', attackerIds: combatSelection })
-                setCombatMode('none')
-                setCombatSelection([])
-              }}
-              disabled={combatSelection.length === 0}
-              style={primaryButtonStyle}
-            >
-              Declare Attackers ({combatSelection.length})
-            </button>
+            <>
+              <button
+                onClick={() => {
+                  if (combatSelection.length === 0) return
+                  sendAction({ type: 'declareAttackers', attackerIds: combatSelection })
+                  setCombatMode('none')
+                  setCombatSelection([])
+                }}
+                disabled={combatSelection.length === 0}
+                style={primaryButtonStyle}
+              >
+                Declare Attackers ({combatSelection.length})
+              </button>
+              <button
+                onClick={() => { setCombatMode('none'); setCombatSelection([]) }}
+                style={smallButtonStyle}
+              >
+                Cancel
+              </button>
+            </>
           )}
           {opponentAttacking && (
             <button
