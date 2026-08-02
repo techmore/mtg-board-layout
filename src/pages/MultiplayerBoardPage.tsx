@@ -188,8 +188,10 @@ export default function MultiplayerBoardPage() {
       )}
       <header style={headerStyle}>
         <div><strong>Multiplayer Board</strong><span style={mutedStyle}> Room {state.roomId} · Turn {state.turn}</span></div>
-        <div style={{ display: 'flex', gap: 8 }}>
-          <span style={isMyTurn ? activeBadgeStyle : mutedStyle}>{isMyTurn ? 'Your turn' : 'Waiting'}</span>
+        <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
+          <span style={isMyTurn ? activeBadgeStyle : mutedStyle}>
+            {isMyTurn ? 'Your turn' : `${state.players.find((p) => p.id === state.activePlayerId)?.name ?? 'Another player'}'s turn`}
+          </span>
           <span style={{ ...mutedStyle, fontVariantNumeric: 'tabular-nums' }} title="Turn timers (total per player)">
             ⏱ You {formatTime(myTimeRef.current)} · {opponents.length > 1 ? `Opponents ${formatTime(oppTimeRef.current)}` : `${opponents[0]?.name ?? 'Opponent'} ${formatTime(oppTimeRef.current)}`}
           </span>
@@ -198,7 +200,7 @@ export default function MultiplayerBoardPage() {
       </header>
 
       <section style={opponentsStyle}>
-        {opponents.length === 0 ? <div style={mutedStyle}>Waiting for opponents…</div> : opponents.map((player) => <PlayerPanel key={player.id} player={player} opponent onZoom={setZoomCard} />)}
+        {opponents.length === 0 ? <div style={mutedStyle}>Waiting for opponents…</div> : opponents.map((player) => <PlayerPanel key={player.id} player={player} opponent active={state.activePlayerId === player.id} onZoom={setZoomCard} />)}
       </section>
 
       <section style={positionedTableStyle(me.positionX, me.positionY)}>
@@ -433,8 +435,8 @@ export default function MultiplayerBoardPage() {
   )
 }
 
-function PlayerPanel({ player, opponent, onZoom }: { player: RoomPlayerInfo; opponent?: boolean; onZoom: (card: CardData) => void }) {
-  return <div style={positionedPanelStyle(player.positionX, player.positionY)}>
+function PlayerPanel({ player, opponent, active, onZoom }: { player: RoomPlayerInfo; opponent?: boolean; active?: boolean; onZoom: (card: CardData) => void }) {
+  return <div style={{ ...positionedPanelStyle(player.positionX, player.positionY), outline: active ? '2px solid #58a6ff' : undefined, outlineOffset: -2 }}>
     <div style={{ display: 'flex', justifyContent: 'space-between', gap: 12 }}>
       <strong>{player.name}{opponent ? '' : ' (you)'}</strong>
       <span style={mutedStyle}>Life {player.lifeTotal} · Hand {player.handCount}</span>
