@@ -16,9 +16,9 @@ Cards cast from hand or the command zone, mana paid, spell abilities (damage, ex
 **Success:** Cast Lightning Bolt → choose a target → it deals damage and kills a 1/1. Cast a modal spell → resolve one mode, skip the rest.
 
 ### A2. Combat — [x] done
-Declare attackers, assign blockers, damage steps (first strike / double strike), trample, lifelink, deathtouch, vigilance, indestructible, flying/reach blocking, static anthems, pumps, SBA deaths.
+Declare attackers, assign blockers, damage steps (first strike / double strike), trample, lifelink, deathtouch, vigilance, indestructible, flying/reach blocking, static anthems, pumps, SBA deaths. **Commander damage: 21+ combat damage from a single commander wins the game (incl. trample overflow), tracked per commander and shown in the inspector.**
 
-**Success:** A 2/2 with lifelink attacks, heals 2, kills a blocker, survives; the AI can't cheat past a flying blocker.
+**Success:** A 2/2 with lifelink attacks, heals 2, kills a blocker, survives; the AI can't cheat past a flying blocker; a commander hitting for 21 wins regardless of life.
 
 ### A3. Permanents that do things — [x] done
 ETB/death/attack triggers fire, auras attach with **player-chosen targets** (`AuraTargetPrompt`), planeswalker loyalty abilities activate via right-click, static effects apply.
