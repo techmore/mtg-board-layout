@@ -195,6 +195,18 @@ export default function MultiplayerBoardPage() {
           <span style={isMyTurn ? activeBadgeStyle : mutedStyle}>
             {isMyTurn ? 'Your turn' : `${state.players.find((p) => p.id === state.activePlayerId)?.name ?? 'Another player'}'s turn`}
           </span>
+          <span
+            title="Current turn stage"
+            style={{
+              color: state.combatActive ? '#f0883e' : '#8b949e',
+              fontSize: '0.72rem',
+              fontWeight: 700,
+              letterSpacing: '0.3px',
+              textTransform: 'uppercase',
+            }}
+          >
+            {state.combatActive ? '⚔ Combat' : 'Main'}
+          </span>
           <span style={{ ...mutedStyle, fontVariantNumeric: 'tabular-nums' }} title="Turn timers (total per player)">
             ⏱ You {formatTime(myTimeRef.current)} · {opponents.length > 1 ? `Opponents ${formatTime(oppTimeRef.current)}` : `${opponents[0]?.name ?? 'Opponent'} ${formatTime(oppTimeRef.current)}`}
           </span>
