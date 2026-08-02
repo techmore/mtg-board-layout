@@ -1,5 +1,5 @@
 import { getCardDatabaseEntry } from './cardDatabase'
-import { evaluateConditionalEntryTap as sharedEvaluateEntryTap } from 'mtg-protocol'
+import { evaluateConditionalEntryTap as sharedEvaluateEntryTap } from 'mtg-protocol/entryTap'
 import type { BoardCard } from '../types/card'
 
 const BASIC_LAND_NAMES: Record<string, string> = {

@@ -399,6 +399,3 @@ export function modeToLabel(mode: GameMode): string {
     case '4ffa': return '4-Player Free for All'
   }
 }
-
-export { evaluateConditionalEntryTap } from './entryTap.js'
-export type { EntryTapCard, EntryTapBattlefieldCard } from './entryTap.js'

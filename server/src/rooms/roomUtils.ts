@@ -1,5 +1,5 @@
 import type { CardData, GameMode, Zone } from 'mtg-protocol'
-import { evaluateConditionalEntryTap } from 'mtg-protocol'
+import { evaluateConditionalEntryTap } from 'mtg-protocol/entryTap'
 import { CardState } from './schema/GameState.js'
 
 export const MAX_DECK_SIZE = 250
