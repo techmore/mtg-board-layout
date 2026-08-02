@@ -203,7 +203,7 @@ export default function MultiplayerBoardPage() {
       </header>
 
       <section style={opponentsStyle}>
-        {opponents.length === 0 ? <div style={mutedStyle}>Waiting for opponents…</div> : opponents.map((player) => <PlayerPanel key={player.id} player={player} opponent active={state.activePlayerId === player.id} onZoom={setZoomCard} />)}
+        {opponents.length === 0 ? <div style={mutedStyle}>Waiting for opponents…</div> : opponents.map((player) => <PlayerPanel key={player.id} player={player} opponent active={state.activePlayerId === player.id} myTeamId={me.teamId} onZoom={setZoomCard} />)}
       </section>
 
       <section style={positionedTableStyle(me.positionX, me.positionY)}>
@@ -438,10 +438,15 @@ export default function MultiplayerBoardPage() {
   )
 }
 
-function PlayerPanel({ player, opponent, active, onZoom }: { player: RoomPlayerInfo; opponent?: boolean; active?: boolean; onZoom: (card: CardData) => void }) {
+function PlayerPanel({ player, opponent, active, onZoom, myTeamId }: { player: RoomPlayerInfo; opponent?: boolean; active?: boolean; onZoom: (card: CardData) => void; myTeamId?: string }) {
+  const is2v2 = player.teamId === 'team1' || player.teamId === 'team2'
+  const sameTeam = is2v2 && myTeamId !== undefined && myTeamId === player.teamId
   return <div style={{ ...positionedPanelStyle(player.positionX, player.positionY), outline: active ? '2px solid #58a6ff' : undefined, outlineOffset: -2 }}>
-    <div style={{ display: 'flex', justifyContent: 'space-between', gap: 12 }}>
-      <strong>{player.name}{opponent ? '' : ' (you)'}</strong>
+    <div style={{ display: 'flex', justifyContent: 'space-between', gap: 12, alignItems: 'center' }}>
+      <strong>
+        {player.name}{opponent ? '' : ' (you)'}
+        {is2v2 && <span style={{ ...mutedStyle, marginLeft: 6, color: sameTeam ? '#3fb950' : '#f85149', fontWeight: 700 }}>{sameTeam ? '★ teammate' : '☆ enemy'}</span>}
+      </strong>
       <span style={mutedStyle}>Life {player.lifeTotal} · Hand {player.handCount}</span>
     </div>
     <CardRow cards={player.battlefield} empty="No permanents" onZoom={onZoom} />
