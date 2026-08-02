@@ -76,7 +76,7 @@ export function createCombatActions(set: SetFn, get: () => GameState): Pick<Game
       const { attackers, blockers } = state.combatState
 
       let finalBlockers = blockers
-      if (state.activePlayer === 'player' && attackers.length > 0) {
+      if (state.activePlayer === 'player' && attackers.length > 0 && Object.keys(blockers).length === 0) {
         const oppBattlefield = state.cards.filter((c) => (c.owner ?? 'player') === 'opponent' && c.zone === 'battlefield')
         finalBlockers = pickBlockers(attackers, oppBattlefield, state.cards, state.turn, state.opponentLifeTotal)
       }
