@@ -64,7 +64,7 @@ export async function fetchDeckCards(
     try {
       res = await fetch('https://api.scryfall.com/cards/collection', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json', 'User-Agent': 'MTGBoardLayout/1.0' },
         body: JSON.stringify({ identifiers: batch }),
         signal: controller.signal,
       })
@@ -110,6 +110,22 @@ export async function fetchDeckCards(
       const databaseEntry = getCardDatabaseEntry(card.name)
       if (databaseEntry) {
         results.push(databaseEntryToDeckCard(databaseEntry, nameCounts.get(card.name) ?? 1))
+        continue
+      }
+      // Fallback: double-faced cards often fail the collection endpoint by
+      // name but resolve via the search endpoint.
+      const resolved = await searchFallback(card.name)
+      if (resolved) {
+        results.push({
+          scryfallId: resolved.id,
+          name: resolved.name,
+          manaCost: resolved.mana_cost,
+          manaValue: resolved.cmc,
+          typeLine: resolved.type_line,
+          oracleText: resolved.oracle_text ?? resolved.card_faces?.[0]?.oracle_text ?? '',
+          imageUri: resolved.image_uris?.normal ?? resolved.card_faces?.[0]?.image_uris?.normal ?? '',
+          quantity: nameCounts.get(card.name) ?? 1,
+        })
       } else {
         notFound.add(card.name)
       }
@@ -117,6 +133,27 @@ export async function fetchDeckCards(
   }
 
   return { cards: results, notFound: [...notFound] }
+}
+
+async function searchFallback(name: string) {
+  const controller = new AbortController()
+  const timeout = setTimeout(() => controller.abort(), REQUEST_TIMEOUT_MS)
+  try {
+    const res = await fetch(
+      `https://api.scryfall.com/cards/search?q=${encodeURIComponent(`name:"${name}"`)}&unique=cards`,
+      { headers: { 'User-Agent': 'MTGBoardLayout/1.0' }, signal: controller.signal },
+    )
+    if (!res.ok) return null
+    const data = await res.json()
+    const exact = data.data?.find((candidate: { name: string }) =>
+      candidate.name.split(' // ')[0].toLowerCase() === name.toLowerCase(),
+    )
+    return exact ?? data.data?.[0] ?? null
+  } catch {
+    return null
+  } finally {
+    clearTimeout(timeout)
+  }
 }
 
 export function deckNeedsRuleHydration(deck: Pick<Deck, 'cards'>) {
