@@ -556,15 +556,15 @@ describe('attachAuras', () => {
 
   it('attaches each aura to a friendly creature', () => {
     const result = attachAuras([strong as any, weak as any, aura1 as any, aura2 as any])
-    const a1 = result.find((c: any) => c.id === 'aura1')
-    const a2 = result.find((c: any) => c.id === 'aura2')
+    const a1 = result.find((c: any) => c.id === 'aura1')!
+    const a2 = result.find((c: any) => c.id === 'aura2')!
     expect(a1.enchantsCardId).toBeDefined()
     expect(a2.enchantsCardId).toBeDefined()
   })
 
   it('sends an aura to the graveyard when no creature is available', () => {
     const result = attachAuras([aura1 as any])
-    const a1 = result.find((c: any) => c.id === 'aura1')
+    const a1 = result.find((c: any) => c.id === 'aura1')!
     expect(a1.zone).toBe('graveyard')
     expect(a1.revealed).toBe(true)
   })
@@ -572,14 +572,14 @@ describe('attachAuras', () => {
   it('never attaches an aura to itself and leaves already-attached auras alone', () => {
     const attached = { ...aura1, enchantsCardId: 'strong', enchantsCardName: 'Strong' }
     const result = attachAuras([strong as any, attached as any])
-    const a1 = result.find((c: any) => c.id === 'aura1')
+    const a1 = result.find((c: any) => c.id === 'aura1')!
     expect(a1.enchantsCardId).toBe('strong')
   })
 
   it('does not attach opponent auras to player creatures', () => {
     const oppAura = { ...aura1, id: 'oppAura', owner: 'opponent' }
     const result = attachAuras([strong as any, oppAura as any])
-    const a1 = result.find((c: any) => c.id === 'oppAura')
+    const a1 = result.find((c: any) => c.id === 'oppAura')!
     expect(a1.zone).toBe('graveyard')
   })
 })

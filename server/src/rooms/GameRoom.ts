@@ -444,6 +444,25 @@ export class GameRoom extends Room<{ state: GameState }> {
     }
     this.updateCounts(player)
     this.sendPrivateState(player)
+
+    // Deck-out: drawing from an empty library loses the game.
+    if (count > 0 && privateState.library.length === 0 && this.state.status === 'playing') {
+      this.state.status = 'finished'
+      const winner = this.connectedPlayers().find((candidate) => candidate.id !== player.id)
+      this.emitEvent({ type: 'gameEnded', winnerId: winner?.id, reason: 'library' })
+    }
+  }
+
+  private discardDownToSeven(player: PlayerState) {
+    const privateState = this.privateZones.get(player.playerId)
+    if (!privateState || privateState.hand.length <= 7) return
+    const excess = privateState.hand.length - 7
+    const discarded = privateState.hand.splice(0, excess)
+    for (const card of discarded) {
+      player.graveyard.push(cardToState({ ...card, zone: 'graveyard' as Zone, revealed: true }, 'graveyard'))
+    }
+    this.updateCounts(player)
+    this.sendPrivateState(player)
   }
 
   private prepareOpeningHand(player: PlayerState) {
@@ -566,6 +585,8 @@ export class GameRoom extends Room<{ state: GameState }> {
     player.landPlaysThisTurn = 0
     this.clearMana(player)
     this.drawCards(player, 1)
+    this.discardDownToSeven(player)
+    if (this.state.status !== 'playing') return
     const players = this.connectedPlayers().sort((a, b) => a.turnOrder - b.turnOrder)
     const index = players.findIndex((candidate) => candidate.id === player.id)
     const next = players[(index + 1) % players.length]

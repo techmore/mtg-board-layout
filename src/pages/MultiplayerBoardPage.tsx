@@ -1,6 +1,6 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { useSearchParams } from 'react-router-dom'
-import type { CardData, ChatMessageEvent, GameEndedEvent, RoomJoinOptions, RoomPlayerInfo } from 'mtg-protocol'
+import type { CardData, ChatMessageEvent, CoinFlippedEvent, DiceRolledEvent, GameEndedEvent, RoomJoinOptions, RoomPlayerInfo } from 'mtg-protocol'
 import { deckToRoomCards } from '../multiplayer/roomCards'
 import { useRoomSession } from '../multiplayer/useRoom'
 import { getServerUrlFromSearchParams } from '../multiplayer/serverUrl'
@@ -23,6 +23,12 @@ export default function MultiplayerBoardPage() {
   const [gameWinnerId, setGameWinnerId] = useState<string | null>(null)
   const [combatMode, setCombatMode] = useState<'none' | 'attack' | 'block'>('none')
   const [combatSelection, setCombatSelection] = useState<string[]>([])
+  const [zoomCard, setZoomCard] = useState<CardData | null>(null)
+  const [lastRoll, setLastRoll] = useState<string | null>(null)
+  const myTimeRef = useRef(0)
+  const oppTimeRef = useRef(0)
+  const [, setTimerTick] = useState(0)
+  const activeIsMe = state !== null && state.activePlayerId === state.myPlayerId
 
   const requestedServerUrl = getServerUrlFromSearchParams(searchParams)
   const initialName = searchParams.get('name') ?? ''
@@ -53,6 +59,36 @@ export default function MultiplayerBoardPage() {
     if (!lastEvent || lastEvent.type !== 'gameEnded') return
     setGameWinnerId((lastEvent as GameEndedEvent).winnerId ?? null)
   }, [lastEvent])
+
+  useEffect(() => {
+    if (!lastEvent) return
+    if (lastEvent.type === 'diceRolled') {
+      const event = lastEvent as DiceRolledEvent
+      const name = state?.players.find((p) => p.id === event.playerId)?.name ?? 'Player'
+      setLastRoll(`${name} rolled d20: ${event.result}`)
+    } else if (lastEvent.type === 'coinFlipped') {
+      const event = lastEvent as CoinFlippedEvent
+      const name = state?.players.find((p) => p.id === event.playerId)?.name ?? 'Player'
+      setLastRoll(`${name} flipped: ${event.result}`)
+    }
+  }, [lastEvent, state?.players])
+
+  // Per-player turn timers (accumulated while each player is active).
+  useEffect(() => {
+    const id = window.setInterval(() => {
+      if (activeIsMe) myTimeRef.current += 1000
+      else oppTimeRef.current += 1000
+      setTimerTick((t) => t + 1)
+    }, 1000)
+    return () => window.clearInterval(id)
+  }, [activeIsMe])
+
+  useEffect(() => {
+    setMessages([])
+    setLastRoll(null)
+    myTimeRef.current = 0
+    oppTimeRef.current = 0
+  }, [roomId])
 
   if (isConnecting || !state) return <main style={pageStyle}><div>Connecting to multiplayer board…{error ? ` ${error}` : ''}</div></main>
 
@@ -111,6 +147,9 @@ export default function MultiplayerBoardPage() {
         <div><strong>Multiplayer Board</strong><span style={mutedStyle}> Room {state.roomId} · Turn {state.turn}</span></div>
         <div style={{ display: 'flex', gap: 8 }}>
           <span style={isMyTurn ? activeBadgeStyle : mutedStyle}>{isMyTurn ? 'Your turn' : 'Waiting'}</span>
+          <span style={{ ...mutedStyle, fontVariantNumeric: 'tabular-nums' }} title="Turn timers (total per player)">
+            ⏱ You {formatTime(myTimeRef.current)} · {me.name} {formatTime(oppTimeRef.current)}
+          </span>
           <button onClick={() => { leave(); window.location.assign('/') }} style={smallButtonStyle}>Leave</button>
         </div>
       </header>
@@ -121,6 +160,12 @@ export default function MultiplayerBoardPage() {
 
       <section style={positionedTableStyle(me.positionX, me.positionY)}>
         <h2 style={sectionTitle}>Your battlefield</h2>
+        {me.command.length > 0 && (
+          <div style={{ marginBottom: 10 }}>
+            <div style={mutedStyle}>Command zone (click to cast)</div>
+            <CardRow cards={me.command} empty="" onCard={(card) => sendAction({ type: 'playCard', cardId: card.id })} onZoom={setZoomCard} />
+          </div>
+        )}
         {opponentAttacking && (
           <div style={{ ...combatBannerStyle, background: 'rgba(248,81,73,0.14)', borderColor: 'rgba(248,81,73,0.5)', color: '#ff7b72' }}>
             ⚔ DEFEND — click your creatures to block ({state.attackers.length} attacking)
@@ -138,6 +183,7 @@ export default function MultiplayerBoardPage() {
             if (combatMode === 'attack' || combatMode === 'block') toggleCombatSelection(card.id)
             else sendAction({ type: 'tapCard', cardId: card.id })
           }}
+          onZoom={setZoomCard}
           combatStatus={cardInCombat}
           selectedIds={combatMode === 'none' ? undefined : combatSelection}
         />
@@ -286,8 +332,60 @@ export default function MultiplayerBoardPage() {
 
       <section style={handStyle}>
         <h2 style={sectionTitle}>Your hand ({privateState.hand.length})</h2>
-        <CardRow cards={privateState.hand} empty="Your hand is empty" onCard={(card) => sendAction({ type: 'playCard', cardId: card.id })} />
+        <CardRow cards={privateState.hand} empty="Your hand is empty" onCard={(card) => sendAction({ type: 'playCard', cardId: card.id })} onZoom={setZoomCard} />
       </section>
+
+      <section style={controlsStyle}>
+        <div style={controlGroupStyle}>
+          <strong>Random</strong>
+          <button onClick={() => sendAction({ type: 'rollDice' })} style={smallButtonStyle}>🎲 d20</button>
+          <button onClick={() => sendAction({ type: 'flipCoin' })} style={smallButtonStyle}>🪙 Flip</button>
+          {lastRoll && <span style={mutedStyle}>{lastRoll}</span>}
+        </div>
+      </section>
+
+      {zoomCard && (
+        <div
+          onClick={() => setZoomCard(null)}
+          style={{
+            position: 'fixed',
+            inset: 0,
+            zIndex: 1500,
+            background: 'rgba(0,0,0,0.8)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            padding: 20,
+            cursor: 'zoom-out',
+          }}
+        >
+          <div
+            onClick={(e) => e.stopPropagation()}
+            style={{
+              maxWidth: 'min(760px, 92vw)',
+              maxHeight: '92vh',
+              display: 'flex',
+              gap: 16,
+              flexWrap: 'wrap',
+              justifyContent: 'center',
+              alignItems: 'flex-start',
+            }}
+          >
+            {zoomCard.imageUri ? (
+              <img src={zoomCard.imageUri} alt={zoomCard.name} style={{ maxWidth: 'min(280px, 50vw)', maxHeight: '70vh', borderRadius: 10, boxShadow: '0 8px 32px rgba(0,0,0,0.5)' }} />
+            ) : (
+              <div style={{ width: 200, height: 280, borderRadius: 10, background: '#21262d', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#8b949e' }}>No image</div>
+            )}
+            <div style={{ width: 'min(360px, 100%)', background: '#161b22', border: '1px solid #30363d', borderRadius: 12, padding: 16, display: 'flex', flexDirection: 'column', gap: 8 }}>
+              <div style={{ fontSize: '1.05rem', fontWeight: 700 }}>{zoomCard.name}</div>
+              <div style={{ color: '#8b949e', fontSize: '0.78rem' }}>{zoomCard.typeLine}</div>
+              <div style={{ color: '#d0d7de', fontSize: '0.82rem', lineHeight: 1.5, whiteSpace: 'pre-line', maxHeight: 300, overflowY: 'auto', borderTop: '1px solid rgba(255,255,255,0.08)', paddingTop: 10 }}>
+                {zoomCard.oracleText || 'No card text available.'}
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </main>
   )
 }
@@ -311,10 +409,11 @@ function PlayerPanel({ player, opponent }: { player: RoomPlayerInfo; opponent?: 
   </div>
 }
 
-function CardRow({ cards, empty, onCard, combatStatus, selectedIds }: {
+function CardRow({ cards, empty, onCard, onZoom, combatStatus, selectedIds }: {
   cards: CardData[]
   empty: string
   onCard?: (card: CardData) => void
+  onZoom?: (card: CardData) => void
   combatStatus?: (cardId: string) => 'attack' | 'block' | 'none'
   selectedIds?: string[]
 }) {
@@ -323,24 +422,56 @@ function CardRow({ cards, empty, onCard, combatStatus, selectedIds }: {
     const status = combatStatus?.(card.id) ?? 'none'
     const selected = selectedIds?.includes(card.id) ?? false
     return (
-      <button
-        key={card.id}
-        onClick={() => onCard?.(card)}
-        style={{
-          ...cardButtonStyle(card.tapped),
-          borderColor: selected ? '#58a6ff' : status === 'attack' ? 'rgba(248,81,73,0.7)' : status === 'block' ? 'rgba(88,166,255,0.7)' : undefined,
-          boxShadow: selected ? '0 0 0 2px rgba(88,166,255,0.5)' : undefined,
-        }}
-        title={status === 'attack' ? `${card.name} (attacking)` : status === 'block' ? `${card.name} (blocking)` : onCard ? 'Click to play or tap' : card.name}
-      >
-        {card.imageUri ? <img src={card.imageUri} alt={card.name} style={cardImageStyle} /> : <span>{card.name}</span>}
-        <span style={cardNameStyle}>
-          {card.name}{card.counters !== 0 ? ` ${formatCounterCount(card.counters)}` : ''}
-          {status === 'attack' ? ' ⚔' : status === 'block' ? ' 🛡' : ''}
-        </span>
-      </button>
+      <div key={card.id} style={{ position: 'relative', display: 'flex', flexDirection: 'column', alignItems: 'flex-end' }}>
+        <button
+          onClick={() => onCard?.(card)}
+          style={{
+            ...cardButtonStyle(card.tapped),
+            borderColor: selected ? '#58a6ff' : status === 'attack' ? 'rgba(248,81,73,0.7)' : status === 'block' ? 'rgba(88,166,255,0.7)' : undefined,
+            boxShadow: selected ? '0 0 0 2px rgba(88,166,255,0.5)' : undefined,
+          }}
+          title={status === 'attack' ? `${card.name} (attacking)` : status === 'block' ? `${card.name} (blocking)` : onCard ? 'Click to play or tap' : card.name}
+        >
+          {card.imageUri ? <img src={card.imageUri} alt={card.name} style={cardImageStyle} /> : <span>{card.name}</span>}
+          <span style={cardNameStyle}>
+            {card.name}{card.counters !== 0 ? ` ${formatCounterCount(card.counters)}` : ''}
+            {status === 'attack' ? ' ⚔' : status === 'block' ? ' 🛡' : ''}
+          </span>
+        </button>
+        {onZoom && (
+          <button
+            onClick={() => onZoom(card)}
+            title={`Inspect ${card.name}`}
+            aria-label={`Inspect ${card.name}`}
+            style={{
+              position: 'absolute',
+              top: 2,
+              right: 2,
+              width: 20,
+              height: 20,
+              borderRadius: 4,
+              border: '1px solid rgba(255,255,255,0.2)',
+              background: 'rgba(13,17,23,0.8)',
+              color: '#d0d7de',
+              cursor: 'pointer',
+              fontSize: '0.68rem',
+              padding: 0,
+              lineHeight: 1,
+            }}
+          >
+            👁
+          </button>
+        )}
+      </div>
     )
   })}</div>
+}
+
+function formatTime(ms: number): string {
+  const totalSeconds = Math.max(0, Math.floor(ms / 1000))
+  const minutes = Math.floor(totalSeconds / 60)
+  const seconds = totalSeconds % 60
+  return `${minutes}:${seconds.toString().padStart(2, '0')}`
 }
 
 const pageStyle: React.CSSProperties = { minHeight: '100%', boxSizing: 'border-box', padding: 18, background: '#0d1117', color: '#e6edf3', overflow: 'auto' }
