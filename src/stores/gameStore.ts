@@ -54,7 +54,7 @@ export type ActivePlayer = 'player' | 'opponent'
 
 export type GameSnapshot = Pick<
   GameState,
-  'cards' | 'manaPool' | 'potentialMana' | 'manaLog' | 'effectHistory' | 'tokens' | 'lifeTotal' | 'opponentLifeTotal' | 'turn' | 'landPlaysThisTurn' | 'drawNotice' | 'turnAnnouncement' | 'turnPrompt' | 'combatState' | 'currentPhase' | 'activePlayer' | 'opponentManaPool' | 'opponentPotentialMana' | 'opponentLandPlaysThisTurn'
+  'cards' | 'manaPool' | 'potentialMana' | 'manaLog' | 'effectHistory' | 'tokens' | 'lifeTotal' | 'opponentLifeTotal' | 'turn' | 'landPlaysThisTurn' | 'drawNotice' | 'turnAnnouncement' | 'turnPrompt' | 'combatState' | 'currentPhase' | 'activePlayer' | 'opponentManaPool' | 'opponentPotentialMana' | 'opponentLandPlaysThisTurn' | 'commanderDamage'
 >
 
 export interface GameState {
@@ -95,6 +95,8 @@ export interface GameState {
   combatState: CombatState
   currentPhase: Phase
   gameOver: { winner: 'player' | 'opponent' } | null
+  /** Combat damage each commander has dealt to the opposing player, keyed by commander card id. */
+  commanderDamage: Record<string, number>
 
   setLife: (n: number) => void
   setBackground: (url: string | null) => void
@@ -105,6 +107,7 @@ export interface GameState {
   setOverlay: (overlay: OverlayState) => void
   setBroadcasting: (active: boolean) => void
   setGameOver: (gameOver: { winner: 'player' | 'opponent' } | null) => void
+  recordCommanderDamage: (commanderId: string, amount: number) => void
   setAiFixedDeck: (fixed: boolean) => void
   addTurnTime: (who: 'player' | 'opponent', ms: number) => void
   toggleOpponent: () => void
@@ -195,6 +198,7 @@ export const useGameStore = create<GameState>((set, get) => {
     opponentPotentialMana: [] as PotentialManaSource[],
     opponentLandPlaysThisTurn: 0,
     gameOver: null,
+    commanderDamage: {},
     aiFixedDeck: true,
 
     ...createTurnPhases(set, get),
@@ -236,6 +240,10 @@ export const useGameStore = create<GameState>((set, get) => {
     setOverlay: (overlay) => set({ overlay }),
     setBroadcasting: (active) => set({ broadcasting: active }),
     setGameOver: (gameOver) => set({ gameOver }),
+    recordCommanderDamage: (commanderId, amount) =>
+      set((state) => ({
+        commanderDamage: { ...state.commanderDamage, [commanderId]: (state.commanderDamage[commanderId] ?? 0) + amount },
+      })),
     setAiFixedDeck: (fixed) => set({ aiFixedDeck: fixed }),
     addTurnTime: (who, ms) =>
       set((state) => who === 'player'

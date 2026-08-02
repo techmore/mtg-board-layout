@@ -157,8 +157,25 @@ export function createCombatActions(set: SetFn, get: () => GameState): Pick<Game
               const blockerToughness = toughnessOf(liveBlocker, current.cards)
               const excess = power - blockerToughness
               if (excess > 0) {
-                if (isOpponentAttacker) state.setLife(current.lifeTotal - excess)
-                else set({ opponentLifeTotal: current.opponentLifeTotal - excess })
+                if (isOpponentAttacker) {
+                  state.setLife(current.lifeTotal - excess)
+                  if (attacker.isCommander) {
+                    get().recordCommanderDamage(attacker.id, excess)
+                    if ((get().commanderDamage[attacker.id] ?? 0) >= 21) {
+                      set({ turnAnnouncement: { id: Date.now(), text: `YOU DEFEATED — commander damage from ${attacker.name}` }, turnPrompt: null, gameOver: { winner: 'opponent' } })
+                      return
+                    }
+                  }
+                } else {
+                  set({ opponentLifeTotal: current.opponentLifeTotal - excess })
+                  if (attacker.isCommander) {
+                    get().recordCommanderDamage(attacker.id, excess)
+                    if ((get().commanderDamage[attacker.id] ?? 0) >= 21) {
+                      set({ turnAnnouncement: { id: Date.now(), text: `OPPONENT DEFEATED — commander damage from ${attacker.name}` }, turnPrompt: null, gameOver: { winner: 'player' } })
+                      return
+                    }
+                  }
+                }
               }
             }
           } else {
@@ -166,6 +183,14 @@ export function createCombatActions(set: SetFn, get: () => GameState): Pick<Game
               const newLife = current.lifeTotal - power
               if (attackerLifelink) set({ opponentLifeTotal: current.opponentLifeTotal + power })
               state.setLife(newLife)
+              // Commander damage: 21+ from a single commander loses.
+              if (attacker.isCommander) {
+                get().recordCommanderDamage(attacker.id, power)
+                if ((get().commanderDamage[attacker.id] ?? 0) >= 21) {
+                  set({ turnAnnouncement: { id: Date.now(), text: `YOU DEFEATED — commander damage from ${attacker.name}` }, turnPrompt: null, gameOver: { winner: 'opponent' } })
+                  return
+                }
+              }
               if (newLife <= 0) {
                 set({ turnAnnouncement: { id: Date.now(), text: 'YOU DEFEATED' }, turnPrompt: null, gameOver: { winner: 'opponent' } })
               }
@@ -173,6 +198,13 @@ export function createCombatActions(set: SetFn, get: () => GameState): Pick<Game
               const newOppLife = current.opponentLifeTotal - power
               if (attackerLifelink) state.setLife(current.lifeTotal + power)
               set({ opponentLifeTotal: newOppLife })
+              if (attacker.isCommander) {
+                get().recordCommanderDamage(attacker.id, power)
+                if ((get().commanderDamage[attacker.id] ?? 0) >= 21) {
+                  set({ turnAnnouncement: { id: Date.now(), text: `OPPONENT DEFEATED — commander damage from ${attacker.name}` }, turnPrompt: null, gameOver: { winner: 'player' } })
+                  return
+                }
+              }
               if (newOppLife <= 0) {
                 set({ turnAnnouncement: { id: Date.now(), text: 'OPPONENT DEFEATED' }, turnPrompt: null, gameOver: { winner: 'player' } })
               }

@@ -111,6 +111,7 @@ export interface BoardCard {
   type: 'land' | 'creature' | 'instant' | 'sorcery' | 'enchantment' | 'artifact' | 'planeswalker' | 'battle' | 'other'
   revealed: boolean
   commanderTax?: number
+  isCommander?: boolean
   enteredAtTurn?: number
   owner?: 'player' | 'opponent'
 }

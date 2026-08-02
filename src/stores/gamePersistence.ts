@@ -15,7 +15,7 @@ export const STORAGE_KEY = 'mtg-board-state'
 
 export type PersistedGameState = Pick<
   GameState,
-  'activeDeckId' | 'lifeTotal' | 'cards' | 'cardScale' | 'manaPool' | 'potentialMana' | 'manaLog' | 'effectHistory' | 'tokens' | 'backgroundImage' | 'backgrounds' | 'rollHistory' | 'overlay' | 'showOpponent' | 'opponentName' | 'aiFixedDeck' | 'opponentLifeTotal' | 'turnPlayerMs' | 'turnOpponentMs' | 'turn' | 'currentPhase' | 'landPlaysThisTurn' | 'turnAnnouncement' | 'triggerStack'
+  'activeDeckId' | 'lifeTotal' | 'cards' | 'cardScale' | 'manaPool' | 'potentialMana' | 'manaLog' | 'effectHistory' | 'tokens' | 'backgroundImage' | 'backgrounds' | 'rollHistory' | 'overlay' | 'showOpponent' | 'opponentName' | 'aiFixedDeck' | 'opponentLifeTotal' | 'turnPlayerMs' | 'turnOpponentMs' | 'turn' | 'currentPhase' | 'landPlaysThisTurn' | 'turnAnnouncement' | 'triggerStack' | 'commanderDamage'
 >
 
 export const defaultGameState: PersistedGameState & { undoStack: GameSnapshot[]; redoStack: GameSnapshot[] } = {
@@ -35,6 +35,7 @@ export const defaultGameState: PersistedGameState & { undoStack: GameSnapshot[];
   showOpponent: false,
   opponentName: null,
   aiFixedDeck: true,
+  commanderDamage: {},
   turnPlayerMs: 0,
   turnOpponentMs: 0,
   opponentLifeTotal: 40,
@@ -113,6 +114,12 @@ export function loadPersistedGameState(): PersistedGameState {
       landPlaysThisTurn: Number.isFinite(parsed.landPlaysThisTurn) ? Math.max(0, Math.floor(parsed.landPlaysThisTurn!)) : defaultGameState.landPlaysThisTurn,
       turnAnnouncement: isTurnAnnouncement(parsed.turnAnnouncement) ? parsed.turnAnnouncement : null,
       triggerStack: Array.isArray(parsed.triggerStack) ? parsed.triggerStack.filter(isTriggerInstance) : defaultGameState.triggerStack,
+      commanderDamage: parsed.commanderDamage && typeof parsed.commanderDamage === 'object'
+        ? Object.fromEntries(
+            Object.entries(parsed.commanderDamage as Record<string, unknown>)
+              .filter(([, v]) => typeof v === 'number' && Number.isFinite(v) && v >= 0),
+          ) as Record<string, number>
+        : defaultGameState.commanderDamage,
     }
   } catch {
     return defaultGameState
@@ -153,6 +160,7 @@ export function persistGameState(state: GameState) {
       landPlaysThisTurn: state.landPlaysThisTurn,
       turnAnnouncement: state.turnAnnouncement,
       triggerStack: state.triggerStack,
+      commanderDamage: state.commanderDamage,
     }
     const serialized = JSON.stringify(persisted)
     const sizeMB = new Blob([serialized]).size / (1024 * 1024)

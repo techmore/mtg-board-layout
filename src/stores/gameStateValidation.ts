@@ -36,6 +36,7 @@ export function isBoardCard(value: unknown): value is BoardCard {
     (card.enchantsCardId === undefined || typeof card.enchantsCardId === 'string') &&
     (card.manaProduction === undefined || isManaProduction(card.manaProduction)) &&
     (card.commanderTax === undefined || (typeof card.commanderTax === 'number' && Number.isInteger(card.commanderTax) && card.commanderTax >= 0)) &&
+    (card.isCommander === undefined || typeof card.isCommander === 'boolean') &&
     (card.owner === undefined || card.owner === 'player' || card.owner === 'opponent')
 }
 

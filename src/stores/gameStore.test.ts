@@ -79,6 +79,7 @@ function resetStore() {
     undoStack: [],
     redoStack: [],
     gameOver: null,
+    commanderDamage: {},
     turnPlayerMs: 0,
     turnOpponentMs: 0,
   })
@@ -248,6 +249,70 @@ describe('game over', () => {
 
     expect(useGameStore.getState().opponentLifeTotal).toBe(-5)
     expect(useGameStore.getState().gameOver).toEqual({ winner: 'player' })
+  })
+})
+
+describe('commander damage', () => {
+  it('accumulates unblocked combat damage from an opponent commander', () => {
+    useGameStore.setState({
+      cards: [card({ id: 'cmd', name: 'Atarka', typeLine: '6/6', type: 'creature', zone: 'battlefield', tapped: true, owner: 'opponent', isCommander: true })],
+      combatState: { active: true, attackers: ['cmd'], blockers: {} },
+    })
+
+    useGameStore.getState().resolveCombat()
+
+    expect(useGameStore.getState().commanderDamage['cmd']).toBe(6)
+    expect(useGameStore.getState().lifeTotal).toBe(34)
+    expect(useGameStore.getState().gameOver).toBeNull()
+  })
+
+  it('does not accumulate damage from non-commander creatures', () => {
+    useGameStore.setState({
+      cards: [card({ id: 'beater', name: 'Beater', typeLine: '6/6', type: 'creature', zone: 'battlefield', tapped: true, owner: 'opponent' })],
+      combatState: { active: true, attackers: ['beater'], blockers: {} },
+    })
+
+    useGameStore.getState().resolveCombat()
+
+    expect(useGameStore.getState().commanderDamage['beater']).toBeUndefined()
+  })
+
+  it('loses the game at 21 commander damage even above zero life', () => {
+    useGameStore.setState({
+      commanderDamage: { cmd: 15 },
+      cards: [card({ id: 'cmd', name: 'Atarka', typeLine: '6/6', type: 'creature', zone: 'battlefield', tapped: true, owner: 'opponent', isCommander: true })],
+      lifeTotal: 30,
+      combatState: { active: true, attackers: ['cmd'], blockers: {} },
+    })
+
+    useGameStore.getState().resolveCombat()
+
+    expect(useGameStore.getState().commanderDamage['cmd']).toBe(21)
+    expect(useGameStore.getState().gameOver).toEqual({ winner: 'opponent' })
+  })
+
+  it('counts trample overflow from a player commander as commander damage', () => {
+    primeCardRules({
+      'Atarka': { cardName: 'Atarka', manaCost: '', manaValue: 6, typeLine: 'Creature', cardType: 'creature', subtypes: [], keywords: ['trample'], manaProduction: null, entryTapRule: null, conditionalEntryText: null, oracleText: '', scryfallId: 'a', abilities: [] } as CardRuleEntry,
+    })
+    useGameStore.setState({
+      cards: [
+        card({ id: 'cmd', name: 'Atarka', typeLine: '6/6', type: 'creature', zone: 'battlefield', tapped: true, isCommander: true }),
+        card({ id: 'chump', name: 'Chump', typeLine: '2/2', type: 'creature', zone: 'battlefield', owner: 'opponent' }),
+      ],
+      combatState: { active: true, attackers: ['cmd'], blockers: { cmd: ['chump'] } },
+    })
+
+    useGameStore.getState().resolveCombat()
+
+    expect(useGameStore.getState().commanderDamage['cmd']).toBe(4)
+    expect(useGameStore.getState().opponentLifeTotal).toBe(36)
+  })
+
+  it('resets commander damage on a new hand', () => {
+    useGameStore.setState({ commanderDamage: { cmd: 15 } })
+    useGameStore.getState().redeal()
+    expect(useGameStore.getState().commanderDamage).toEqual({})
   })
 })
 

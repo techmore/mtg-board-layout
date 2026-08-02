@@ -387,6 +387,7 @@ export function createOpponentAI(set: SetFn, get: () => GameState): Pick<GameSta
               type: classifyType(dc.typeLine),
               revealed: isCommander,
               owner: 'opponent',
+              isCommander,
             })
           }
         }

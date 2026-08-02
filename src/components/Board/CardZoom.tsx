@@ -37,6 +37,10 @@ export default function CardZoom() {
   if ((card.damage ?? 0) > 0) stateBits.push(`${card.damage} damage`)
   if ((card.powerBoost ?? 0) !== 0 || (card.toughnessBoost ?? 0) !== 0) stateBits.push(`pumped +${card.powerBoost ?? 0}/+${card.toughnessBoost ?? 0}`)
   if ((card.tokenCount ?? 0) > 0) stateBits.push(`${card.tokenCount} token(s)`)
+  if (card.isCommander) {
+    const dealt = useGameStore.getState().commanderDamage[card.id] ?? 0
+    if (dealt > 0) stateBits.push(`commander damage dealt: ${dealt}`)
+  }
 
   return (
     <div

@@ -177,6 +177,7 @@ export function takeSnapshot(state: GameState): GameSnapshot {
     opponentManaPool: { ...state.opponentManaPool },
     opponentPotentialMana: state.opponentPotentialMana.map((source) => ({ ...source })),
     opponentLandPlaysThisTurn: state.opponentLandPlaysThisTurn,
+    commanderDamage: { ...state.commanderDamage },
   }
 }
 
