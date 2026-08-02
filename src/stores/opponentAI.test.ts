@@ -1,6 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it } from 'vitest'
 import type { BoardCard, CardRuleEntry, ManaPool } from '../types/card'
-import { pickAttackers, pickBlockers, pickCommanderCast } from './opponentAI'
+import { pickAttackers, pickBlockers, pickCommanderCast, pickSpell } from './opponentAI'
 import { primeCardRules } from './cardRulesLoader'
 
 const manaPool = (overrides: Partial<ManaPool> = {}): ManaPool => ({ W: 0, U: 0, B: 0, R: 0, G: 0, C: 0, ...overrides })
@@ -49,6 +49,36 @@ beforeEach(() => {
 
 afterEach(() => {
   primeCardRules({})
+})
+
+describe('pickSpell', () => {
+  function handCard(name: string, type: string, manaCost: string, overrides: Partial<BoardCard> = {}): BoardCard {
+    return { ...creature({ id: `sf-${name}`, name, type: type as BoardCard['type'], manaCost, zone: 'hand' }), ...overrides }
+  }
+
+  it('returns null when nothing is playable', () => {
+    expect(pickSpell([handCard('Bear', 'creature', '{1}{G}')], [], manaPool())).toBeNull()
+  })
+
+  it('prefers a creature over a non-creature when both are affordable', () => {
+    const bear = handCard('Bear', 'creature', '{1}{G}')
+    const bolt = handCard('Bolt', 'instant', '{R}')
+    const picked = pickSpell([bolt, bear], [], manaPool({ G: 1, R: 1 }))
+    expect(picked?.name).toBe('Bear')
+  })
+
+  it('skips lands entirely', () => {
+    const forest = handCard('Forest', 'land', '')
+    const bolt = handCard('Bolt', 'instant', '{R}')
+    const picked = pickSpell([forest, bolt], [], manaPool({ R: 1 }))
+    expect(picked?.name).toBe('Bolt')
+  })
+
+  it('ignores cards without a mana cost and unaffordable ones', () => {
+    const noCost = handCard('Weird', 'creature', '')
+    const expensive = handCard('Colossus', 'creature', '{10}')
+    expect(pickSpell([noCost, expensive], [], manaPool())).toBeNull()
+  })
 })
 
 describe('pickCommanderCast', () => {
