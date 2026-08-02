@@ -496,6 +496,7 @@ function CardRow({ cards, empty, onCard, onZoom, combatStatus, selectedIds }: {
           {card.imageUri ? <img src={card.imageUri} alt={card.name} style={cardImageStyle} /> : <span>{card.name}</span>}
           <span style={cardNameStyle}>
             {card.name}{card.counters !== 0 ? ` ${formatCounterCount(card.counters)}` : ''}
+            {card.damage ? ` ✕${card.damage}` : ''}
             {status === 'attack' ? ' ⚔' : status === 'block' ? ' 🛡' : ''}
           </span>
         </button>
