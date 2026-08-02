@@ -1,10 +1,11 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
-import { useSearchParams } from 'react-router-dom'
+import { useNavigate, useSearchParams } from 'react-router-dom'
 import type { CardData, ChatMessageEvent, CoinFlippedEvent, DiceRolledEvent, GameEndedEvent, RoomJoinOptions, RoomPlayerInfo } from 'mtg-protocol'
 import { deckToRoomCards } from '../multiplayer/roomCards'
-import { useRoomSession } from '../multiplayer/useRoom'
+import { createRoom, useRoomSession } from '../multiplayer/useRoom'
 import { getServerUrlFromSearchParams } from '../multiplayer/serverUrl'
 import { useDeckStore } from '../stores/deckStore'
+import { useToastStore } from '../stores/toastStore'
 import { formatCounterCount } from '../components/Board/cardHelpers'
 
 interface ChatEntry {
@@ -14,10 +15,11 @@ interface ChatEntry {
 }
 
 export default function MultiplayerBoardPage() {
+  const navigate = useNavigate()
   const [searchParams] = useSearchParams()
   const roomId = searchParams.get('roomId') ?? ''
   const decks = useDeckStore((state) => state.decks)
-  const { state, privateState, lastEvent, error, isConnecting, connect, sendAction, leave } = useRoomSession()
+  const { state, privateState, lastEvent, error, isConnecting, connect, sendAction, leave, adopt, serverUrl } = useRoomSession()
   const [chatInput, setChatInput] = useState('')
   const [messages, setMessages] = useState<ChatEntry[]>([])
   const [gameWinnerId, setGameWinnerId] = useState<string | null>(null)
@@ -29,6 +31,29 @@ export default function MultiplayerBoardPage() {
   const oppTimeRef = useRef(0)
   const [, setTimerTick] = useState(0)
   const activeIsMe = state !== null && state.activePlayerId === state.myPlayerId
+  const handleRematch = async () => {
+    try {
+      const room = await createRoom({
+        gameMode: state?.gameMode ?? '1v1',
+        playerName: me?.name ?? 'Player',
+        deckId: selectedDeck?.id ?? '',
+        cards: selectedDeck ? deckToRoomCards(selectedDeck) : [],
+      }, serverUrl)
+      adopt(room, serverUrl)
+      navigate(`/game/${room.roomId}?name=${encodeURIComponent(me?.name ?? 'Player')}&deck=${encodeURIComponent(selectedDeck?.id ?? '')}&mode=${state?.gameMode ?? '1v1'}&server=${encodeURIComponent(serverUrl)}`)
+    } catch {
+      useToastStore.getState().push('Could not start a rematch — check the server', 'error')
+    }
+  }
+
+  useEffect(() => {
+    if (!zoomCard) return
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') setZoomCard(null)
+    }
+    document.addEventListener('keydown', onKeyDown)
+    return () => document.removeEventListener('keydown', onKeyDown)
+  }, [zoomCard])
 
   const requestedServerUrl = getServerUrlFromSearchParams(searchParams)
   const initialName = searchParams.get('name') ?? ''
@@ -73,9 +98,16 @@ export default function MultiplayerBoardPage() {
     }
   }, [lastEvent, state?.players])
 
-  // Per-player turn timers (accumulated while each player is active).
+  // Per-player turn timers (accumulated while each player is active). Stop
+  // accruing once the game has finished so totals freeze.
+  const finishedRef = useRef(false)
+  useEffect(() => {
+    finishedRef.current = state?.status === 'finished'
+  }, [state?.status])
+
   useEffect(() => {
     const id = window.setInterval(() => {
+      if (finishedRef.current) return
       if (activeIsMe) myTimeRef.current += 1000
       else oppTimeRef.current += 1000
       setTimerTick((t) => t + 1)
@@ -138,9 +170,20 @@ export default function MultiplayerBoardPage() {
             fontWeight: 800,
             textAlign: 'center',
             letterSpacing: '0.5px',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            gap: 14,
+            flexWrap: 'wrap',
           }}
         >
-          GAME OVER — {winnerName ? `${winnerName} wins` : 'The game has ended'}
+          <span>GAME OVER — {winnerName ? `${winnerName} wins` : 'The game has ended'}</span>
+          <button
+            onClick={handleRematch}
+            style={{ ...smallButtonStyle, background: '#238636', borderColor: '#2ea043', color: '#fff', fontWeight: 700 }}
+          >
+            Play Again
+          </button>
         </div>
       )}
       <header style={headerStyle}>
@@ -148,14 +191,14 @@ export default function MultiplayerBoardPage() {
         <div style={{ display: 'flex', gap: 8 }}>
           <span style={isMyTurn ? activeBadgeStyle : mutedStyle}>{isMyTurn ? 'Your turn' : 'Waiting'}</span>
           <span style={{ ...mutedStyle, fontVariantNumeric: 'tabular-nums' }} title="Turn timers (total per player)">
-            ⏱ You {formatTime(myTimeRef.current)} · {me.name} {formatTime(oppTimeRef.current)}
+            ⏱ You {formatTime(myTimeRef.current)} · {opponents.length > 1 ? `Opponents ${formatTime(oppTimeRef.current)}` : `${opponents[0]?.name ?? 'Opponent'} ${formatTime(oppTimeRef.current)}`}
           </span>
           <button onClick={() => { leave(); window.location.assign('/') }} style={smallButtonStyle}>Leave</button>
         </div>
       </header>
 
       <section style={opponentsStyle}>
-        {opponents.length === 0 ? <div style={mutedStyle}>Waiting for opponents…</div> : opponents.map((player) => <PlayerPanel key={player.id} player={player} opponent />)}
+        {opponents.length === 0 ? <div style={mutedStyle}>Waiting for opponents…</div> : opponents.map((player) => <PlayerPanel key={player.id} player={player} opponent onZoom={setZoomCard} />)}
       </section>
 
       <section style={positionedTableStyle(me.positionX, me.positionY)}>
@@ -390,13 +433,13 @@ export default function MultiplayerBoardPage() {
   )
 }
 
-function PlayerPanel({ player, opponent }: { player: RoomPlayerInfo; opponent?: boolean }) {
+function PlayerPanel({ player, opponent, onZoom }: { player: RoomPlayerInfo; opponent?: boolean; onZoom: (card: CardData) => void }) {
   return <div style={positionedPanelStyle(player.positionX, player.positionY)}>
     <div style={{ display: 'flex', justifyContent: 'space-between', gap: 12 }}>
       <strong>{player.name}{opponent ? '' : ' (you)'}</strong>
       <span style={mutedStyle}>Life {player.lifeTotal} · Hand {player.handCount}</span>
     </div>
-    <CardRow cards={player.battlefield} empty="No permanents" />
+    <CardRow cards={player.battlefield} empty="No permanents" onZoom={onZoom} />
     {player.tokens.length > 0 && (
       <div style={{ display: 'flex', flexWrap: 'wrap', gap: 4, marginTop: 6 }}>
         {player.tokens.map((token) => (
