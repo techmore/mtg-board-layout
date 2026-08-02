@@ -3,11 +3,27 @@ import type { GameState } from './gameStore'
 import { pickBlockers } from './opponentAI'
 import { getCardPower, getCardToughness } from '../utils/misc'
 import { hasKeyword, computeStaticPump } from './cardRulesLoader'
+import { aiCastInstant } from './gameOpponentAI'
 
 type SetFn = (partial: GameState | Partial<GameState> | ((state: GameState) => Partial<GameState>)) => void
 
+let aiResponseScheduled = false
+
 const powerOf = (card: BoardCard, cards: BoardCard[]) => getCardPower(card) + computeStaticPump(cards, card).power
 const toughnessOf = (card: BoardCard, cards: BoardCard[]) => getCardToughness(card) + computeStaticPump(cards, card).toughness
+
+/** Give the AI a short instant-speed window after the player declares attackers. */
+function scheduleAICombatResponse(set: SetFn, get: () => GameState) {
+  if (aiResponseScheduled) return
+  aiResponseScheduled = true
+  setTimeout(() => {
+    aiResponseScheduled = false
+    const current = get()
+    if (current.gameOver || current.activePlayer !== 'player') return
+    if (!current.combatState.active || current.combatState.attackers.length === 0) return
+    aiCastInstant(set, get)
+  }, 2500)
+}
 
 interface CombatPair {
   attacker: BoardCard
@@ -38,6 +54,7 @@ export function createCombatActions(set: SetFn, get: () => GameState): Pick<Game
       set({
         combatState: { ...state.combatState, attackers: next },
       })
+      if (next.length > 0) scheduleAICombatResponse(set, get)
     },
 
     assignBlocker: (attackerId, blockerId) => {

@@ -48,6 +48,7 @@ Clients send an action using its `type` as the Colyseus message name and the com
 | --- | --- |
 | `ready`, `startGame` | Lobby readiness and host start |
 | `drawCards`, `playCard`, `moveCard`, `discardCard` | Private/public zone movement |
+| `declareAttackers`, `declareBlockers`, `resolveCombat` | Combat: the active player declares its own untapped creatures as attackers; each other player declares blockers (stored flat, assigned round-robin); resolution is server-authoritative (blocked trades via power vs toughness, unblocked damage to non-team opponents with win checks) |
 | `setPosition` | Updates the sender's bounded x/y seat position; Colyseus state re-broadcasts it to every room client |
 | `tapCard`, `addCounter`, `removeCounter`, `revealCard` | Card state changes |
 | `addMana`, `spendMana`, `clearManaPool`, `setLife` | Player resources |

@@ -429,6 +429,47 @@ describe('combat keywords', () => {
     useGameStore.getState().resolveCombat()
     expect(useGameStore.getState().opponentLifeTotal).toBe(35)
   })
+
+  it('the AI responds to declared attackers with an instant-speed spell', () => {
+    vi.useFakeTimers()
+    try {
+      const instantRule: CardRuleEntry = {
+        cardName: 'Healing Word', manaCost: '{1}{W}', manaValue: 2, typeLine: 'Instant', cardType: 'instant', subtypes: [], keywords: [], manaProduction: null, entryTapRule: null, conditionalEntryText: null, oracleText: 'You gain 4 life.', scryfallId: 'h', abilities: [{
+          abilityType: 'spell',
+          triggerEvent: null,
+          triggerCondition: null,
+          isOptional: false,
+          cost: null,
+          targets: 0,
+          targetFilter: null,
+          effect: { kind: 'gain_life', params: { amount: 4 } },
+        }],
+      }
+      primeCardRules({ 'Healing Word': instantRule })
+      const attacker = card({ id: 'bear', name: 'Bear', typeLine: '2/2', type: 'creature', zone: 'battlefield' })
+      const aiInstant = card({ id: 'heal', name: 'Healing Word', type: 'instant', typeLine: 'Instant', zone: 'hand', owner: 'opponent', manaCost: '{1}{W}' })
+      const aiLand = card({ id: 'plains', name: 'Plains', type: 'land', typeLine: 'Basic Land — Plains', zone: 'battlefield', owner: 'opponent', manaProduction: { colors: ['W'], amount: 1 } })
+      const aiLand2 = card({ id: 'plains2', name: 'Plains', type: 'land', typeLine: 'Basic Land — Plains', zone: 'battlefield', owner: 'opponent', manaProduction: { colors: ['W'], amount: 1 } })
+      useGameStore.setState({ cards: [attacker, aiInstant, aiLand, aiLand2], combatState: { active: true, attackers: [], blockers: {} } })
+
+      useGameStore.getState().toggleAttacker('bear')
+      expect(useGameStore.getState().combatState.attackers).toEqual(['bear'])
+
+      // After the AI's response window it casts the instant.
+      vi.advanceTimersByTime(2600)
+      const state = useGameStore.getState()
+      const cast = state.cards.find((c) => c.id === 'heal')
+      expect(cast?.zone).toBe('battlefield')
+      expect(state.opponentLifeTotal).toBe(44)
+      // The AI's land was tapped to pay.
+      expect(state.cards.find((c) => c.id === 'plains')?.tapped).toBe(true)
+      // Combat is still waiting for the player to resolve.
+      expect(state.combatState.active).toBe(true)
+    } finally {
+      vi.clearAllTimers()
+      vi.useRealTimers()
+    }
+  })
 })
 
 describe('combat damage steps', () => {

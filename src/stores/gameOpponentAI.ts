@@ -13,6 +13,33 @@ import { resolveAISpellAbilities, resolveAIAutoAbilities, resolveAITriggerInstan
 type SetFn = (partial: GameState | Partial<GameState> | ((state: GameState) => Partial<GameState>)) => void
 
 /**
+ * Cast the first affordable instant in the AI's hand (combat trick / response).
+ * Returns true when something was cast.
+ */
+export function aiCastInstant(set: SetFn, get: () => GameState): boolean {
+  const cards = get().cards
+  const hand = cards.filter((c) => (c.owner ?? 'player') === 'opponent' && c.zone === 'hand' && c.type === 'instant')
+  for (const trick of hand) {
+    if (!trick.manaCost) continue
+    const { updated, pool, paid } = tapLandsForCost(cards, trick.manaCost)
+    if (!paid) continue
+    set((prev) => ({
+      cards: updated.map((c) =>
+        c.id === trick.id
+          ? { ...c, zone: 'battlefield' as const, tapped: false, revealed: false, enteredAtTurn: prev.turn }
+          : c,
+      ),
+      opponentManaPool: pool,
+      turnAnnouncement: { id: Date.now(), text: `OPPONENT casts ${trick.name}` },
+    }))
+    resolveAISpellAbilities(set, get, trick)
+    set({ cards: attachAuras(get().cards) })
+    return true
+  }
+  return false
+}
+
+/**
  * Tap untapped opponent lands to pay a mana cost. Returns the updated card
  * list (tapped lands), the resulting mana pool after payment, and whether the
  * cost was fully payable.
@@ -158,24 +185,7 @@ export function createOpponentAI(set: SetFn, get: () => GameState): Pick<GameSta
               const attackerIds = pickAttackers(oppBattlefield2, s4.turn, playerDefenders)
 
               // Combat trick: cast the first affordable instant before attacking.
-              const oppHand3 = s4.cards.filter((c) => (c.owner ?? 'player') === 'opponent' && c.zone === 'hand' && c.type === 'instant')
-              for (const trick of oppHand3) {
-                if (!trick.manaCost) continue
-                const { updated, pool, paid } = tapLandsForCost(s4.cards, trick.manaCost)
-                if (!paid) continue
-                set((prev) => ({
-                  cards: updated.map((c) =>
-                    c.id === trick.id
-                      ? { ...c, zone: 'battlefield' as const, tapped: false, revealed: false, enteredAtTurn: prev.turn }
-                      : c,
-                  ),
-                  opponentManaPool: pool,
-                  turnAnnouncement: { id: Date.now(), text: `OPPONENT casts ${trick.name}` },
-                }))
-                resolveAISpellAbilities(set, get, trick)
-                set({ cards: attachAuras(get().cards) })
-                break
-              }
+              aiCastInstant(set, get)
 
               set({
                 combatState: { active: true, attackers: attackerIds, blockers: {} },
