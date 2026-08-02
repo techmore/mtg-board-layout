@@ -166,9 +166,20 @@ function tapLandsForCost(cards: BoardCard[], cost: string | undefined, startingP
   if (genericRemaining > 0) {
     const poolTotal = Object.values(pool).reduce((sum, amount) => sum + amount, 0)
     let g = Math.max(0, genericRemaining - poolTotal)
-    for (const l of lands) {
+    // Prefer colorless lands, then lands whose colors are NOT still needed for
+    // the colored part of the cost — keeps colored sources available.
+    const genericLands = lands
+      .filter((l) => !landsToTap.includes(l.id))
+      .sort((a, b) => {
+        const aColorless = a.manaProduction?.colors.includes('C') ? 0 : 1
+        const bColorless = b.manaProduction?.colors.includes('C') ? 0 : 1
+        if (aColorless !== bColorless) return aColorless - bColorless
+        const aNeeded = a.manaProduction?.colors.some((c) => (remainingColor[c] ?? 0) > 0) ? 1 : 0
+        const bNeeded = b.manaProduction?.colors.some((c) => (remainingColor[c] ?? 0) > 0) ? 1 : 0
+        return aNeeded - bNeeded
+      })
+    for (const l of genericLands) {
       if (g <= 0) break
-      if (landsToTap.includes(l.id)) continue
       landsToTap.push(l.id)
       g--
       const color = l.manaProduction?.colors[0]

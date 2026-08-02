@@ -562,6 +562,95 @@ describe('AI activated abilities', () => {
   })
 })
 
+describe('AI responses to player casts', () => {
+  const healingWordRule = (): CardRuleEntry => ({
+    cardName: 'Healing Word', manaCost: '{1}{W}', manaValue: 2, typeLine: 'Instant', cardType: 'instant', subtypes: [], keywords: [], manaProduction: null, entryTapRule: null, conditionalEntryText: null, oracleText: 'You gain 4 life.', scryfallId: 'h', abilities: [{
+      abilityType: 'spell',
+      triggerEvent: null,
+      triggerCondition: null,
+      isOptional: false,
+      cost: null,
+      targets: 0,
+      targetFilter: null,
+      effect: { kind: 'gain_life', params: { amount: 4 } },
+    }],
+  })
+
+  it('casts an affordable instant in response to the player casting a spell', () => {
+    vi.useFakeTimers()
+    try {
+      primeCardRules({ 'Healing Word': healingWordRule() })
+      const playerSpell = card({ id: 'ps', name: 'Player Spell', type: 'instant', typeLine: 'Instant', zone: 'hand' })
+      const aiInstant = card({ id: 'heal', name: 'Healing Word', type: 'instant', typeLine: 'Instant', zone: 'hand', owner: 'opponent', manaCost: '{1}{W}' })
+      const aiLand1 = card({ id: 'p1', name: 'Plains', type: 'land', typeLine: 'Basic Land — Plains', zone: 'battlefield', owner: 'opponent', manaProduction: { colors: ['W'], amount: 1 } })
+      const aiLand2 = card({ id: 'p2', name: 'Plains', type: 'land', typeLine: 'Basic Land — Plains', zone: 'battlefield', owner: 'opponent', manaProduction: { colors: ['W'], amount: 1 } })
+      useGameStore.setState({ cards: [playerSpell, aiInstant, aiLand1, aiLand2], manaPool: { ...emptyManaPool(), W: 5 } })
+
+      useGameStore.getState().castSpell('ps')
+      expect(useGameStore.getState().cards.find((c) => c.id === 'heal')?.zone).toBe('hand')
+
+      vi.advanceTimersByTime(2200)
+      const state = useGameStore.getState()
+      expect(state.cards.find((c) => c.id === 'heal')?.zone).toBe('battlefield')
+      expect(state.opponentLifeTotal).toBe(44)
+    } finally {
+      vi.clearAllTimers()
+      vi.useRealTimers()
+    }
+  })
+})
+
+describe('AI mana sequencing', () => {
+  it('pays generic costs with lands whose colors are not needed', () => {
+    vi.useFakeTimers()
+    try {
+      const boltRule: CardRuleEntry = {
+        cardName: 'Red Bolt', manaCost: '{1}{R}', manaValue: 2, typeLine: 'Sorcery', cardType: 'sorcery', subtypes: [], keywords: [], manaProduction: null, entryTapRule: null, conditionalEntryText: null, oracleText: '', scryfallId: 'rb', abilities: [{
+          abilityType: 'spell',
+          triggerEvent: null,
+          triggerCondition: null,
+          isOptional: false,
+          cost: null,
+          targets: 0,
+          targetFilter: null,
+          effect: { kind: 'gain_life', params: { amount: 1 } },
+        }],
+      }
+      primeCardRules({ 'Red Bolt': boltRule })
+      const mountain = card({ id: 'm', name: 'Mountain', type: 'land', typeLine: 'Basic Land — Mountain', zone: 'battlefield', owner: 'opponent', manaProduction: { colors: ['R'], amount: 1 } })
+      const plains = card({ id: 'w', name: 'Plains', type: 'land', typeLine: 'Basic Land — Plains', zone: 'battlefield', owner: 'opponent', manaProduction: { colors: ['W'], amount: 1 } })
+      const bolt = card({ id: 'bolt', name: 'Red Bolt', type: 'sorcery', typeLine: 'Sorcery', zone: 'hand', owner: 'opponent', manaCost: '{1}{R}' })
+      useGameStore.setState({ cards: [bolt, mountain, plains] })
+
+      // Run a full AI turn with a lands-only deck so the injected bolt is the
+      // only castable spell.
+      const cards = [
+        deckCard('Atarka, World Render', 'Legendary Creature — Dragon'),
+        ...Array.from({ length: 8 }, () => deckCard('Mountain', 'Land')),
+      ]
+      useGameStore.getState().loadOpponentDeck(['Atarka, World Render'], cards, 'Test')
+      useGameStore.setState({
+        cards: [
+          ...useGameStore.getState().cards.filter((c) => c.id !== 'bolt'),
+          bolt, mountain, plains,
+        ],
+      })
+
+      vi.advanceTimersByTime(1800)
+      const state = useGameStore.getState()
+      const cast = state.cards.find((c) => c.id === 'bolt')
+      expect(cast?.zone).toBe('battlefield')
+      // {1}{R}: the generic {1} is covered by the tapped Mountain's mana, so the
+      // Plains stays untapped — its white source is preserved.
+      expect(state.cards.find((c) => c.id === 'm')?.tapped).toBe(true)
+      expect(state.cards.find((c) => c.id === 'w')?.tapped).toBe(false)
+    } finally {
+      vi.clearAllTimers()
+      vi.useRealTimers()
+    }
+  })
+})
+
 describe('combat damage steps', () => {
   function startCombat(cards: BoardCard[], rules: CardRuleEntry[], attackerIds: string[], blockers: Record<string, string[]> = {}) {
     primeCardRules(Object.fromEntries(rules.map((r) => [r.cardName, r])))

@@ -8,8 +8,26 @@ import { localCardImage } from '../data/localCardImages'
 import { cacheDeckImages } from '../services/cardImageCache'
 import { enqueueSpellAbilities } from './spellResolution'
 import { useToastStore } from './toastStore'
+import { aiCastInstant } from './gameOpponentAI'
 
 type SetFn = (partial: GameState | Partial<GameState> | ((state: GameState) => Partial<GameState>)) => void
+
+let aiCastResponseScheduled = false
+
+/**
+ * Give the AI a short instant-speed window after the player casts a spell so
+ * it can respond (combat tricks, removal, protection).
+ */
+function scheduleAICastResponse(set: SetFn, get: () => GameState) {
+  if (aiCastResponseScheduled) return
+  aiCastResponseScheduled = true
+  setTimeout(() => {
+    aiCastResponseScheduled = false
+    const current = get()
+    if (current.gameOver || current.activePlayer !== 'player') return
+    aiCastInstant(set, get)
+  }, 2000)
+}
 
 export function createDeckActions(set: SetFn, get: () => GameState): Pick<GameState, 'loadDeck' | 'reshuffle' | 'redeal' | 'drawCards' | 'castSpell'> {
   return {
@@ -227,6 +245,7 @@ export function createDeckActions(set: SetFn, get: () => GameState): Pick<GameSt
 
       // Enqueue the spell's own abilities on the stack so they can be resolved.
       enqueueSpellAbilities(set, get, card)
+      scheduleAICastResponse(set, get)
       return true
     },
   }
