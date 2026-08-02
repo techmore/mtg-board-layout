@@ -28,11 +28,16 @@ export default function BroadcastPage() {
   const opponentName = useGameStore((s) => s.opponentName)
   const opponentLifeTotal = useGameStore((s) => s.opponentLifeTotal)
   const activePlayer = useGameStore((s) => s.activePlayer)
+  const commanderDamage = useGameStore((s) => s.commanderDamage)
   const opponentCards = cards.filter((c) => (c.owner ?? 'player') === 'opponent')
   const opponentBattlefield = opponentCards.filter((c) => c.zone === 'battlefield')
   const opponentCommand = opponentCards.filter((c) => c.zone === 'command')
   const opponentGraveyard = opponentCards.filter((c) => c.zone === 'graveyard')
   const opponentExile = opponentCards.filter((c) => c.zone === 'exile')
+  const aiCommanderDamage = opponentCommand.reduce((sum, c) => sum + (commanderDamage[c.id] ?? 0), 0)
+  const playerCommanderDamage = cards
+    .filter((c) => (c.owner ?? 'player') === 'player' && c.isCommander)
+    .reduce((sum, c) => sum + (commanderDamage[c.id] ?? 0), 0)
   const opponentHandCount = opponentCards.filter((c) => c.zone === 'hand').length
 
   useEffect(() => {
@@ -110,6 +115,19 @@ export default function BroadcastPage() {
           <span style={{ color: lifeTotal <= 0 ? '#f85149' : lifeTotal <= 5 ? '#d29922' : '#e6edf3' }}>
             LIFE {lifeTotal}
           </span>
+          {aiCommanderDamage > 0 && (
+            <span
+              title="Commander damage dealt to the player (21 loses)"
+              style={{ color: aiCommanderDamage >= 18 ? '#ff7b72' : '#ffd33d' }}
+            >
+              CD {aiCommanderDamage}/21
+            </span>
+          )}
+          {playerCommanderDamage > 0 && (
+            <span title="Commander damage dealt to the opponent (21 loses)" style={{ color: '#56d364' }}>
+              YOUR CD {playerCommanderDamage}/21
+            </span>
+          )}
           <span style={{ color: '#79c0ff' }}>TURN {turn}</span>
           <span style={{ color: activePlayer === 'opponent' ? '#f85149' : '#3fb950' }}>
             {activePlayer === 'opponent' ? `● ${(opponentName ?? 'OPPONENT').toUpperCase()}'S TURN` : '● YOUR TURN'}
