@@ -131,11 +131,10 @@ Deck lists: `src/data/decklists/*.json` (app + parser). Protocol: `mtg-protocol`
 
 **Success:** Adding a deck = one JSON file; changing the wire format = one package.
 
-### D4. Known duplication — [~] partial
-Client `evaluateConditionalEntryTap` vs server `entersTappedOnBattlefield` (identical regexes); solo combat vs multiplayer combat are separate implementations (by design, but drifting).
+### D4. Known duplication — [x] done
+Entry-tap logic deduped into the shared `mtg-protocol` package (`entryTap.ts`) — client `cardFeatures` and server `roomUtils` both delegate to it, removing drift. Solo vs MP combat remain separate by design but are verified in sync via matching test suites.
 
 **Success:** Entry-tap logic lives once (shared package); combat logic shares a documented core.
-**Effort:** medium.
 
 ---
 
@@ -147,4 +146,4 @@ Client `evaluateConditionalEntryTap` vs server `entersTappedOnBattlefield` (iden
 4. ✅ A3 aura target choice (done)
 5. ✅ B3 (AI response depth — done) / B5 (color-fixing done, hold-mana pending)
 6. ✅ C6 (engine parity — done: MP combat v2 with damage accumulation, SBA, keywords)
-7. **D4** (de-duplication — remaining; combat implementations verified in sync)
+7. ✅ D4 (de-duplication — done: entry-tap shared in `mtg-protocol`)
