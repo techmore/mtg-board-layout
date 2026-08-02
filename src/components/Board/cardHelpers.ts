@@ -1,4 +1,5 @@
 import type { ManaLogEntry } from '../../types/card'
+import { getCardKeywords } from '../../stores/cardRulesLoader'
 
 export function cardRuleSummary(card: {
   name: string
@@ -9,7 +10,9 @@ export function cardRuleSummary(card: {
 }) {
   const mana = card.manaCost ? `Mana cost: ${card.manaCost}` : card.manaValue !== undefined ? `Mana value: ${card.manaValue}` : 'Mana cost unknown'
   const enchants = card.enchantsCardName ? ` · Enchanting ${card.enchantsCardName}` : ''
-  return `${card.name} · ${mana}${card.entersTapped ? ' · Enters battlefield tapped' : ''}${enchants}`
+  const keywords = [...getCardKeywords(card)]
+  const keywordText = keywords.length > 0 ? ` · ${keywords.join(', ')}` : ''
+  return `${card.name} · ${mana}${card.entersTapped ? ' · Enters battlefield tapped' : ''}${enchants}${keywordText}`
 }
 
 export const counterBadgeStyle: React.CSSProperties = {
