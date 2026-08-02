@@ -545,8 +545,11 @@ export class GameRoom extends Room<{ state: GameState }> {
       p.battlefield.filter((c) => attackerIds.includes(c.id)).map((c) => ({
         id: c.id,
         typeLine: c.typeLine,
+        oracleText: c.oracleText,
         ownerId: p.id,
         teamId: p.teamId,
+        damage: c.damage,
+        tapped: c.tapped,
       })),
     )
     const attackerOwner = players.find((p) => p.battlefield.some((c) => c.id === attackerIds[0]))
@@ -556,21 +559,42 @@ export class GameRoom extends Room<{ state: GameState }> {
       players.map((p) => ({
         id: p.id,
         teamId: p.teamId,
-        battlefield: p.battlefield.map((c) => ({ id: c.id, typeLine: c.typeLine, ownerId: p.id, teamId: p.teamId })),
+        battlefield: p.battlefield.map((c) => ({
+          id: c.id,
+          typeLine: c.typeLine,
+          oracleText: c.oracleText,
+          ownerId: p.id,
+          teamId: p.teamId,
+          damage: c.damage,
+          tapped: c.tapped,
+        })),
       })),
       attackerOwner?.id ?? '',
       attackerOwner?.teamId ?? '',
     )
 
-    for (const blockerId of result.deadBlockerIds) {
+    // Apply accumulated damage to surviving cards.
+    const damageByCard = new Map(result.cardDamage.map((d) => [d.cardId, d.amount]))
+    for (const player of players) {
+      for (const card of player.battlefield) {
+        const amount = damageByCard.get(card.id)
+        if (amount) card.damage = Math.min(999, card.damage + amount)
+      }
+    }
+    for (const gain of result.lifeGain) {
+      const owner = players.find((p) => p.id === gain.ownerId)
+      if (owner) owner.lifeTotal = Math.min(999, owner.lifeTotal + gain.amount)
+    }
+
+    for (const blockerId of result.deadIds) {
       const owner = players.find((p) => p.battlefield.some((c) => c.id === blockerId))
-      if (owner) this.moveCardToZone(owner, blockerId, 'graveyard')
+      if (owner) {
+        const card = owner.battlefield.find((c) => c.id === blockerId)
+        if (card) card.damage = 0
+        this.moveCardToZone(owner, blockerId, 'graveyard')
+      }
     }
-    for (const attackerId of result.deadAttackerIds) {
-      const owner = players.find((p) => p.battlefield.some((c) => c.id === attackerId))
-      if (owner) this.moveCardToZone(owner, attackerId, 'graveyard')
-    }
-    for (const hit of result.damage) {
+    for (const hit of result.playerDamage) {
       const defender = players.find((p) => p.id === hit.defenderId)
       if (defender) {
         defender.lifeTotal = Math.max(0, defender.lifeTotal - hit.amount)
@@ -587,7 +611,7 @@ export class GameRoom extends Room<{ state: GameState }> {
   private endTurn(client: Client) {
     const player = this.requireTurnPlayer(client)
     if (!player) return
-    player.battlefield.forEach((card) => { card.tapped = false })
+    player.battlefield.forEach((card) => { card.tapped = false; card.damage = 0 })
     player.landPlaysThisTurn = 0
     this.clearMana(player)
     this.drawCards(player, 1)

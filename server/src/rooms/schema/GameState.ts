@@ -9,6 +9,7 @@ export class CardState extends Schema {
   @type('string') zone!: string
   @type('boolean') tapped!: boolean
   @type('number') counters!: number
+  @type('number') damage!: number
   @type('string') type!: string
   @type('string') typeLine!: string
   @type(['string']) subtypes!: ArraySchema<string>
@@ -26,6 +27,7 @@ export class CardState extends Schema {
     this.zone = data?.zone ?? 'battlefield'
     this.tapped = data?.tapped ?? false
     this.counters = data?.counters ?? 0
+    this.damage = data?.damage ?? 0
     this.type = data?.type ?? 'other'
     this.typeLine = data?.typeLine ?? ''
     this.subtypes = new ArraySchema<string>(...(data?.subtypes ?? []))

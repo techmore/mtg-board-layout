@@ -62,6 +62,7 @@ export function cardFromState(value: unknown): CardData | null {
     zone: card.zone ?? 'battlefield',
     tapped: card.tapped === true,
     counters: typeof card.counters === 'number' ? card.counters : 0,
+    damage: typeof card.damage === 'number' ? card.damage : 0,
     type: typeof card.type === 'string' ? card.type : 'other',
     ...features,
     subtypes: Array.isArray(card.subtypes) && card.subtypes.length > 0 ? card.subtypes : features.subtypes,

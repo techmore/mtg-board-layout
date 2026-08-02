@@ -108,6 +108,7 @@ export function stateToCard(card: CardState, zone: Zone = card.zone as Zone): Ca
     zone,
     tapped: card.tapped,
     counters: card.counters,
+    damage: card.damage,
     type: card.type,
     typeLine: card.typeLine,
     subtypes: [...card.subtypes],

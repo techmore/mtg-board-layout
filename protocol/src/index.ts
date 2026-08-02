@@ -26,6 +26,7 @@ export interface CardData {
   zone: Zone
   tapped: boolean
   counters: number
+  damage?: number
   type: string
   typeLine: string
   subtypes: string[]
