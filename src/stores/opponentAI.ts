@@ -24,7 +24,7 @@ export function pickCommanderCast(commandCards: BoardCard[], manaPool: Record<Ma
   return null
 }
 
-export function pickAttackers(battlefield: BoardCard[], currentTurn: number, defenders: BoardCard[] = []): string[] {
+export function pickAttackers(battlefield: BoardCard[], currentTurn: number, defenders: BoardCard[] = [], playerLife?: number): string[] {
   const candidates = battlefield
     .filter((c) => c.type === 'creature' && !c.tapped)
     .filter((c) => c.enteredAtTurn === currentTurn ? hasKeyword(c, 'haste') : true)
@@ -45,6 +45,11 @@ export function pickAttackers(battlefield: BoardCard[], currentTurn: number, def
 
   const ourPower = ground.reduce((sum, c) => sum + getCardPower(c) + computeStaticPump(battlefield, c).power, 0)
   const theirPower = threats.reduce((sum, c) => sum + getCardPower(c) + computeStaticPump(defenders, c).power, 0)
+
+  // Lethal: total attack power can end the game this turn — swing everything.
+  if (playerLife !== undefined && ourPower + flyers.reduce((sum, c) => sum + getCardPower(c), 0) >= playerLife) {
+    return candidates.map((c) => c.id)
+  }
 
   // Attack on the ground only when the trade is not clearly unfavorable.
   const ids = ourPower >= theirPower ? ground.map((c) => c.id) : []

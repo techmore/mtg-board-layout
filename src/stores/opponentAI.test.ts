@@ -158,6 +158,31 @@ describe('pickAttackers', () => {
     expect(attackers).toEqual(['a'])
   })
 
+  it('swings everything when its power is lethal against the player life', () => {
+    // 2/2 would normally hold back against a 6/6 blocker, but a lethal
+    // 6/6 + flyer closes the game this turn.
+    primeCardRules({
+      'Flyer': { cardName: 'Flyer', manaCost: '', manaValue: 3, typeLine: 'Creature', cardType: 'creature', subtypes: [], keywords: ['flying'], manaProduction: null, entryTapRule: null, conditionalEntryText: null, oracleText: '', scryfallId: 'f', abilities: [] } as CardRuleEntry,
+    })
+    const attackers = pickAttackers(
+      [creature({ id: 'big', typeLine: '4/4', enteredAtTurn: 4 }), creature({ id: 'flier', name: 'Flyer', typeLine: '2/2', enteredAtTurn: 4 })],
+      5,
+      [creature({ id: 'wall', name: 'Wall', typeLine: '6/6', enteredAtTurn: 4, owner: 'player' })],
+      6,
+    )
+    expect(attackers).toHaveLength(2)
+  })
+
+  it('does not swing into an unfavorable trade when not lethal', () => {
+    const attackers = pickAttackers(
+      [creature({ id: 'weak', typeLine: '2/2', enteredAtTurn: 4 })],
+      5,
+      [creature({ id: 'big', name: 'Big', typeLine: '6/6', enteredAtTurn: 4, owner: 'player' })],
+      20,
+    )
+    expect(attackers).toHaveLength(0)
+  })
+
   it('sends fliers even when the ground is blocked', () => {
     primeCardRules({
       'Flyer': { cardName: 'Flyer', manaCost: '', manaValue: 3, typeLine: 'Creature', cardType: 'creature', subtypes: [], keywords: ['flying'], manaProduction: null, entryTapRule: null, conditionalEntryText: null, oracleText: '', scryfallId: 'f', abilities: [] } as CardRuleEntry,

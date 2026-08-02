@@ -299,7 +299,7 @@ export function createOpponentAI(set: SetFn, get: () => GameState): Pick<GameSta
               const s4 = get()
               const oppBattlefield2 = s4.cards.filter((c) => (c.owner ?? 'player') === 'opponent' && c.zone === 'battlefield')
               const playerDefenders = s4.cards.filter((c) => (c.owner ?? 'player') === 'player' && c.zone === 'battlefield')
-              const attackerIds = pickAttackers(oppBattlefield2, s4.turn, playerDefenders)
+              const attackerIds = pickAttackers(oppBattlefield2, s4.turn, playerDefenders, s4.lifeTotal)
 
               // Combat trick: cast the first affordable instant before attacking.
               aiCastInstant(set, get)
