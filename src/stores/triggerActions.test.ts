@@ -2,6 +2,7 @@ import { describe, expect, it, vi } from 'vitest'
 import type { BoardCard, CardAbilityDef, TriggerInstance } from '../types/card'
 import { resolveTrigger, selectTarget } from './triggerActions'
 import type { GameState } from './gameStore'
+import { useToastStore } from './toastStore'
 
 function card(overrides: Partial<BoardCard> = {}): BoardCard {
   return {
@@ -90,6 +91,17 @@ describe('resolveTrigger', () => {
 
     expect(harness.drawCards).toHaveBeenCalledWith(2)
     expect(harness.state.triggerStack).toHaveLength(0)
+  })
+
+  it('announces honestly when an unimplemented "other" ability is resolved', () => {
+    const harness = makeHarness({ triggerStack: [trigger('t1', { kind: 'other', params: { description: 'Choose a creature type.' } })] })
+    const push = vi.spyOn(useToastStore.getState(), 'push').mockImplementation(() => {})
+
+    resolveTrigger(harness.get, harness.set, 't1')
+
+    expect(push).toHaveBeenCalledWith(expect.stringContaining('not implemented'), 'error')
+    expect(harness.state.triggerStack).toHaveLength(0)
+    push.mockRestore()
   })
 
   it('gains life for a gain_life effect based on the current total', () => {

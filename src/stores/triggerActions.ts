@@ -3,6 +3,7 @@ import type { Token, TriggerInstance } from '../types/card'
 import { CARD_BACK_URL } from '../constants'
 import { canPayManaCost } from '../utils/misc'
 import { hasKeyword } from './cardRulesLoader'
+import { useToastStore } from './toastStore'
 
 export function resolveTrigger(get: () => GameState, set: (partial: Partial<GameState>) => void, triggerId: string) {
   const state = get()
@@ -165,6 +166,13 @@ export function resolveTrigger(get: () => GameState, set: (partial: Partial<Game
           get().addMana(color, { cardId: card.id, cardName: card.name })
         }
       }
+      break
+    }
+    case 'other': {
+      useToastStore.getState().push(
+        `"${trigger.sourceCardName}" ability is not implemented yet — it had no effect.`,
+        'error',
+      )
       break
     }
     default:
