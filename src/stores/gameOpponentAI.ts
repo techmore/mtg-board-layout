@@ -1,14 +1,14 @@
 import type { BoardCard, ManaPool, Zone } from '../types/card'
 import type { ActivePlayer } from './gameStore'
 import type { GameState } from './gameStore'
-import { shuffle, classifyType, parseManaCost, getCardPower } from '../utils/misc'
+import { shuffle, classifyType, parseManaCost, getCardPower, canPayManaCost } from '../utils/misc'
 import { pushUndo, attachAuras } from './gameRules'
 import { getCardTypeFeatures } from '../data/cardFeatures'
-import { getCachedCardRules } from './cardRulesLoader'
+import { getCachedCardRules, getCardRule } from './cardRulesLoader'
 import { localCardImage } from '../data/localCardImages'
 import { cacheDeckImages } from '../services/cardImageCache'
 import { pickSpell, pickAttackers, pickCommanderCast } from './opponentAI'
-import { resolveAISpellAbilities, resolveAIAutoAbilities, resolveAITriggerInstances } from './spellResolution'
+import { resolveAISpellAbilities, resolveAIAutoAbilities, resolveAITriggerInstances, resolveAIActivatedAbility } from './spellResolution'
 
 type SetFn = (partial: GameState | Partial<GameState> | ((state: GameState) => Partial<GameState>)) => void
 
@@ -39,14 +39,107 @@ export function aiCastInstant(set: SetFn, get: () => GameState): boolean {
   return false
 }
 
+/** Effects the AI is willing to activate on its planeswalkers. */
+const BENEFICIAL_EFFECTS = new Set(['create_token', 'draw_cards', 'gain_life', 'add_mana', 'destroy', 'deal_damage', 'exile', 'put_counter', 'proliferate', 'scry'])
+
+/**
+ * Tap the AI's mana-producing creatures/artifacts ({T}: Add mana) and credit
+ * its mana pool, so it can cast spells with dork mana as well as lands.
+ */
+function aiTapManaDorks(set: SetFn, get: () => GameState) {
+  const cards = get().cards
+  const pool = { ...get().opponentManaPool }
+  let tappedAny = false
+  for (const card of cards) {
+    if ((card.owner ?? 'player') !== 'opponent' || card.zone !== 'battlefield' || card.tapped) continue
+    if (!card.manaProduction) continue
+    const rule = getCardRule(card.name, getCachedCardRules())
+    const hasManaTap = (rule?.abilities ?? []).some(
+      (a) => a.abilityType === 'activated' && a.effect?.kind === 'add_mana' && (a.cost ?? '').includes('{T}'),
+    )
+    if (!hasManaTap) continue
+    for (const color of card.manaProduction.colors) {
+      pool[color] = (pool[color] ?? 0) + card.manaProduction.amount
+    }
+    tappedAny = true
+    set({ cards: get().cards.map((c) => c.id === card.id ? { ...c, tapped: true } : c) })
+  }
+  if (tappedAny) set({ opponentManaPool: pool })
+}
+
+/**
+ * Activate one beneficial ability on each of the AI's planeswalkers (loyalty
+ * abilities with positive or payable costs).
+ */
+function aiActivatePlaneswalkers(set: SetFn, get: () => GameState) {
+  const cards = get().cards
+  for (const card of cards) {
+    if ((card.owner ?? 'player') !== 'opponent' || card.zone !== 'battlefield' || card.type !== 'planeswalker') continue
+    const rule = getCardRule(card.name, getCachedCardRules())
+    const loyalty = (rule?.abilities ?? []).filter((a) => a.abilityType === 'activated' && /^[+\u2212−]\d+$/.test(a.cost ?? ''))
+    for (const ability of loyalty) {
+      const sign = (ability.cost ?? '').charAt(0)
+      const amount = parseInt((ability.cost ?? '').slice(1), 10)
+      if (sign === '-') {
+        if ((card.counters ?? 0) < amount) continue
+        set({ cards: get().cards.map((c) => c.id === card.id ? { ...c, counters: (c.counters ?? 0) - amount } : c) })
+      } else {
+        set({ cards: get().cards.map((c) => c.id === card.id ? { ...c, counters: (c.counters ?? 0) + amount } : c) })
+      }
+      resolveAIActivatedAbility(set, get, card, ability)
+      break
+    }
+  }
+}
+
+/**
+ * Activate the first affordable non-mana activated ability (draw, tokens,
+ * removal) on the AI's permanents.
+ */
+function aiActivateUtilityAbilities(set: SetFn, get: () => GameState) {
+  const cards = get().cards
+  for (const card of cards) {
+    if ((card.owner ?? 'player') !== 'opponent' || card.zone !== 'battlefield') continue
+    if (card.type === 'planeswalker') continue
+    const rule = getCardRule(card.name, getCachedCardRules())
+    const abilities = (rule?.abilities ?? []).filter(
+      (a) => a.abilityType === 'activated' && a.effect?.kind !== 'add_mana' && BENEFICIAL_EFFECTS.has(a.effect?.kind ?? ''),
+    )
+    for (const ability of abilities) {
+      const cost = ability.cost ?? ''
+      const manaSymbols = [...cost.matchAll(/\{[WUBRGC0-9]+\}/g)].map((m) => m[0]).join('')
+      if (manaSymbols && !canPayManaCost(get().opponentManaPool, manaSymbols)) continue
+      if (cost.includes('{T}') && card.tapped) continue
+      if (cost.toLowerCase().includes('sacrifice')) {
+        set({ cards: get().cards.map((c) => c.id === card.id ? { ...c, zone: 'graveyard' as const } : c) })
+      }
+      if (manaSymbols) {
+        const parsed = parseManaCost(manaSymbols)
+        const nextPool = { ...get().opponentManaPool }
+        for (const p of parsed.colored) nextPool[p.color] = Math.max(0, (nextPool[p.color] ?? 0) - p.count)
+        let g = parsed.generic
+        for (const color of ['W', 'U', 'B', 'R', 'G', 'C'] as const) {
+          while (g > 0 && (nextPool[color] ?? 0) > 0) { nextPool[color]!--; g-- }
+        }
+        set({ opponentManaPool: nextPool })
+      }
+      if (cost.includes('{T}') && !card.tapped) {
+        set({ cards: get().cards.map((c) => c.id === card.id ? { ...c, tapped: true } : c) })
+      }
+      resolveAIActivatedAbility(set, get, card, ability)
+      break
+    }
+  }
+}
+
 /**
  * Tap untapped opponent lands to pay a mana cost. Returns the updated card
  * list (tapped lands), the resulting mana pool after payment, and whether the
  * cost was fully payable.
  */
-function tapLandsForCost(cards: BoardCard[], cost: string | undefined): { updated: BoardCard[]; pool: ManaPool; paid: boolean } {
+function tapLandsForCost(cards: BoardCard[], cost: string | undefined, startingPool?: ManaPool): { updated: BoardCard[]; pool: ManaPool; paid: boolean } {
   const empty = { W: 0, U: 0, B: 0, R: 0, G: 0, C: 0 } as ManaPool
-  if (!cost) return { updated: cards, pool: empty, paid: true }
+  if (!cost) return { updated: cards, pool: { ...empty, ...(startingPool ?? {}) }, paid: true }
   const lands = cards.filter((c) => (c.owner ?? 'player') === 'opponent' && c.zone === 'battlefield' && c.type === 'land' && !c.tapped)
 
   const parsed = parseManaCost(cost)
@@ -54,10 +147,10 @@ function tapLandsForCost(cards: BoardCard[], cost: string | undefined): { update
   for (const p of parsed.colored) remainingColor[p.color] = (remainingColor[p.color] ?? 0) + p.count
   let genericRemaining = parsed.generic
   const landsToTap: string[] = []
-  const pool = { ...empty }
+  const pool = { ...empty, ...(startingPool ?? {}) }
 
   for (const color of ['W', 'U', 'B', 'R', 'G', 'C'] as const) {
-    let need = remainingColor[color] ?? 0
+    let need = Math.max(0, (remainingColor[color] ?? 0) - (pool[color] ?? 0))
     for (const l of lands) {
       if (need <= 0) break
       if (landsToTap.includes(l.id)) continue
@@ -71,15 +164,17 @@ function tapLandsForCost(cards: BoardCard[], cost: string | undefined): { update
   }
 
   if (genericRemaining > 0) {
+    const poolTotal = Object.values(pool).reduce((sum, amount) => sum + amount, 0)
+    let g = Math.max(0, genericRemaining - poolTotal)
     for (const l of lands) {
-      if (genericRemaining <= 0) break
+      if (g <= 0) break
       if (landsToTap.includes(l.id)) continue
       landsToTap.push(l.id)
-      genericRemaining--
+      g--
       const color = l.manaProduction?.colors[0]
       if (color) pool[color] = (pool[color] ?? 0) + (l.manaProduction?.amount ?? 1)
     }
-    if (genericRemaining > 0) return { updated: cards, pool, paid: false }
+    if (g > 0) return { updated: cards, pool, paid: false }
   }
 
   const bp = parseManaCost(cost)
@@ -137,12 +232,14 @@ export function createOpponentAI(set: SetFn, get: () => GameState): Pick<GameSta
 
           setTimeout(() => {
             if (get().gameOver) return
+            // Tap mana dorks so the cast step sees their mana too.
+            aiTapManaDorks(set, get)
             const s3 = get()
             const oppHand2 = s3.cards.filter((c) => (c.owner ?? 'player') === 'opponent' && c.zone === 'hand')
             const oppBattlefield = s3.cards.filter((c) => (c.owner ?? 'player') === 'opponent' && c.zone === 'battlefield')
             const oppCommand = s3.cards.filter((c) => (c.owner ?? 'player') === 'opponent' && c.zone === 'command')
             const oppLands = oppBattlefield.filter((c) => c.type === 'land' && !c.tapped)
-            const manaPool = { W: 0, U: 0, B: 0, R: 0, G: 0, C: 0 } as ManaPool
+            const manaPool = { ...s3.opponentManaPool } as ManaPool
             for (const l of oppLands) {
               if (l.manaProduction) {
                 for (const c of l.manaProduction.colors) manaPool[c] = (manaPool[c] ?? 0) + l.manaProduction.amount
@@ -157,7 +254,7 @@ export function createOpponentAI(set: SetFn, get: () => GameState): Pick<GameSta
             if (toCast && castCost) {
               const isCommanderCast = commanderCast !== null && toCast.id === commanderCast.card.id
               set((prev) => {
-                const { updated, pool, paid } = tapLandsForCost(prev.cards, castCost)
+                const { updated, pool, paid } = tapLandsForCost(prev.cards, castCost, prev.opponentManaPool)
                 if (!paid) return {}
                 const cards = updated.map((c) =>
                   c.id === toCast.id
@@ -176,6 +273,14 @@ export function createOpponentAI(set: SetFn, get: () => GameState): Pick<GameSta
                 resolveAIAutoAbilities(set, get, toCast, 'etb')
               }
             }
+
+            setTimeout(() => {
+              if (get().gameOver) return
+              // Use the AI's permanents: planeswalker loyalty and utility taps.
+              aiActivatePlaneswalkers(set, get)
+              aiActivateUtilityAbilities(set, get)
+              set({ cards: attachAuras(get().cards) })
+            }, 600)
 
             setTimeout(() => {
               if (get().gameOver) return

@@ -472,6 +472,96 @@ describe('combat keywords', () => {
   })
 })
 
+describe('AI activated abilities', () => {
+  function manaDorkRule(): CardRuleEntry {
+    return {
+      cardName: 'Llanowar Elves', manaCost: '{G}', manaValue: 1, typeLine: 'Creature — Elf Druid', cardType: 'creature', subtypes: [], keywords: [], manaProduction: { colors: ['G'], amount: 1 }, entryTapRule: null, conditionalEntryText: null, oracleText: '{T}: Add {G}.', scryfallId: 'l', abilities: [{
+        abilityType: 'activated',
+        triggerEvent: null,
+        triggerCondition: null,
+        isOptional: false,
+        cost: '{T}',
+        targets: 0,
+        targetFilter: null,
+        effect: { kind: 'add_mana', params: {} },
+      }],
+    }
+  }
+
+  function planeswalkerRule(): CardRuleEntry {
+    return {
+      cardName: 'Chandra', manaCost: '{2}{R}{R}', manaValue: 4, typeLine: 'Planeswalker — Chandra', cardType: 'planeswalker', subtypes: [], keywords: [], manaProduction: null, entryTapRule: null, conditionalEntryText: null, oracleText: '+1: Create a 1/1 red Elemental creature token.', scryfallId: 'c', abilities: [{
+        abilityType: 'activated',
+        triggerEvent: null,
+        triggerCondition: null,
+        isOptional: false,
+        cost: '+1',
+        targets: 0,
+        targetFilter: null,
+        effect: { kind: 'create_token', params: { tokenName: 'Elemental', tokenPower: 1, tokenToughness: 1, amount: 1 } },
+      }],
+    }
+  }
+
+  it('taps a mana dork and credits the AI mana pool during its turn', () => {
+    vi.useFakeTimers()
+    try {
+      primeCardRules({ 'Llanowar Elves': manaDorkRule() })
+      const dork = card({ id: 'dork', name: 'Llanowar Elves', type: 'creature', typeLine: 'Creature — Elf Druid', zone: 'battlefield', owner: 'opponent', manaProduction: { colors: ['G'], amount: 1 } })
+      useGameStore.setState({ cards: [dork] })
+
+      // The dork tap runs inside the AI turn chain; trigger it via the full turn.
+      const cards = [
+        deckCard('Atarka, World Render', 'Legendary Creature — Dragon'),
+        deckCard('Mountain', 'Land', 5),
+        deckCard('Dork', 'Creature', 4),
+      ]
+      useGameStore.getState().loadOpponentDeck(['Atarka, World Render'], cards, 'Test')
+      useGameStore.setState({ cards: [...useGameStore.getState().cards.filter((c) => c.id !== 'dork'), dork] })
+
+      vi.advanceTimersByTime(1600)
+      const state = useGameStore.getState()
+      const tappedDork = state.cards.find((c) => c.id === 'dork')
+      expect(tappedDork?.tapped).toBe(true)
+      // The dork's mana enabled a cast the AI couldn't otherwise afford (its
+      // lands produce no mana in this fixture): a {1} Dork reached the board.
+      const castDork = state.cards.find((c) => c.name === 'Dork' && c.zone === 'battlefield')
+      expect(castDork).toBeDefined()
+    } finally {
+      vi.clearAllTimers()
+      vi.useRealTimers()
+    }
+  })
+
+  it('activates a planeswalker loyalty ability with a positive cost', () => {
+    vi.useFakeTimers()
+    try {
+      primeCardRules({ 'Chandra': planeswalkerRule() })
+      const walker = card({ id: 'chandra', name: 'Chandra', type: 'planeswalker', typeLine: 'Planeswalker — Chandra', zone: 'battlefield', owner: 'opponent', counters: 5 })
+      useGameStore.setState({ cards: [walker] })
+
+      const cards = [
+        deckCard('Atarka, World Render', 'Legendary Creature — Dragon'),
+        deckCard('Mountain', 'Land', 5),
+        deckCard('Walker', 'Planeswalker', 4),
+      ]
+      useGameStore.getState().loadOpponentDeck(['Atarka, World Render'], cards, 'Test')
+      useGameStore.setState({ cards: [...useGameStore.getState().cards.filter((c) => c.id !== 'chandra'), walker] })
+
+      vi.advanceTimersByTime(2200)
+      const state = useGameStore.getState()
+      const walkerAfter = state.cards.find((c) => c.id === 'chandra')
+      expect(walkerAfter?.counters).toBe(6)
+      // The token effect resolved (an Elemental token exists or the stack is clean).
+      expect(state.tokens.length).toBeGreaterThan(0)
+      expect(state.triggerStack).toHaveLength(0)
+    } finally {
+      vi.clearAllTimers()
+      vi.useRealTimers()
+    }
+  })
+})
+
 describe('combat damage steps', () => {
   function startCombat(cards: BoardCard[], rules: CardRuleEntry[], attackerIds: string[], blockers: Record<string, string[]> = {}) {
     primeCardRules(Object.fromEntries(rules.map((r) => [r.cardName, r])))
