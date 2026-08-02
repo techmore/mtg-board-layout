@@ -2,6 +2,7 @@ import { afterEach, describe, expect, it } from 'vitest'
 import type { BoardCard, ManaPool } from '../types/card'
 import {
   advanceTurnState,
+  attachAuras,
   beginUndoTransaction,
   emptyManaPool,
   endUndoTransaction,
@@ -546,3 +547,39 @@ describe('advanceTurnState', () => {
   })
 })
 
+
+describe('attachAuras', () => {
+  const strong = { id: 'strong', name: 'Strong', zone: 'battlefield', type: 'creature', typeLine: '4/4', owner: 'player', enchantsCardId: undefined }
+  const weak = { id: 'weak', name: 'Weak', zone: 'battlefield', type: 'creature', typeLine: '1/1', owner: 'player', enchantsCardId: undefined }
+  const aura1 = { id: 'aura1', name: 'Aura 1', zone: 'battlefield', type: 'enchantment', typeLine: 'Enchantment — Aura', owner: 'player', enchantsCardId: undefined }
+  const aura2 = { id: 'aura2', name: 'Aura 2', zone: 'battlefield', type: 'enchantment', typeLine: 'Enchantment — Aura', owner: 'player', enchantsCardId: undefined }
+
+  it('attaches each aura to a friendly creature', () => {
+    const result = attachAuras([strong as any, weak as any, aura1 as any, aura2 as any])
+    const a1 = result.find((c: any) => c.id === 'aura1')
+    const a2 = result.find((c: any) => c.id === 'aura2')
+    expect(a1.enchantsCardId).toBeDefined()
+    expect(a2.enchantsCardId).toBeDefined()
+  })
+
+  it('sends an aura to the graveyard when no creature is available', () => {
+    const result = attachAuras([aura1 as any])
+    const a1 = result.find((c: any) => c.id === 'aura1')
+    expect(a1.zone).toBe('graveyard')
+    expect(a1.revealed).toBe(true)
+  })
+
+  it('never attaches an aura to itself and leaves already-attached auras alone', () => {
+    const attached = { ...aura1, enchantsCardId: 'strong', enchantsCardName: 'Strong' }
+    const result = attachAuras([strong as any, attached as any])
+    const a1 = result.find((c: any) => c.id === 'aura1')
+    expect(a1.enchantsCardId).toBe('strong')
+  })
+
+  it('does not attach opponent auras to player creatures', () => {
+    const oppAura = { ...aura1, id: 'oppAura', owner: 'opponent' }
+    const result = attachAuras([strong as any, oppAura as any])
+    const a1 = result.find((c: any) => c.id === 'oppAura')
+    expect(a1.zone).toBe('graveyard')
+  })
+})
