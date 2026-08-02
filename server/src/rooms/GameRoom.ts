@@ -3,6 +3,7 @@ import type { CardData, GameMode, ServerEvent, Zone } from 'mtg-protocol'
 import { GameState, PlayerState, CardState, TokenState } from './schema/GameState.js'
 import { ArraySchema } from '@colyseus/schema'
 import { registerGameRoomUtilityMessages, type GameRoomUtilityMessageContext } from './gameRoomMessages.js'
+import { resolveCombat } from './combat.js'
 import {
   OPENING_HAND_SIZE,
   VALID_MANA,
@@ -538,37 +539,42 @@ export class GameRoom extends Room<{ state: GameState }> {
     const state = this.state
     if (!state.combatActive || state.status !== 'playing') return
     const attackerIds = [...state.attackers]
+    const players = [...state.players.values()]
 
-    for (const attackerId of attackerIds) {
-      const attackerOwner = [...state.players.values()].find((p) => p.battlefield.some((c) => c.id === attackerId))
-      if (!attackerOwner) continue
-      const attacker = attackerOwner.battlefield.find((c) => c.id === attackerId)
-      if (!attacker) continue
-      const power = parseInt(attacker.typeLine.match(/(\d+)\//)?.[1] ?? '0', 10)
-      const toughness = parseInt(attacker.typeLine.match(/\/(\d+)/)?.[1] ?? '0', 10)
+    const attackers = players.flatMap((p) =>
+      p.battlefield.filter((c) => attackerIds.includes(c.id)).map((c) => ({
+        id: c.id,
+        typeLine: c.typeLine,
+        ownerId: p.id,
+        teamId: p.teamId,
+      })),
+    )
+    const attackerOwner = players.find((p) => p.battlefield.some((c) => c.id === attackerIds[0]))
+    const result = resolveCombat(
+      attackers,
+      [...state.blockers],
+      players.map((p) => ({
+        id: p.id,
+        teamId: p.teamId,
+        battlefield: p.battlefield.map((c) => ({ id: c.id, typeLine: c.typeLine, ownerId: p.id, teamId: p.teamId })),
+      })),
+      attackerOwner?.id ?? '',
+      attackerOwner?.teamId ?? '',
+    )
 
-      const blockerIds = [...state.blockers]
-      const blockersFor = (attackerId: string): string[] => {
-        // Assign each declared blocker round-robin across attackers.
-        const index = attackerIds.indexOf(attackerId)
-        return blockerIds.filter((_, i) => i % attackerIds.length === index)
-      }
-      if (blockerIds.length > 0) {
-        const assigned = blockersFor(attackerId)
-        const blockerOwner = [...state.players.values()].find((p) => p.battlefield.some((c) => c.id === assigned[0]))
-        const blocker = blockerOwner?.battlefield.find((c) => c.id === assigned[0])
-        if (blockerOwner && blocker) {
-          const blockerPower = parseInt(blocker.typeLine.match(/(\d+)\//)?.[1] ?? '0', 10)
-          const blockerToughness = parseInt(blocker.typeLine.match(/\/(\d+)/)?.[1] ?? '0', 10)
-          if (power >= blockerToughness) this.moveCardToZone(blockerOwner, blocker.id, 'graveyard')
-          if (blockerPower >= toughness) this.moveCardToZone(attackerOwner, attacker.id, 'graveyard')
-        }
-      } else {
-        for (const defender of state.players.values()) {
-          if (defender.id === attackerOwner.id || defender.teamId === attackerOwner.teamId) continue
-          defender.lifeTotal = Math.max(0, defender.lifeTotal - power)
-          this.checkForGameEnd(defender)
-        }
+    for (const blockerId of result.deadBlockerIds) {
+      const owner = players.find((p) => p.battlefield.some((c) => c.id === blockerId))
+      if (owner) this.moveCardToZone(owner, blockerId, 'graveyard')
+    }
+    for (const attackerId of result.deadAttackerIds) {
+      const owner = players.find((p) => p.battlefield.some((c) => c.id === attackerId))
+      if (owner) this.moveCardToZone(owner, attackerId, 'graveyard')
+    }
+    for (const hit of result.damage) {
+      const defender = players.find((p) => p.id === hit.defenderId)
+      if (defender) {
+        defender.lifeTotal = Math.max(0, defender.lifeTotal - hit.amount)
+        this.checkForGameEnd(defender)
       }
     }
 
