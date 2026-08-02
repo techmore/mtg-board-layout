@@ -60,10 +60,9 @@ Holds back from bad trades, sends unblockable fliers, blocks with flying/reach a
 
 **Success:** Against a 6/6 wall, a 2/2 AI attacker doesn't suicide; a flier still gets through.
 
-### B3. AI instant responses — [~] partial
-Casts instants before its own attack and in response to the player declaring attackers.
+### B3. AI instant responses — [x] done
+Casts instants before its own attack, in response to the player declaring attackers, and **in response to the player casting a spell**.
 
-**Missing:** no response to the player *casting a spell*; no saving its creatures with pumps in response to removal.
 **Success:** When the player casts a kill spell on an AI creature, the AI sometimes saves it with a pump or counters with removal.
 
 ### B4. AI activated abilities — [x] done
@@ -72,11 +71,11 @@ The AI activates `{T}:` abilities (mana dorks feed its pool), planeswalker loyal
 **Success:** An AI mana dork taps for mana; an AI planeswalker uses a loyalty ability.
 **Effort:** medium — `aiActivatePlaneswalkers` + utility-ability activation in `gameOpponentAI`.
 
-### B5. AI mana & sequencing — [ ] not started
-Greedy land tapping, no color-fixing preference, no "leave up mana for instants" logic.
+### B5. AI mana & sequencing — [~] partial
+Greedy land tapping improved with color-fixing: generic costs prefer colorless lands, then lands whose colors aren't still needed for the colored portion.
 
-**Success:** The AI doesn't tap a red source for a generic cost when it needs red next; it holds a counter-spell's mana when the player is threatening.
-**Effort:** medium.
+**Missing:** no "leave up mana for instants" hold logic.
+**Success:** The AI doesn't tap a red source for a generic cost when it needs red next.
 
 ---
 
@@ -147,6 +146,6 @@ Client `evaluateConditionalEntryTap` vs server `entersTappedOnBattlefield` (iden
 2. ✅ B4 (AI activated abilities — done)
 3. ✅ D2 server tests + D1 combat split (done)
 4. ✅ A3 aura target choice (done)
-5. **B3/B5** (AI response depth + mana) — next
+5. ✅ B3 (AI response depth — done) / B5 (color-fixing done, hold-mana pending)
 6. **C6** (engine parity — the big one, only if MP becomes a priority)
 7. **D4** (de-duplication as part of C6)
