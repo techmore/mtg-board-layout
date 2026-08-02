@@ -1,4 +1,5 @@
 import type { CardData, GameMode, Zone } from 'mtg-protocol'
+import { evaluateConditionalEntryTap } from 'mtg-protocol'
 import { CardState } from './schema/GameState.js'
 
 export const MAX_DECK_SIZE = 250
@@ -132,14 +133,7 @@ export function entersTappedOnBattlefield(
 ): boolean {
   if (card.type !== 'land') return false
   const text = card.oracleText ?? ''
-  const controlled = Array.from(battlefield).filter((candidate) => candidate.zone === 'battlefield')
-  if (/(?:two or more|at least two) basic lands/i.test(text)) {
-    return controlled.filter((candidate) => candidate.type === 'land' && candidate.isBasicLand).length < 2
-  }
-  const landTypes = [...text.matchAll(/\b(?:a|an)\s+(Plains|Island|Swamp|Mountain|Forest)\b/gi)].map((match) => match[1].toLowerCase())
-  if (landTypes.length > 0) {
-    return !controlled.some((candidate) => candidate.type === 'land' &&
-      Array.from(candidate.subtypes).some((subtype) => landTypes.includes(subtype.toLowerCase())))
-  }
+  const conditional = evaluateConditionalEntryTap(card, battlefield)
+  if (conditional !== undefined) return conditional
   return /\b(?:enters|comes into play)(?: the battlefield)?\s+tapped\b/i.test(text)
 }

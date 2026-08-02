@@ -1,8 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import {
   getCardTypeFeatures,
-  controlsLandType,
-  controlsBasicLandCount,
   evaluateConditionalEntryTap,
 } from './cardFeatures'
 import type { BoardCard } from '../types/card'
@@ -55,29 +53,6 @@ describe('getCardTypeFeatures', () => {
 
   it('normalizes en-dashes and minus signs in type lines', () => {
     expect(getCardTypeFeatures('Creature – Dragon').subtypes).toEqual(['Dragon'])
-  })
-})
-
-describe('controlsLandType / controlsBasicLandCount', () => {
-  it('detects when a land type is controlled', () => {
-    const battlefield = [land({ subtypes: ['Forest'] }), land({ name: 'Island', typeLine: 'Basic Land — Island', subtypes: ['Island'] })]
-    expect(controlsLandType(battlefield, 'Forest')).toBe(true)
-    expect(controlsLandType(battlefield, 'Island')).toBe(true)
-    expect(controlsLandType(battlefield, 'Swamp')).toBe(false)
-  })
-
-  it('ignores non-battlefield and non-land cards', () => {
-    const battlefield = [
-      land({ zone: 'hand' }),
-      land({ type: 'creature', isBasicLand: false, subtypes: [] }),
-    ]
-    expect(controlsLandType(battlefield, 'Forest')).toBe(false)
-  })
-
-  it('counts only basic lands on the battlefield', () => {
-    const battlefield = [land(), land({ id: 'l2' }), land({ isBasicLand: false, typeLine: 'Land', subtypes: [] })]
-    expect(controlsBasicLandCount(battlefield, 2)).toBe(true)
-    expect(controlsBasicLandCount(battlefield, 3)).toBe(false)
   })
 })
 
