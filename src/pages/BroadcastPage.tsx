@@ -254,6 +254,11 @@ function PublicCard({ card, width = STREAM_CARD_WIDTH }: { card: BoardCard; widt
           {formatCounterCount(card.counters)}
         </span>
       )}
+      {(card.damage ?? 0) > 0 && (
+        <span style={{ position: 'absolute', top: -4, left: -4, width: 18, height: 18, display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: '50%', background: '#f85149', color: '#fff', fontSize: '0.65rem', fontWeight: 800 }}>
+          {card.damage}
+        </span>
+      )}
     </div>
   )
 }
