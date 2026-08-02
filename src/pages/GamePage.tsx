@@ -5,6 +5,7 @@ import type { RoomPlayerInfo, RoomJoinOptions, ServerEvent } from 'mtg-protocol'
 import { deckToRoomCards } from '../multiplayer/roomCards'
 import { useRoomSession } from '../multiplayer/useRoom'
 import { useDeckStore } from '../stores/deckStore'
+import { useToastStore } from '../stores/toastStore'
 import { getServerUrlFromSearchParams } from '../multiplayer/serverUrl'
 
 export default function GamePage() {
@@ -44,6 +45,7 @@ export default function GamePage() {
   const handleCopy = () => {
     navigator.clipboard.writeText(shareUrl).then(() => {
       setCopied(true)
+      useToastStore.getState().push('Invite link copied', 'success')
       window.setTimeout(() => setCopied(false), 2000)
     }).catch(() => undefined)
   }

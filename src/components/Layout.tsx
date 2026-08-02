@@ -5,6 +5,7 @@ import { fetchDeckCards } from '../services/deckImport'
 import { prebuiltToDeckDefinition } from '../services/deckList'
 import { useDeckStore } from '../stores/deckStore'
 import { useGameStore } from '../stores/gameStore'
+import { Toaster } from './Toaster'
 
 const links = [
   { to: '/board', label: 'Board' },
@@ -312,6 +313,7 @@ export default function Layout() {
         </div>
       </nav>
       <Outlet />
+      <Toaster />
     </div>
   )
 }

@@ -79,6 +79,5 @@ The browser button controls the public-output window and shows when it is active
 ## Known Issues
 
 - Backgrounds stored as data URLs in localStorage (~5MB limit)
-- No toast/notification system; errors are inline or in console
 - Multiplayer room access is code-based and does not provide authentication; add auth/rate limiting before public deployment
 - Full priority system (instant-speed windows) not yet modeled

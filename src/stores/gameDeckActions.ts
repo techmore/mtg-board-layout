@@ -7,6 +7,7 @@ import { getCardTypeFeatures } from '../data/cardFeatures'
 import { localCardImage } from '../data/localCardImages'
 import { cacheDeckImages } from '../services/cardImageCache'
 import { enqueueSpellAbilities } from './spellResolution'
+import { useToastStore } from './toastStore'
 
 type SetFn = (partial: GameState | Partial<GameState> | ((state: GameState) => Partial<GameState>)) => void
 
@@ -171,10 +172,7 @@ export function createDeckActions(set: SetFn, get: () => GameState): Pick<GameSt
       const isLand = card.type === 'land'
       if (isLand && card.zone === 'hand') {
         if (state.landPlaysThisTurn >= 1) {
-          set({
-            turnAnnouncement: { id: Date.now(), text: 'Already played a land this turn' },
-            turnPrompt: null,
-          })
+          useToastStore.getState().push('Already played a land this turn', 'error')
           return false
         }
         set((prev) => ({
@@ -189,10 +187,7 @@ export function createDeckActions(set: SetFn, get: () => GameState): Pick<GameSt
       const baseCost = card.manaCost ?? ''
       const fullCost = tax > 0 ? `${baseCost}{${tax}}` : baseCost
       if (fullCost && !canPayManaCost(state.manaPool, fullCost)) {
-        set({
-          turnAnnouncement: { id: Date.now(), text: `Not enough mana for ${card.name} (${fullCost})` },
-          turnPrompt: null,
-        })
+        useToastStore.getState().push(`Not enough mana for ${card.name} (${fullCost})`, 'error')
         return false
       }
       if (fullCost) get().spendManaCost(fullCost, `${fromCommand ? 'Commander: ' : ''}${card.name} (${fullCost})`)

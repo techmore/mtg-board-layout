@@ -5,6 +5,7 @@ import { useGameStore } from '../stores/gameStore'
 import { prebuiltDecks } from '../data/prebuiltDecks'
 import { deckNeedsRuleHydration, fetchDeckCards, hydrateDeckRules } from '../services/deckImport'
 import { fetchDeckList, parseDeckList, prebuiltToDeckDefinition } from '../services/deckList'
+import { useToastStore } from '../stores/toastStore'
 
 type Filter = 'all' | 'complete' | 'incomplete'
 
@@ -32,6 +33,7 @@ export default function DecksPage() {
         setError(`Could not find: ${notFound.join(', ')}`)
       }
       importDeck(definition.name, cards, definition.format, definition.commanderNames, notFound.length === 0 && definition.complete, id, definition.source)
+      useToastStore.getState().push(`Imported ${definition.name}`, 'success')
       navigate(`/decks/${id}`)
     } catch {
       setError('Failed to import deck. Check your connection.')
