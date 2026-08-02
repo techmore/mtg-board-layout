@@ -4,6 +4,7 @@ import { hydratePersistedBackgroundState, loadPersistedGameState, persistGameSta
 import { reindexTriggers, buildTriggerInstances, registerDiesTriggers } from './triggerEngine'
 import { getCachedCardRules, getCardRule } from './cardRulesLoader'
 import { resolveTrigger as resolveTriggerImpl, selectTarget as selectTargetImpl, payWardImpl, refuseWardImpl } from './triggerActions'
+import { pushUndo } from './gameRules'
 import { createUndoContext, createUndoActions, runUndoableAction } from './gameHistory'
 import { createTurnPhases } from './gameTurnPhases'
 import { createOpponentAI } from './gameOpponentAI'
@@ -85,6 +86,7 @@ export interface GameState {
   turnAnnouncement: TurnAnnouncement | null
   turnPrompt: TurnPrompt | null
   wardPrompt: { triggerId: string; targetCardId: string; cost: number; spellName: string; targetName: string } | null
+  auraTargetPrompt: { auraCardId: string; auraName: string } | null
   broadcasting: boolean
   undoStack: GameSnapshot[]
   redoStack: GameSnapshot[]
@@ -115,6 +117,8 @@ export interface GameState {
   cancelTurnPrompt: () => void
   payWard: () => void
   refuseWard: () => void
+  resolveAuraTarget: (targetCardId: string) => void
+  cancelAuraTarget: () => void
   overrideLandPlay: (cardId: string) => void
   resolveConditionalEntry: (cardId: string, tapped: boolean) => void
   discardForTurn: (cardId: string) => void
@@ -177,6 +181,7 @@ export const useGameStore = create<GameState>((set, get) => {
     drawNotice: null,
     turnPrompt: null,
     wardPrompt: null,
+    auraTargetPrompt: null,
     broadcasting: false,
     undoStack: [],
     redoStack: [],
@@ -269,6 +274,23 @@ export const useGameStore = create<GameState>((set, get) => {
     payWard: () => payWardImpl(get, set),
 
     refuseWard: () => refuseWardImpl(get, set),
+
+    resolveAuraTarget: (targetCardId) => {
+      const state = get()
+      const prompt = state.auraTargetPrompt
+      if (!prompt) return
+      set((prev) => ({
+        ...pushUndo(prev),
+        cards: prev.cards.map((c) =>
+          c.id === prompt.auraCardId
+            ? { ...c, enchantsCardId: targetCardId, enchantsCardName: prev.cards.find((t) => t.id === targetCardId)?.name }
+            : c
+        ),
+        auraTargetPrompt: null,
+      }))
+    },
+
+    cancelAuraTarget: () => set({ auraTargetPrompt: null }),
 
     toggleProliferateTarget: (triggerId, cardId) => {
       const state = get()

@@ -933,6 +933,47 @@ describe('auras', () => {
     expect(useGameStore.getState().cards.find((c) => c.id === 'aura')?.zone).toBe('graveyard')
   })
 
+  it('casting an aura prompts the player to choose its target (A3)', () => {
+    const bear = card({ id: 'bear', name: 'Bear', typeLine: '2/2', type: 'creature', zone: 'battlefield' })
+    const wolf = card({ id: 'wolf', name: 'Wolf', typeLine: '2/2', type: 'creature', zone: 'battlefield' })
+    useGameStore.setState({
+      manaPool: { ...emptyManaPool(), G: 2 },
+      cards: [auraCard('aura', { zone: 'hand' }), bear, wolf],
+    })
+    useGameStore.getState().castSpell('aura')
+
+    const prompt = useGameStore.getState().auraTargetPrompt
+    expect(prompt).toEqual({ auraCardId: 'aura', auraName: 'Giant Strength' })
+    expect(useGameStore.getState().cards.find((c) => c.id === 'aura')?.zone).toBe('battlefield')
+    expect(useGameStore.getState().cards.find((c) => c.id === 'aura')?.enchantsCardId).toBeUndefined()
+
+    useGameStore.getState().resolveAuraTarget('wolf')
+    expect(useGameStore.getState().auraTargetPrompt).toBeNull()
+    expect(useGameStore.getState().cards.find((c) => c.id === 'aura')?.enchantsCardId).toBe('wolf')
+  })
+
+  it('cancelAuraTarget leaves the aura unattached', () => {
+    useGameStore.setState({
+      manaPool: { ...emptyManaPool(), G: 2 },
+      cards: [auraCard('aura', { zone: 'hand' }), card({ id: 'bear', name: 'Bear', typeLine: '2/2', type: 'creature', zone: 'battlefield' })],
+    })
+    useGameStore.getState().castSpell('aura')
+    expect(useGameStore.getState().auraTargetPrompt).not.toBeNull()
+
+    useGameStore.getState().cancelAuraTarget()
+    expect(useGameStore.getState().auraTargetPrompt).toBeNull()
+    expect(useGameStore.getState().cards.find((c) => c.id === 'aura')?.enchantsCardId).toBeUndefined()
+  })
+
+  it('does not prompt when no friendly creature is on the battlefield', () => {
+    useGameStore.setState({
+      manaPool: { ...emptyManaPool(), G: 2 },
+      cards: [auraCard('aura', { zone: 'hand' })],
+    })
+    useGameStore.getState().castSpell('aura')
+    expect(useGameStore.getState().auraTargetPrompt).toBeNull()
+  })
+
   it('pumps only the enchanted creature', () => {
     primeCardRules({ 'Giant Strength': auraRule() })
     const enchanted = card({ id: 'ench', name: 'Bear', typeLine: '2/2', type: 'creature', zone: 'battlefield', damage: 3 })

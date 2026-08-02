@@ -10,6 +10,7 @@ import { BoardZonesPanel } from '../components/Board/BoardZonesPanel'
 import { GameOverOverlay } from '../components/Board/GameOverOverlay'
 import { TurnTimerPill } from '../components/Board/TurnTimerPill'
 import { WardPrompt } from '../components/Board/WardPrompt'
+import { AuraTargetPrompt } from '../components/Board/AuraTargetPrompt'
 import { useState, useRef, useEffect } from 'react'
 import { useBoardInteractions } from './useBoardInteractions'
 import { BoardTurnPrompt } from './BoardTurnPrompt'
@@ -393,6 +394,7 @@ export default function BoardPage() {
       <CardZoom />
       <TriggerStack />
       <WardPrompt />
+      <AuraTargetPrompt />
       <DiceCoinOverlay />
       <GraveyardOverlay />
       <GameOverOverlay />

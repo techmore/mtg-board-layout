@@ -1,7 +1,7 @@
 import type { BoardCard } from '../types/card'
 import type { GameState } from './gameStore'
 import { shuffle, classifyType, canPayManaCost } from '../utils/misc'
-import { emptyManaPool, moveCastSpellsToGraveyard, pushUndo, resetAndDealCards } from './gameRules'
+import { emptyManaPool, isAura, moveCastSpellsToGraveyard, pushUndo, resetAndDealCards } from './gameRules'
 import { resolveCardRules } from '../data/cardRules'
 import { getCardTypeFeatures } from '../data/cardFeatures'
 import { localCardImage } from '../data/localCardImages'
@@ -202,6 +202,16 @@ export function createDeckActions(set: SetFn, get: () => GameState): Pick<GameSt
       get().emitGameEvent({ type: 'cast', cardId: card.id, cardName: card.name })
       if (card.type !== 'instant' && card.type !== 'sorcery') {
         get().emitGameEvent({ type: 'etb', cardId: card.id, cardName: card.name })
+      }
+
+      // Aura cast: let the player choose which creature to enchant instead of
+      // auto-attaching to the strongest one.
+      if (isAura(card)) {
+        const onBoard = get().cards.filter((c) => c.zone === 'battlefield' && (c.owner ?? 'player') === 'player' && c.type === 'creature')
+        if (onBoard.length > 0) {
+          set({ auraTargetPrompt: { auraCardId: card.id, auraName: card.name } })
+          return true
+        }
       }
 
       // Enqueue the spell's own abilities on the stack so they can be resolved.
