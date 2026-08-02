@@ -237,6 +237,7 @@ export function createOpponentAI(set: SetFn, get: () => GameState): Pick<GameSta
             set((prev) => ({
               cards: prev.cards.map((c) => c.id === land.id ? { ...c, zone: 'battlefield' as const, tapped: false, revealed: false, enteredAtTurn: prev.turn } : c),
               opponentLandPlaysThisTurn: 1,
+              currentPhase: 'precombat_main',
               turnAnnouncement: { id: Date.now(), text: `OPPONENT plays ${land.name}` },
             }))
           }
@@ -328,6 +329,7 @@ export function createOpponentAI(set: SetFn, get: () => GameState): Pick<GameSta
                 if (s5.activePlayer !== 'opponent' || s5.gameOver) return
                 get().resolveCombat()
                 resolveAITriggerInstances(set, get)
+                set({ currentPhase: 'postcombat_main' })
 
                 // End-of-turn cleanup: discard down to a 7-card hand.
                 const oppHand = s5.cards.filter((c) => (c.owner ?? 'player') === 'opponent' && c.zone === 'hand')
@@ -338,6 +340,7 @@ export function createOpponentAI(set: SetFn, get: () => GameState): Pick<GameSta
                     cards: get().cards.map((c) =>
                       discardIds.has(c.id) ? { ...c, zone: 'graveyard' as const, revealed: true } : c,
                     ),
+                    currentPhase: 'ending',
                   })
                 }
 

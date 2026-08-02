@@ -1548,6 +1548,33 @@ describe('loadOpponentDeck', () => {
     }
   })
 
+  it('drives the phase bar through the AI turn stages', () => {
+    vi.useFakeTimers()
+    try {
+      const cards = [
+        deckCard('Atarka, World Render', 'Legendary Creature — Dragon'),
+        ...Array.from({ length: 8 }, () => deckCard('Mountain', 'Land')),
+        deckCard('Dragon Whelp', 'Creature — Dragon'),
+      ]
+      useGameStore.getState().loadOpponentDeck(['Atarka, World Render'], cards, 'Draconic Destruction')
+
+      expect(useGameStore.getState().currentPhase).toBe('beginning')
+
+      // Land play happens after untap+draw (~800ms in): phase becomes precombat_main.
+      vi.advanceTimersByTime(1000)
+      expect(useGameStore.getState().currentPhase).toBe('precombat_main')
+
+      // Full turn: phase returns to beginning for the player's turn.
+      vi.advanceTimersByTime(9500)
+      const state = useGameStore.getState()
+      expect(state.activePlayer).toBe('player')
+      expect(state.currentPhase).toBe('beginning')
+    } finally {
+      vi.clearAllTimers()
+      vi.useRealTimers()
+    }
+  })
+
   it('discards down to a 7-card hand at the end of its turn', () => {
     vi.useFakeTimers()
     try {
