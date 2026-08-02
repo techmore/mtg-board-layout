@@ -219,4 +219,25 @@ describe('pickBlockers', () => {
     const result = pickBlockers(['drake'], [web], [web, drake], 5)
     expect(result.drake).toEqual(['web'])
   })
+
+  it('refuses to chump-block a losing trade when not facing lethal', () => {
+    const weak = creature({ id: 'weak', typeLine: '1/1' })
+    const big = creature({ id: 'big', name: 'Big', typeLine: '6/6', owner: 'player' })
+    const result = pickBlockers(['big'], [weak], [weak, big], 5, 20)
+    expect(result.big).toBeUndefined()
+  })
+
+  it('chump-blocks anything when incoming damage is lethal', () => {
+    const weak = creature({ id: 'weak', typeLine: '1/1' })
+    const big = creature({ id: 'big', name: 'Big', typeLine: '6/6', owner: 'player' })
+    const result = pickBlockers(['big'], [weak], [weak, big], 5, 3)
+    expect(result.big).toEqual(['weak'])
+  })
+
+  it('blocks when the blocker kills the attacker even if it dies', () => {
+    const trade = creature({ id: 'trade', typeLine: '5/2' })
+    const big = creature({ id: 'big', name: 'Big', typeLine: '4/4', owner: 'player' })
+    const result = pickBlockers(['big'], [trade], [trade, big], 5, 20)
+    expect(result.big).toEqual(['trade'])
+  })
 })

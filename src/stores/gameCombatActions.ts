@@ -78,7 +78,7 @@ export function createCombatActions(set: SetFn, get: () => GameState): Pick<Game
       let finalBlockers = blockers
       if (state.activePlayer === 'player' && attackers.length > 0) {
         const oppBattlefield = state.cards.filter((c) => (c.owner ?? 'player') === 'opponent' && c.zone === 'battlefield')
-        finalBlockers = pickBlockers(attackers, oppBattlefield, state.cards, state.turn)
+        finalBlockers = pickBlockers(attackers, oppBattlefield, state.cards, state.turn, state.opponentLifeTotal)
       }
 
       // Build combat pairs. Only flying/reach creatures can block a flying attacker.

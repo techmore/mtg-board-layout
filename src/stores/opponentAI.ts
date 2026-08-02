@@ -61,12 +61,19 @@ export function pickBlockers(
   opponentBattlefield: BoardCard[],
   allCards: BoardCard[],
   currentTurn: number,
+  aiLife?: number,
 ): Record<string, string[]> {
   const blockers: Record<string, string[]> = {}
   const available = opponentBattlefield.filter(
     (c) => c.type === 'creature' && !c.tapped && c.enteredAtTurn !== currentTurn,
   )
   const used = new Set<string>()
+
+  const incomingPower = playerAttackers.reduce((sum, attId) => {
+    const attacker = allCards.find((c) => c.id === attId)
+    return sum + (attacker ? getCardPower(attacker) : 0)
+  }, 0)
+  const lethalIncoming = aiLife !== undefined && incomingPower >= aiLife
 
   for (const attId of playerAttackers) {
     const attacker = allCards.find((c) => c.id === attId)
@@ -93,8 +100,14 @@ export function pickBlockers(
 
     if (candidates.length > 0) {
       const chosen = candidates[0]
-      used.add(chosen.id)
-      blockers[attId] = [chosen.id]
+      const chosenSurvives = getCardToughness(chosen) + computeStaticPump(allCards, chosen).toughness >= attPower
+      // Block when the blocker survives, when lethal damage is incoming (block
+      // at any cost), or when the blocker trades favorably (kills the attacker).
+      const attackerDies = getCardPower(chosen) >= getCardToughness(attacker)
+      if (lethalIncoming || chosenSurvives || attackerDies) {
+        used.add(chosen.id)
+        blockers[attId] = [chosen.id]
+      }
     }
   }
 
