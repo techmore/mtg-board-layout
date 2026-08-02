@@ -28,7 +28,7 @@ The client defaults to `ws://localhost:2567`. Set `VITE_COLYSEUS_URL` in a local
 ```sh
 npm run build
 npm run lint
-npm test          # vitest — 319 tests (rules, SBA, combat, triggers, undo, deck import, persistence, validation, AI turns, per-deck smoke)
+npm test          # vitest — 325 tests (rules, SBA, combat, triggers, undo, deck import, persistence, validation, deck data, AI turns, per-deck smoke)
 npm audit --omit=dev
 ```
 
