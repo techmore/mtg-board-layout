@@ -51,9 +51,9 @@ DFC names normalized to front faces; arena-only printings excluded.
 | # | Item | Status |
 |---|------|--------|
 | C1 | AI opponent deck selection (choose any imported/prebuilt deck for the AI) | [x] OpponentSetupDialog — pick from all 16 prebuilt or imported decks |
-| C2 | AI improvement: cast instants during combat, use commander more, keep 2+ land types for color fixing | [~] AI resolves its ETB triggers, smart combat pacing skips block window with no blockers, discards to 7 at end of turn, free-swing/avoid-bad-trades attack choices; instants-during-combat + color fixing pending |
+| C2 | AI improvement: cast instants during combat, use commander more, keep 2+ land types for color fixing | [~] AI resolves its ETB triggers, discards to 7, free-swing/avoid-bad-trades attacks, **casts affordable instants in response to declared attackers (combat tricks)**; color fixing + commander usage pending |
 | C3 | AI opponent in multiplayer? (solo AI only today) | [ ] |
-| C4 | Multiplayer rules parity: trigger engine + SBA server-side (protocol Phase 6) | [ ] |
+| C4 | Multiplayer rules parity: trigger engine + SBA server-side (protocol Phase 6) | [~] multiplayer combat is server-authoritative (declare attackers/blockers, resolution, combat API documented in `docs/API.md`); trigger engine/SBA server-side pending |
 | C5 | Deck import polish: Moxfield/Archidekt raw list handling, import validation errors surfaced | [x] section handling fixed (blank line returns to main after Commander/Sideboard; partners stay), notFound errors surfaced in DecksPage |
 
 ## Phase D: Data & Content Infrastructure
