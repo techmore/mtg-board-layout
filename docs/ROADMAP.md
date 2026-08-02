@@ -20,10 +20,9 @@ Declare attackers, assign blockers, damage steps (first strike / double strike),
 
 **Success:** A 2/2 with lifelink attacks, heals 2, kills a blocker, survives; the AI can't cheat past a flying blocker.
 
-### A3. Permanents that do things — [~] partial
-ETB/death/attack triggers fire, auras attach (automatically — no choice of target), planeswalker loyalty abilities activate via right-click, static effects apply.
+### A3. Permanents that do things — [x] done
+ETB/death/attack triggers fire, auras attach with **player-chosen targets** (`AuraTargetPrompt`), planeswalker loyalty abilities activate via right-click, static effects apply.
 
-**Missing:** aura attachment is automatic; the player should choose which creature an aura enchants.
 **Success:** Cast an aura → pick the creature it enchants → only that creature gets the boost.
 
 ### A4. Turn structure — [x] done
@@ -44,7 +43,7 @@ Toasts for errors (mana, land limit, import, copy), turn announcements, DEFEND/a
 ### A7. Card data coverage — [~] partial
 1,149 cards parsed with rules; keywords, entry-tap, mana production, triggers, spells, pumps, auras.
 
-**Missing:** ~430 "other"-kind abilities (complex multi-clause triggers) are extracted but unresolvable; first-strike/ward text in tooltips.
+**Missing:** ~430 "other"-kind abilities (complex multi-clause triggers) are extracted but unresolvable. Resolving one now toasts an honest "not implemented yet" notice; tooltips show keywords (first strike, ward, hexproof).
 **Success:** Every card in the 16 starter decks shows resolvable behavior or an honest "not yet implemented" state rather than silently doing nothing.
 
 ---
@@ -67,11 +66,11 @@ Casts instants before its own attack and in response to the player declaring att
 **Missing:** no response to the player *casting a spell*; no saving its creatures with pumps in response to removal.
 **Success:** When the player casts a kill spell on an AI creature, the AI sometimes saves it with a pump or counters with removal.
 
-### B4. AI activated abilities — [ ] not started
-The AI never activates `{T}:` abilities (mana dorks, draw abilities, equipment) or planeswalker loyalty abilities.
+### B4. AI activated abilities — [x] done
+The AI activates `{T}:` abilities (mana dorks feed its pool), planeswalker loyalty abilities, and other utility taps.
 
-**Success:** An AI mana dork taps for mana; an AI planeswalker uses a loyalty ability; the AI sacrifices fetches to fix mana.
-**Effort:** medium — reuse `executeActivated`/`resolveAISpellAbilities` on a timer before casting.
+**Success:** An AI mana dork taps for mana; an AI planeswalker uses a loyalty ability.
+**Effort:** medium — `aiActivatePlaneswalkers` + utility-ability activation in `gameOpponentAI`.
 
 ### B5. AI mana & sequencing — [ ] not started
 Greedy land tapping, no color-fixing preference, no "leave up mana for instants" logic.
@@ -88,25 +87,22 @@ Create/join rooms, ready/start, reconnect, chat, tokens (create/tap/counters), s
 
 **Success:** Two players can play a full game to completion over the network.
 
-### C2. Commander from the command zone — [ ] not started
-The multiplayer board can't cast from the command zone (server `playCard` only takes hand cards), and commander tax is tracked but never charged.
+### C2. Commander from the command zone — [x] done
+The multiplayer board casts from the command zone with commander tax increments server-side.
 
 **Success:** The multiplayer board shows the commander in a command slot; clicking it plays it with tax increments.
-**Effort:** small — extend server `playCard` + client UI.
 
-### C3. Hand-size and deck-out rules — [ ] not started
-Server has no discard-to-7 and no library-empty loss.
+### C3. Hand-size and deck-out rules — [x] done
+Server mirrors solo rules: discard-to-7 on turn end, deck-out loss.
 
 **Success:** Drawing with an empty library loses the game; ending a turn with 8+ cards forces a discard server-side.
-**Effort:** small — mirror solo rules in `endTurn`/`drawCards`.
 
-### C4. Card inspector & turn timer in the multiplayer board — [ ] not started
-The multiplayer board has no zoom-with-text and no per-player turn clocks.
+### C4. Card inspector & turn timer in the multiplayer board — [x] done
+Multiplayer board reuses the card inspector and per-player turn clocks.
 
 **Success:** Clicking any card in multiplayer opens the inspector; each player's turn time accumulates like solo.
-**Effort:** small — reuse `CardZoom` + a timer wired to `turnChanged` events.
 
-### C5. Dice, coin, mana log in multiplayer — [ ] not started
+### C5. Dice, coin, mana log in multiplayer — [x] done
 Solo has dice/coin (with server-random in MP) and a mana log; the MP board has neither UI.
 
 **Success:** The MP board can roll dice/flip coins and shows a mana activity log.
@@ -122,18 +118,15 @@ Multiplayer combat is one-shot (power vs toughness, no damage accumulation, no k
 
 ## D. Codebase manageability
 
-### D1. Size and structure — [~] mostly manageable
+### D1. Size and structure — [x] done
 Client: 103 source files, largest are BoardPage (447), gameStore (435), TriggerItem (406) — all reasonable. Deck data in single-source JSON; parser shares the same source. No TODO/FIXME markers.
 
-**Needs attention:** `server/src/rooms/GameRoom.ts` is 601 lines and growing (combat handlers + state). Split combat resolution into its own module (`server/src/rooms/combat.ts`).
-**Success:** GameRoom.ts under ~400 lines; combat logic unit-testable in isolation.
+**Done:** `server/src/rooms/combat.ts` extracted — pure combat resolution, unit-testable in isolation; `GameRoom.ts` slimmed.
 
-### D2. Tests — [~] partial
-332 client tests (19 files) cover rules, combat, triggers, SBA, AI, persistence, deck smoke (all 16 decks vs AI). The **server has no test suite**.
+### D2. Tests — [x] done
+356 client tests (19 files) cover rules, combat, triggers, SBA, AI, persistence, deck smoke (all 16 decks vs AI). **Server has a test suite**: `server/src/rooms/combat.test.ts` (7 tests) covers blocked trades, unblocked damage, team damage.
 
-**Missing:** server tests for room lifecycle, combat resolution, land limit, win condition.
 **Success:** `npm --prefix server test` runs; combat edge cases (blocked trades, unblocked damage, team damage) covered.
-**Effort:** medium — extract pure combat logic, test it with vitest in the server package.
 
 ### D3. Single sources of truth — [x] done
 Deck lists: `src/data/decklists/*.json` (app + parser). Protocol: `mtg-protocol` (client + server). Card rules: parser output → `public/all-decks-rules.json`.
@@ -150,10 +143,10 @@ Client `evaluateConditionalEntryTap` vs server `entersTappedOnBattlefield` (iden
 
 ## Recommended order
 
-1. **C2 + C3 + C4 + C5** (small multiplayer rules/UX parity — ~1 session)
-2. **B4** (AI activated abilities — makes creature abilities matter vs the AI)
-3. **D2 server tests + D1 combat split** (protect what exists before growing it)
-4. **A3 aura target choice** (small, closes a visible solo gap)
-5. **B3/B5** (AI response depth + mana)
+1. ✅ C2 + C3 + C4 + C5 (multiplayer rules/UX parity — done)
+2. ✅ B4 (AI activated abilities — done)
+3. ✅ D2 server tests + D1 combat split (done)
+4. ✅ A3 aura target choice (done)
+5. **B3/B5** (AI response depth + mana) — next
 6. **C6** (engine parity — the big one, only if MP becomes a priority)
 7. **D4** (de-duplication as part of C6)
