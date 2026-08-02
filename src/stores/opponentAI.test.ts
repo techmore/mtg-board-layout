@@ -183,6 +183,30 @@ describe('pickAttackers', () => {
     expect(attackers).toHaveLength(0)
   })
 
+  it('swings everything when a commander reaches 21 commander damage', () => {
+    const cmd = creature({ id: 'cmd', name: 'Atarka', typeLine: '6/6', enteredAtTurn: 4, isCommander: true })
+    const attackers = pickAttackers(
+      [cmd, creature({ id: 'bear', typeLine: '2/2', enteredAtTurn: 4 })],
+      5,
+      [creature({ id: 'wall', name: 'Wall', typeLine: '6/6', enteredAtTurn: 4, owner: 'player' })],
+      40,
+      { cmd: 15 },
+    )
+    expect(attackers).toHaveLength(2)
+  })
+
+  it('does not over-swing when commander damage falls short of 21', () => {
+    const cmd = creature({ id: 'cmd', name: 'Atarka', typeLine: '6/6', enteredAtTurn: 4, isCommander: true })
+    const attackers = pickAttackers(
+      [cmd],
+      5,
+      [creature({ id: 'wall', name: 'Wall', typeLine: '10/10', enteredAtTurn: 4, owner: 'player' })],
+      40,
+      { cmd: 14 },
+    )
+    expect(attackers).toHaveLength(0)
+  })
+
   it('sends fliers even when the ground is blocked', () => {
     primeCardRules({
       'Flyer': { cardName: 'Flyer', manaCost: '', manaValue: 3, typeLine: 'Creature', cardType: 'creature', subtypes: [], keywords: ['flying'], manaProduction: null, entryTapRule: null, conditionalEntryText: null, oracleText: '', scryfallId: 'f', abilities: [] } as CardRuleEntry,

@@ -24,7 +24,7 @@ export function pickCommanderCast(commandCards: BoardCard[], manaPool: Record<Ma
   return null
 }
 
-export function pickAttackers(battlefield: BoardCard[], currentTurn: number, defenders: BoardCard[] = [], playerLife?: number): string[] {
+export function pickAttackers(battlefield: BoardCard[], currentTurn: number, defenders: BoardCard[] = [], playerLife?: number, commanderDamage: Record<string, number> = {}): string[] {
   const candidates = battlefield
     .filter((c) => c.type === 'creature' && !c.tapped)
     .filter((c) => c.enteredAtTurn === currentTurn ? hasKeyword(c, 'haste') : true)
@@ -46,8 +46,17 @@ export function pickAttackers(battlefield: BoardCard[], currentTurn: number, def
   const ourPower = ground.reduce((sum, c) => sum + getCardPower(c) + computeStaticPump(battlefield, c).power, 0)
   const theirPower = threats.reduce((sum, c) => sum + getCardPower(c) + computeStaticPump(defenders, c).power, 0)
 
-  // Lethal: total attack power can end the game this turn — swing everything.
-  if (playerLife !== undefined && ourPower + flyers.reduce((sum, c) => sum + getCardPower(c), 0) >= playerLife) {
+  const totalPower = ourPower + flyers.reduce((sum, c) => sum + getCardPower(c), 0)
+
+  // Lethal by life: total attack power can end the game this turn.
+  const lifeLethal = playerLife !== undefined && totalPower >= playerLife
+
+  // Lethal by commander damage: a single commander swinging now reaches 21.
+  const commanderLethal = candidates.some((c) =>
+    c.isCommander && (commanderDamage[c.id] ?? 0) + getCardPower(c) >= 21,
+  )
+
+  if (lifeLethal || commanderLethal) {
     return candidates.map((c) => c.id)
   }
 
