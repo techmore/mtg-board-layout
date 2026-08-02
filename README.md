@@ -28,7 +28,7 @@ The client defaults to `ws://localhost:2567`. Set `VITE_COLYSEUS_URL` in a local
 ```sh
 npm run build
 npm run lint
-npm test          # vitest — 325 tests (rules, SBA, combat, triggers, undo, deck import, persistence, validation, deck data, AI turns, per-deck smoke)
+npm test          # vitest — 435 tests (rules, SBA, combat, triggers, undo, AI turns, server combat, deck import/persistence, per-deck smoke)
 npm audit --omit=dev
 ```
 
@@ -45,6 +45,9 @@ npm audit --omit=dev
 - **Camera widget**: Draggable, resizable, croppable video preview — persisted position/size in localStorage
 - **Broadcast window**: OBS-ready public board popup (hand omitted, 16:9)
 - **Multiplayer rooms**: Colyseus-backed 1v1, 2v2, and four-player free-for-all rooms with server-authoritative turns and private hands
+- **Multiplayer combat**: Server-authoritative with damage accumulation (clears on untap), SBA deaths, and keywords (flying/reach blocking, first strike/double strike order, trample overflow, lifelink, deathtouch, indestructible, vigilance); cast from the command zone with commander tax; hand-size discard and deck-out loss; rematch button on game over
+- **Commander damage**: 21 points of commander damage (trample counted) loses the game; tracked per commander in the card inspector
+- **Turn timers**: Per-player accumulated turn time in solo and multiplayer; timers freeze when the game ends
 - **Custom backgrounds**: Upload, select, delete — stored as data URLs in localStorage
 - **Card rule database**: Per-card enters-tapped override with search/filter
 - **Local card catalog**: Checked-in card metadata for special lands, images, Oracle snippets, and gameplay features; Scryfall refreshes generic card data
@@ -80,4 +83,4 @@ The browser button controls the public-output window and shows when it is active
 
 - Backgrounds stored as data URLs in localStorage (~5MB limit)
 - Multiplayer room access is code-based and does not provide authentication; add auth/rate limiting before public deployment
-- Full priority system (instant-speed windows) not yet modeled
+- Full priority system (formal instant-speed windows) not yet modeled; the AI responds to player spells with instants, but players don't get structured response prompts for every action
