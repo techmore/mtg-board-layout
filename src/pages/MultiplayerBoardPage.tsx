@@ -131,7 +131,10 @@ export default function MultiplayerBoardPage() {
   const isMyTurn = state.activePlayerId === me.id
   const finished = state.status === 'finished'
   const winnerId = finished ? (gameWinnerId ?? state.players[0]?.id ?? null) : null
-  const winnerName = winnerId ? state.players.find((player) => player.id === winnerId)?.name : undefined
+  const winner = winnerId ? state.players.find((player) => player.id === winnerId) : undefined
+  const winnerNames = finished && winner
+    ? state.players.filter((p) => p.teamId === winner.teamId).map((p) => p.name).join(' & ')
+    : undefined
   const combatActive = state.combatActive && !finished
   const opponentAttacking = combatActive && state.attackers.length > 0 && !isMyTurn
   const myBlockedIds = state.blockers
@@ -177,7 +180,7 @@ export default function MultiplayerBoardPage() {
             flexWrap: 'wrap',
           }}
         >
-          <span>GAME OVER — {winnerName ? `${winnerName} wins` : 'The game has ended'}</span>
+          <span>          GAME OVER — {winnerNames ? `${winnerNames} win${winnerNames.includes(' & ') ? '' : 's'}` : 'The game has ended'}</span>
           <button
             onClick={handleRematch}
             style={{ ...smallButtonStyle, background: '#238636', borderColor: '#2ea043', color: '#fff', fontWeight: 700 }}
