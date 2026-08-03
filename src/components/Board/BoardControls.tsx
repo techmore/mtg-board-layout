@@ -9,6 +9,8 @@ import { ManaUsageLog } from './ManaUsageLog'
 import { OpponentSetupDialog } from './OpponentSetupDialog'
 import { PhaseBar } from './PhaseBar'
 import { DRACONIC_DESTRUCTION_DECK } from '../../data/prebuiltDecks'
+import { Button } from '../ui/Button'
+import { ConfirmDialog } from '../ui/ConfirmDialog'
 
 interface BoardControlsProps {
   handleDeckChange: (deckId: string) => Promise<void>
@@ -55,6 +57,7 @@ export function BoardControls({
   const toggleOpponent = useGameStore((s) => s.toggleOpponent)
   const aiFixedDeck = useGameStore((s) => s.aiFixedDeck)
   const [opponentSetupOpen, setOpponentSetupOpen] = useState(false)
+  const [confirmNewHandOpen, setConfirmNewHandOpen] = useState(false)
   const combatState = useGameStore((s) => s.combatState)
   const toggleCombat = useGameStore((s) => s.toggleCombat)
   const resolveCombat = useGameStore((s) => s.resolveCombat)
@@ -173,12 +176,23 @@ export function BoardControls({
 
       <OpponentSetupDialog open={opponentSetupOpen} onClose={() => setOpponentSetupOpen(false)} />
 
+      <ConfirmDialog
+        open={confirmNewHandOpen}
+        title="New Hand"
+        message="Discard the current board and draw a fresh opening hand?"
+        confirmLabel="New Hand"
+        onConfirm={() => { setConfirmNewHandOpen(false); redeal() }}
+        onCancel={() => setConfirmNewHandOpen(false)}
+      />
+
       <div style={{ flex: 1 }} />
 
       <div style={dividerStyle} />
       <div style={{ display: 'flex', gap: 4, alignItems: 'center' }}>
         {!showOpponent && (
-          <button
+          <Button
+            size="sm"
+            variant="danger"
             title={aiFixedDeck ? 'Load the fixed simple AI deck (Draconic Destruction)' : 'Choose the AI opponent deck'}
             onClick={() => {
               if (aiFixedDeck) {
@@ -187,39 +201,18 @@ export function BoardControls({
                 setOpponentSetupOpen(true)
               }
             }}
-            style={{
-              padding: '4px 10px',
-              borderRadius: 4,
-              border: '1px solid rgba(248,81,73,0.35)',
-              background: 'rgba(248,81,73,0.1)',
-              color: '#f85149',
-              cursor: 'pointer',
-              fontSize: '0.7rem',
-              fontWeight: 700,
-              whiteSpace: 'nowrap',
-            }}
           >
             + AI Opponent
-          </button>
+          </Button>
         )}
         {showOpponent && (
-          <button
+          <Button
+            size="sm"
             title="Cycle table presets. Drag the divider bar to resize freely."
             onClick={onCycleOpponentSize}
-            style={{
-              padding: '4px 10px',
-              borderRadius: 4,
-              border: '1px solid rgba(255,255,255,0.18)',
-              background: 'rgba(255,255,255,0.06)',
-              color: opponentSize < 0.4 ? '#8b949e' : '#58a6ff',
-              cursor: 'pointer',
-              fontSize: '0.7rem',
-              fontWeight: 700,
-              whiteSpace: 'nowrap',
-            }}
           >
             {opponentSize < 0.4 ? 'Table: Compact' : opponentSize < 0.65 ? 'Table: Split' : 'Table: Opponent'}
-          </button>
+          </Button>
         )}
         {!combatState.active ? (
           <BoardBtn onClick={toggleCombat}>
@@ -237,7 +230,7 @@ export function BoardControls({
         )}
       </div>
 
-      <BoardBtn onClick={() => { if (window.confirm('New hand?')) redeal() }}>
+      <BoardBtn onClick={() => { if (confirmNewHandOpen) return; setConfirmNewHandOpen(true) }}>
         New Hand
       </BoardBtn>
       <div style={dividerStyle} />
@@ -249,25 +242,15 @@ export function BoardControls({
           gap: 6,
         }}
       >
-        <button
+        <Button
+          size="sm"
+          variant="ghost"
           title="Decrease life"
           onClick={() => setLife(lifeTotal - 1)}
-          style={{
-            background: 'none',
-            border: '1px solid rgba(255,255,255,0.15)',
-            color: '#8b949e',
-            cursor: 'pointer',
-            borderRadius: 4,
-            width: 24,
-            height: 24,
-            fontSize: '1rem',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-          }}
+          style={{ width: 26, height: 26, padding: 0 }}
         >
           −
-        </button>
+        </Button>
         <span
           style={{
             fontSize: '1.1rem',
@@ -280,25 +263,15 @@ export function BoardControls({
         >
           {lifeTotal}
         </span>
-        <button
+        <Button
+          size="sm"
+          variant="ghost"
           title="Increase life"
           onClick={() => setLife(lifeTotal + 1)}
-          style={{
-            background: 'none',
-            border: '1px solid rgba(255,255,255,0.15)',
-            color: '#8b949e',
-            cursor: 'pointer',
-            borderRadius: 4,
-            width: 24,
-            height: 24,
-            fontSize: '1rem',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-          }}
+          style={{ width: 26, height: 26, padding: 0 }}
         >
           +
-        </button>
+        </Button>
       </div>
 
       <div style={dividerStyle} />

@@ -1,25 +1,16 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { useGameStore } from '../../stores/gameStore'
 import { CARD_BACK_URL } from '../../constants'
 import { getCachedCardRules, getCardRule } from '../../stores/cardRulesLoader'
 import { getCardPower, getCardToughness } from '../../utils/misc'
 import { formatCounterCount } from './cardHelpers'
+import { Overlay } from '../ui/Modal'
 
 export default function CardZoom() {
   const [imgError, setImgError] = useState(false)
   const overlay = useGameStore((s) => s.overlay)
   const setOverlay = useGameStore((s) => s.setOverlay)
   const cards = useGameStore((s) => s.cards)
-
-  useEffect(() => {
-    if (overlay.type !== 'zoom') return
-    setImgError(false)
-    const onKeyDown = (event: KeyboardEvent) => {
-      if (event.key === 'Escape') setOverlay({ type: null })
-    }
-    document.addEventListener('keydown', onKeyDown)
-    return () => document.removeEventListener('keydown', onKeyDown)
-  }, [overlay.type, overlay.cardId, setOverlay])
 
   if (overlay.type !== 'zoom' || !overlay.cardId) return null
 
@@ -43,25 +34,7 @@ export default function CardZoom() {
   }
 
   return (
-    <div
-      onClick={() => setOverlay({ type: null })}
-      role="dialog"
-      aria-modal="true"
-      aria-label={`${card.name} preview`}
-      style={{
-        position: 'fixed',
-        inset: 0,
-        background: 'rgba(0,0,0,0.75)',
-        display: 'flex',
-        alignItems: 'flex-start',
-        justifyContent: 'center',
-        padding: 16,
-        boxSizing: 'border-box',
-        overflowY: 'auto',
-        zIndex: 1000,
-        cursor: 'zoom-out',
-      }}
-    >
+    <Overlay onClose={() => setOverlay({ type: null })} zIndex={1000} style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'center', padding: 16, overflowY: 'auto', cursor: 'zoom-out' }}>
       <div
         onClick={(e) => e.stopPropagation()}
         style={{
@@ -75,6 +48,7 @@ export default function CardZoom() {
         }}
       >
         <img
+          key={card.scryfallId ?? overlay.cardId}
           src={imgError ? CARD_BACK_URL : (card.imageUri || CARD_BACK_URL)}
           alt={card.name}
           onError={() => setImgError(true)}
@@ -156,6 +130,6 @@ export default function CardZoom() {
           )}
         </div>
       </div>
-    </div>
+    </Overlay>
   )
 }
