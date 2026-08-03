@@ -1584,7 +1584,7 @@
       }
     ],
     "oracleText": "The owner of target permanent shuffles it into their library, then reveals the top card of their library. If it's a permanent card, they put it onto the battlefield.",
-    "scryfallId": "57f61970-382e-415c-868b-6bbb6c78825d"
+    "scryfallId": "fb8d8106-b9bd-405c-886e-72fc301c65e1"
   },
   "Heroic Intervention": {
     "cardName": "Heroic Intervention",
@@ -3351,7 +3351,7 @@
       }
     ],
     "oracleText": "Equipped creature has hexproof and haste. (It can't be the target of spells or abilities your opponents control. It can attack and {T} no matter when it came under your control.)\nEquip {1} ({1}: Attach to target creature you control. Equip only as a sorcery.)",
-    "scryfallId": "6675632d-d74a-4b1e-8539-ac678d5545a5"
+    "scryfallId": "03f7e9fc-8e59-45c1-90fc-1d04d929b292"
   },
   "Junktown": {
     "cardName": "Junktown",
@@ -3598,7 +3598,7 @@
       }
     ],
     "oracleText": "{T}: Add one mana of any color that a land an opponent controls could produce.",
-    "scryfallId": "8853ff94-bf44-4cfd-9d3a-0743c361fb0d"
+    "scryfallId": "d11c5fe0-1528-4c94-a8cc-42bcab9d7487"
   },
   "Mossfire Valley": {
     "cardName": "Mossfire Valley",
@@ -4256,7 +4256,7 @@
       }
     ],
     "oracleText": "This land enters tapped.\n{T}: Add one mana of any color in your commander's color identity. When that mana is spent to cast a creature spell that shares a creature type with your commander, scry 1. (Look at the top card of your library. You may put that card on the bottom.)",
-    "scryfallId": "836b8f52-10d2-4716-9f7b-38fb23bc68de"
+    "scryfallId": "b1aaa7b0-1cac-4a92-b880-7ef1ac00618f"
   },
   "Roadside Reliquary": {
     "cardName": "Roadside Reliquary",

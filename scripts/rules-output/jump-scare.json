@@ -3578,5 +3578,59 @@
     ],
     "oracleText": "This land enters tapped.\nWhen this land enters, you gain 1 life.\n{T}: Add {G} or {U}.",
     "scryfallId": "ebb502c2-5fd0-46a9-b77d-010f4a942056"
+  },
+  "Experimental Lab": {
+    "cardName": "Experimental Lab // Staff Room",
+    "manaCost": "{3}{G} // {2}{G}",
+    "manaValue": 7,
+    "typeLine": "Enchantment — Room // Enchantment — Room",
+    "cardType": "enchantment",
+    "subtypes": [
+      "Room",
+      "//",
+      "Enchantment"
+    ],
+    "keywords": [
+      "trample"
+    ],
+    "manaProduction": null,
+    "entryTapRule": null,
+    "conditionalEntryText": null,
+    "abilities": [
+      {
+        "abilityType": "triggered",
+        "triggerEvent": "counter_placed",
+        "triggerCondition": "you unlock this door",
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "put_counter",
+          "params": {}
+        }
+      }
+    ],
+    "oracleText": "When you unlock this door, manifest dread, then put two +1/+1 counters and a trample counter on that creature.\n(You may cast either half. That door unlocks on the battlefield. As a sorcery, you may pay the mana cost of a locked door to unlock it.)",
+    "scryfallId": "0ee64079-76f2-49da-bd62-3d22dc1ec0c0"
+  },
+  "Beanstalk Giant": {
+    "cardName": "Beanstalk Giant // Fertile Footsteps",
+    "manaCost": "{6}{G} // {2}{G}",
+    "manaValue": 7,
+    "typeLine": "Creature — Giant // Sorcery — Adventure",
+    "cardType": "creature",
+    "subtypes": [
+      "Giant",
+      "//",
+      "Sorcery"
+    ],
+    "keywords": [],
+    "manaProduction": null,
+    "entryTapRule": null,
+    "conditionalEntryText": null,
+    "abilities": [],
+    "oracleText": "Beanstalk Giant's power and toughness are each equal to the number of lands you control.",
+    "scryfallId": "71096773-69dd-4fb7-a088-e0fe096eaf6b"
   }
 }

@@ -4143,5 +4143,43 @@
     ],
     "oracleText": "{T}: Add {C}{C}. Activate only if you control five or more lands.",
     "scryfallId": "1024f555-e0d7-48ac-b86e-c87290eac832"
+  },
+  "Spiked Corridor": {
+    "cardName": "Spiked Corridor // Torture Pit",
+    "manaCost": "{3}{R} // {3}{R}",
+    "manaValue": 8,
+    "typeLine": "Enchantment — Room // Enchantment — Room",
+    "cardType": "enchantment",
+    "subtypes": [
+      "Room",
+      "//",
+      "Enchantment"
+    ],
+    "keywords": [],
+    "manaProduction": null,
+    "entryTapRule": null,
+    "conditionalEntryText": null,
+    "abilities": [
+      {
+        "abilityType": "triggered",
+        "triggerEvent": "dies",
+        "triggerCondition": "you unlock this door",
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "create_token",
+          "params": {
+            "tokenPower": 1,
+            "tokenToughness": 1,
+            "tokenName": "Devil creature",
+            "amount": 3
+          }
+        }
+      }
+    ],
+    "oracleText": "When you unlock this door, create three 1/1 red Devil creature tokens with \"When this token dies, it deals 1 damage to any target.\"\n(You may cast either half. That door unlocks on the battlefield. As a sorcery, you may pay the mana cost of a locked door to unlock it.)",
+    "scryfallId": "b90164a1-8b0a-4445-a0ad-43e4c3324925"
   }
 }
