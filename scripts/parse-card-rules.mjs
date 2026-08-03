@@ -17,6 +17,7 @@ const OUTPUT_DIR = resolve(__dirname, 'rules-output')
 mkdirSync(OUTPUT_DIR, { recursive: true })
 
 const SCRYFALL_COLLECTION = 'https://api.scryfall.com/cards/collection'
+const SCRYFALL_SEARCH = 'https://api.scryfall.com/cards/search'
 
 const args = process.argv.slice(2)
 const getFlag = (f) => { const i = args.indexOf(f); return i >= 0 ? args[i+1] : undefined }
@@ -281,7 +282,20 @@ async function fetchScryfall(names) {
         })
         if (!res.ok) throw new Error(`Scryfall returned HTTP ${res.status}`)
         const d = await res.json()
-        d.data.forEach(c => map.set(c.name, c))
+        d.data.forEach(c => { map.set(c.name, c); map.set(c.name.split(' // ')[0], c) })
+        const missing = d.not_found ?? []
+        for (const miss of missing) {
+          const url = `${SCRYFALL_SEARCH}?q=${encodeURIComponent(`name:"${miss.name}"`)}&unique=cards`
+          const sres = await fetch(url, {
+            headers: { 'User-Agent': 'MTGBoardLayout/1.0' },
+            signal: controller.signal,
+          })
+          if (sres.ok) {
+            const sd = await sres.json()
+            const hit = sd.data.find(c => c.name.split(' // ')[0] === miss.name || c.name.startsWith(miss.name))
+            if (hit) map.set(miss.name, hit)
+          }
+        }
         fetched = true
         break
       } catch (error) {
