@@ -1302,6 +1302,21 @@
           "kind": "deal_damage",
           "params": {}
         }
+      },
+      {
+        "abilityType": "activated",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": "{7}",
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "equip",
+          "params": {
+            "cost": "{7}"
+          }
+        }
       }
     ],
     "oracleText": "Living weapon\nIndestructible\nEquipped creature gets +5/+5 and has first strike, trample, indestructible, haste, and \"Whenever this creature deals combat damage to a creature, exile that creature.\"\nEquip {7}",
@@ -2480,6 +2495,21 @@
             "description": "(It can't be the target of spells or abilities"
           }
         }
+      },
+      {
+        "abilityType": "activated",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": "{0}",
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "equip",
+          "params": {
+            "cost": "{0}"
+          }
+        }
       }
     ],
     "oracleText": "Equipped creature has haste and shroud. (It can't be the target of spells or abilities.)\nEquip {0}",
@@ -2993,17 +3023,17 @@
         }
       },
       {
-        "abilityType": "triggered",
+        "abilityType": "activated",
         "triggerEvent": null,
         "triggerCondition": null,
         "isOptional": false,
-        "cost": null,
+        "cost": "{2}",
         "targets": 1,
         "targetFilter": "creature you control",
         "effect": {
-          "kind": "other",
+          "kind": "equip",
           "params": {
-            "description": ") Equip {2} ({2}: Attach to target creature you control"
+            "cost": "{2}"
           }
         }
       }

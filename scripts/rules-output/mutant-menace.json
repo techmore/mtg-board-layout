@@ -2929,6 +2929,21 @@
             "amount": 2
           }
         }
+      },
+      {
+        "abilityType": "activated",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": "{1}",
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "equip",
+          "params": {
+            "cost": "{1}"
+          }
+        }
       }
     ],
     "oracleText": "Equipped creature gets +1/-1.\nWhenever equipped creature dies, draw two cards.\nEquip {1}",

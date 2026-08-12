@@ -2420,6 +2420,21 @@
             "scope": "own"
           }
         }
+      },
+      {
+        "abilityType": "activated",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": "{2}",
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "equip",
+          "params": {
+            "cost": "{2}"
+          }
+        }
       }
     ],
     "oracleText": "Equipped creature gets +1/+1 for each creature you control with base power or toughness 1.\nWhenever a Hamster, Mouse, Rat, or Squirrel you control enters, you may attach this Equipment to that creature.\nEquip {2}",
@@ -2623,6 +2638,21 @@
         "abilityType": "spell",
         "triggerEvent": null,
         "triggerCondition": null,
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "mill",
+          "params": {
+            "amount": 4
+          }
+        }
+      },
+      {
+        "abilityType": "spell",
+        "triggerEvent": null,
+        "triggerCondition": null,
         "isOptional": true,
         "cost": null,
         "targets": 0,
@@ -2645,6 +2675,21 @@
           "params": {
             "tokenName": "Food",
             "amount": 1
+          }
+        }
+      },
+      {
+        "abilityType": "spell",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "mill",
+          "params": {
+            "amount": 4
           }
         }
       },
@@ -3753,6 +3798,21 @@
           "kind": "draw_cards",
           "params": {
             "amount": 2
+          }
+        }
+      },
+      {
+        "abilityType": "activated",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": "{1}",
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "equip",
+          "params": {
+            "cost": "{1}"
           }
         }
       }

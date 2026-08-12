@@ -2706,6 +2706,21 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
+          "kind": "mill",
+          "params": {
+            "amount": 1
+          }
+        }
+      },
+      {
+        "abilityType": "spell",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
           "kind": "put_counter",
           "params": {}
         }

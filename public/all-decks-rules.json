@@ -18485,6 +18485,21 @@
           "kind": "deal_damage",
           "params": {}
         }
+      },
+      {
+        "abilityType": "activated",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": "{7}",
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "equip",
+          "params": {
+            "cost": "{7}"
+          }
+        }
       }
     ],
     "oracleText": "Living weapon\nIndestructible\nEquipped creature gets +5/+5 and has first strike, trample, indestructible, haste, and \"Whenever this creature deals combat damage to a creature, exile that creature.\"\nEquip {7}",
@@ -19414,6 +19429,21 @@
             "description": "(It can't be the target of spells or abilities"
           }
         }
+      },
+      {
+        "abilityType": "activated",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": "{0}",
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "equip",
+          "params": {
+            "cost": "{0}"
+          }
+        }
       }
     ],
     "oracleText": "Equipped creature has haste and shroud. (It can't be the target of spells or abilities.)\nEquip {0}",
@@ -19745,17 +19775,17 @@
         }
       },
       {
-        "abilityType": "triggered",
+        "abilityType": "activated",
         "triggerEvent": null,
         "triggerCondition": null,
         "isOptional": false,
-        "cost": null,
+        "cost": "{2}",
         "targets": 1,
         "targetFilter": "creature you control",
         "effect": {
-          "kind": "other",
+          "kind": "equip",
           "params": {
-            "description": ") Equip {2} ({2}: Attach to target creature you control"
+            "cost": "{2}"
           }
         }
       }
@@ -21150,6 +21180,21 @@
             "amount": "X"
           }
         }
+      },
+      {
+        "abilityType": "activated",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": "{3}",
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "equip",
+          "params": {
+            "cost": "{3}"
+          }
+        }
       }
     ],
     "oracleText": "Equipped creature has flying and lifelink.\nWhenever equipped creature dies, you may pay X life, where X is its power. If you do, draw X cards.\nEquip {3}",
@@ -21857,17 +21902,17 @@
         }
       },
       {
-        "abilityType": "triggered",
+        "abilityType": "activated",
         "triggerEvent": null,
         "triggerCondition": null,
         "isOptional": false,
-        "cost": null,
+        "cost": "{2}",
         "targets": 1,
         "targetFilter": "creature you control",
         "effect": {
-          "kind": "other",
+          "kind": "equip",
           "params": {
-            "description": ") Equip {2} ({2}: Attach to target creature you control"
+            "cost": "{2}"
           }
         }
       }
@@ -24525,9 +24570,24 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
+          "kind": "mill",
           "params": {
-            "description": "Reach At the beginning of your upkeep, mill two cards"
+            "amount": 2
+          }
+        }
+      },
+      {
+        "abilityType": "triggered",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "mill",
+          "params": {
+            "amount": 2
           }
         }
       },
@@ -28395,6 +28455,21 @@
             "amount": "X"
           }
         }
+      },
+      {
+        "abilityType": "activated",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": "{2}",
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "equip",
+          "params": {
+            "cost": "{2}"
+          }
+        }
       }
     ],
     "oracleText": "When this Equipment enters, create a Food token, then create a 1/1 white Halfling creature token and attach this Equipment to it.\nEquipped creature has \"Whenever you gain life, this creature gets +X/+X until end of turn, where X is the amount of life you gained.\"\nEquip {2}",
@@ -29157,6 +29232,21 @@
           "kind": "draw_cards",
           "params": {
             "amount": 1
+          }
+        }
+      },
+      {
+        "abilityType": "activated",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": "{0}",
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "equip",
+          "params": {
+            "cost": "{0}"
           }
         }
       }
@@ -30957,6 +31047,21 @@
             "scope": "all"
           }
         }
+      },
+      {
+        "abilityType": "activated",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": "{3}",
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "equip",
+          "params": {
+            "cost": "{3}"
+          }
+        }
       }
     ],
     "oracleText": "When this Equipment enters, return target creature card with mana value 3 or less from your graveyard to the battlefield and attach this Equipment to it.\nEquipped creature gets +2/+2 and has vigilance.\nEquip {3}",
@@ -31017,6 +31122,21 @@
           "kind": "other",
           "params": {
             "description": "\") {3}, Sacrifice another artifact: Double equipped creature's power until end of turn"
+          }
+        }
+      },
+      {
+        "abilityType": "activated",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": "{1}",
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "equip",
+          "params": {
+            "cost": "{1}"
           }
         }
       }
@@ -31080,6 +31200,21 @@
             "description": "• Check Map — Untap up to two target lands"
           }
         }
+      },
+      {
+        "abilityType": "activated",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": true,
+        "cost": "{2}",
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "equip",
+          "params": {
+            "cost": "{2}"
+          }
+        }
       }
     ],
     "oracleText": "Whenever equipped creature attacks, choose one —\n• Sort Inventory — Draw a card, then discard a card.\n• Pick a Perk — Put a +1/+1 counter on that creature.\n• Check Map — Untap up to two target lands.\nEquip {2}",
@@ -31129,6 +31264,21 @@
           "params": {
             "tokenName": "a",
             "amount": 1
+          }
+        }
+      },
+      {
+        "abilityType": "activated",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": "{2}",
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "equip",
+          "params": {
+            "cost": "{2}"
           }
         }
       }
@@ -31181,6 +31331,21 @@
           "kind": "other",
           "params": {
             "description": "(It can't be the target of spells or abilities your opponents control"
+          }
+        }
+      },
+      {
+        "abilityType": "activated",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": "{1}",
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "equip",
+          "params": {
+            "cost": "{1}"
           }
         }
       }
@@ -31379,6 +31544,21 @@
             "description": ") Equipped creature can't be blocked"
           }
         }
+      },
+      {
+        "abilityType": "activated",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": "{3}",
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "equip",
+          "params": {
+            "cost": "{3}"
+          }
+        }
       }
     ],
     "oracleText": "Flash\nWhen this Equipment enters, attach it to target creature you control. That creature gains shroud until end of turn. (It can't be the target of spells or abilities.)\nEquipped creature can't be blocked.\nEquip {3}",
@@ -31415,6 +31595,21 @@
             "power": 2,
             "toughness": 2,
             "scope": "all"
+          }
+        }
+      },
+      {
+        "abilityType": "activated",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": "{3}",
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "equip",
+          "params": {
+            "cost": "{3}"
           }
         }
       }
@@ -31454,17 +31649,17 @@
         }
       },
       {
-        "abilityType": "triggered",
+        "abilityType": "activated",
         "triggerEvent": null,
         "triggerCondition": null,
         "isOptional": false,
-        "cost": null,
+        "cost": "{1}",
         "targets": 1,
         "targetFilter": "creature you control",
         "effect": {
-          "kind": "other",
+          "kind": "equip",
           "params": {
-            "description": "Equip {1} ({1}: Attach to target creature you control"
+            "cost": "{1}"
           }
         }
       }
@@ -31502,17 +31697,17 @@
         }
       },
       {
-        "abilityType": "triggered",
+        "abilityType": "activated",
         "triggerEvent": null,
         "triggerCondition": null,
         "isOptional": false,
-        "cost": null,
+        "cost": "{1}",
         "targets": 1,
         "targetFilter": "creature you control",
         "effect": {
-          "kind": "other",
+          "kind": "equip",
           "params": {
-            "description": "Equip {1} ({1}: Attach to target creature you control"
+            "cost": "{1}"
           }
         }
       }
@@ -31553,17 +31748,17 @@
         }
       },
       {
-        "abilityType": "triggered",
+        "abilityType": "activated",
         "triggerEvent": null,
         "triggerCondition": null,
         "isOptional": false,
-        "cost": null,
+        "cost": "{1}",
         "targets": 1,
         "targetFilter": "creature you control",
         "effect": {
-          "kind": "other",
+          "kind": "equip",
           "params": {
-            "description": ") Equip {1} ({1}: Attach to target creature you control"
+            "cost": "{1}"
           }
         }
       }
@@ -33879,6 +34074,21 @@
           "kind": "put_counter",
           "params": {}
         }
+      },
+      {
+        "abilityType": "activated",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": "{2}",
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "equip",
+          "params": {
+            "cost": "{2}"
+          }
+        }
       }
     ],
     "oracleText": "Equipped creature has trample and \"Whenever this creature deals combat damage to a player, put that many +1/+1 counters on it.\"\nEquip {2}",
@@ -33944,6 +34154,21 @@
           "kind": "other",
           "params": {
             "description": ") Whenever equipped creature attacks, until the end of defending player's next turn, that player gets two rad counters whenever they cast a spell"
+          }
+        }
+      },
+      {
+        "abilityType": "activated",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": "{3}",
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "equip",
+          "params": {
+            "cost": "{3}"
           }
         }
       }
@@ -39681,6 +39906,21 @@
             "amount": 2
           }
         }
+      },
+      {
+        "abilityType": "activated",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": "{1}",
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "equip",
+          "params": {
+            "cost": "{1}"
+          }
+        }
       }
     ],
     "oracleText": "Equipped creature gets +1/-1.\nWhenever equipped creature dies, draw two cards.\nEquip {1}",
@@ -40305,9 +40545,9 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
+          "kind": "mill",
           "params": {
-            "description": "Flying My Will Be Done — Whenever Szarekh attacks, mill three cards"
+            "amount": 3
           }
         }
       },
@@ -41106,9 +41346,9 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
+          "kind": "mill",
           "params": {
-            "description": "Lifelink Flesh Flayer — When this creature enters, mill three cards"
+            "amount": 3
           }
         }
       }
@@ -41747,6 +41987,21 @@
         "triggerCondition": null,
         "isOptional": false,
         "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "mill",
+          "params": {
+            "amount": 3
+          }
+        }
+      },
+      {
+        "abilityType": "triggered",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": null,
         "targets": 1,
         "targetFilter": "creature cards with total mana value 8 or less in your graveyard",
         "effect": {
@@ -41794,9 +42049,9 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
+          "kind": "mill",
           "params": {
-            "description": "Translocation Protocols — {3}, {T}: Mill three cards"
+            "amount": 3
           }
         }
       }
@@ -41865,9 +42120,9 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
+          "kind": "mill",
           "params": {
-            "description": "Flying, indestructible Eternity Gate — Whenever this Vehicle attacks, mill three cards"
+            "amount": 3
           }
         }
       },
@@ -41938,17 +42193,17 @@
         }
       },
       {
-        "abilityType": "triggered",
+        "abilityType": "activated",
         "triggerEvent": null,
         "triggerCondition": null,
         "isOptional": false,
-        "cost": null,
+        "cost": "{4}",
         "targets": 1,
         "targetFilter": "creature you control",
         "effect": {
-          "kind": "other",
+          "kind": "equip",
           "params": {
-            "description": "Equip {4} ({4}: Attach to target creature you control"
+            "cost": "{4}"
           }
         }
       }
@@ -42181,6 +42436,21 @@
             "description": "{B}{B}: Attach this Equipment to target creature you control"
           }
         }
+      },
+      {
+        "abilityType": "activated",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": "{1}",
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "equip",
+          "params": {
+            "cost": "{1}"
+          }
+        }
       }
     ],
     "oracleText": "Equipped creature gets +1/+0 for each artifact you control.\n{B}{B}: Attach this Equipment to target creature you control.\nEquip {1}",
@@ -42214,17 +42484,17 @@
         }
       },
       {
-        "abilityType": "triggered",
+        "abilityType": "activated",
         "triggerEvent": null,
         "triggerCondition": null,
         "isOptional": false,
-        "cost": null,
+        "cost": "{1}",
         "targets": 1,
         "targetFilter": "creature you control",
         "effect": {
-          "kind": "other",
+          "kind": "equip",
           "params": {
-            "description": "Equip {1} ({1}: Attach to target creature you control"
+            "cost": "{1}"
           }
         }
       }
@@ -44435,6 +44705,21 @@
     "entryTapRule": null,
     "conditionalEntryText": null,
     "abilities": [
+      {
+        "abilityType": "spell",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "mill",
+          "params": {
+            "amount": 1
+          }
+        }
+      },
       {
         "abilityType": "spell",
         "triggerEvent": null,
@@ -46764,6 +47049,21 @@
             "scope": "own"
           }
         }
+      },
+      {
+        "abilityType": "activated",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": "{2}",
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "equip",
+          "params": {
+            "cost": "{2}"
+          }
+        }
       }
     ],
     "oracleText": "Equipped creature gets +1/+1 for each creature you control with base power or toughness 1.\nWhenever a Hamster, Mouse, Rat, or Squirrel you control enters, you may attach this Equipment to that creature.\nEquip {2}",
@@ -46884,6 +47184,21 @@
         "abilityType": "spell",
         "triggerEvent": null,
         "triggerCondition": null,
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "mill",
+          "params": {
+            "amount": 4
+          }
+        }
+      },
+      {
+        "abilityType": "spell",
+        "triggerEvent": null,
+        "triggerCondition": null,
         "isOptional": true,
         "cost": null,
         "targets": 0,
@@ -46906,6 +47221,21 @@
           "params": {
             "tokenName": "Food",
             "amount": 1
+          }
+        }
+      },
+      {
+        "abilityType": "spell",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "mill",
+          "params": {
+            "amount": 4
           }
         }
       },

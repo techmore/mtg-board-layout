@@ -389,9 +389,9 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
+          "kind": "mill",
           "params": {
-            "description": "Flying My Will Be Done — Whenever Szarekh attacks, mill three cards"
+            "amount": 3
           }
         }
       },
@@ -1190,9 +1190,9 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
+          "kind": "mill",
           "params": {
-            "description": "Lifelink Flesh Flayer — When this creature enters, mill three cards"
+            "amount": 3
           }
         }
       }
@@ -1862,6 +1862,21 @@
         "triggerCondition": null,
         "isOptional": false,
         "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "mill",
+          "params": {
+            "amount": 3
+          }
+        }
+      },
+      {
+        "abilityType": "triggered",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": null,
         "targets": 1,
         "targetFilter": "creature cards with total mana value 8 or less in your graveyard",
         "effect": {
@@ -1909,9 +1924,9 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
+          "kind": "mill",
           "params": {
-            "description": "Translocation Protocols — {3}, {T}: Mill three cards"
+            "amount": 3
           }
         }
       }
@@ -1980,9 +1995,9 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
+          "kind": "mill",
           "params": {
-            "description": "Flying, indestructible Eternity Gate — Whenever this Vehicle attacks, mill three cards"
+            "amount": 3
           }
         }
       },
@@ -2053,17 +2068,17 @@
         }
       },
       {
-        "abilityType": "triggered",
+        "abilityType": "activated",
         "triggerEvent": null,
         "triggerCondition": null,
         "isOptional": false,
-        "cost": null,
+        "cost": "{4}",
         "targets": 1,
         "targetFilter": "creature you control",
         "effect": {
-          "kind": "other",
+          "kind": "equip",
           "params": {
-            "description": "Equip {4} ({4}: Attach to target creature you control"
+            "cost": "{4}"
           }
         }
       }
@@ -2356,6 +2371,21 @@
             "description": "{B}{B}: Attach this Equipment to target creature you control"
           }
         }
+      },
+      {
+        "abilityType": "activated",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": "{1}",
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "equip",
+          "params": {
+            "cost": "{1}"
+          }
+        }
       }
     ],
     "oracleText": "Equipped creature gets +1/+0 for each artifact you control.\n{B}{B}: Attach this Equipment to target creature you control.\nEquip {1}",
@@ -2438,17 +2468,17 @@
         }
       },
       {
-        "abilityType": "triggered",
+        "abilityType": "activated",
         "triggerEvent": null,
         "triggerCondition": null,
         "isOptional": false,
-        "cost": null,
+        "cost": "{1}",
         "targets": 1,
         "targetFilter": "creature you control",
         "effect": {
-          "kind": "other",
+          "kind": "equip",
           "params": {
-            "description": "Equip {1} ({1}: Attach to target creature you control"
+            "cost": "{1}"
           }
         }
       }

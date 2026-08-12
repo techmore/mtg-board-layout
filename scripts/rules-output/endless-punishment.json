@@ -946,6 +946,21 @@
             "amount": "X"
           }
         }
+      },
+      {
+        "abilityType": "activated",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": "{3}",
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "equip",
+          "params": {
+            "cost": "{3}"
+          }
+        }
       }
     ],
     "oracleText": "Equipped creature has flying and lifelink.\nWhenever equipped creature dies, you may pay X life, where X is its power. If you do, draw X cards.\nEquip {3}",
@@ -1730,17 +1745,17 @@
         }
       },
       {
-        "abilityType": "triggered",
+        "abilityType": "activated",
         "triggerEvent": null,
         "triggerCondition": null,
         "isOptional": false,
-        "cost": null,
+        "cost": "{2}",
         "targets": 1,
         "targetFilter": "creature you control",
         "effect": {
-          "kind": "other",
+          "kind": "equip",
           "params": {
-            "description": ") Equip {2} ({2}: Attach to target creature you control"
+            "cost": "{2}"
           }
         }
       }
@@ -2656,6 +2671,21 @@
           "kind": "other",
           "params": {
             "description": "(It can't be the target of spells or abilities"
+          }
+        }
+      },
+      {
+        "abilityType": "activated",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": "{0}",
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "equip",
+          "params": {
+            "cost": "{0}"
           }
         }
       }

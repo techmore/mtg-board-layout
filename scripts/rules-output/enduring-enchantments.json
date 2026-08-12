@@ -1816,9 +1816,24 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
+          "kind": "mill",
           "params": {
-            "description": "Reach At the beginning of your upkeep, mill two cards"
+            "amount": 2
+          }
+        }
+      },
+      {
+        "abilityType": "triggered",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "mill",
+          "params": {
+            "amount": 2
           }
         }
       },
