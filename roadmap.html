@@ -120,7 +120,7 @@
     <div class="meta-item"><span>Stack</span> React + Vite + TypeScript + Zustand</div>
     <div class="meta-item"><span>Server</span> Colyseus + shared <code>mtg-protocol</code> package</div>
     <div class="meta-item"><span>Cards</span> Scryfall API + IndexedDB image cache</div>
-    <div class="meta-item"><span>Tests</span> 453 (25 files, client + server)</div>
+    <div class="meta-item"><span>Tests</span> 476 (25 files, client + server)</div>
     <div class="meta-item"><span>Updated</span> <span id="updated-date"></span></div>
   </div>
 
@@ -177,8 +177,8 @@
       </div>
       <div class="audit-item">
         <span class="label">A7</span>
-        <div class="desc"><strong>Card data coverage</strong> — 1,149 cards parsed (keywords, entry-tap, mana production, triggers, spells, pumps, auras). ~430 complex multi-clause "other" abilities are extracted but unresolvable — resolving one toasts an honest "not implemented yet" notice.
-          <div class="note"><span class="status-tag status-wip">Partial</span>  — the one remaining data item</div>
+        <div class="desc"><strong>Card data coverage</strong> — 1,149 cards parsed (keywords, entry-tap, mana production, triggers, spells, pumps, auras). <strong>Big wins landed: equip, mill, storm, "first spell each turn", annihilator.</strong> The remaining "other" tail (mind-control gain-control, energy counters, etc.) toasts an honest "not implemented yet" notice.
+          <div class="note"><span class="status-tag status-wip">Partial</span> — low-frequency tail only</div>
         </div>
       </div>
     </div>
@@ -186,9 +186,9 @@
 
   <!-- Section B — AI playability -->
   <div class="phase-header" onclick="toggle(this)">
-    <span class="phase-badge badge-done">4.5/5</span>
+    <span class="phase-badge badge-done">5/5</span>
     <strong>B — Computer (AI) playability</strong>
-    <span class="status-tag status-done" style="margin-left:auto;">Nearly complete</span>
+    <span class="status-tag status-done" style="margin-left:auto;">Complete</span>
   </div>
   <div class="phase" id="phaseB">
     <div class="audit-grid">
@@ -218,8 +218,8 @@
       </div>
       <div class="audit-item">
         <span class="label">B5</span>
-        <div class="desc"><strong>Mana & sequencing</strong> — color-fixing done (generic costs prefer colorless / non-needed colors).
-          <div class="note"><span class="status-tag status-wip">Partial</span> — "leave up mana for instants" hold logic pending</div>
+        <div class="desc"><strong>Mana & sequencing</strong> — color-fixing (generic costs prefer colorless / non-needed colors), dual-land/exact-mana fixes, and <strong>hold-mana</strong> (reserves the held instant's colors so it can respond).
+          <div class="note"><span class="status-tag status-done">Done</span></div>
         </div>
       </div>
     </div>
@@ -350,11 +350,7 @@
       <span class="status"><span class="status-tag status-done">Done</span></span>
     </div>
     <div class="feature-row">
-      <span class="name">~430 unresolvable "other"-kind card abilities (honest toast on resolve)</span>
-      <span class="status"><span class="status-tag status-wip">Partial</span></span>
-    </div>
-    <div class="feature-row">
-      <span class="name">AI "leave up mana for instants" hold logic</span>
+      <span class="name">Low-frequency "other" abilities (energy, gain-control; honest toast on resolve)</span>
       <span class="status"><span class="status-tag status-wip">Partial</span></span>
     </div>
     <div class="feature-row">
@@ -375,8 +371,7 @@
 
   <h2>🐛 Known Issues</h2>
   <ul>
-    <li>~430 complex "other"-kind abilities are parsed but not mechanically resolvable (honest toast shown)</li>
-    <li>AI doesn't hold mana for instant responses yet</li>
+    <li>Low-frequency "other"-kind abilities (energy counters, gain-control) are parsed but not mechanically resolvable (honest toast shown)</li>
     <li>Backgrounds stored as data URLs in localStorage (~5MB limit)</li>
     <li>Multiplayer lacks auth/rate-limiting for public deployment (explicitly out of scope)</li>
   </ul>
