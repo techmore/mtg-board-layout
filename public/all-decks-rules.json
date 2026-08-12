@@ -13941,6 +13941,21 @@
             "description": "Whenever Azlask or another colorless creature you control dies, you get an experience counter"
           }
         }
+      },
+      {
+        "abilityType": "triggered",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "annihilator",
+          "params": {
+            "amount": 1
+          }
+        }
       }
     ],
     "oracleText": "Whenever Azlask or another colorless creature you control dies, you get an experience counter.\n{W}{U}{B}{R}{G}: Creatures you control get +X/+X until end of turn, where X is the number of experience counters you have. Scions and Spawns you control gain indestructible and annihilator 1 until end of turn.",
@@ -13982,9 +13997,9 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
+          "kind": "annihilator",
           "params": {
-            "description": "Annihilator 2 (Whenever this creature attacks, defending player sacrifices two permanents of their choice"
+            "amount": 2
           }
         }
       }
@@ -14018,11 +14033,9 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "pump",
+          "kind": "annihilator",
           "params": {
-            "power": 10,
-            "toughness": 10,
-            "scope": "all"
+            "amount": 2
           }
         }
       },
@@ -14371,9 +14384,9 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
+          "kind": "annihilator",
           "params": {
-            "description": "They gain trample, haste, and annihilator 1 until end of turn"
+            "amount": 1
           }
         }
       },
@@ -14386,9 +14399,9 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
+          "kind": "annihilator",
           "params": {
-            "description": "Trample, haste, annihilator 1 (Whenever this creature attacks, defending player sacrifices a permanent of their choice"
+            "amount": 1
           }
         }
       }
@@ -17555,9 +17568,9 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
+          "kind": "annihilator",
           "params": {
-            "description": "Annihilator 2 (Whenever this creature attacks, defending player sacrifices two permanents of their choice"
+            "amount": 2
           }
         }
       }
@@ -17701,9 +17714,9 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
+          "kind": "annihilator",
           "params": {
-            "description": "Annihilator 2 (Whenever this creature attacks, defending player sacrifices two permanents of their choice"
+            "amount": 2
           }
         }
       }
@@ -18003,9 +18016,9 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
+          "kind": "annihilator",
           "params": {
-            "description": "Until end of turn, it has base power and toughness 10/10 and gains trample, annihilator 2, and haste"
+            "amount": 2
           }
         }
       },
@@ -18018,9 +18031,9 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
+          "kind": "annihilator",
           "params": {
-            "description": "Annihilator 2 (Whenever this creature attacks, defending player sacrifices two permanents of their choice"
+            "amount": 2
           }
         }
       }

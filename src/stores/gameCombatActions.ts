@@ -107,6 +107,12 @@ export function createCombatActions(set: SetFn, get: () => GameState): Pick<Game
         pairs.push({ attacker, blockerIds: assigned ?? [] })
       }
 
+      // Attack triggers ("whenever this creature attacks", annihilator) fire
+      // for both sides' attackers.
+      for (const pair of pairs) {
+        get().emitGameEvent({ type: 'attack', cardId: pair.attacker.id, cardName: pair.attacker.name })
+      }
+
       // Attackers tap when they attack — vigilance keeps them untapped.
       const tappingIds = pairs
         .filter((p) => !hasKeyword(p.attacker, 'vigilance'))

@@ -1,7 +1,7 @@
 import type { GameState } from './gameStore'
-import type { Token, TriggerInstance } from '../types/card'
+import type { Token, TriggerInstance, BoardCard } from '../types/card'
 import { CARD_BACK_URL } from '../constants'
-import { canPayManaCost } from '../utils/misc'
+import { canPayManaCost, getCardPower } from '../utils/misc'
 import { hasKeyword, getCardRule, getCachedCardRules } from './cardRulesLoader'
 import { attachAuras } from './gameRules'
 import { useToastStore } from './toastStore'
@@ -151,6 +151,22 @@ export function resolveTrigger(get: () => GameState, set: (partial: Partial<Game
       // strongest friendly creature, like aura auto-attach.
       if (trigger.ability.targets > 0) break
       set({ cards: attachAuras(state.cards, { preferredTargetId: trigger.sourceCardId }) })
+      break
+    }
+    case 'annihilator': {
+      // Whenever this creature attacks, defending player sacrifices N
+      // permanents. The defender's weakest nonland permanents go first.
+      const amount = (params.amount as number) ?? 1
+      const attacker = state.cards.find((c) => c.id === trigger.sourceCardId)
+      const attackerOwner = attacker?.owner ?? 'player'
+      const defenders = state.cards.filter((c) => c.zone === 'battlefield' && (c.owner ?? 'player') !== attackerOwner)
+      // Nonlands first (weakest creature first), lands last.
+      const sortKey = (c: BoardCard) => (c.type === 'land' ? 10 : 0) + getCardPower(c) / 1000
+      const sacrifices = [...defenders].sort((a, b) => sortKey(a) - sortKey(b)).slice(0, amount)
+      for (const sacrificed of sacrifices) {
+        get().moveCard(sacrificed.id, 'graveyard')
+        get().emitGameEvent({ type: 'sacrifice', cardId: sacrificed.id, cardName: sacrificed.name })
+      }
       break
     }
     case 'storm': {

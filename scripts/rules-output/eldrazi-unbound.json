@@ -53,9 +53,9 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
+          "kind": "annihilator",
           "params": {
-            "description": "Annihilator 2 (Whenever this creature attacks, defending player sacrifices two permanents of their choice"
+            "amount": 2
           }
         }
       }
@@ -99,9 +99,9 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
+          "kind": "annihilator",
           "params": {
-            "description": "Annihilator 2 (Whenever this creature attacks, defending player sacrifices two permanents of their choice"
+            "amount": 2
           }
         }
       }
@@ -691,9 +691,9 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
+          "kind": "annihilator",
           "params": {
-            "description": "Until end of turn, it has base power and toughness 10/10 and gains trample, annihilator 2, and haste"
+            "amount": 2
           }
         }
       },
@@ -706,9 +706,9 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
+          "kind": "annihilator",
           "params": {
-            "description": "Annihilator 2 (Whenever this creature attacks, defending player sacrifices two permanents of their choice"
+            "amount": 2
           }
         }
       }

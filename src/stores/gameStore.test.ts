@@ -1900,3 +1900,49 @@ describe('equip', () => {
     expect(equip?.enchantsCardId).toBeUndefined()
   })
 })
+
+describe('annihilator', () => {
+  function annihilatorRule(): CardRuleEntry {
+    return {
+      cardName: "Ulamog's Crusher", manaCost: '{8}', manaValue: 8, typeLine: 'Creature', cardType: 'creature',
+      subtypes: [], keywords: [], manaProduction: null, entryTapRule: 'never', conditionalEntryText: null,
+      oracleText: 'Annihilator 2 (Whenever this creature attacks, defending player sacrifices two permanents.)',
+      scryfallId: 'u1',
+      abilities: [{ abilityType: 'triggered', triggerEvent: 'attack' as const, triggerCondition: null, isOptional: false, cost: null, targets: 0, targetFilter: null, effect: { kind: 'annihilator', params: { amount: 2 } } }],
+    }
+  }
+
+  it('sacrifices the defender\'s weakest permanents when the annihilator attacker triggers', () => {
+    primeCardRules({ "Ulamog's Crusher": annihilatorRule() })
+    const attacker = card({ id: 'crusher', name: "Ulamog's Crusher", typeLine: 'Creature', tapped: true, zone: 'battlefield' })
+    const big = card({ id: 'big', name: 'Big', typeLine: '5/5', owner: 'opponent', zone: 'battlefield' })
+    const weak = card({ id: 'weak', name: 'Weak', typeLine: '1/1', owner: 'opponent', zone: 'battlefield' })
+    const land = card({ id: 'land', name: 'Plains', type: 'land', typeLine: 'Basic Land', owner: 'opponent', zone: 'battlefield' })
+    useGameStore.setState({ cards: [attacker, big, weak, land] })
+    const trigger = {
+      id: 't1', sourceCardId: 'crusher', sourceCardName: "Ulamog's Crusher", event: 'attack' as const, context: {},
+      ability: annihilatorRule().abilities[0],
+    }
+    useGameStore.setState({ cards: [attacker, big, weak, land], triggerStack: [trigger] })
+    useGameStore.getState().resolveTrigger('t1')
+    const after = useGameStore.getState().cards
+    // Annihilator 2 sacrifices the two weakest nonlands: weak then big.
+    expect(after.find((c) => c.id === 'weak')?.zone).toBe('graveyard')
+    expect(after.find((c) => c.id === 'big')?.zone).toBe('graveyard')
+    expect(after.find((c) => c.id === 'land')?.zone).toBe('battlefield')
+  })
+
+  it('attack events fire annihilator triggers during combat', () => {
+    primeCardRules({ "Ulamog's Crusher": annihilatorRule() })
+    const crusher = card({ id: 'crusher', name: "Ulamog's Crusher", typeLine: 'Creature 5/5', tapped: true, zone: 'battlefield' })
+    const weak = card({ id: 'weak', name: 'Weak', typeLine: '1/1', owner: 'opponent', zone: 'battlefield' })
+    useGameStore.setState({
+      cards: [crusher, weak],
+      combatState: { active: true, attackers: ['crusher'], blockers: {} },
+    })
+    useGameStore.getState().resolveCombat()
+    // The annihilator trigger is queued on the stack for the player to resolve.
+    const triggers = useGameStore.getState().triggerStack
+    expect(triggers.some((t) => t.ability.effect.kind === 'annihilator')).toBe(true)
+  })
+})

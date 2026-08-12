@@ -447,6 +447,7 @@ const EFFECT_PATTERNS = [
   { kind: 'mill', regex: /\bput\b[^.]*?\bthe\s+top\s+(?:\d+|X|one|two|three|four|five)\s+cards?\b[^.]*\b(graveyard|library)\b/i },
   { kind: 'fight', regex: /\bfight\b/i },
   { kind: 'storm', regex: /\bstorm\b/i },
+  { kind: 'annihilator', regex: /\bannihilator\s*(\d+)/i },
   { kind: 'equip', regex: /\bequip\s*\{[^}]+\}/i },
   { kind: 'pump', regex: /(?:gets|gain(?:s)?|get)\s*[^.,;]*?([-−+]?\d+)\s*\/\s*([-−+]?\d+)\s*until end of turn/i },
   // Static anthems ("creatures you control get +2/+2") have no time limit;
@@ -525,6 +526,10 @@ function parseEffect(sentence) {
       if (ep.kind === 'equip') {
         const costMatch = sentence.match(/equip\s*(\{[^}]+\})/i)
         if (costMatch) params.cost = costMatch[1]
+      }
+      if (ep.kind === 'annihilator') {
+        const amountMatch = sentence.match(/annihilator\s*(\d+)/i)
+        if (amountMatch) params.amount = parseInt(amountMatch[1], 10)
       }
       return { kind: ep.kind, params }
     }
