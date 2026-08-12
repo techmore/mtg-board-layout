@@ -353,6 +353,8 @@ export interface RoomPlayerInfo {
   libraryCount: number
   positionX: number
   positionY: number
+  /** Commander card id -> combat damage that commander has dealt to this player (21 loses). */
+  commanderDamage: Record<string, number>
 }
 
 // ═══════════════════════════════════════════════════════════════

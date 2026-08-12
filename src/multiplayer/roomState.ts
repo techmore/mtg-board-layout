@@ -45,6 +45,18 @@ function arrayValues(value: unknown): unknown[] {
   return typeof iterable[Symbol.iterator] === 'function' ? Array.from(value as Iterable<unknown>) : []
 }
 
+function commanderDamageFromState(value: unknown): Record<string, number> {
+  if (!value || typeof value !== 'object') return {}
+  const entries = typeof (value as { entries?: () => IterableIterator<[unknown, unknown]> }).entries === 'function'
+    ? Array.from((value as { entries: () => IterableIterator<[unknown, unknown]> }).entries())
+    : Object.entries(value as Record<string, unknown>)
+  return Object.fromEntries(
+    entries
+      .map(([key, amount]) => [String(key), typeof amount === 'number' ? amount : 0] as const)
+      .filter(([, amount]) => amount > 0),
+  )
+}
+
 export function cardFromState(value: unknown): CardData | null {
   if (!value || typeof value !== 'object') return null
   const card = value as Partial<CardData>
@@ -125,6 +137,7 @@ export function extractPlayers(map: unknown): RoomPlayerInfo[] {
       libraryCount: typeof player.libraryCount === 'number' ? player.libraryCount : 0,
       positionX: typeof player.positionX === 'number' ? player.positionX : 0,
       positionY: typeof player.positionY === 'number' ? player.positionY : 0,
+      commanderDamage: commanderDamageFromState(player.commanderDamage),
     }]
   })
 }

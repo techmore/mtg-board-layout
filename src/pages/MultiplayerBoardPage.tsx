@@ -461,6 +461,7 @@ export default function MultiplayerBoardPage() {
 function PlayerPanel({ player, opponent, active, onZoom, myTeamId }: { player: RoomPlayerInfo; opponent?: boolean; active?: boolean; onZoom: (card: CardData) => void; myTeamId?: string }) {
   const is2v2 = player.teamId === 'team1' || player.teamId === 'team2'
   const sameTeam = is2v2 && myTeamId !== undefined && myTeamId === player.teamId
+  const maxCommanderDamage = Math.max(0, ...Object.values(player.commanderDamage ?? {}))
   return <div style={{ ...positionedPanelStyle(player.positionX, player.positionY), outline: active ? '2px solid #58a6ff' : undefined, outlineOffset: -2 }}>
     <div style={{ display: 'flex', justifyContent: 'space-between', gap: 12, alignItems: 'center' }}>
       <strong>
@@ -469,6 +470,20 @@ function PlayerPanel({ player, opponent, active, onZoom, myTeamId }: { player: R
       </strong>
       <span style={mutedStyle}>Life {player.lifeTotal} · Hand {player.handCount}</span>
     </div>
+    {maxCommanderDamage > 0 && (
+      <div style={{ ...mutedStyle, marginTop: 4 }}>
+        <span
+          title="Highest commander damage dealt to this player (21 loses)"
+          style={{
+            color: maxCommanderDamage >= 18 ? '#ff7b72' : '#ffd33d',
+            fontWeight: 700,
+            fontSize: '0.68rem',
+          }}
+        >
+          CD {maxCommanderDamage}/21
+        </span>
+      </div>
+    )}
     <CardRow cards={player.battlefield} empty="No permanents" onZoom={onZoom} />
     {player.tokens.length > 0 && (
       <div style={{ display: 'flex', flexWrap: 'wrap', gap: 4, marginTop: 6 }}>
