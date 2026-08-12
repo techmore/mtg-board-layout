@@ -1,7 +1,6 @@
 import { afterEach, describe, expect, it } from 'vitest'
 import { useGameStore } from './gameStore'
 import { primeCardRules } from './cardRulesLoader'
-import { resolveTrigger } from './triggerActions'
 import type { BoardCard, CardAbilityDef, CardRuleEntry, TriggerInstance } from '../types/card'
 import {
   buildTriggerInstances,
