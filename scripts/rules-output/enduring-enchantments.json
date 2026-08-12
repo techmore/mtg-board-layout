@@ -2327,9 +2327,11 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
+          "kind": "pump",
           "params": {
-            "description": "Creatures you control get +1/+1 for each blessing counter on this enchantment"
+            "power": 1,
+            "toughness": 1,
+            "scope": "own"
           }
         }
       }
@@ -2643,9 +2645,11 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
+          "kind": "pump",
           "params": {
-            "description": "Enchant creature Enchanted creature gets +1/+1, has deathtouch, and is goaded"
+            "power": 1,
+            "toughness": 1,
+            "scope": "all"
           }
         }
       },
@@ -2826,9 +2830,11 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
+          "kind": "pump",
           "params": {
-            "description": "Creatures you control get +1/+1"
+            "power": 1,
+            "toughness": 1,
+            "scope": "own"
           }
         }
       },

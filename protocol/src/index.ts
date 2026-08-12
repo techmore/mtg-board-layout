@@ -27,6 +27,8 @@ export interface CardData {
   tapped: boolean
   counters: number
   damage?: number
+  power?: string
+  toughness?: string
   type: string
   typeLine: string
   subtypes: string[]

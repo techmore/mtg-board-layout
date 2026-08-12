@@ -3,6 +3,8 @@ import type { DeckCard, EntryTapRule } from '../types/card'
 export interface CardDatabaseEntry {
   name: string
   typeLine: string
+  power?: string
+  toughness?: string
   imageUri: string
   oracleText?: string
   entryTapRule: EntryTapRule
@@ -190,6 +192,8 @@ export function databaseEntryToDeckCard(entry: CardDatabaseEntry, quantity: numb
     name: entry.name,
     manaCost: '',
     typeLine: entry.typeLine,
+    power: entry.power,
+    toughness: entry.toughness,
     oracleText: entry.oracleText,
     entryTapMode: 'automatic',
     entryTapRule: entry.entryTapRule,

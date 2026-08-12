@@ -511,8 +511,12 @@ export class GameRoom extends Room<{ state: GameState }> {
     // Deck-out: drawing from an empty library loses the game.
     if (count > 0 && privateState.library.length === 0 && this.state.status === 'playing') {
       this.state.status = 'finished'
-      const winner = this.connectedPlayers().find((candidate) => candidate.id !== player.id)
-      this.emitEvent({ type: 'gameEnded', winnerId: winner?.id, reason: 'library' })
+      // Winners are the opponents (never the drawer's own 2v2 teammate);
+      // pick the first by turn order.
+      const winners = this.connectedPlayers()
+        .filter((candidate) => candidate.id !== player.id && candidate.teamId !== player.teamId)
+        .sort((a, b) => a.turnOrder - b.turnOrder)
+      this.emitEvent({ type: 'gameEnded', winnerId: winners[0]?.id, reason: 'library' })
     }
   }
 
@@ -607,6 +611,8 @@ export class GameRoom extends Room<{ state: GameState }> {
       p.battlefield.filter((c) => attackerIds.includes(c.id)).map((c) => ({
         id: c.id,
         typeLine: c.typeLine,
+        power: c.power,
+        toughness: c.toughness,
         oracleText: c.oracleText,
         ownerId: p.id,
         teamId: p.teamId,
@@ -624,6 +630,8 @@ export class GameRoom extends Room<{ state: GameState }> {
         battlefield: p.battlefield.map((c) => ({
           id: c.id,
           typeLine: c.typeLine,
+          power: c.power,
+          toughness: c.toughness,
           oracleText: c.oracleText,
           ownerId: p.id,
           teamId: p.teamId,
@@ -660,6 +668,21 @@ export class GameRoom extends Room<{ state: GameState }> {
       const defender = players.find((p) => p.id === hit.defenderId)
       if (defender) {
         defender.lifeTotal = Math.max(0, defender.lifeTotal - hit.amount)
+        // Commander damage: 21+ combat damage from a single commander loses.
+        const attackerOwner = players.find((p) => p.battlefield.some((c) => c.id === hit.attackerId))
+        const isCommander = attackerOwner?.command.some((c) => c.id === hit.attackerId) === true
+        if (isCommander && attackerOwner && attackerOwner.id !== defender.id) {
+          const total = (defender.commanderDamage.get(hit.attackerId) ?? 0) + hit.amount
+          defender.commanderDamage.set(hit.attackerId, total)
+          if (total >= 21 && this.state.status === 'playing') {
+            this.state.status = 'finished'
+            this.emitEvent({ type: 'gameEnded', winnerId: attackerOwner.id, reason: 'commanderDamage' })
+            this.state.combatActive = false
+            this.state.attackers = new ArraySchema<string>()
+            this.state.blockers = new ArraySchema<string>()
+            return
+          }
+        }
         this.checkForGameEnd(defender)
       }
     }

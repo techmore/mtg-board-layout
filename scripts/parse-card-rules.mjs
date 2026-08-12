@@ -445,6 +445,9 @@ const EFFECT_PATTERNS = [
   { kind: 'proliferate', regex: /\bproliferate\b/i },
   { kind: 'fight', regex: /\bfight\b/i },
   { kind: 'pump', regex: /(?:gets|gain(?:s)?|get)\s*[^.,;]*?([-−+]?\d+)\s*\/\s*([-−+]?\d+)\s*until end of turn/i },
+  // Static anthems ("creatures you control get +2/+2") have no time limit;
+  // the until-end-of-turn pattern above is more specific and listed first.
+  { kind: 'pump', regex: /(?:gets|gain(?:s)?|get)\s*([-−+]?\d+)\s*\/\s*([-−+]?\d+)/i },
 ]
 
 function pumpScope(sentence) {
@@ -498,7 +501,7 @@ function parseEffect(sentence) {
       }
       // Until-end-of-turn pump
       if (ep.kind === 'pump') {
-        const m = sentence.match(/([-−+]?\d+)\s*\/\s*([-−+]?\d+)\s*until end of turn/i)
+        const m = sentence.match(/([-−+]?\d+)\s*\/\s*([-−+]?\d+)/i)
         if (m) {
           params.power = parseInt(m[1].replace(/[−]/g, '-'), 10)
           params.toughness = parseInt(m[2].replace(/[−]/g, '-'), 10)

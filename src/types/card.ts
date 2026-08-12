@@ -103,6 +103,8 @@ export interface BoardCard {
   tapped: boolean
   counters: number
   damage?: number
+  /** True while damage marked by a deathtouch source (any amount is lethal). */
+  deathtouchDamage?: boolean
   powerBoost?: number
   toughnessBoost?: number
   enchantsCardId?: string
@@ -144,6 +146,8 @@ export interface DeckCard {
   manaCost: string
   manaValue?: number
   typeLine: string
+  power?: string
+  toughness?: string
   oracleText?: string
   manaProduction?: ManaProduction
   entryTapMode?: EntryTapMode

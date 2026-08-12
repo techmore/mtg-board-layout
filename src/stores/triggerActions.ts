@@ -5,6 +5,11 @@ import { canPayManaCost } from '../utils/misc'
 import { hasKeyword } from './cardRulesLoader'
 import { useToastStore } from './toastStore'
 
+/** True when a trigger instance belongs to the AI (source card is opponent-owned). */
+function aiOwned(trigger: { sourceCardId: string }, state: { cards: { id: string; owner?: 'player' | 'opponent' }[] }): boolean {
+  return state.cards.find((c) => c.id === trigger.sourceCardId)?.owner === 'opponent'
+}
+
 export function resolveTrigger(get: () => GameState, set: (partial: Partial<GameState>) => void, triggerId: string) {
   const state = get()
   const trigger = state.triggerStack.find((t) => t.id === triggerId)
@@ -146,6 +151,10 @@ export function resolveTrigger(get: () => GameState, set: (partial: Partial<Game
       break
     }
     case 'scry':
+      if (aiOwned(trigger, state)) {
+        get().confirmScry(triggerId)
+        return
+      }
       // Enter scry mode via selectedTargets
       set({
         triggerStack: state.triggerStack.map((t) =>
@@ -154,6 +163,11 @@ export function resolveTrigger(get: () => GameState, set: (partial: Partial<Game
       })
       return
     case 'search_library':
+      if (aiOwned(trigger, state)) {
+        // The AI never names a card: the trigger simply resolves with no search.
+        get().confirmSearchLibrary(triggerId)
+        return
+      }
       // Enter search mode via selectedTargets (single-select from library)
       set({
         triggerStack: state.triggerStack.map((t) =>
@@ -162,6 +176,10 @@ export function resolveTrigger(get: () => GameState, set: (partial: Partial<Game
       })
       return
     case 'proliferate':
+      if (aiOwned(trigger, state)) {
+        get().confirmProliferate(triggerId)
+        return
+      }
       // Enter multi-select mode via selectedTargets like targeting
       set({
         triggerStack: state.triggerStack.map((t) =>

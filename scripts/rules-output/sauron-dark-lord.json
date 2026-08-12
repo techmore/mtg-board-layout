@@ -3577,9 +3577,11 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
+          "kind": "pump",
           "params": {
-            "description": "Enchant creature Enchanted creature gets +2/+2 and is goaded"
+            "power": 2,
+            "toughness": 2,
+            "scope": "all"
           }
         }
       },

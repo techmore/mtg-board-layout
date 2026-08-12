@@ -154,9 +154,11 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
+          "kind": "pump",
           "params": {
-            "description": "Enchant creature Enchanted creature gets +10/+10 and has trample and annihilator 2"
+            "power": 10,
+            "toughness": 10,
+            "scope": "all"
           }
         }
       },
@@ -972,9 +974,11 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
+          "kind": "pump",
           "params": {
-            "description": "Creatures you control get +1/+1 and have flying and indestructible"
+            "power": 1,
+            "toughness": 1,
+            "scope": "own"
           }
         }
       },
@@ -2086,9 +2090,11 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
+          "kind": "pump",
           "params": {
-            "description": "Other creatures you control of the chosen type get +1/+1"
+            "power": 1,
+            "toughness": 1,
+            "scope": "others"
           }
         }
       }
@@ -2842,9 +2848,11 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
+          "kind": "pump",
           "params": {
-            "description": "Colorless creatures you control get +2/+2"
+            "power": 2,
+            "toughness": 2,
+            "scope": "own"
           }
         }
       },

@@ -12,6 +12,8 @@ export class CardState extends Schema {
   @type('number') damage!: number
   @type('string') type!: string
   @type('string') typeLine!: string
+  @type('string') power!: string
+  @type('string') toughness!: string
   @type(['string']) subtypes!: ArraySchema<string>
   @type('boolean') isBasicLand!: boolean
   @type('number') commanderTax!: number
@@ -30,6 +32,8 @@ export class CardState extends Schema {
     this.damage = data?.damage ?? 0
     this.type = data?.type ?? 'other'
     this.typeLine = data?.typeLine ?? ''
+    this.power = data?.power ?? ''
+    this.toughness = data?.toughness ?? ''
     this.subtypes = new ArraySchema<string>(...(data?.subtypes ?? []))
     this.isBasicLand = data?.isBasicLand ?? false
     this.commanderTax = data?.commanderTax ?? 0
@@ -81,6 +85,7 @@ export class PlayerState extends Schema {
   @type('number') libraryCount: number
   @type('number') positionX: number
   @type('number') positionY: number
+  @type({ map: 'number' }) commanderDamage: MapSchema<number>
 
   constructor(data?: Partial<PlayerState>) {
     super()
@@ -110,6 +115,7 @@ export class PlayerState extends Schema {
     this.libraryCount = 0
     this.positionX = data?.positionX ?? 0
     this.positionY = data?.positionY ?? 0
+    this.commanderDamage = new MapSchema<number>()
   }
 }
 

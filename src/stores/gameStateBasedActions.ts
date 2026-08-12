@@ -13,7 +13,7 @@ function isDead(card: BoardCard, cards: BoardCard[]): boolean {
   if (card.type !== 'creature') return false
   const toughness = getCardToughness(card) + computeStaticPump(cards, card).toughness
   if (toughness < 1) return true
-  return (card.damage ?? 0) >= toughness
+  return (card.damage ?? 0) >= toughness || (card.deathtouchDamage === true && (card.damage ?? 0) > 0)
 }
 
 export function createStateBasedActions(set: SetFn, get: () => GameState): Pick<GameState, 'checkStateBasedActions'> {

@@ -1131,9 +1131,11 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
+          "kind": "pump",
           "params": {
-            "description": "Colorless creatures you control get +2/+2"
+            "power": 2,
+            "toughness": 2,
+            "scope": "own"
           }
         }
       },

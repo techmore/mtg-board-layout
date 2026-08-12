@@ -1226,9 +1226,11 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
+          "kind": "pump",
           "params": {
-            "description": ") Other Soldier creatures you control get +1/+1 and have vigilance"
+            "power": 1,
+            "toughness": 1,
+            "scope": "own"
           }
         }
       },
@@ -2213,9 +2215,11 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
+          "kind": "pump",
           "params": {
-            "description": "Until end of turn, creatures you control get +1/+1 and gain haste"
+            "power": 1,
+            "toughness": 1,
+            "scope": "own"
           }
         }
       }
@@ -2408,9 +2412,11 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
+          "kind": "pump",
           "params": {
-            "description": ") Creatures you control get +1/+1"
+            "power": 1,
+            "toughness": 1,
+            "scope": "own"
           }
         }
       },
@@ -2612,9 +2618,11 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
+          "kind": "pump",
           "params": {
-            "description": "Creature tokens you control get +1/+1 and have vigilance"
+            "power": 1,
+            "toughness": 1,
+            "scope": "own"
           }
         }
       }
@@ -2899,9 +2907,11 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
+          "kind": "pump",
           "params": {
-            "description": "Equipped creature gets +1/-1"
+            "power": 1,
+            "toughness": -1,
+            "scope": "all"
           }
         }
       },

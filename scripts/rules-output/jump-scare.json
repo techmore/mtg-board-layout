@@ -1247,9 +1247,11 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
+          "kind": "pump",
           "params": {
-            "description": "Reach, trample Multani gets +1/+1 for each land you control and each land card in your graveyard"
+            "power": 1,
+            "toughness": 1,
+            "scope": "own"
           }
         }
       },
@@ -1484,9 +1486,11 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
+          "kind": "pump",
           "params": {
-            "description": "Trample Lieutenant — As long as you control your commander, this creature gets +2/+2 and other creatures you control get +2/+2 and have trample"
+            "power": 2,
+            "toughness": 2,
+            "scope": "others"
           }
         }
       }

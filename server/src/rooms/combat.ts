@@ -11,6 +11,8 @@
 export interface Combatant {
   id: string
   typeLine: string
+  power?: string
+  toughness?: string
   oracleText: string
   ownerId: string
   teamId: string
@@ -18,12 +20,25 @@ export interface Combatant {
   tapped: boolean
 }
 
-export function parsePower(typeLine: string): number {
-  return parseInt(typeLine.match(/(\d+)\//)?.[1] ?? '0', 10)
+/** P/T from the explicit field first; the type line is a fallback for
+ * clients that never sent it. Accepts a bare type line for compatibility
+ * with older call sites. */
+export function parsePower(combatant: Pick<Combatant, 'typeLine' | 'power'> | string): number {
+  const source = typeof combatant === 'string' ? { typeLine: combatant } : combatant
+  if (source.power) {
+    const n = parseInt(source.power, 10)
+    if (!Number.isNaN(n)) return n
+  }
+  return parseInt(source.typeLine.match(/(\d+)\//)?.[1] ?? '0', 10)
 }
 
-export function parseToughness(typeLine: string): number {
-  return parseInt(typeLine.match(/\/(\d+)/)?.[1] ?? '0', 10)
+export function parseToughness(combatant: Pick<Combatant, 'typeLine' | 'toughness'> | string): number {
+  const source = typeof combatant === 'string' ? { typeLine: combatant } : combatant
+  if (source.toughness) {
+    const n = parseInt(source.toughness, 10)
+    if (!Number.isNaN(n)) return n
+  }
+  return parseInt(source.typeLine.match(/\/(\d+)/)?.[1] ?? '0', 10)
 }
 
 /** Keywords are read from the oracle text's first line ("Flying, trample ..."). */
@@ -125,9 +140,9 @@ export function resolveCombat(
     const blockers = validBlockers.get(attacker.id) ?? []
     const blocker = findCard(blockers[0])
     if (!blocker) return
-    const aPower = parsePower(attacker.typeLine)
-    const bToughness = parseToughness(blocker.typeLine)
-    const bPower = parsePower(blocker.typeLine)
+    const aPower = parsePower(attacker)
+    const bToughness = parseToughness(blocker)
+    const bPower = parsePower(blocker)
     const aKeywords = parseKeywords(attacker.oracleText)
 
     if (attackerDeals && aPower > 0) {
@@ -174,8 +189,8 @@ export function resolveCombat(
       const aKeywords = parseKeywords(attacker.oracleText)
       const bDamage = damageTo.get(blocker.id) ?? 0
       const aDamage = damageTo.get(attacker.id) ?? 0
-      if (!bKeywords.has('indestructible') && (bDamage >= parseToughness(blocker.typeLine) || (deathtouchHit.has(blocker.id) && bDamage >= 1))) midDead.add(blocker.id)
-      if (!aKeywords.has('indestructible') && (aDamage >= parseToughness(attacker.typeLine) || (deathtouchHit.has(attacker.id) && aDamage >= 1))) midDead.add(attacker.id)
+      if (!bKeywords.has('indestructible') && (bDamage >= parseToughness(blocker) || (deathtouchHit.has(blocker.id) && bDamage >= 1))) midDead.add(blocker.id)
+      if (!aKeywords.has('indestructible') && (aDamage >= parseToughness(attacker) || (deathtouchHit.has(attacker.id) && aDamage >= 1))) midDead.add(attacker.id)
     }
     // Regular step: survivors deal (non-first-strikers + double strikers again).
     for (const attacker of blockedAttackers) {
@@ -194,7 +209,7 @@ export function resolveCombat(
 
   // Unblocked attackers deal to every opposing player.
   for (const attacker of unblocked) {
-    const power = parsePower(attacker.typeLine)
+    const power = parsePower(attacker)
     if (power === 0) continue
     for (const player of allPlayers) {
       if (!isOpponent(player)) continue
@@ -209,7 +224,7 @@ export function resolveCombat(
   for (const attacker of attackers) {
     const k = parseKeywords(attacker.oracleText)
     const total = attacker.damage + (damageTo.get(attacker.id) ?? 0)
-    if (!k.has('indestructible') && (total >= parseToughness(attacker.typeLine) || (deathtouchHit.has(attacker.id) && total >= 1))) {
+    if (!k.has('indestructible') && (total >= parseToughness(attacker) || (deathtouchHit.has(attacker.id) && total >= 1))) {
       result.deadIds.push(attacker.id)
     }
   }
@@ -220,7 +235,7 @@ export function resolveCombat(
       if (!blocker) continue
       const k = parseKeywords(blocker.oracleText)
       const total = blocker.damage + (damageTo.get(blocker.id) ?? 0)
-      if (!k.has('indestructible') && (total >= parseToughness(blocker.typeLine) || (deathtouchHit.has(blocker.id) && total >= 1))) {
+      if (!k.has('indestructible') && (total >= parseToughness(blocker) || (deathtouchHit.has(blocker.id) && total >= 1))) {
         result.deadIds.push(blockerId)
       }
     }

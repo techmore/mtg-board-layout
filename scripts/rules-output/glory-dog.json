@@ -1049,9 +1049,11 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
+          "kind": "pump",
           "params": {
-            "description": "Trample This creature gets +1/+1 for each Aura and Equipment attached to it"
+            "power": 1,
+            "toughness": 1,
+            "scope": "all"
           }
         }
       },
@@ -1579,9 +1581,11 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
+          "kind": "pump",
           "params": {
-            "description": "Enchanted creature gets +2/+2 and has haste"
+            "power": 2,
+            "toughness": 2,
+            "scope": "all"
           }
         }
       }
@@ -1710,9 +1714,11 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
+          "kind": "pump",
           "params": {
-            "description": "Enchanted creature gets +2/+2 for each Aura and Equipment attached to it"
+            "power": 2,
+            "toughness": 2,
+            "scope": "all"
           }
         }
       }
@@ -1775,9 +1781,11 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
+          "kind": "pump",
           "params": {
-            "description": "Enchanted creature gets +1/+1 for each Aura and Equipment attached to it"
+            "power": 1,
+            "toughness": 1,
+            "scope": "all"
           }
         }
       }
@@ -1808,9 +1816,11 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
+          "kind": "pump",
           "params": {
-            "description": "Enchant creature Enchanted creature gets +2/+2 and is goaded"
+            "power": 2,
+            "toughness": 2,
+            "scope": "all"
           }
         }
       },
@@ -1887,9 +1897,11 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
+          "kind": "pump",
           "params": {
-            "description": "Enchant creature Enchanted creature gets +1/+1 for each artifact and/or enchantment you control"
+            "power": 1,
+            "toughness": 1,
+            "scope": "own"
           }
         }
       }
@@ -2084,9 +2096,11 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
+          "kind": "pump",
           "params": {
-            "description": "Enchant creature Enchanted creature gets +2/+0 and has trample"
+            "power": 2,
+            "toughness": 0,
+            "scope": "all"
           }
         }
       },
@@ -2198,9 +2212,11 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
+          "kind": "pump",
           "params": {
-            "description": "Equipped creature gets +2/+2 and has vigilance"
+            "power": 2,
+            "toughness": 2,
+            "scope": "all"
           }
         }
       }
@@ -2433,9 +2449,11 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
+          "kind": "pump",
           "params": {
-            "description": "Equipped creature gets +2/+0"
+            "power": 2,
+            "toughness": 0,
+            "scope": "all"
           }
         }
       },
@@ -2484,9 +2502,11 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
+          "kind": "pump",
           "params": {
-            "description": "Equipped creature gets +2/+2"
+            "power": 2,
+            "toughness": 2,
+            "scope": "all"
           }
         }
       },
@@ -2731,9 +2751,11 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
+          "kind": "pump",
           "params": {
-            "description": "Equipped creature gets +2/+2 and has trample and lifelink"
+            "power": 2,
+            "toughness": 2,
+            "scope": "all"
           }
         }
       }

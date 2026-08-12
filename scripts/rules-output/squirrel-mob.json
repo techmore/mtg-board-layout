@@ -130,9 +130,11 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
+          "kind": "pump",
           "params": {
-            "description": "Other Squirrels you control get +1/+1"
+            "power": 1,
+            "toughness": 1,
+            "scope": "own"
           }
         }
       }
@@ -360,9 +362,11 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
+          "kind": "pump",
           "params": {
-            "description": "Reach, menace, trample Squirrels you control have \"{T}: Target Squirrel gets +2/+2 and gains trample until end of turn"
+            "power": 2,
+            "toughness": 2,
+            "scope": "own"
           }
         }
       },
@@ -423,9 +427,11 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
+          "kind": "pump",
           "params": {
-            "description": "You get an emblem with \"Creatures you control get +3/+3 and have trample"
+            "power": 3,
+            "toughness": 3,
+            "scope": "own"
           }
         }
       }
@@ -1138,9 +1144,11 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
+          "kind": "pump",
           "params": {
-            "description": "Vigilance, trample, haste When this creature enters, other creatures you control get +2/+2 and gain vigilance and trample until end of turn"
+            "power": 2,
+            "toughness": 2,
+            "scope": "others"
           }
         }
       }
@@ -1255,9 +1263,11 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
+          "kind": "pump",
           "params": {
-            "description": "Squirrels you control get +1/+1"
+            "power": 1,
+            "toughness": 1,
+            "scope": "own"
           }
         }
       }
@@ -1347,9 +1357,11 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
+          "kind": "pump",
           "params": {
-            "description": "As long as this enchantment has seven or more quest counters on it, creatures you control get +5/+5"
+            "power": 5,
+            "toughness": 5,
+            "scope": "own"
           }
         }
       }
@@ -2214,9 +2226,11 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
+          "kind": "pump",
           "params": {
-            "description": "Squirrels you control get +1/+1 for each acorn counter on this artifact"
+            "power": 1,
+            "toughness": 1,
+            "scope": "own"
           }
         }
       },
@@ -2399,9 +2413,11 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
+          "kind": "pump",
           "params": {
-            "description": "Equipped creature gets +1/+1 for each creature you control with base power or toughness 1"
+            "power": 1,
+            "toughness": 1,
+            "scope": "own"
           }
         }
       }
@@ -3717,9 +3733,11 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
+          "kind": "pump",
           "params": {
-            "description": "Equipped creature gets +1/-1"
+            "power": 1,
+            "toughness": -1,
+            "scope": "all"
           }
         }
       },

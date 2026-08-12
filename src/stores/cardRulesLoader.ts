@@ -47,8 +47,9 @@ export function computeStaticPump(
   let power = 0
   let toughness = 0
   for (const source of cards) {
-    if (source.zone !== 'battlefield' || (source.owner ?? 'player') !== owner) continue
+    if (source.zone !== 'battlefield') continue
     if (source.id === card.id) continue
+    const sourceOwner = source.owner ?? 'player'
     // Auras enchant a single creature: their pump applies only to the card
     // they are attached to.
     if (/\bauras?\b/i.test(source.typeLine ?? '')) {
@@ -57,7 +58,20 @@ export function computeStaticPump(
     const rule = getCardRule(source.name, rulesCache)
     for (const ability of rule?.abilities ?? []) {
       if (ability.abilityType !== 'static' || ability.effect?.kind !== 'pump') continue
-      const params = ability.effect.params as { power?: number; toughness?: number }
+      const params = ability.effect.params as { power?: number; toughness?: number; scope?: string }
+      // Scope guards: "creatures you control" only affects the source's own
+      // creatures; "creatures your opponents control" only the other side.
+      // Fall back to the oracle text for fixtures/rules without a scope field.
+      let scope = params.scope
+      if (!scope) {
+        const text = rule?.oracleText ?? ''
+        if (/\byour opponents control\b/i.test(text)) scope = 'opponent'
+        else if (/\b(you|your) control\b/i.test(text)) scope = 'own'
+        else if (/\beach other creature\b|\bother creatures\b/i.test(text)) scope = 'others'
+        else scope = 'all'
+      }
+      if (scope === 'own' && sourceOwner !== owner) continue
+      if (scope === 'opponent' && sourceOwner === owner) continue
       power += params.power ?? 0
       toughness += params.toughness ?? 0
     }

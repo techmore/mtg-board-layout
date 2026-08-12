@@ -2720,9 +2720,11 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
+          "kind": "pump",
           "params": {
-            "description": "Vigilance This creature gets +1/+1 for each color among permanents you control"
+            "power": 1,
+            "toughness": 1,
+            "scope": "own"
           }
         }
       },
@@ -2996,9 +2998,11 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
+          "kind": "pump",
           "params": {
-            "description": "Other Elemental creatures you control get +1/+1"
+            "power": 1,
+            "toughness": 1,
+            "scope": "own"
           }
         }
       },
@@ -3109,9 +3113,11 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
+          "kind": "pump",
           "params": {
-            "description": "When this creature enters, creatures you control get +2/+2 and gain trample until end of turn"
+            "power": 2,
+            "toughness": 2,
+            "scope": "own"
           }
         }
       },

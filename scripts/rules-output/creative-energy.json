@@ -723,9 +723,11 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
+          "kind": "pump",
           "params": {
-            "description": "Flying, vigilance, trample Whenever you attack, other creatures you control get +2/+2 and gain indestructible until end of turn"
+            "power": 2,
+            "toughness": 2,
+            "scope": "others"
           }
         }
       },
@@ -2187,9 +2189,11 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
+          "kind": "pump",
           "params": {
-            "description": ") Other creatures you control get +1/+1"
+            "power": 1,
+            "toughness": 1,
+            "scope": "others"
           }
         }
       }
@@ -3313,9 +3317,11 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
+          "kind": "pump",
           "params": {
-            "description": "Pay {E}{E}{E}{E}: Creatures you control get +1/+0 and gain haste until end of turn"
+            "power": 1,
+            "toughness": 0,
+            "scope": "own"
           }
         }
       }

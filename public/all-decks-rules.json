@@ -3770,9 +3770,11 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
+          "kind": "pump",
           "params": {
-            "description": ") As long as you have 30 or more life, this creature gets +5/+5 and has flying"
+            "power": 5,
+            "toughness": 5,
+            "scope": "all"
           }
         }
       }
@@ -3874,9 +3876,11 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
+          "kind": "pump",
           "params": {
-            "description": "{3}{W}{W}{W}: Until end of turn, this creature gets +2/+2 and gains lifelink"
+            "power": 2,
+            "toughness": 2,
+            "scope": "all"
           }
         }
       }
@@ -3925,9 +3929,11 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
+          "kind": "pump",
           "params": {
-            "description": "As long as you have at least 7 life more than your starting life total, creatures you control get +2/+2"
+            "power": 2,
+            "toughness": 2,
+            "scope": "own"
           }
         }
       }
@@ -3961,9 +3967,11 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
+          "kind": "pump",
           "params": {
-            "description": "Flying Lieutenant — As long as you control your commander, this creature gets +2/+2 and creatures you control have vigilance"
+            "power": 2,
+            "toughness": 2,
+            "scope": "own"
           }
         }
       }
@@ -4026,9 +4034,11 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
+          "kind": "pump",
           "params": {
-            "description": ") Other Angels you control get +1/+1 and have lifelink"
+            "power": 1,
+            "toughness": 1,
+            "scope": "own"
           }
         }
       }
@@ -4124,9 +4134,28 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
+          "kind": "pump",
           "params": {
-            "description": "Vigilance Other creatures you control get +2/+2"
+            "power": 2,
+            "toughness": 2,
+            "scope": "others"
+          }
+        }
+      },
+      {
+        "abilityType": "triggered",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "pump",
+          "params": {
+            "power": -2,
+            "toughness": -2,
+            "scope": "opponent"
           }
         }
       }
@@ -5276,9 +5305,11 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
+          "kind": "pump",
           "params": {
-            "description": "This creature gets +2/+2 as long as you have 25 or more life"
+            "power": 2,
+            "toughness": 2,
+            "scope": "all"
           }
         }
       }
@@ -5640,9 +5671,11 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
+          "kind": "pump",
           "params": {
-            "description": "Flying Other nonblack creatures you control get +1/+1"
+            "power": 1,
+            "toughness": 1,
+            "scope": "own"
           }
         }
       }
@@ -5886,9 +5919,11 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
+          "kind": "pump",
           "params": {
-            "description": "You get an emblem with \"Creatures you control get +2/+2 and have flying"
+            "power": 2,
+            "toughness": 2,
+            "scope": "own"
           }
         }
       }
@@ -7238,9 +7273,11 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
+          "kind": "pump",
           "params": {
-            "description": "Flying, vigilance, trample Whenever you attack, other creatures you control get +2/+2 and gain indestructible until end of turn"
+            "power": 2,
+            "toughness": 2,
+            "scope": "others"
           }
         }
       },
@@ -8590,9 +8627,11 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
+          "kind": "pump",
           "params": {
-            "description": ") Other creatures you control get +1/+1"
+            "power": 1,
+            "toughness": 1,
+            "scope": "others"
           }
         }
       }
@@ -9643,9 +9682,11 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
+          "kind": "pump",
           "params": {
-            "description": "Pay {E}{E}{E}{E}: Creatures you control get +1/+0 and gain haste until end of turn"
+            "power": 1,
+            "toughness": 0,
+            "scope": "own"
           }
         }
       }
@@ -12626,9 +12667,11 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
+          "kind": "pump",
           "params": {
-            "description": "Vigilance This creature gets +1/+1 for each color among permanents you control"
+            "power": 1,
+            "toughness": 1,
+            "scope": "own"
           }
         }
       },
@@ -12902,9 +12945,11 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
+          "kind": "pump",
           "params": {
-            "description": "Other Elemental creatures you control get +1/+1"
+            "power": 1,
+            "toughness": 1,
+            "scope": "own"
           }
         }
       },
@@ -13015,9 +13060,11 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
+          "kind": "pump",
           "params": {
-            "description": "When this creature enters, creatures you control get +2/+2 and gain trample until end of turn"
+            "power": 2,
+            "toughness": 2,
+            "scope": "own"
           }
         }
       },
@@ -13971,9 +14018,11 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
+          "kind": "pump",
           "params": {
-            "description": "Enchant creature Enchanted creature gets +10/+10 and has trample and annihilator 2"
+            "power": 10,
+            "toughness": 10,
+            "scope": "all"
           }
         }
       },
@@ -14755,9 +14804,11 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
+          "kind": "pump",
           "params": {
-            "description": "Creatures you control get +1/+1 and have flying and indestructible"
+            "power": 1,
+            "toughness": 1,
+            "scope": "own"
           }
         }
       },
@@ -15635,9 +15686,11 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
+          "kind": "pump",
           "params": {
-            "description": "Other creatures you control of the chosen type get +1/+1"
+            "power": 1,
+            "toughness": 1,
+            "scope": "others"
           }
         }
       }
@@ -16352,9 +16405,11 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
+          "kind": "pump",
           "params": {
-            "description": "Colorless creatures you control get +2/+2"
+            "power": 2,
+            "toughness": 2,
+            "scope": "own"
           }
         }
       },
@@ -24918,9 +24973,11 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
+          "kind": "pump",
           "params": {
-            "description": "Creatures you control get +1/+1 for each blessing counter on this enchantment"
+            "power": 1,
+            "toughness": 1,
+            "scope": "own"
           }
         }
       }
@@ -25234,9 +25291,11 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
+          "kind": "pump",
           "params": {
-            "description": "Enchant creature Enchanted creature gets +1/+1, has deathtouch, and is goaded"
+            "power": 1,
+            "toughness": 1,
+            "scope": "all"
           }
         }
       },
@@ -25417,9 +25476,11 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
+          "kind": "pump",
           "params": {
-            "description": "Creatures you control get +1/+1"
+            "power": 1,
+            "toughness": 1,
+            "scope": "own"
           }
         }
       },
@@ -26154,9 +26215,11 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
+          "kind": "pump",
           "params": {
-            "description": "{T}, Sacrifice four Foods: Other creatures you control get +3/+3 and gain haste until end of turn"
+            "power": 3,
+            "toughness": 3,
+            "scope": "others"
           }
         }
       }
@@ -26928,9 +26991,11 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
+          "kind": "pump",
           "params": {
-            "description": "Flying When this creature enters, creatures you control get +1/+0 and gain first strike until end of turn"
+            "power": 1,
+            "toughness": 0,
+            "scope": "own"
           }
         }
       },
@@ -28800,9 +28865,11 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
+          "kind": "pump",
           "params": {
-            "description": "Creatures you control get +1/+1 for each unity counter on this enchantment"
+            "power": 1,
+            "toughness": 1,
+            "scope": "own"
           }
         }
       }
@@ -29897,9 +29964,11 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
+          "kind": "pump",
           "params": {
-            "description": "Trample This creature gets +1/+1 for each Aura and Equipment attached to it"
+            "power": 1,
+            "toughness": 1,
+            "scope": "all"
           }
         }
       },
@@ -30323,9 +30392,11 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
+          "kind": "pump",
           "params": {
-            "description": "Enchanted creature gets +2/+2 and has haste"
+            "power": 2,
+            "toughness": 2,
+            "scope": "all"
           }
         }
       }
@@ -30454,9 +30525,11 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
+          "kind": "pump",
           "params": {
-            "description": "Enchanted creature gets +2/+2 for each Aura and Equipment attached to it"
+            "power": 2,
+            "toughness": 2,
+            "scope": "all"
           }
         }
       }
@@ -30519,9 +30592,11 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
+          "kind": "pump",
           "params": {
-            "description": "Enchanted creature gets +1/+1 for each Aura and Equipment attached to it"
+            "power": 1,
+            "toughness": 1,
+            "scope": "all"
           }
         }
       }
@@ -30552,9 +30627,11 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
+          "kind": "pump",
           "params": {
-            "description": "Enchant creature Enchanted creature gets +2/+2 and is goaded"
+            "power": 2,
+            "toughness": 2,
+            "scope": "all"
           }
         }
       },
@@ -30631,9 +30708,11 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
+          "kind": "pump",
           "params": {
-            "description": "Enchant creature Enchanted creature gets +1/+1 for each artifact and/or enchantment you control"
+            "power": 1,
+            "toughness": 1,
+            "scope": "own"
           }
         }
       }
@@ -30755,9 +30834,11 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
+          "kind": "pump",
           "params": {
-            "description": "Enchant creature Enchanted creature gets +2/+0 and has trample"
+            "power": 2,
+            "toughness": 0,
+            "scope": "all"
           }
         }
       },
@@ -30869,9 +30950,11 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
+          "kind": "pump",
           "params": {
-            "description": "Equipped creature gets +2/+2 and has vigilance"
+            "power": 2,
+            "toughness": 2,
+            "scope": "all"
           }
         }
       }
@@ -31025,9 +31108,11 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
+          "kind": "pump",
           "params": {
-            "description": "Equipped creature gets +2/+0"
+            "power": 2,
+            "toughness": 0,
+            "scope": "all"
           }
         }
       },
@@ -31076,9 +31161,11 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
+          "kind": "pump",
           "params": {
-            "description": "Equipped creature gets +2/+2"
+            "power": 2,
+            "toughness": 2,
+            "scope": "all"
           }
         }
       },
@@ -31323,9 +31410,11 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
+          "kind": "pump",
           "params": {
-            "description": "Equipped creature gets +2/+2 and has trample and lifelink"
+            "power": 2,
+            "toughness": 2,
+            "scope": "all"
           }
         }
       }
@@ -33820,9 +33909,11 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
+          "kind": "pump",
           "params": {
-            "description": "Equipped creature gets +3/+0 and has intimidate"
+            "power": 3,
+            "toughness": 0,
+            "scope": "all"
           }
         }
       },
@@ -35581,9 +35672,11 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
+          "kind": "pump",
           "params": {
-            "description": "Reach, trample Multani gets +1/+1 for each land you control and each land card in your graveyard"
+            "power": 1,
+            "toughness": 1,
+            "scope": "own"
           }
         }
       },
@@ -35767,9 +35860,11 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
+          "kind": "pump",
           "params": {
-            "description": "Trample Lieutenant — As long as you control your commander, this creature gets +2/+2 and other creatures you control get +2/+2 and have trample"
+            "power": 2,
+            "toughness": 2,
+            "scope": "others"
           }
         }
       }
@@ -38012,9 +38107,11 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
+          "kind": "pump",
           "params": {
-            "description": ") Other Soldier creatures you control get +1/+1 and have vigilance"
+            "power": 1,
+            "toughness": 1,
+            "scope": "own"
           }
         }
       },
@@ -38919,9 +39016,11 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
+          "kind": "pump",
           "params": {
-            "description": "Until end of turn, creatures you control get +1/+1 and gain haste"
+            "power": 1,
+            "toughness": 1,
+            "scope": "own"
           }
         }
       }
@@ -39114,9 +39213,11 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
+          "kind": "pump",
           "params": {
-            "description": ") Creatures you control get +1/+1"
+            "power": 1,
+            "toughness": 1,
+            "scope": "own"
           }
         }
       },
@@ -39318,9 +39419,11 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
+          "kind": "pump",
           "params": {
-            "description": "Creature tokens you control get +1/+1 and have vigilance"
+            "power": 1,
+            "toughness": 1,
+            "scope": "own"
           }
         }
       }
@@ -39556,9 +39659,11 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
+          "kind": "pump",
           "params": {
-            "description": "Equipped creature gets +1/-1"
+            "power": 1,
+            "toughness": -1,
+            "scope": "all"
           }
         }
       },
@@ -39945,9 +40050,11 @@
         "targets": 1,
         "targetFilter": "artifact creature you control gets +2/+2 and gains menace until end of turn",
         "effect": {
-          "kind": "other",
+          "kind": "pump",
           "params": {
-            "description": "Grand Strategist — At the beginning of combat on your turn, another target artifact creature you control gets +2/+2 and gains menace until end of turn"
+            "power": 2,
+            "toughness": 2,
+            "scope": "own"
           }
         }
       }
@@ -40724,9 +40831,11 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
+          "kind": "pump",
           "params": {
-            "description": "Menace Command Protocols — Other artifact creatures you control get +1/+0 and have menace"
+            "power": 1,
+            "toughness": 0,
+            "scope": "own"
           }
         }
       },
@@ -41958,9 +42067,11 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
+          "kind": "pump",
           "params": {
-            "description": "Creatures you control of the chosen color get +1/+1"
+            "power": 1,
+            "toughness": 1,
+            "scope": "own"
           }
         }
       },
@@ -42048,9 +42159,11 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
+          "kind": "pump",
           "params": {
-            "description": "Equipped creature gets +1/+0 for each artifact you control"
+            "power": 1,
+            "toughness": 0,
+            "scope": "own"
           }
         }
       },
@@ -44896,9 +45009,11 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
+          "kind": "pump",
           "params": {
-            "description": "Enchant creature Enchanted creature gets +2/+2 and is goaded"
+            "power": 2,
+            "toughness": 2,
+            "scope": "all"
           }
         }
       },
@@ -45166,9 +45281,11 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
+          "kind": "pump",
           "params": {
-            "description": "Other Squirrels you control get +1/+1"
+            "power": 1,
+            "toughness": 1,
+            "scope": "own"
           }
         }
       }
@@ -45204,9 +45321,11 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
+          "kind": "pump",
           "params": {
-            "description": "Reach, menace, trample Squirrels you control have \"{T}: Target Squirrel gets +2/+2 and gains trample until end of turn"
+            "power": 2,
+            "toughness": 2,
+            "scope": "own"
           }
         }
       },
@@ -45267,9 +45386,11 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
+          "kind": "pump",
           "params": {
-            "description": "You get an emblem with \"Creatures you control get +3/+3 and have trample"
+            "power": 3,
+            "toughness": 3,
+            "scope": "own"
           }
         }
       }
@@ -45891,9 +46012,11 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
+          "kind": "pump",
           "params": {
-            "description": "Vigilance, trample, haste When this creature enters, other creatures you control get +2/+2 and gain vigilance and trample until end of turn"
+            "power": 2,
+            "toughness": 2,
+            "scope": "others"
           }
         }
       }
@@ -45970,9 +46093,11 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
+          "kind": "pump",
           "params": {
-            "description": "Squirrels you control get +1/+1"
+            "power": 1,
+            "toughness": 1,
+            "scope": "own"
           }
         }
       }
@@ -46062,9 +46187,11 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
+          "kind": "pump",
           "params": {
-            "description": "As long as this enchantment has seven or more quest counters on it, creatures you control get +5/+5"
+            "power": 5,
+            "toughness": 5,
+            "scope": "own"
           }
         }
       }
@@ -46492,9 +46619,11 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
+          "kind": "pump",
           "params": {
-            "description": "Squirrels you control get +1/+1 for each acorn counter on this artifact"
+            "power": 1,
+            "toughness": 1,
+            "scope": "own"
           }
         }
       },
@@ -46628,9 +46757,11 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
+          "kind": "pump",
           "params": {
-            "description": "Equipped creature gets +1/+1 for each creature you control with base power or toughness 1"
+            "power": 1,
+            "toughness": 1,
+            "scope": "own"
           }
         }
       }

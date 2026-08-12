@@ -482,6 +482,45 @@ describe('combat keywords', () => {
     expect(useGameStore.getState().opponentLifeTotal).toBe(40)
   })
 
+  it('a multi-blocked attacker is damaged by every blocker and kills them in order', () => {
+    startCombat(
+      [
+        card({ id: 'bear', name: 'Bear', typeLine: '4/4', type: 'creature', zone: 'battlefield', tapped: true }),
+        card({ id: 'b1', name: 'Wall1', typeLine: '0/3', type: 'creature', zone: 'battlefield', owner: 'opponent' }),
+        card({ id: 'b2', name: 'Wall2', typeLine: '0/2', type: 'creature', zone: 'battlefield', owner: 'opponent' }),
+      ],
+      [],
+      ['bear'],
+      { bear: ['b1', 'b2'] },
+    )
+    useGameStore.getState().resolveCombat()
+    // 4 power allocated across the 0/3 then the 0/2: the first blocker takes
+    // lethal 3 and dies; the second takes the remaining 1 and survives.
+    expect(useGameStore.getState().cards.find((c) => c.id === 'b1')?.zone).toBe('graveyard')
+    expect(useGameStore.getState().cards.find((c) => c.id === 'b2')?.zone).toBe('battlefield')
+    expect(useGameStore.getState().cards.find((c) => c.id === 'b2')?.damage).toBe(1)
+    expect(useGameStore.getState().cards.find((c) => c.id === 'bear')?.zone).toBe('battlefield')
+  })
+
+  it('a multi-blocked attacker dies to the combined blocker damage', () => {
+    startCombat(
+      [
+        card({ id: 'bear', name: 'Bear', typeLine: '2/2', type: 'creature', zone: 'battlefield', tapped: true }),
+        card({ id: 'w1', name: 'Wolf1', typeLine: '2/2', type: 'creature', zone: 'battlefield', owner: 'opponent' }),
+        card({ id: 'w2', name: 'Wolf2', typeLine: '2/2', type: 'creature', zone: 'battlefield', owner: 'opponent' }),
+      ],
+      [],
+      ['bear'],
+      { bear: ['w1', 'w2'] },
+    )
+    useGameStore.getState().resolveCombat()
+    // Both wolves deal 2: the 2/2 bear takes 4 damage and dies. The bear's 2
+    // power only kills the first wolf (2/2).
+    expect(useGameStore.getState().cards.find((c) => c.id === 'bear')?.zone).toBe('graveyard')
+    expect(useGameStore.getState().cards.find((c) => c.id === 'w1')?.zone).toBe('graveyard')
+    expect(useGameStore.getState().cards.find((c) => c.id === 'w2')?.zone).toBe('battlefield')
+  })
+
   it('every attacker deals damage in a multi-attacker combat', () => {
     startCombat(
       [

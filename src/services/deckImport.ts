@@ -16,6 +16,8 @@ interface ScryfallCollectionResponse {
     type_line: string
     oracle_text?: string
     produced_mana?: string[]
+    power?: string
+    toughness?: string
     image_uris?: {
       normal: string
     }
@@ -25,6 +27,8 @@ interface ScryfallCollectionResponse {
       oracle_text: string
       produced_mana?: string[]
       type_line: string
+      power?: string
+      toughness?: string
       image_uris: {
         normal: string
       }
@@ -96,6 +100,10 @@ export async function fetchDeckCards(
         manaCost: rules.manaCost,
         manaValue: rules.manaValue,
         typeLine: card.type_line || databaseEntry?.typeLine || 'Unknown',
+        // Some printings (e.g. recent reprints) omit P/T from the type line;
+        // carry it explicitly so combat never parses it as 0.
+        power: card.power ?? card.card_faces?.[0]?.power ?? databaseEntry?.power,
+        toughness: card.toughness ?? card.card_faces?.[0]?.toughness ?? databaseEntry?.toughness,
         oracleText,
         manaProduction: rules.manaProduction,
         entryTapMode: rules.entryTapMode,

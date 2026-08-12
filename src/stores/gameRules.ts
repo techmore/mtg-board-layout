@@ -223,7 +223,7 @@ export function generatedManaState(
 
 export function advanceTurnState(state: GameState): Partial<GameState> {
   const cards = moveCastSpellsToGraveyard(state.cards).map((card) => {
-    if (card.zone === 'battlefield') return { ...card, tapped: false, damage: 0, powerBoost: 0, toughnessBoost: 0 }
+    if (card.zone === 'battlefield') return { ...card, tapped: false, damage: 0, deathtouchDamage: false, powerBoost: 0, toughnessBoost: 0 }
     return card
   })
   return {

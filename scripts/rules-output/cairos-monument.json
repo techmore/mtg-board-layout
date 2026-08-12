@@ -112,9 +112,11 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
+          "kind": "pump",
           "params": {
-            "description": ") As long as you have 30 or more life, this creature gets +5/+5 and has flying"
+            "power": 5,
+            "toughness": 5,
+            "scope": "all"
           }
         }
       }
@@ -216,9 +218,11 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
+          "kind": "pump",
           "params": {
-            "description": "{3}{W}{W}{W}: Until end of turn, this creature gets +2/+2 and gains lifelink"
+            "power": 2,
+            "toughness": 2,
+            "scope": "all"
           }
         }
       }
@@ -267,9 +271,11 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
+          "kind": "pump",
           "params": {
-            "description": "As long as you have at least 7 life more than your starting life total, creatures you control get +2/+2"
+            "power": 2,
+            "toughness": 2,
+            "scope": "own"
           }
         }
       }
@@ -303,9 +309,11 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
+          "kind": "pump",
           "params": {
-            "description": "Flying Lieutenant — As long as you control your commander, this creature gets +2/+2 and creatures you control have vigilance"
+            "power": 2,
+            "toughness": 2,
+            "scope": "own"
           }
         }
       }
@@ -368,9 +376,11 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
+          "kind": "pump",
           "params": {
-            "description": ") Other Angels you control get +1/+1 and have lifelink"
+            "power": 1,
+            "toughness": 1,
+            "scope": "own"
           }
         }
       }
@@ -466,9 +476,28 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
+          "kind": "pump",
           "params": {
-            "description": "Vigilance Other creatures you control get +2/+2"
+            "power": 2,
+            "toughness": 2,
+            "scope": "others"
+          }
+        }
+      },
+      {
+        "abilityType": "triggered",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "pump",
+          "params": {
+            "power": -2,
+            "toughness": -2,
+            "scope": "opponent"
           }
         }
       }
@@ -1827,9 +1856,11 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
+          "kind": "pump",
           "params": {
-            "description": "This creature gets +2/+2 as long as you have 25 or more life"
+            "power": 2,
+            "toughness": 2,
+            "scope": "all"
           }
         }
       }
@@ -2191,9 +2222,11 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
+          "kind": "pump",
           "params": {
-            "description": "Flying Other nonblack creatures you control get +1/+1"
+            "power": 1,
+            "toughness": 1,
+            "scope": "own"
           }
         }
       }
@@ -2437,9 +2470,11 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
+          "kind": "pump",
           "params": {
-            "description": "You get an emblem with \"Creatures you control get +2/+2 and have flying"
+            "power": 2,
+            "toughness": 2,
+            "scope": "own"
           }
         }
       }

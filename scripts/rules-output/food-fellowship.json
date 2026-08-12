@@ -207,9 +207,11 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
+          "kind": "pump",
           "params": {
-            "description": "{T}, Sacrifice four Foods: Other creatures you control get +3/+3 and gain haste until end of turn"
+            "power": 3,
+            "toughness": 3,
+            "scope": "others"
           }
         }
       }
@@ -1653,9 +1655,11 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
+          "kind": "pump",
           "params": {
-            "description": "Flying When this creature enters, creatures you control get +1/+0 and gain first strike until end of turn"
+            "power": 1,
+            "toughness": 0,
+            "scope": "own"
           }
         }
       },
@@ -3875,9 +3879,11 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
+          "kind": "pump",
           "params": {
-            "description": "Creatures you control get +1/+1 for each unity counter on this enchantment"
+            "power": 1,
+            "toughness": 1,
+            "scope": "own"
           }
         }
       }

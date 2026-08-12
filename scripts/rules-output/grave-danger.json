@@ -2329,9 +2329,11 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
+          "kind": "pump",
           "params": {
-            "description": "Equipped creature gets +3/+0 and has intimidate"
+            "power": 3,
+            "toughness": 0,
+            "scope": "all"
           }
         }
       },
