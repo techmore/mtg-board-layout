@@ -6,6 +6,10 @@ Sections: **A** human playability · **B** computer (AI) playability · **C** mu
 
 Status legend: [x] done · [~] partial · [ ] not started
 
+## Status update (2026-08-11)
+
+Three deep audit passes fixed **25+ verified bugs** and closed the remaining roadmap gaps; see `AUDIT_LOG` at the bottom. Verified live: 4-player + 1v1 WebSocket smokes, 8-turn AI simulations with real rules and real card data. **453 client tests + 78 server tests**, builds + lint clean.
+
 ---
 
 ## A. Human playability (solo vs AI)
@@ -41,10 +45,11 @@ Toasts for errors (mana, land limit, import, copy), turn announcements, DEFEND/a
 **Success:** A player who has never seen the app can play a full game without asking how to do anything.
 
 ### A7. Card data coverage — [~] partial
-1,149 cards parsed with rules; keywords, entry-tap, mana production, triggers, spells, pumps, auras.
+1,149 cards parsed with rules; keywords, entry-tap, mana production, triggers, spells, pumps, auras, landfall, static-anthem scopes, menace, X-costs.
 
-**Missing:** ~430 "other"-kind abilities (complex multi-clause triggers) are extracted but unresolvable. Resolving one now toasts an honest "not implemented yet" notice; tooltips show keywords (first strike, ward, hexproof).
+**Missing:** ~370 "other"-kind abilities (complex multi-clause triggers, equip, storm, annihilator) are extracted but unresolvable. Resolving one now toasts an honest "not implemented yet" notice; tooltips show keywords.
 **Success:** Every card in the 16 starter decks shows resolvable behavior or an honest "not yet implemented" state rather than silently doing nothing.
+**Candidate next:** equip ("attach to target creature you control") — the attach machinery (`enchantsCardId`) already exists for auras; needs parser + effect kind + UI activation.
 
 ---
 
@@ -72,7 +77,7 @@ The AI activates `{T}:` abilities (mana dorks feed its pool), planeswalker loyal
 **Effort:** medium — `aiActivatePlaneswalkers` + utility-ability activation in `gameOpponentAI`.
 
 ### B5. AI mana & sequencing — [~] partial
-Greedy land tapping improved with color-fixing: generic costs prefer colorless lands, then lands whose colors aren't still needed for the colored portion.
+Greedy land tapping improved with color-fixing: generic costs prefer colorless lands, then lands whose colors aren't still needed for the colored portion. Dual lands produce exactly one mana ("{B} or {G}"); enters-tapped lands enter tapped; summoning-sickness blocks dork taps; AI auto-targeting prefers player cards for removal and its own for buffs.
 
 **Missing:** no "leave up mana for instants" hold logic.
 **Success:** The AI doesn't tap a red source for a generic cost when it needs red next.
@@ -102,10 +107,9 @@ Multiplayer board reuses the card inspector and per-player turn clocks.
 **Success:** Clicking any card in multiplayer opens the inspector; each player's turn time accumulates like solo.
 
 ### C5. Dice, coin, mana log in multiplayer — [x] done
-Solo has dice/coin (with server-random in MP) and a mana log; the MP board has neither UI.
+Solo has dice/coin (with server-random in MP) and a mana log. The MP board gained dice/coin controls with an event feed (2026-08-11); mana log remains solo-only by design (MP mana is server-authoritative with no per-play log).
 
-**Success:** The MP board can roll dice/flip coins and shows a mana activity log.
-**Effort:** small — UI-only (actions already exist server-side).
+**Success:** The MP board can roll dice/flip coins (server-random) and shows the last result.
 
 ### C6. Trigger stack & SBA parity — [x] done
 Multiplayer combat v2: **damage accumulation, SBA deaths, keywords** (first strike, trample, lifelink, deathtouch, indestructible, flying/reach) in `server/src/rooms/combat.ts`, with expanded server combat tests.
@@ -122,9 +126,9 @@ Client: 103 source files, largest are BoardPage (447), gameStore (435), TriggerI
 **Done:** `server/src/rooms/combat.ts` extracted — pure combat resolution, unit-testable in isolation; `GameRoom.ts` slimmed.
 
 ### D2. Tests — [x] done
-356 client tests (19 files) cover rules, combat, triggers, SBA, AI, persistence, deck smoke (all 16 decks vs AI). **Server has a test suite**: `server/src/rooms/combat.test.ts` (7 tests) covers blocked trades, unblocked damage, team damage.
+453 client tests (19 files) cover rules, combat, triggers, SBA, AI, persistence, deck smoke (all 16 decks vs AI). **Server has a test suite**: 78 tests in `server/src` (combat, room utils) runnable via `npm --prefix server test` (script added 2026-08-11) or the root suite.
 
-**Success:** `npm --prefix server test` runs; combat edge cases (blocked trades, unblocked damage, team damage) covered.
+**Success:** `npm --prefix server test` runs; combat edge cases (blocked trades, unblocked damage incl. 1v1/4ffa empty-teamId, team damage, trample, menace, deathtouch, multi-blocking) covered.
 
 ### D3. Single sources of truth — [x] done
 Deck lists: `src/data/decklists/*.json` (app + parser). Protocol: `mtg-protocol` (client + server). Card rules: parser output → `public/all-decks-rules.json`.
@@ -147,3 +151,48 @@ Entry-tap logic deduped into the shared `mtg-protocol` package (`entryTap.ts`) �
 5. ✅ B3 (AI response depth — done) / B5 (color-fixing done, hold-mana pending)
 6. ✅ C6 (engine parity — done: MP combat v2 with damage accumulation, SBA, keywords)
 7. ✅ D4 (de-duplication — done: entry-tap shared in `mtg-protocol`)
+8. ✅ Audit passes (2026-08-11): 25+ bugs fixed — see AUDIT LOG below
+
+## Next candidates (not yet started)
+
+- **A7 equip support** — parser + `equip` effect kind + UI activation (attach machinery exists).
+- **B5 AI hold-mana** — reserve untapped sources for a held instant when casting greedily.
+- **MP reconnect auth** — playerId takeover is currently unauthenticated (security is out of scope, but this is the cheapest high-value hardening).
+- **Trigger-condition depth** — "whenever you cast your first spell each turn" style stateful conditions.
+- **More A7 effect kinds** — turn the top remaining "other" patterns (storm, annihilator, proliferate AI picks) into resolvable effects.
+
+---
+
+## AUDIT LOG (2026-08-11)
+
+Verified fixes, all with regression tests where applicable:
+
+### Combat / rules engine
+- MP unblocked attackers dealt **zero** damage in 1v1/4ffa (empty teamId matched every player in the skip condition; tests only used explicit teamIds). Fixed + empty-teamId regression tests.
+- Solo multi-blocking: all blockers deal; attacker damage allocates across blockers; trample spills leftover. Deathtouch lethal tracked via `deathtouchDamage` flag.
+- Menace: single-blocker assignments are illegal (both engines) + tests.
+- Landfall triggers mis-parsed as ETB (Lotus Cobra fired on every creature); parser regex + engine emits `landfall` on land plays.
+- Static anthems: parser required "until end of turn" so anthems parsed as unresolvable `other`; now emit P/T + owner scope; `computeStaticPump` honors scopes ("you control" / "opponents control" / "each other creature").
+- X-costs ignored (`{X}{B}` cast for `{B}`); hybrid symbols now payable with generic.
+- Commander-tax conventions unified (both cast paths store 2× prior casts, charge `{tax}`).
+
+### Trigger engine
+- Conditions enforced: "another creature you control dies" no longer fires for the source or enemies; "this creature enters" only for the source; type filters; "your upkeep/end step" owner-aware (AI turn now emits its own upkeep + end-of-turn events).
+- AI scry/search/proliferate instances auto-confirm instead of sticking on the player's stack.
+
+### AI
+- AI-cast instants/sorceries stayed on the battlefield forever (now move to graveyard).
+- Planeswalker `−2` loyalty (U+2212) was treated as a GAIN; now correctly subtracts.
+- Dual lands produced 2 mana ("{B} or {G}"); enters-tapped lands entered untapped; summoning sickness ignored for dork taps.
+- Auto-targeting prefers player cards for removal (weakest first), own cards for buffs (strongest first); blocking accounts for static pumps.
+- Full game resets on loadDeck/reshuffle/loadOpponentDeck (gameOver, opponent state, commander damage, prompts, triggers).
+
+### Multiplayer server
+- Card ids re-keyed per player (identical decks collided: damage/death hit both players' same-id cards).
+- Disconnected active player auto-skips (no soft-lock); mid-game joins rejected; redeal/reshuffle lobby-only; land-rule bypasses closed; discard hand-only; endTurn guarded mid-combat; vigilance attackers can attack tapped; blockers restricted to opponents; token cap; stale client-map pruning.
+- Commander damage tracking (21+) and correct deck-out winner selection in 2v2/4ffa.
+- P/T now flows explicitly deck → wire → server combat (some reprint type lines omit P/T, e.g. Kulrath Knight "Creature — Elemental Knight").
+
+### Data pipeline
+- Parser resolves DFCs via first-segment alias and prunes stale entries (stale copies overrode fresh ones at merge time). All 16 decks: zero rules-coverage gaps.
+

@@ -122,6 +122,51 @@ describe('resolveTrigger', () => {
     expect(harness.state.triggerStack).toHaveLength(0)
   })
 
+  it('mills cards from the top of the source owner\'s library', () => {
+    const source = card({ id: 'source-1', zone: 'battlefield' })
+    const library = [card({ id: 'l1', zone: 'library' }), card({ id: 'l2', zone: 'library' }), card({ id: 'l3', zone: 'library' })]
+    const hand = card({ id: 'h1', zone: 'hand' })
+    const harness = makeHarness({
+      cards: [source, ...library, hand],
+      triggerStack: [trigger('t1', { kind: 'mill', params: { amount: 2 } })],
+    })
+
+    resolveTrigger(harness.get, harness.set, 't1')
+
+    const milled = harness.state.cards.filter((c) => c.zone === 'graveyard').map((c) => c.id)
+    expect(milled).toEqual(['l1', 'l2'])
+    expect(harness.state.cards.find((c) => c.id === 'h1')?.zone).toBe('hand')
+    expect(harness.state.triggerStack).toHaveLength(0)
+  })
+
+  it('mills the opponent\'s library for opponent-owned triggers', () => {
+    const source = card({ id: 'source-1', zone: 'battlefield', owner: 'opponent' })
+    const library = [card({ id: 'l1', zone: 'library', owner: 'opponent' }), card({ id: 'l2', zone: 'library', owner: 'opponent' })]
+    const playerLibrary = [card({ id: 'p1', zone: 'library' })]
+    const harness = makeHarness({
+      cards: [source, ...library, ...playerLibrary],
+      triggerStack: [trigger('t1', { kind: 'mill', params: { amount: 1 } })],
+    })
+
+    resolveTrigger(harness.get, harness.set, 't1')
+
+    const milled = harness.state.cards.filter((c) => c.zone === 'graveyard').map((c) => c.id)
+    expect(milled).toEqual(['l1'])
+    expect(harness.state.cards.find((c) => c.id === 'p1')?.zone).toBe('library')
+  })
+
+  it('mills nothing when the library is empty', () => {
+    const harness = makeHarness({
+      cards: [card({ id: 'source-1', zone: 'battlefield' })],
+      triggerStack: [trigger('t1', { kind: 'mill', params: { amount: 3 } })],
+    })
+
+    resolveTrigger(harness.get, harness.set, 't1')
+
+    expect(harness.state.cards.every((c) => c.zone !== 'graveyard')).toBe(true)
+    expect(harness.state.triggerStack).toHaveLength(0)
+  })
+
   it('applies parsed power and toughness to the token', () => {
     const harness = makeHarness({ triggerStack: [trigger('t1', { kind: 'create_token', params: { tokenName: 'Dragon', tokenPower: 4, tokenToughness: 4 } })] })
 
