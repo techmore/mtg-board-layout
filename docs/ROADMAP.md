@@ -49,7 +49,7 @@ Toasts for errors (mana, land limit, import, copy), turn announcements, DEFEND/a
 
 **Missing:** ~370 "other"-kind abilities (complex multi-clause triggers, equip, storm, annihilator) are extracted but unresolvable. Resolving one now toasts an honest "not implemented yet" notice; tooltips show keywords.
 **Success:** Every card in the 16 starter decks shows resolvable behavior or an honest "not yet implemented" state rather than silently doing nothing.
-**Candidate next:** equip ("attach to target creature you control") — the attach machinery (`enchantsCardId`) already exists for auras; needs parser + effect kind + UI activation.
+**Progress (2026-08-11):** equip is now fully supported (24 abilities): parser detects Equip as an activated ability, equipment attaches/falls off like auras, the player equips via right-click with a creature-choice dialog, static equipment pumps apply, AI auto-equips. **Remaining candidates:** storm, annihilator, proliferate AI picks.
 
 ---
 
@@ -155,7 +155,7 @@ Entry-tap logic deduped into the shared `mtg-protocol` package (`entryTap.ts`) �
 
 ## Next candidates (not yet started)
 
-- **A7 equip support** — parser + `equip` effect kind + UI activation (attach machinery exists).
+- **A7 remaining patterns** — storm, annihilator, "whenever you cast your first spell each turn" stateful conditions.
 - **B5 AI hold-mana** — reserve untapped sources for a held instant when casting greedily.
 - **MP reconnect auth** — playerId takeover is currently unauthenticated (security is out of scope, but this is the cheapest high-value hardening).
 - **Trigger-condition depth** — "whenever you cast your first spell each turn" style stateful conditions.
