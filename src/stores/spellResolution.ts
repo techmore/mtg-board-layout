@@ -5,6 +5,36 @@ import { targetsForEffect, filterMatch } from '../components/Board/triggerUtils'
 
 type SetFn = (partial: GameState | Partial<GameState> | ((state: GameState) => Partial<GameState>)) => void
 
+/**
+ * Pick the AI's auto-target from the candidate list. Removal effects (destroy,
+ * exile, damage, negative pumps, fight) prefer the player's cards; beneficial
+ * effects (buffs, counters, recursion) prefer the AI's own.
+ */
+function autoTarget(kind: string, params: Record<string, unknown> | undefined, candidates: BoardCard[]): BoardCard | null {
+  if (candidates.length === 0) return null
+  const power = Number(params?.power ?? 0)
+  const toughness = Number(params?.toughness ?? 0)
+  const harmful = ['destroy', 'exile', 'deal_damage', 'fight', 'sacrifice'].includes(kind) ||
+    (kind === 'pump' && (power < 0 || toughness < 0)) ||
+    (kind === 'put_counter' && (params?.amount === -1 || String(params?.counterKind ?? '').includes('-1/-1')))
+  const preferredOwner: 'player' | 'opponent' = harmful ? 'player' : 'opponent'
+  const ranked = [...candidates].sort((a, b) => {
+    const aScore = (a.owner ?? 'player') === preferredOwner ? 1 : 0
+    const bScore = (b.owner ?? 'player') === preferredOwner ? 1 : 0
+    if (aScore !== bScore) return bScore - aScore
+    // Prefer the strongest creature for buffs, the weakest for removal.
+    if (kind === 'pump' && harmful) return getToughness(b) - getToughness(a)
+    if (kind === 'pump') return getToughness(a) - getToughness(b)
+    if (kind === 'deal_damage') return getToughness(b) - getToughness(a)
+    return 0
+  })
+  return ranked[0] ?? null
+}
+
+function getToughness(card: BoardCard): number {
+  return parseInt(card.typeLine?.match(/\/(\d+)/)?.[1] ?? '0', 10) + (card.toughnessBoost ?? 0) + (card.counters ?? 0)
+}
+
 /** Push a cast card's parsed spell abilities onto the trigger stack for manual resolution. */
 export function enqueueSpellAbilities(set: SetFn, _get: () => GameState, card: BoardCard) {
   const rule = getCardRule(card.name, getCachedCardRules())
@@ -61,11 +91,11 @@ function autoResolveInstance(set: SetFn, get: () => GameState, card: BoardCard, 
       .filter((c) => c.id !== card.id)
       .filter((c) => filterMatch(ability.targetFilter, c))
       .filter((c) => !(hasKeyword(c, 'hexproof') && (c.owner ?? 'player') !== 'opponent'))
-    if (candidates.length === 0) {
+    const target = autoTarget(ability.effect.kind, ability.effect.params, candidates)
+    if (!target) {
       set((prev) => ({ triggerStack: prev.triggerStack.filter((t) => t.id !== instance.id) }))
       return
     }
-    const target = candidates[0]
 
     // Ward: the AI pays when it can afford it, otherwise the spell fizzles.
     if (hasKeyword(target, 'ward') && (target.owner ?? 'player') !== 'opponent') {
@@ -121,11 +151,11 @@ export function resolveAITriggerInstances(set: SetFn, get: () => GameState) {
         .filter((c) => c.id !== source.id)
         .filter((c) => filterMatch(ability.targetFilter, c))
         .filter((c) => !(hasKeyword(c, 'hexproof') && (c.owner ?? 'player') !== 'opponent'))
-      if (candidates.length === 0) {
+      const target = autoTarget(ability.effect.kind, ability.effect.params, candidates)
+      if (!target) {
         set((prev) => ({ triggerStack: prev.triggerStack.filter((t) => t.id !== instance.id) }))
         continue
       }
-      const target = candidates[0]
       if (hasKeyword(target, 'ward') && (target.owner ?? 'player') !== 'opponent') {
         const pool = get().opponentManaPool
         const total = Object.values(pool).reduce((sum, amount) => sum + amount, 0)

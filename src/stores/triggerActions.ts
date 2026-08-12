@@ -96,7 +96,17 @@ export function resolveTrigger(get: () => GameState, set: (partial: Partial<Game
         if (trigger.ability.targets > 0) break
         const power = (params.power as number) ?? 0
         const toughness = (params.toughness as number) ?? 0
-        const victims = state.cards.filter((c) => c.zone === 'battlefield' && c.type === 'creature')
+        const scope = (params.scope as string | undefined) ?? 'all'
+        const source = state.cards.find((c) => c.id === trigger.sourceCardId)
+        const sourceOwner = (source?.owner ?? 'player') === 'opponent' ? 'opponent' : 'player'
+        const victims = state.cards.filter((c) => {
+          if (c.zone !== 'battlefield' || c.type !== 'creature') return false
+          const owner = c.owner ?? 'player'
+          if (scope === 'own') return owner === sourceOwner
+          if (scope === 'opponent') return owner !== sourceOwner
+          if (scope === 'others') return c.id !== trigger.sourceCardId
+          return true
+        })
         set({
           cards: state.cards.map((c) =>
             victims.some((v) => v.id === c.id)

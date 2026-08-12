@@ -200,6 +200,9 @@ export function createTurnPhases(set: SetFn, get: () => GameState): Pick<GameSta
         get().emitGameEvent({ type: 'discard', cardId, cardName: discarded.name })
       }
       if (action === 'advance' && !get().turnPrompt) {
+        // The end-step happens before the turn hands off: emit the end-of-turn
+        // event on the advance path too, not only on 'end'.
+        get().emitGameEvent({ type: 'end_of_turn' })
         get().runOpponentTurn()
       }
       if (action === 'end' && !get().turnPrompt) {

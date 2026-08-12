@@ -409,6 +409,17 @@ export function createOpponentAI(set: SetFn, get: () => GameState): Pick<GameSta
           cards: [...state.cards, ...commanders, ...drawn],
           activePlayer: 'opponent' as ActivePlayer,
           currentPhase: 'beginning',
+          // A previous game's end state must not leak into the new one.
+          gameOver: null,
+          opponentLifeTotal: 40,
+          opponentManaPool: emptyManaPool(),
+          opponentPotentialMana: [],
+          opponentLandPlaysThisTurn: 0,
+          commanderDamage: {},
+          triggerStack: [],
+          auraPrompt: null,
+          wardPrompt: null,
+          combatState: { active: false, attackers: [], blockers: {} },
           turnAnnouncement: { id: Date.now(), text: `${opponentName ?? 'OPPONENT'}'S FIRST TURN` },
         }
       })

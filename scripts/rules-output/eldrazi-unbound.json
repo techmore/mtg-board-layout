@@ -1706,7 +1706,8 @@
           "kind": "pump",
           "params": {
             "power": 1,
-            "toughness": 0
+            "toughness": 0,
+            "scope": "all"
           }
         }
       },
@@ -2770,7 +2771,8 @@
           "kind": "pump",
           "params": {
             "power": 3,
-            "toughness": -3
+            "toughness": -3,
+            "scope": "all"
           }
         }
       }

@@ -447,6 +447,13 @@ const EFFECT_PATTERNS = [
   { kind: 'pump', regex: /(?:gets|gain(?:s)?|get)\s*[^.,;]*?([-−+]?\d+)\s*\/\s*([-−+]?\d+)\s*until end of turn/i },
 ]
 
+function pumpScope(sentence) {
+  if (/your opponents control/i.test(sentence)) return 'opponent'
+  if (/each other creature/i.test(sentence) || /other creatures/i.test(sentence)) return 'others'
+  if (/you control/i.test(sentence)) return 'own'
+  return 'all'
+}
+
 function parseEffect(sentence) {
   for (const ep of EFFECT_PATTERNS) {
     const m = sentence.match(ep.regex)
@@ -496,6 +503,7 @@ function parseEffect(sentence) {
           params.power = parseInt(m[1].replace(/[−]/g, '-'), 10)
           params.toughness = parseInt(m[2].replace(/[−]/g, '-'), 10)
         }
+        params.scope = pumpScope(sentence)
       }
       return { kind: ep.kind, params }
     }

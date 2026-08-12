@@ -783,7 +783,8 @@
           "kind": "pump",
           "params": {
             "power": 1,
-            "toughness": 1
+            "toughness": 1,
+            "scope": "own"
           }
         }
       },

@@ -3901,7 +3901,8 @@
           "kind": "pump",
           "params": {
             "power": 3,
-            "toughness": 3
+            "toughness": 3,
+            "scope": "own"
           }
         }
       }

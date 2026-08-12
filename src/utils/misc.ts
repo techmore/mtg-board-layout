@@ -56,6 +56,15 @@ export function parseManaCost(cost: string) {
       colored[inner]++
     } else if (/^\d+$/.test(inner)) {
       generic += parseInt(inner, 10)
+    } else if (/^X$/i.test(inner)) {
+      // {X} spells still cost at least one generic mana here; charging nothing
+      // would let X-spells resolve for free. (Hybrid symbols like {2/B} are
+      // counted as generic too — they can always be paid with generic mana.)
+      generic += 1
+    } else if (/^[0-9]+\/[WUBRGC]$/i.test(inner)) {
+      generic += parseInt(inner.split('/')[0], 10)
+    } else if (/^[WUBRGC]\/[WUBRGC]$/i.test(inner)) {
+      colored[inner.split('/')[0] as ManaColor]++
     }
   }
   return {

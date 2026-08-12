@@ -783,7 +783,8 @@
           "kind": "pump",
           "params": {
             "power": 1,
-            "toughness": 1
+            "toughness": 1,
+            "scope": "own"
           }
         }
       },
@@ -13806,7 +13807,8 @@
           "kind": "pump",
           "params": {
             "power": 3,
-            "toughness": 3
+            "toughness": 3,
+            "scope": "own"
           }
         }
       }
@@ -14458,7 +14460,8 @@
           "kind": "pump",
           "params": {
             "power": 3,
-            "toughness": -3
+            "toughness": -3,
+            "scope": "all"
           }
         }
       },
@@ -18758,7 +18761,8 @@
           "kind": "pump",
           "params": {
             "power": 1,
-            "toughness": 0
+            "toughness": 0,
+            "scope": "all"
           }
         }
       },
@@ -19580,7 +19584,8 @@
           "kind": "pump",
           "params": {
             "power": 3,
-            "toughness": -3
+            "toughness": -3,
+            "scope": "all"
           }
         }
       }
@@ -20989,7 +20994,8 @@
           "kind": "pump",
           "params": {
             "power": -2,
-            "toughness": -2
+            "toughness": -2,
+            "scope": "all"
           }
         }
       }
@@ -21123,7 +21129,8 @@
           "kind": "pump",
           "params": {
             "power": -1,
-            "toughness": -1
+            "toughness": -1,
+            "scope": "others"
           }
         }
       },
@@ -21139,7 +21146,8 @@
           "kind": "pump",
           "params": {
             "power": -1,
-            "toughness": -1
+            "toughness": -1,
+            "scope": "all"
           }
         }
       }
@@ -21174,7 +21182,8 @@
           "kind": "pump",
           "params": {
             "power": -2,
-            "toughness": -2
+            "toughness": -2,
+            "scope": "opponent"
           }
         }
       },
@@ -23207,7 +23216,8 @@
           "kind": "pump",
           "params": {
             "power": -1,
-            "toughness": -1
+            "toughness": -1,
+            "scope": "opponent"
           }
         }
       }
@@ -24235,7 +24245,8 @@
           "kind": "pump",
           "params": {
             "power": -2,
-            "toughness": -1
+            "toughness": -1,
+            "scope": "all"
           }
         }
       }
@@ -27255,7 +27266,8 @@
           "kind": "pump",
           "params": {
             "power": 2,
-            "toughness": 2
+            "toughness": 2,
+            "scope": "all"
           }
         }
       }
@@ -27479,7 +27491,8 @@
           "kind": "pump",
           "params": {
             "power": 1,
-            "toughness": 1
+            "toughness": 1,
+            "scope": "all"
           }
         }
       },
@@ -27495,7 +27508,8 @@
           "kind": "pump",
           "params": {
             "power": 2,
-            "toughness": 2
+            "toughness": 2,
+            "scope": "all"
           }
         }
       }
@@ -35800,7 +35814,8 @@
           "kind": "pump",
           "params": {
             "power": 2,
-            "toughness": 2
+            "toughness": 2,
+            "scope": "own"
           }
         }
       }
@@ -38114,7 +38129,8 @@
           "kind": "pump",
           "params": {
             "power": 1,
-            "toughness": 0
+            "toughness": 0,
+            "scope": "own"
           }
         }
       }
@@ -38166,7 +38182,8 @@
           "kind": "pump",
           "params": {
             "power": 1,
-            "toughness": 1
+            "toughness": 1,
+            "scope": "own"
           }
         }
       },
@@ -39269,7 +39286,8 @@
           "kind": "pump",
           "params": {
             "power": 2,
-            "toughness": 2
+            "toughness": 2,
+            "scope": "own"
           }
         }
       }
@@ -41291,7 +41309,8 @@
           "kind": "pump",
           "params": {
             "power": -1,
-            "toughness": -1
+            "toughness": -1,
+            "scope": "own"
           }
         }
       }
@@ -41455,7 +41474,8 @@
           "kind": "pump",
           "params": {
             "power": -1,
-            "toughness": -1
+            "toughness": -1,
+            "scope": "own"
           }
         }
       }
@@ -43620,7 +43640,8 @@
           "kind": "pump",
           "params": {
             "power": 1,
-            "toughness": 0
+            "toughness": 0,
+            "scope": "all"
           }
         }
       },
@@ -44477,7 +44498,8 @@
           "kind": "pump",
           "params": {
             "power": -4,
-            "toughness": -4
+            "toughness": -4,
+            "scope": "all"
           }
         }
       }
@@ -45297,7 +45319,8 @@
           "kind": "pump",
           "params": {
             "power": -2,
-            "toughness": -2
+            "toughness": -2,
+            "scope": "all"
           }
         }
       }
@@ -45446,7 +45469,8 @@
           "kind": "pump",
           "params": {
             "power": -1,
-            "toughness": -1
+            "toughness": -1,
+            "scope": "own"
           }
         }
       }

@@ -185,9 +185,15 @@ export class GameRoom extends Room<{ state: GameState }> {
       const player = this.getPlayer(client)
       if (!player || this.state.status !== 'playing' || this.state.activePlayerId !== player.id) return
       if (this.state.combatActive) return
-      const ids = Array.isArray(message?.attackerIds) ? message.attackerIds.filter((id: unknown): id is string => typeof id === 'string') : []
+      const ids: string[] = Array.isArray(message?.attackerIds) ? (message.attackerIds as unknown[]).filter((id): id is string => typeof id === 'string') : []
       const battlefield = new Set(player.battlefield.map((c) => c.id))
-      const valid = ids.filter((id: string) => battlefield.has(id) && !player.battlefield.find((c) => c.id === id)?.tapped)
+      // Dedupe, and allow tapped creatures with vigilance to attack.
+      const valid = [...new Set(ids)].filter((id: string) => {
+        if (!battlefield.has(id)) return false
+        const card = player.battlefield.find((c) => c.id === id)
+        if (!card) return false
+        return !card.tapped || /\bvigilance\b/i.test(card.oracleText)
+      })
       if (valid.length === 0) return
       this.state.combatActive = true
       this.state.attackers = new ArraySchema<string>(...valid)
@@ -199,9 +205,13 @@ export class GameRoom extends Room<{ state: GameState }> {
       const player = this.getPlayer(client)
       if (!player || this.state.status !== 'playing' || this.state.activePlayerId === player.id) return
       if (!this.state.combatActive) return
-      const ids = Array.isArray(message?.blockerIds) ? message.blockerIds.filter((id: unknown): id is string => typeof id === 'string') : []
+      // Only opponents of the active player may block (never teammates).
+      const attacker = this.state.players.get(this.state.activePlayerId)
+      if (!attacker) return
+      if (attacker.teamId !== '' && player.teamId === attacker.teamId) return
+      const ids: string[] = Array.isArray(message?.blockerIds) ? (message.blockerIds as unknown[]).filter((id): id is string => typeof id === 'string') : []
       const battlefield = new Set(player.battlefield.map((c) => c.id))
-      const valid = ids.filter((id: string) => battlefield.has(id) && !player.battlefield.find((c) => c.id === id)?.tapped)
+      const valid = [...new Set(ids)].filter((id: string) => battlefield.has(id) && !player.battlefield.find((c) => c.id === id)?.tapped)
       // Blockers are stored flat; resolveCombat assigns them round-robin to the
       // declared attackers in declaration order.
       this.state.blockers = new ArraySchema<string>(...valid)
@@ -232,6 +242,8 @@ export class GameRoom extends Room<{ state: GameState }> {
       const player = this.getPlayer(client)
       const token = isRecord(message) && isRecord(message.token) ? message.token : undefined
       if (!player || !token || typeof token.id !== 'string' || typeof token.name !== 'string' || typeof token.imageUri !== 'string') return
+      // Cap tokens so a misbehaving client can't bloat the synced state.
+      if (player.tokens.length >= 100) return
       player.tokens.push(new TokenState({ id: token.id.slice(0, 120), name: token.name.slice(0, 200), imageUri: token.imageUri.slice(0, 2_000), counters: 0, tapped: false }))
     })
 
@@ -277,10 +289,19 @@ export class GameRoom extends Room<{ state: GameState }> {
     const playerId = sanitizeText(input.playerId, client.sessionId, 120)
     const playerName = sanitizeText(input.playerName, 'Player', 24)
     const deckId = sanitizeText(input.deckId, '', 120)
-    const cards = normalizeCards(input.cards)
+    // Deck card ids are client-generated and NOT unique across players (two
+    // players with the same deck send identical ids). Re-key every card with
+    // this player's identity so damage/death/zone lookups can never hit
+    // another player's cards.
+    const cards = normalizeCards(input.cards).map((card, index) => ({ ...card, id: `${playerId}:${card.scryfallId}:${index}` }))
     const reconnecting = this.findPlayerByPlayerId(playerId)
 
     if (reconnecting?.connected) throw new Error('That player is already connected to this room.')
+
+    // A game already in progress only accepts reconnects, not new players.
+    if (!reconnecting && this.state.status === 'playing') {
+      throw new Error('This game has already started.')
+    }
 
     let player: PlayerState
     if (reconnecting) {
@@ -310,6 +331,11 @@ export class GameRoom extends Room<{ state: GameState }> {
     player.name = playerName
     player.deckId = deckId
     if (!this.state.hostId) this.state.hostId = player.id
+    // Reconnects reuse a stale sessionId in the map; prune it so the client
+    // map never accumulates dead entries.
+    if (this.playerClients.has(player.id) && this.playerClients.get(player.id)?.sessionId !== client.sessionId) {
+      this.playerClients.delete(player.id)
+    }
     this.playerClients.set(player.id, client)
     const privateState = this.privateZones.get(player.playerId) ?? { hand: [], library: [] }
     this.privateZones.set(player.playerId, privateState)
@@ -334,6 +360,28 @@ export class GameRoom extends Room<{ state: GameState }> {
     } else if (this.state.hostId === player.id) {
       this.promoteHost()
     }
+    // The active player disconnecting mid-game would otherwise soft-lock the
+    // game forever (turn rotation only advances via endTurn). Auto-skip their
+    // turn so the game keeps moving; they can still rejoin later.
+    if (this.state.status === 'playing' && this.state.activePlayerId === player.id) {
+      this.autoSkipTurn(player)
+    }
+  }
+
+  /** Advance past a player whose turn can no longer be played (disconnected). */
+  private autoSkipTurn(player: PlayerState) {
+    player.battlefield.forEach((card) => { card.tapped = false; card.damage = 0 })
+    this.clearMana(player)
+    this.state.combatActive = false
+    this.state.attackers = new ArraySchema<string>()
+    this.state.blockers = new ArraySchema<string>()
+    const players = this.connectedPlayers().sort((a, b) => a.turnOrder - b.turnOrder)
+    const index = players.findIndex((candidate) => candidate.id === player.id)
+    const next = players[(index + 1) % players.length]
+    if (!next) return
+    this.state.activePlayerId = next.id
+    this.state.turn++
+    this.emitEvent({ type: 'turnChanged', playerId: next.id, turnNumber: this.state.turn })
   }
 
   onDispose() {

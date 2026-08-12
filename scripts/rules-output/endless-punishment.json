@@ -845,7 +845,8 @@
           "kind": "pump",
           "params": {
             "power": -2,
-            "toughness": -2
+            "toughness": -2,
+            "scope": "all"
           }
         }
       }
@@ -979,7 +980,8 @@
           "kind": "pump",
           "params": {
             "power": -1,
-            "toughness": -1
+            "toughness": -1,
+            "scope": "others"
           }
         }
       },
@@ -995,7 +997,8 @@
           "kind": "pump",
           "params": {
             "power": -1,
-            "toughness": -1
+            "toughness": -1,
+            "scope": "all"
           }
         }
       }
@@ -1030,7 +1033,8 @@
           "kind": "pump",
           "params": {
             "power": -2,
-            "toughness": -2
+            "toughness": -2,
+            "scope": "opponent"
           }
         }
       },
