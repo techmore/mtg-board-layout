@@ -143,7 +143,10 @@ function aiActivateUtilityAbilities(set: SetFn, get: () => GameState) {
  * list (tapped lands), the resulting mana pool after payment, and whether the
  * cost was fully payable.
  */
-function tapLandsForCost(cards: BoardCard[], cost: string | undefined, startingPool?: ManaPool): { updated: BoardCard[]; pool: ManaPool; paid: boolean } {
+function tapLandsForCost(cards: BoardCard[], cost: string | undefined, startingPool?: ManaPool, reserveColors: string[] = []): { updated: BoardCard[]; pool: ManaPool; paid: boolean } {
+  // Hold-mana: lands producing a reserved color (needed by a held instant)
+  // are tapped only as a last resort.
+  const reservedScore = (l: BoardCard) => (l.manaProduction?.colors.some((c) => reserveColors.includes(c)) ? 1 : 0)
   const empty = { W: 0, U: 0, B: 0, R: 0, G: 0, C: 0 } as ManaPool
   if (!cost) return { updated: cards, pool: { ...empty, ...(startingPool ?? {}) }, paid: true }
   const lands = cards.filter((c) => (c.owner ?? 'player') === 'opponent' && c.zone === 'battlefield' && c.type === 'land' && !c.tapped)
@@ -157,14 +160,14 @@ function tapLandsForCost(cards: BoardCard[], cost: string | undefined, startingP
 
   for (const color of ['W', 'U', 'B', 'R', 'G', 'C'] as const) {
     let need = Math.max(0, (remainingColor[color] ?? 0) - (pool[color] ?? 0))
-    for (const l of lands) {
+    const candidates = lands
+      .filter((l) => !landsToTap.includes(l.id) && l.manaProduction?.colors.includes(color))
+      .sort((a, b) => reservedScore(a) - reservedScore(b))
+    for (const l of candidates) {
       if (need <= 0) break
-      if (landsToTap.includes(l.id)) continue
-      if (l.manaProduction?.colors.includes(color)) {
-        landsToTap.push(l.id)
-        need--
-        pool[color] = (pool[color] ?? 0) + l.manaProduction!.amount
-      }
+      landsToTap.push(l.id)
+      need--
+      pool[color] = (pool[color] ?? 0) + l.manaProduction!.amount
     }
     if (need > 0) return { updated: cards, pool, paid: false }
   }
@@ -182,7 +185,8 @@ function tapLandsForCost(cards: BoardCard[], cost: string | undefined, startingP
         if (aColorless !== bColorless) return aColorless - bColorless
         const aNeeded = a.manaProduction?.colors.some((c) => (remainingColor[c] ?? 0) > 0) ? 1 : 0
         const bNeeded = b.manaProduction?.colors.some((c) => (remainingColor[c] ?? 0) > 0) ? 1 : 0
-        return aNeeded - bNeeded
+        if (aNeeded !== bNeeded) return aNeeded - bNeeded
+        return reservedScore(a) - reservedScore(b)
       })
     for (const l of genericLands) {
       if (g <= 0) break
@@ -281,7 +285,9 @@ export function createOpponentAI(set: SetFn, get: () => GameState): Pick<GameSta
             if (toCast && castCost) {
               const isCommanderCast = commanderCast !== null && toCast.id === commanderCast.card.id
               set((prev) => {
-                const { updated, pool, paid } = tapLandsForCost(prev.cards, castCost, prev.opponentManaPool)
+                const heldInstants = prev.cards.filter((c) => (c.owner ?? 'player') === 'opponent' && c.zone === 'hand' && c.type === 'instant' && c.id !== toCast.id)
+                const reserveColors = heldInstants.flatMap((c) => parseManaCost(c.manaCost ?? '').colored.map((p) => p.color))
+                const { updated, pool, paid } = tapLandsForCost(prev.cards, castCost, prev.opponentManaPool, reserveColors)
                 if (!paid) return {}
                 const cards = updated.map((c) =>
                   c.id === toCast.id

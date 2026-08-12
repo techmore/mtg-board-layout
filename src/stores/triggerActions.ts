@@ -228,6 +228,20 @@ export function resolveTrigger(get: () => GameState, set: (partial: Partial<Game
       return
     case 'proliferate':
       if (aiOwned(trigger, state)) {
+        // The AI proliferates its own counters first: planeswalkers and
+        // creatures already carrying counters.
+        const source = state.cards.find((c) => c.id === trigger.sourceCardId)
+        const sourceOwner = source?.owner ?? 'player'
+        const targets = state.cards
+          .filter((c) => c.zone === 'battlefield' && (c.owner ?? 'player') === sourceOwner)
+          .filter((c) => c.type === 'planeswalker' || (c.counters ?? 0) > 0)
+          .slice(0, 3)
+          .map((c) => c.id)
+        set({
+          triggerStack: state.triggerStack.map((t) =>
+            t.id === triggerId ? { ...t, selectedTargets: targets } : t,
+          ),
+        })
         get().confirmProliferate(triggerId)
         return
       }
