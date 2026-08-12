@@ -80,8 +80,15 @@ export function triggerConditionMatches(
   if (!condition) return true
   const cond = condition.toLowerCase()
 
-  // Timing conditions ("at the beginning of your upkeep", "your end step")
-  // are already encoded by the event type; nothing to evaluate here.
+  // "your upkeep / your end step / your draw step": only the active player's
+  // events qualify, and only for the source's owner.
+  if (/\byour\b.*\b(upkeep|end step|draw step)\b/.test(cond)) {
+    const eventOwner = 'owner' in event ? event.owner : undefined
+    if (!sourceCard || eventOwner === undefined) return true
+    return eventOwner === (sourceCard.owner ?? 'player')
+  }
+  // Timing conditions ("at the beginning of each upkeep", ...) are already
+  // encoded by the event type; nothing to evaluate here.
   if (/at the beginning|end step|upkeep|draw step/.test(cond)) return true
 
   // "one or more -1/-1 counters are put on a creature": only -1/-1 counter

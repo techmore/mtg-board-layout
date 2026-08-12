@@ -214,6 +214,8 @@ export function createOpponentAI(set: SetFn, get: () => GameState): Pick<GameSta
         )
         return { cards, opponentManaPool: emptyManaPool(), opponentPotentialMana: [], opponentLandPlaysThisTurn: 0 }
       })
+      // The AI's upkeep step fires its own upkeep triggers ("your upkeep").
+      get().emitGameEvent({ type: 'upkeep', owner: 'opponent' })
 
       setTimeout(() => {
         const s = get()
@@ -354,6 +356,9 @@ export function createOpponentAI(set: SetFn, get: () => GameState): Pick<GameSta
                     currentPhase: 'ending',
                   })
                 }
+
+                // End-of-turn triggers fire before the turn hands back.
+                get().emitGameEvent({ type: 'end_of_turn', owner: 'opponent' })
 
                 get().advanceTurn()
               }, resolveDelay)

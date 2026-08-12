@@ -597,9 +597,10 @@ export class GameRoom extends Room<{ state: GameState }> {
   }
 
   /**
-   * Resolve declared combat. Each attacker fights its first assigned blocker
-   * (lethal = power >= toughness, one-shot); unblocked attackers deal their
-   * power to every opponent not on the attacker's team.
+   * Resolve declared combat. Blocked attackers fight their assigned blockers
+   * (damage accumulates across combats; lethal = damage >= toughness, or any
+   * deathtouch damage); unblocked attackers deal their power to every
+   * opponent not on the attacker's team.
    */
   private resolveCombat() {
     const state = this.state

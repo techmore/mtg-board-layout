@@ -250,8 +250,8 @@ export type GameEvent =
   | { type: 'life_gain'; cardId?: string; amount: number }
   | { type: 'sacrifice'; cardId: string; cardName: string }
   | { type: 'discard'; cardId: string; cardName: string }
-  | { type: 'upkeep' }
-  | { type: 'end_of_turn' }
+  | { type: 'upkeep'; owner?: 'player' | 'opponent' }
+  | { type: 'end_of_turn'; owner?: 'player' | 'opponent' }
   | { type: 'cast'; cardId: string; cardName: string }
   | { type: 'attack'; cardId: string; cardName: string }
   | { type: 'combat_damage'; sourceCardId: string; sourceCardName: string; targetCardId?: string; amount: number }

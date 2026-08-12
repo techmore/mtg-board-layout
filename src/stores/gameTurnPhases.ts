@@ -30,7 +30,7 @@ export function createTurnPhases(set: SetFn, get: () => GameState): Pick<GameSta
           currentPhase: 'beginning',
           turnAnnouncement: { id: Date.now(), text: "OPPONENT'S TURN" },
         }))
-        get().emitGameEvent({ type: 'end_of_turn' })
+        get().emitGameEvent({ type: 'end_of_turn', owner: 'player' })
         get().runOpponentTurn()
       } else {
         set((prev) => ({
@@ -43,7 +43,7 @@ export function createTurnPhases(set: SetFn, get: () => GameState): Pick<GameSta
           turn: prev.turn + 1,
           turnAnnouncement: { id: Date.now(), text: `YOUR TURN ${prev.turn + 1}` },
         }))
-        get().emitGameEvent({ type: 'end_of_turn' })
+        get().emitGameEvent({ type: 'end_of_turn', owner: 'player' })
       }
     },
 
@@ -58,7 +58,7 @@ export function createTurnPhases(set: SetFn, get: () => GameState): Pick<GameSta
       }))
       switch (state.currentPhase) {
         case 'beginning': {
-          get().emitGameEvent({ type: 'upkeep' })
+          get().emitGameEvent({ type: 'upkeep', owner: 'player' })
           set((prev) => ({
             cards: prev.cards.map((c) =>
               (c.owner ?? 'player') === 'player' && c.zone === 'battlefield'
@@ -97,7 +97,7 @@ export function createTurnPhases(set: SetFn, get: () => GameState): Pick<GameSta
           ? { ...undo, cards, turnPrompt: { id: Date.now(), action: 'end', reason: 'discard' } }
           : { ...undo, cards, turnAnnouncement: { id: Date.now(), text: 'END TURN' }, turnPrompt: null }
       })
-      if (!hadExtra) get().emitGameEvent({ type: 'end_of_turn' })
+      if (!hadExtra) get().emitGameEvent({ type: 'end_of_turn', owner: 'player' })
     },
 
     cancelTurnPrompt: () => set({ turnPrompt: null }),
@@ -202,11 +202,11 @@ export function createTurnPhases(set: SetFn, get: () => GameState): Pick<GameSta
       if (action === 'advance' && !get().turnPrompt) {
         // The end-step happens before the turn hands off: emit the end-of-turn
         // event on the advance path too, not only on 'end'.
-        get().emitGameEvent({ type: 'end_of_turn' })
+        get().emitGameEvent({ type: 'end_of_turn', owner: 'player' })
         get().runOpponentTurn()
       }
       if (action === 'end' && !get().turnPrompt) {
-        get().emitGameEvent({ type: 'end_of_turn' })
+        get().emitGameEvent({ type: 'end_of_turn', owner: 'player' })
       }
     },
 
