@@ -16,7 +16,7 @@ export interface CardRuleOverride {
  * interpretation. Prefer Scryfall's Oracle text for ordinary cards; add an
  * exact Scryfall ID here when a card needs an explicit override.
  */
-export const CARD_RULE_OVERRIDES: Record<string, CardRuleOverride> = {
+const CARD_RULE_OVERRIDES: Record<string, CardRuleOverride> = {
 }
 
 type CardRuleInput = {

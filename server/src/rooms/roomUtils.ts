@@ -6,12 +6,13 @@ export const MAX_DECK_SIZE = 250
 export const OPENING_HAND_SIZE = 7
 export const MAX_CHAT_LENGTH = 500
 export const VALID_MANA = new Set(['W', 'U', 'B', 'R', 'G', 'C'])
-export const LETTERS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
 
 export interface PrivateZones {
   hand: CardData[]
   library: CardData[]
 }
+
+const LETTERS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
 
 export type Message = Record<string, unknown>
 

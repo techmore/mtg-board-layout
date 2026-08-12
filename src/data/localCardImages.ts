@@ -1,4 +1,4 @@
-export const LOCAL_CARD_IDS = new Set<string>([
+const LOCAL_CARD_IDS = new Set<string>([
   '017ef6eb-7a2b-4730-bf21-a2289d4c07ad',
   '02fe3fdf-1d21-4e35-b0f3-3bcde7b05e23',
   '0548fb60-c843-4f8f-a029-6f10efc63a41',
