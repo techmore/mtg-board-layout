@@ -155,7 +155,7 @@ Entry-tap logic deduped into the shared `mtg-protocol` package (`entryTap.ts`) �
 
 ## Next candidates (not yet started)
 
-- **A7 remaining patterns** — storm, annihilator, "whenever you cast your first spell each turn" stateful conditions.
+- **A7 progress (2026-08-11):** storm + "first spell each turn" now implemented (per-side cast counters, storm copies the spell per prior cast). **Remaining:** annihilator, proliferate AI picks.
 - **B5 AI hold-mana** — reserve untapped sources for a held instant when casting greedily.
 - **MP reconnect auth** — playerId takeover is currently unauthenticated (security is out of scope, but this is the cheapest high-value hardening).
 - **Trigger-condition depth** — "whenever you cast your first spell each turn" style stateful conditions.
