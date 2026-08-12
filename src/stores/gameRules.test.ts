@@ -7,6 +7,8 @@ import {
   emptyManaPool,
   endUndoTransaction,
   generatedManaState,
+  isAttachable,
+  isEquipment,
   moveCastSpellsToGraveyard,
   prepareCardPlay,
   pushUndo,
@@ -583,5 +585,44 @@ describe('attachAuras', () => {
     const result = attachAuras([strong as any, oppAura as any])
     const a1 = result.find((c: any) => c.id === 'oppAura')!
     expect(a1.zone).toBe('graveyard')
+  })
+})
+
+describe('equipment attachment', () => {
+  const bear = { id: 'bear', name: 'Bear', zone: 'battlefield', type: 'creature', typeLine: '2/2', owner: 'player', enchantsCardId: undefined }
+  const sword = { id: 'sword', name: 'Sword', zone: 'battlefield', type: 'artifact', typeLine: 'Artifact — Equipment', owner: 'player', enchantsCardId: undefined }
+
+  it('isEquipment detects equipment by type line', () => {
+    expect(isEquipment(sword as any)).toBe(true)
+    expect(isEquipment({ type: 'enchantment', typeLine: 'Enchantment — Aura' } as any)).toBe(false)
+  })
+
+  it('isAttachable covers both auras and equipment', () => {
+    expect(isAttachable(sword as any)).toBe(true)
+    expect(isAttachable({ type: 'enchantment', typeLine: 'Enchantment — Aura' } as any)).toBe(true)
+    expect(isAttachable({ type: 'creature', typeLine: 'Creature' } as any)).toBe(false)
+  })
+
+  it('attaches equipment to the strongest creature', () => {
+    const result = attachAuras([bear as any, sword as any])
+    expect(result.find((c: any) => c.id === 'sword')?.enchantsCardId).toBe('bear')
+  })
+
+  it('leaves unattached equipment on the board instead of killing it', () => {
+    const result = attachAuras([sword as any])
+    const s = result.find((c: any) => c.id === 'sword')
+    expect(s.zone).toBe('battlefield')
+    expect(s.enchantsCardId).toBeUndefined()
+  })
+
+  it('defers unattached attachables when deferUnattached is set', () => {
+    const result = attachAuras([bear as any, sword as any], { deferUnattached: true })
+    expect(result.find((c: any) => c.id === 'sword')?.enchantsCardId).toBeUndefined()
+  })
+
+  it('attaches to the preferred target when given', () => {
+    const wolf = { id: 'wolf', name: 'Wolf', zone: 'battlefield', type: 'creature', typeLine: '3/3', owner: 'player', enchantsCardId: undefined }
+    const result = attachAuras([bear as any, wolf as any, sword as any], { preferredTargetId: 'bear' })
+    expect(result.find((c: any) => c.id === 'sword')?.enchantsCardId).toBe('bear')
   })
 })
