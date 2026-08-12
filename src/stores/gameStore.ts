@@ -271,7 +271,7 @@ export const useGameStore = create<GameState>((set, get) => {
             if (rule) registerDiesTriggers(event.cardId, event.cardName, rule)
           }
         }
-        const { stack, newTriggers } = buildTriggerInstances(event, state.triggerStack)
+        const { stack, newTriggers } = buildTriggerInstances(event, state.triggerStack, state.cards)
         if (newTriggers === 0) return {}
         return { triggerStack: stack }
       }),

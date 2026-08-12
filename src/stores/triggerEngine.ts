@@ -66,21 +66,67 @@ export function getTriggersForEvent(event: TriggerEvent): RegisteredTrigger[] {
   return triggerRegistry.filter((t) => t.event === event)
 }
 
+/**
+ * Evaluate a parsed trigger condition ("another creature you control dies",
+ * "this creature enters", ...) against the event that just fired. Returns
+ * true when the condition is absent or unparseable (conservative).
+ */
+export function triggerConditionMatches(
+  condition: string | null | undefined,
+  event: GameEvent,
+  sourceCard: { id: string; name: string; type: string; owner?: 'player' | 'opponent' } | undefined,
+  eventCard: { id: string; name: string; type: string; owner?: 'player' | 'opponent' } | undefined,
+): boolean {
+  if (!condition) return true
+  const cond = condition.toLowerCase()
+
+  // Timing conditions ("at the beginning of your upkeep", "your end step")
+  // are already encoded by the event type; nothing to evaluate here.
+  if (/at the beginning|end step|upkeep|draw step/.test(cond)) return true
+
+  // "one or more -1/-1 counters are put on a creature": only -1/-1 counter
+  // events qualify. The engine only emits '+1/+1' counter events today.
+  if (/-1\/-1/.test(cond) && !/-1\/-1/.test(String(event.type === 'counter_placed' ? (event as { kind?: string }).kind ?? '' : ''))) return false
+
+  if (eventCard) {
+    if (/\banother\b/.test(cond) && sourceCard && eventCard.id === sourceCard.id) return false
+    if (/\byou control\b/.test(cond) && sourceCard && (eventCard.owner ?? 'player') !== (sourceCard.owner ?? 'player')) return false
+    if (/\b(?:an opponent|your opponents) controls?\b/.test(cond) && sourceCard && (eventCard.owner ?? 'player') === (sourceCard.owner ?? 'player')) return false
+    if (/\bthis (creature|enchantment|artifact|land|planeswalker|card)\b/.test(cond) && sourceCard && eventCard.id !== sourceCard.id) return false
+    if (sourceCard && cond.includes(sourceCard.name.toLowerCase()) && eventCard.id !== sourceCard.id) return false
+    if (/\ba creature\b/.test(cond) && eventCard.type !== 'creature') return false
+    if (/\ba land\b/.test(cond) && eventCard.type !== 'land') return false
+    if (/\ban artifact\b/.test(cond) && eventCard.type !== 'artifact') return false
+    if (/\ban enchantment\b/.test(cond) && eventCard.type !== 'enchantment') return false
+    if (/\ba planeswalker\b/.test(cond) && eventCard.type !== 'planeswalker') return false
+  }
+  return true
+}
+
 export function buildTriggerInstances(
   event: GameEvent,
   existingStack: TriggerInstance[],
+  cards?: { id: string; name: string; type: string; owner?: 'player' | 'opponent' }[],
 ): { stack: TriggerInstance[]; newTriggers: number } {
   const matching = getTriggersForEvent(event.type)
   if (matching.length === 0) return { stack: existingStack, newTriggers: 0 }
 
-  const newInstances: TriggerInstance[] = matching.map((t) => ({
-    id: crypto.randomUUID(),
-    sourceCardId: t.cardId,
-    sourceCardName: t.cardName,
-    ability: t.ability,
-    event: event.type,
-    context: { gameEvent: event },
-  }))
+  const eventCard = 'cardId' in event
+    ? cards?.find((c) => c.id === event.cardId)
+    : undefined
+  const newInstances: TriggerInstance[] = matching
+    .filter((t) => {
+      const sourceCard = cards?.find((c) => c.id === t.cardId)
+      return triggerConditionMatches(t.ability.triggerCondition, event, sourceCard, eventCard)
+    })
+    .map((t) => ({
+      id: crypto.randomUUID(),
+      sourceCardId: t.cardId,
+      sourceCardName: t.cardName,
+      ability: t.ability,
+      event: event.type,
+      context: { gameEvent: event },
+    }))
 
   return {
     stack: [...existingStack, ...newInstances],

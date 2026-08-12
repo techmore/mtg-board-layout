@@ -80,14 +80,14 @@ export function pickBlockers(
 
   const incomingPower = playerAttackers.reduce((sum, attId) => {
     const attacker = allCards.find((c) => c.id === attId)
-    return sum + (attacker ? getCardPower(attacker) : 0)
+    return sum + (attacker ? getCardPower(attacker) + computeStaticPump(allCards, attacker).power : 0)
   }, 0)
   const lethalIncoming = aiLife !== undefined && incomingPower >= aiLife
 
   for (const attId of playerAttackers) {
     const attacker = allCards.find((c) => c.id === attId)
     if (!attacker) continue
-    const attPower = getCardPower(attacker)
+    const attPower = getCardPower(attacker) + computeStaticPump(allCards, attacker).power
     if (attPower === 0) continue
     const attackerFlying = hasKeyword(attacker, 'flying')
     const attackerDeathtouch = hasKeyword(attacker, 'deathtouch')

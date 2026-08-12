@@ -41,8 +41,10 @@ export function prepareCardPlay(
   const isLandPlay = entersBattlefield && card.type === 'land'
   const castFromCommand = entersBattlefield && card.zone === 'command'
   const previousTax = card.commanderTax ?? 0
-  const commanderTax = castFromCommand ? previousTax + 1 : previousTax
-  const taxExtra = castFromCommand && previousTax > 0 ? '{' + previousTax * 2 + '}' : ''
+  // Convention shared with castSpell: commanderTax stores 2× prior casts and
+  // is incremented by 2 per cast — the tax charged is exactly `{tax}`.
+  const commanderTax = castFromCommand ? previousTax + 2 : previousTax
+  const taxExtra = castFromCommand && previousTax > 0 ? '{' + previousTax + '}' : ''
   const effectiveCost = castFromCommand ? (card.manaCost ?? '') + taxExtra : card.manaCost ?? ''
   const paysMana = entersBattlefield && card.type !== 'land' && Boolean(effectiveCost)
   const canPayMana = !paysMana || canPayManaCost(context.manaPool, effectiveCost)

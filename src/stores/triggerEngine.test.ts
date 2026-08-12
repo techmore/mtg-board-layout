@@ -298,3 +298,73 @@ describe('buildTriggerInstances', () => {
     expect(result.stack.map((instance) => instance.id)).toEqual(['old', expect.any(String)])
   })
 })
+
+function conditionTrigger(condition: string, event: string = 'dies'): CardAbilityDef {
+  return {
+    abilityType: 'triggered',
+    triggerEvent: event as CardAbilityDef['triggerEvent'],
+    triggerCondition: condition,
+    isOptional: false,
+    cost: null,
+    targets: 0,
+    targetFilter: null,
+    effect: { kind: 'other', params: {} },
+  }
+}
+
+function conditionRules(abilities: CardAbilityDef[]): CardRuleEntry {
+  return { cardName: 'Test', manaCost: '', manaValue: 0, typeLine: 'Creature', cardType: 'creature', subtypes: [], keywords: [], manaProduction: null, entryTapRule: 'never', conditionalEntryText: null, oracleText: '', scryfallId: 's1', abilities }
+}
+
+describe('trigger condition enforcement', () => {
+  it('"another creature you control dies" does not fire when the source itself dies', () => {
+    registerCardTriggers(card({ id: 'source', name: 'Butcher' }), conditionRules([conditionTrigger('another creature you control dies')]))
+    const result = buildTriggerInstances({ type: 'dies', cardId: 'source', cardName: 'Butcher' }, [], [card({ id: 'source', name: 'Butcher' })])
+    expect(result.newTriggers).toBe(0)
+  })
+
+  it('"another creature you control dies" fires for a friendly creature, not an enemy one', () => {
+    registerCardTriggers(card({ id: 'source', name: 'Butcher' }), conditionRules([conditionTrigger('another creature you control dies')]))
+    const friendly = buildTriggerInstances({ type: 'dies', cardId: 'bob', cardName: 'Bob' }, [], [
+      card({ id: 'source', name: 'Butcher' }),
+      card({ id: 'bob', name: 'Bob', owner: 'player' }),
+    ])
+    expect(friendly.newTriggers).toBe(1)
+    const enemy = buildTriggerInstances({ type: 'dies', cardId: 'enemy', cardName: 'Enemy' }, [], [
+      card({ id: 'source', name: 'Butcher' }),
+      card({ id: 'enemy', name: 'Enemy', owner: 'opponent' }),
+    ])
+    expect(enemy.newTriggers).toBe(0)
+  })
+
+  it('"this creature dies" only fires for the source card', () => {
+    registerCardTriggers(card({ id: 'source', name: 'Scorpion God' }), conditionRules([conditionTrigger('this creature dies')]))
+    const self = buildTriggerInstances({ type: 'dies', cardId: 'source', cardName: 'Scorpion God' }, [], [card({ id: 'source', name: 'Scorpion God' })])
+    expect(self.newTriggers).toBe(1)
+    const other = buildTriggerInstances({ type: 'dies', cardId: 'bear', cardName: 'Bear' }, [], [
+      card({ id: 'source', name: 'Scorpion God' }),
+      card({ id: 'bear', name: 'Bear' }),
+    ])
+    expect(other.newTriggers).toBe(0)
+  })
+
+  it('"a creature an opponent controls dies" fires only for enemy creatures', () => {
+    registerCardTriggers(card({ id: 'source', name: 'Reaper' }), conditionRules([conditionTrigger('a creature an opponent controls dies')]))
+    const enemy = buildTriggerInstances({ type: 'dies', cardId: 'e', cardName: 'Enemy' }, [], [
+      card({ id: 'source', name: 'Reaper' }),
+      card({ id: 'e', name: 'Enemy', owner: 'opponent' }),
+    ])
+    expect(enemy.newTriggers).toBe(1)
+    const friendly = buildTriggerInstances({ type: 'dies', cardId: 'f', cardName: 'Friendly' }, [], [
+      card({ id: 'source', name: 'Reaper' }),
+      card({ id: 'f', name: 'Friendly', owner: 'player' }),
+    ])
+    expect(friendly.newTriggers).toBe(0)
+  })
+
+  it('timing conditions without a card are unconstrained', () => {
+    registerCardTriggers(card({ id: 'source', name: 'Bitterblossom' }), conditionRules([conditionTrigger('at the beginning of your upkeep', 'upkeep')]))
+    const result = buildTriggerInstances({ type: 'upkeep' }, [], [card({ id: 'source', name: 'Bitterblossom' })])
+    expect(result.newTriggers).toBe(1)
+  })
+})

@@ -188,8 +188,10 @@ describe('prepareCardPlay — commanders', () => {
     })
 
     expect(preparation.castFromCommand).toBe(true)
-    expect(preparation.commanderTax).toBe(3)
-    expect(preparation.effectiveCost).toBe('{2}{W}{4}')
+    // Tax is stored as 2× prior casts: after this cast it is 4, and the
+    // surcharge charged is exactly the stored value (2 for the second cast).
+    expect(preparation.commanderTax).toBe(4)
+    expect(preparation.effectiveCost).toBe('{2}{W}{2}')
     expect(preparation.canPayMana).toBe(true)
   })
 
@@ -207,7 +209,7 @@ describe('prepareCardPlay — commanders', () => {
       cards: [],
     })
 
-    expect(preparation.commanderTax).toBe(1)
+    expect(preparation.commanderTax).toBe(2)
     expect(preparation.effectiveCost).toBe('{2}{W}')
   })
 
