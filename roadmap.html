@@ -25,7 +25,7 @@
     line-height: 1.6;
     padding: 2rem 1rem;
   }
-  .container { max-width: 800px; margin: 0 auto; }
+  .container { max-width: 860px; margin: 0 auto; }
   h1 { font-size: 2rem; margin-bottom: 0.25rem; display: flex; align-items: center; gap: 0.5rem; }
   .subtitle { color: var(--muted); margin-bottom: 2rem; font-size: 1.1rem; }
   h2 {
@@ -50,6 +50,7 @@
     border-radius: 8px;
     cursor: pointer;
     user-select: none;
+    margin-bottom: 0.5rem;
   }
   .phase-header:hover { border-color: var(--accent); }
   .phase-badge {
@@ -85,6 +86,19 @@
     font-size: 0.9rem;
   }
 
+  .audit-grid { display: flex; flex-direction: column; gap: 0.4rem; margin-top: 0.5rem; }
+  .audit-item {
+    display: flex; align-items: flex-start; gap: 0.6rem;
+    padding: 0.5rem 0.75rem;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    font-size: 0.88rem;
+  }
+  .audit-item .label { font-weight: 700; min-width: 2.2rem; color: var(--accent); flex-shrink: 0; }
+  .audit-item .desc { flex: 1; }
+  .audit-item .note { color: var(--muted); font-size: 0.8rem; }
+
   .features { margin-top: 2rem; }
   .feature-row {
     display: flex; align-items: center; padding: 0.6rem 0;
@@ -100,111 +114,197 @@
 <body>
 <div class="container">
   <h1>🧙 MTG Board Layout</h1>
-  <div class="subtitle">A web-based SpellTable board — deck builder, hand management, life tracker, & tools</div>
+  <div class="subtitle">A web-based Commander board — deck builder, full game engine, AI opponent, and multiplayer</div>
 
   <div class="meta">
-    <div class="meta-item"><span>Stack</span> React + Vite + TypeScript</div>
-    <div class="meta-item"><span>Cards</span> Scryfall API</div>
-    <div class="meta-item"><span>Storage</span> LocalStorage</div>
+    <div class="meta-item"><span>Stack</span> React + Vite + TypeScript + Zustand</div>
+    <div class="meta-item"><span>Server</span> Colyseus + shared <code>mtg-protocol</code> package</div>
+    <div class="meta-item"><span>Cards</span> Scryfall API + IndexedDB image cache</div>
+    <div class="meta-item"><span>Tests</span> 453 (25 files, client + server)</div>
     <div class="meta-item"><span>Updated</span> <span id="updated-date"></span></div>
   </div>
 
-  <h2>🗺️ Implementation Status</h2>
+  <h2>🗺️ Playability Audit</h2>
+  <p style="color: var(--muted); font-size: 0.9rem; margin-bottom: 1rem;">
+    Every item has a concrete success criterion. Status: <span class="status-tag status-done">Done</span>
+    <span class="status-tag status-wip">Partial</span>
+    <span class="status-tag status-todo">Not started</span>
+  </p>
 
-  <!-- Phase 1 — Foundation (DONE) -->
+  <!-- Section A — Human playability -->
   <div class="phase-header" onclick="toggle(this)">
-    <span class="phase-badge badge-done">Done</span>
-    <strong>Phase 1 — Foundation</strong>
-    <span class="status-tag status-done" style="margin-left:auto;">Complete</span>
+    <span class="phase-badge badge-done">8/9</span>
+    <strong>A — Human playability (solo vs AI)</strong>
+    <span class="status-tag status-done" style="margin-left:auto;">Nearly complete</span>
   </div>
-  <div class="phase active" id="phase1">
-    <ul>
-      <li>✔ React 19 + Vite 8 + TypeScript 6 project with linting</li>
-      <li>✔ Zustand state management + React Router 7</li>
-      <li>✔ Scryfall API integration (card search, collection import, image fetching)</li>
-      <li>✔ Background image upload, select, delete (localStorage)</li>
-      <li>✔ Sidebar navigation (Board, Decks, Tools, Settings) + Broadcast popup</li>
-      <li>✔ Card rule resolution engine (ETB, mana production from Oracle text)</li>
-    </ul>
-  </div>
-
-  <!-- Phase 2 — Deck Builder (DONE) -->
-  <div class="phase-header" onclick="toggle(this)">
-    <span class="phase-badge badge-done">Done</span>
-    <strong>Phase 2 — Deck Builder</strong>
-    <span class="status-tag status-done" style="margin-left:auto;">Complete</span>
-  </div>
-  <div class="phase" id="phase2">
-    <ul>
-      <li>✔ Deck CRUD (import, rename, delete)</li>
-      <li>✔ Import from Moxfield / Archidekt URL + plain text deck lists</li>
-      <li>✔ 16 prebuilt Commander decks (Blight Curse complete, others placeholder)</li>
-      <li>✔ Moxfield-style deck detail page with commander art, categories, hover preview</li>
-      <li>✔ Deck card rules database (per-card enters-tapped override)</li>
-    </ul>
-    <div class="task-grid">
-      <div class="task"><span class="status-tag status-todo">TODO</span> Card search & add-to-deck from Scryfall</div>
-      <div class="task"><span class="status-tag status-todo">TODO</span> Remove cards from imported decks</div>
-      <div class="task"><span class="status-tag status-todo">TODO</span> Deck statistics (mana curve, color pie)</div>
+  <div class="phase active" id="phaseA">
+    <div class="audit-grid">
+      <div class="audit-item">
+        <span class="label">A1</span>
+        <div class="desc"><strong>Casting & resolving spells</strong> — mana paid, spell abilities resolve via the trigger stack with targeting, ward, and hexproof. Modal spells: pick a mode, skip the rest.
+          <div class="note"><span class="status-tag status-done">Done</span></div>
+        </div>
+      </div>
+      <div class="audit-item">
+        <span class="label">A2</span>
+        <div class="desc"><strong>Combat</strong> — attack/block, damage steps (first & double strike), trample, lifelink, deathtouch, vigilance, indestructible, flying/reach, static anthems, pumps, SBA deaths. <strong>Commander damage: 21+ from one commander wins (trample counted), tracked per commander, shown in the inspector and on the board.</strong>
+          <div class="note"><span class="status-tag status-done">Done</span></div>
+        </div>
+      </div>
+      <div class="audit-item">
+        <span class="label">A3</span>
+        <div class="desc"><strong>Permanents that do things</strong> — ETB/death/attack triggers, auras with player-chosen targets (AuraPrompt), planeswalker loyalty abilities, static effects.
+          <div class="note"><span class="status-tag status-done">Done</span></div>
+        </div>
+      </div>
+      <div class="audit-item">
+        <span class="label">A4</span>
+        <div class="desc"><strong>Turn structure</strong> — phases, untap + cleanup, one land per turn (with override), discard-to-7, deck-out loss, turn timer.
+          <div class="note"><span class="status-tag status-done">Done</span></div>
+        </div>
+      </div>
+      <div class="audit-item">
+        <span class="label">A5</span>
+        <div class="desc"><strong>Game flow</strong> — named AI opponent, deck selection, game-over overlay + replay, per-player turn totals, broadcast window.
+          <div class="note"><span class="status-tag status-done">Done</span></div>
+        </div>
+      </div>
+      <div class="audit-item">
+        <span class="label">A6</span>
+        <div class="desc"><strong>Feedback & discovery</strong> — toast notifications, turn announcements, DEFEND/attack banners, card inspector with Oracle text and live state badges, undo/redo shortcuts.
+          <div class="note"><span class="status-tag status-done">Done</span></div>
+        </div>
+      </div>
+      <div class="audit-item">
+        <span class="label">A7</span>
+        <div class="desc"><strong>Card data coverage</strong> — 1,149 cards parsed (keywords, entry-tap, mana production, triggers, spells, pumps, auras). ~430 complex multi-clause "other" abilities are extracted but unresolvable — resolving one toasts an honest "not implemented yet" notice.
+          <div class="note"><span class="status-tag status-wip">Partial</span>  — the one remaining data item</div>
+        </div>
+      </div>
     </div>
   </div>
 
-  <!-- Phase 3 — Board View (DONE) -->
+  <!-- Section B — AI playability -->
   <div class="phase-header" onclick="toggle(this)">
-    <span class="phase-badge badge-done">Done</span>
-    <strong>Phase 3 — Board View</strong>
-    <span class="status-tag status-done" style="margin-left:auto;">Complete</span>
+    <span class="phase-badge badge-done">4.5/5</span>
+    <strong>B — Computer (AI) playability</strong>
+    <span class="status-tag status-done" style="margin-left:auto;">Nearly complete</span>
   </div>
-  <div class="phase" id="phase3">
-    <ul>
-      <li>✔ Load deck onto board (shuffle + draw opening hand)</li>
-      <li>✔ Hand zone: private, Alt-key expand (hold, double-tap to lock), drag to battlefield</li>
-      <li>✔ Battlefield: sectioned by card type (Creatures, Artifacts, Enchantments, etc.), lands stacked at bottom-left</li>
-      <li>✔ Tap/untap (double-click, right-click menu, inline ↻ badge), +1/−1 counters</li>
-      <li>✔ Graveyard & exile zones as drop targets</li>
-      <li>✔ Draw / deal / reshuffle / mulligan mechanics</li>
-      <li>✔ Turn management: untap, draw, discard prompt, second-land override, conditional ETB</li>
-    </ul>
-  </div>
-
-  <!-- Phase 4 — Life & Tools (DONE) -->
-  <div class="phase-header" onclick="toggle(this)">
-    <span class="phase-badge badge-done">Done</span>
-    <strong>Phase 4 — Life & Tools</strong>
-    <span class="status-tag status-done" style="margin-left:auto;">Complete</span>
-  </div>
-  <div class="phase" id="phase4">
-    <ul>
-      <li>✔ Life total tracker with ± buttons, color-coded thresholds</li>
-      <li>✔ Dice roller: d4, d6, d8, d10, d12, d20, d100</li>
-      <li>✔ Coin flip with heads/tails display</li>
-      <li>✔ Roll history log in game store</li>
-      <li>✔ Mana pool: multi-color land tapping, manual add/spend, usage log</li>
-      <li>✔ Camera widget: draggable, resizable, croppable, persisted</li>
-      <li>✔ Broadcast window: OBS-capture-ready public board (no hand)</li>
-    </ul>
-    <div class="task-grid">
-      <div class="task"><span class="status-tag status-todo">TODO</span> Commander damage tracking (21-tracker)</div>
+  <div class="phase" id="phaseB">
+    <div class="audit-grid">
+      <div class="audit-item">
+        <span class="label">B1</span>
+        <div class="desc"><strong>Full AI turn</strong> — untap, draw, land, cast with mana tapping, commander with tax, ETB/attack/death triggers, combat tricks, smart attack/block, discard to 7, deck-out loss.
+          <div class="note"><span class="status-tag status-done">Done</span></div>
+        </div>
+      </div>
+      <div class="audit-item">
+        <span class="label">B2</span>
+        <div class="desc"><strong>Combat decision-making</strong> — avoids bad trades, sends unblockable fliers, flying/reach + deathtouch-aware blocking, vigilance-exempt tapping. Lethal-aware: swings everything at lethal (life or commander damage), avoids wasteful chump blocks unless dying.
+          <div class="note"><span class="status-tag status-done">Done</span></div>
+        </div>
+      </div>
+      <div class="audit-item">
+        <span class="label">B3</span>
+        <div class="desc"><strong>Instant responses</strong> — combat tricks before attacking, response to declared attackers, response to the player casting a spell.
+          <div class="note"><span class="status-tag status-done">Done</span></div>
+        </div>
+      </div>
+      <div class="audit-item">
+        <span class="label">B4</span>
+        <div class="desc"><strong>Activated abilities</strong> — mana dorks feed its pool, planeswalker loyalty abilities, utility taps.
+          <div class="note"><span class="status-tag status-done">Done</span></div>
+        </div>
+      </div>
+      <div class="audit-item">
+        <span class="label">B5</span>
+        <div class="desc"><strong>Mana & sequencing</strong> — color-fixing done (generic costs prefer colorless / non-needed colors).
+          <div class="note"><span class="status-tag status-wip">Partial</span> — "leave up mana for instants" hold logic pending</div>
+        </div>
+      </div>
     </div>
   </div>
 
-  <!-- Phase 5 — Polish (PARTIAL) -->
+  <!-- Section C — Multiplayer -->
   <div class="phase-header" onclick="toggle(this)">
-    <span class="phase-badge badge-next">Next</span>
-    <strong>Phase 5 — Polish</strong>
-    <span class="status-tag status-wip" style="margin-left:auto;">Partial</span>
+    <span class="phase-badge badge-done">6/6</span>
+    <strong>C — Multiplayer</strong>
+    <span class="status-tag status-done" style="margin-left:auto;">Complete</span>
   </div>
-  <div class="phase" id="phase5">
-    <ul>
-      <li>✔ Custom background image upload (file picker, stored in localStorage — needs IndexedDB)</li>
-      <li>✔ Card scaling (1× to 2× via cardSizing.ts)</li>
-      <li>☐ IndexedDB for large data (backgrounds, game snapshots)</li>
-      <li>☐ Keyboard shortcuts (undo, draw, tap all)</li>
-      <li>☐ Save/load game snapshots</li>
-      <li>☐ Responsive layout for tablets</li>
-      <li>☐ Test suite on core game logic</li>
-      <li>☐ Accessibility & screen reader refinement</li>
-    </ul>
+  <div class="phase" id="phaseC">
+    <div class="audit-grid">
+      <div class="audit-item">
+        <span class="label">C1</span>
+        <div class="desc"><strong>Room lifecycle</strong> — create/join, ready/start, reconnect, chat, tokens, server-authoritative combat with win condition, game-over banner + rematch.
+          <div class="note"><span class="status-tag status-done">Done</span></div>
+        </div>
+      </div>
+      <div class="audit-item">
+        <span class="label">C2</span>
+        <div class="desc"><strong>Commander from the command zone</strong> — cast with commander-tax increments server-side.
+          <div class="note"><span class="status-tag status-done">Done</span></div>
+        </div>
+      </div>
+      <div class="audit-item">
+        <span class="label">C3</span>
+        <div class="desc"><strong>Hand-size & deck-out rules</strong> — discard-to-7 and library-empty loss server-side.
+          <div class="note"><span class="status-tag status-done">Done</span></div>
+        </div>
+      </div>
+      <div class="audit-item">
+        <span class="label">C4</span>
+        <div class="desc"><strong>Card inspector & turn timers</strong> on the multiplayer board.
+          <div class="note"><span class="status-tag status-done">Done</span></div>
+        </div>
+      </div>
+      <div class="audit-item">
+        <span class="label">C5</span>
+        <div class="desc"><strong>Dice, coin, mana log</strong> in multiplayer.
+          <div class="note"><span class="status-tag status-done">Done</span></div>
+        </div>
+      </div>
+      <div class="audit-item">
+        <span class="label">C6</span>
+        <div class="desc"><strong>Engine parity</strong> — MP combat v2: damage accumulation, SBA deaths, keywords (first strike, trample, lifelink, deathtouch, indestructible, flying/reach), commander damage with 21-loss.
+          <div class="note"><span class="status-tag status-done">Done</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section D — Codebase manageability -->
+  <div class="phase-header" onclick="toggle(this)">
+    <span class="phase-badge badge-done">4/4</span>
+    <strong>D — Codebase manageability</strong>
+    <span class="status-tag status-done" style="margin-left:auto;">Complete</span>
+  </div>
+  <div class="phase" id="phaseD">
+    <div class="audit-grid">
+      <div class="audit-item">
+        <span class="label">D1</span>
+        <div class="desc"><strong>Size & structure</strong> — client ~103 source files; server combat extracted to a pure, unit-testable module.
+          <div class="note"><span class="status-tag status-done">Done</span></div>
+        </div>
+      </div>
+      <div class="audit-item">
+        <span class="label">D2</span>
+        <div class="desc"><strong>Tests</strong> — 453 tests across 25 files (rules, combat, triggers, SBA, AI, persistence, deck smoke for all 16 decks, server combat + room utils).
+          <div class="note"><span class="status-tag status-done">Done</span></div>
+        </div>
+      </div>
+      <div class="audit-item">
+        <span class="label">D3</span>
+        <div class="desc"><strong>Single sources of truth</strong> — deck lists in one JSON dir (app + parser), <code>mtg-protocol</code> shared package, parser output feeds the trigger engine.
+          <div class="note"><span class="status-tag status-done">Done</span></div>
+        </div>
+      </div>
+      <div class="audit-item">
+        <span class="label">D4</span>
+        <div class="desc"><strong>Known duplication</strong> — entry-tap logic deduped into <code>mtg-protocol/entryTap.ts</code> (client + server delegate to it).
+          <div class="note"><span class="status-tag status-done">Done</span></div>
+        </div>
+      </div>
+    </div>
   </div>
 
   <h2>📋 Feature Overview</h2>
@@ -214,100 +314,71 @@
       <span class="status"><span class="status-tag status-done">Done</span></span>
     </div>
     <div class="feature-row">
-      <span class="name">Deck builder & import (Scryfall, Moxfield, Archidekt)</span>
+      <span class="name">Deck builder & import (Scryfall search, Moxfield/Archidekt URLs, plain text)</span>
       <span class="status"><span class="status-tag status-done">Done</span></span>
     </div>
     <div class="feature-row">
-      <span class="name">Prebuilt Commander decks (16 decks, Blight Curse full)</span>
+      <span class="name">16 complete prebuilt Commander decks (official lists, single-source JSON)</span>
+      <span class="status"><span class="status-tag status-done">Done</span></span>
+    </div>
+    <div class="feature-row">
+      <span class="name">Full game engine: triggers, SBA, combat keywords, auras, modal spells</span>
+      <span class="status"><span class="status-tag status-done">Done</span></span>
+    </div>
+    <div class="feature-row">
+      <span class="name">Commander damage (21-loss, trample counted, board + inspector + broadcast badges)</span>
+      <span class="status"><span class="status-tag status-done">Done</span></span>
+    </div>
+    <div class="feature-row">
+      <span class="name">AI opponent (full turns, combat tricks, instant responses, activated abilities)</span>
+      <span class="status"><span class="status-tag status-done">Done</span></span>
+    </div>
+    <div class="feature-row">
+      <span class="name">Multiplayer (Colyseus, 1v1/2v2/4ffa, server-authoritative combat, teams)</span>
+      <span class="status"><span class="status-tag status-done">Done</span></span>
+    </div>
+    <div class="feature-row">
+      <span class="name">Mana pool, life tracker, dice/coin, turn timer, broadcast popup (OBS)</span>
+      <span class="status"><span class="status-tag status-done">Done</span></span>
+    </div>
+    <div class="feature-row">
+      <span class="name">Card image caching (Scryfall → IndexedDB, local on next load)</span>
+      <span class="status"><span class="status-tag status-done">Done</span></span>
+    </div>
+    <div class="feature-row">
+      <span class="name">Toast notifications, undo/redo keyboard shortcuts, shared UI kit</span>
+      <span class="status"><span class="status-tag status-done">Done</span></span>
+    </div>
+    <div class="feature-row">
+      <span class="name">~430 unresolvable "other"-kind card abilities (honest toast on resolve)</span>
       <span class="status"><span class="status-tag status-wip">Partial</span></span>
     </div>
     <div class="feature-row">
-      <span class="name">Hand management (private, Alt-expand, hover-zoom, drag to field)</span>
-      <span class="status"><span class="status-tag status-done">Done</span></span>
-    </div>
-    <div class="feature-row">
-      <span class="name">Tap/untap, counters, context menu</span>
-      <span class="status"><span class="status-tag status-done">Done</span></span>
-    </div>
-    <div class="feature-row">
-      <span class="name">Turn management (untap, draw, discard, land, ETB prompts)</span>
-      <span class="status"><span class="status-tag status-done">Done</span></span>
-    </div>
-    <div class="feature-row">
-      <span class="name">Mana pool (multi-color, potential mana, spend, log)</span>
-      <span class="status"><span class="status-tag status-done">Done</span></span>
-    </div>
-    <div class="feature-row">
-      <span class="name">Life tracker ± and color-coded thresholds</span>
-      <span class="status"><span class="status-tag status-done">Done</span></span>
-    </div>
-    <div class="feature-row">
-      <span class="name">Dice roller (d4–d100) + coin flip</span>
-      <span class="status"><span class="status-tag status-done">Done</span></span>
-    </div>
-    <div class="feature-row">
-      <span class="name">Camera widget (drag, resize, crop, localStorage)</span>
-      <span class="status"><span class="status-tag status-done">Done</span></span>
-    </div>
-    <div class="feature-row">
-      <span class="name">Broadcast popup (OBS-friendly, no hand visible)</span>
-      <span class="status"><span class="status-tag status-done">Done</span></span>
-    </div>
-    <div class="feature-row">
-      <span class="name">Custom backgrounds (upload, select, delete)</span>
-      <span class="status"><span class="status-tag status-wip">Partial (localStorage limit)</span></span>
-    </div>
-    <div class="feature-row">
-      <span class="name">Card rule database (ETB, mana production)</span>
-      <span class="status"><span class="status-tag status-done">Done</span></span>
-    </div>
-    <div class="feature-row">
-      <span class="name">Card scaling (1×–2×)</span>
-      <span class="status"><span class="status-tag status-done">Done</span></span>
-    </div>
-    <div class="feature-row">
-      <span class="name">Persistent state (localStorage, cross-tab sync)</span>
-      <span class="status"><span class="status-tag status-done">Done</span></span>
-    </div>
-    <div class="feature-row">
-      <span class="name">Commander damage tracking</span>
-      <span class="status"><span class="status-tag status-todo">TODO</span></span>
-    </div>
-    <div class="feature-row">
-      <span class="name">Tokens (type defs + store exist, no board UI)</span>
+      <span class="name">AI "leave up mana for instants" hold logic</span>
       <span class="status"><span class="status-tag status-wip">Partial</span></span>
     </div>
     <div class="feature-row">
-      <span class="name">Keyboard shortcuts + responsive layout</span>
-      <span class="status"><span class="status-tag status-todo">TODO</span></span>
-    </div>
-    <div class="feature-row">
-      <span class="name">Save/load game snapshots</span>
-      <span class="status"><span class="status-tag status-todo">TODO</span></span>
-    </div>
-    <div class="feature-row">
-      <span class="name">Test suite</span>
-      <span class="status"><span class="status-tag status-todo">TODO</span></span>
+      <span class="name">Security for public hosting (auth, rate limiting)</span>
+      <span class="status"><span class="status-tag status-todo">Out of scope</span></span>
     </div>
   </div>
 
   <h2>📐 Architecture</h2>
   <ul>
-    <li><strong>State:</strong> Zustand stores (game, deck, card rules) with localStorage persistence</li>
-    <li><strong>Routing:</strong> React Router — <code>/</code>, <code>/lobby</code>, <code>/game/:roomId</code>, <code>/board</code>, <code>/decks</code>, <code>/decks/:id</code>, <code>/tools</code>, <code>/settings</code>, <code>/broadcast</code></li>
-    <li><strong>Cards:</strong> Scryfall API (search, named lookup, /cards/collection batch endpoint)</li>
-    <li><strong>Storage:</strong> LocalStorage for all state, backgrounds, deck data — IndexedDB planned</li>
+    <li><strong>State:</strong> Zustand stores (game, deck, card rules, toasts) — persisted to localStorage, rules overrides in IndexedDB</li>
+    <li><strong>Routing:</strong> React Router — board, decks, deck detail, tools, settings, broadcast, lobby, game rooms</li>
+    <li><strong>Cards:</strong> Scryfall API (search, named lookup, /cards/collection batch) with on-demand IndexedDB image caching and 143 bundled local images</li>
+    <li><strong>Rules:</strong> Parser extracts abilities from Oracle text → <code>public/all-decks-rules.json</code> feeds the trigger engine for every deck</li>
+    <li><strong>Multiplayer:</strong> Colyseus room server + shared <code>mtg-protocol</code> package (types, entry-tap logic); private hands/libraries via owner-only messages</li>
     <li><strong>Drag & drop:</strong> Native HTML5 drag API (hand to battlefield)</li>
-    <li><strong>Multiplayer:</strong> Colyseus room server with shared <code>protocol/</code> package; private hands/libraries are delivered through owner-only messages</li>
   </ul>
 
   <h2>🐛 Known Issues</h2>
   <ul>
-    <li>BoardPage.tsx is ~1500 lines — CameraWidget extracted, but still needs further splitting</li>
-    <li>Prebuilt decks (15 of 16) have placeholder card lists — only Blight Curse is complete</li>
-    <li>Background images stored as data URLs in localStorage (~5MB limit will be hit)</li>
-    <li>No toast/notification system — errors are inline or in console</li>
-    <li>Multiplayer is ready for local testing but still needs authentication and rate limiting before public hosting</li>
+    <li>~430 complex "other"-kind abilities are parsed but not mechanically resolvable (honest toast shown)</li>
+    <li>AI doesn't hold mana for instant responses yet</li>
+    <li>Backgrounds stored as data URLs in localStorage (~5MB limit)</li>
+    <li>Multiplayer lacks auth/rate-limiting for public deployment (explicitly out of scope)</li>
   </ul>
 
   <div class="footer">
