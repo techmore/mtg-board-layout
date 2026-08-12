@@ -899,7 +899,7 @@
     "conditionalEntryText": null,
     "abilities": [],
     "oracleText": "",
-    "scryfallId": "7b7c408b-8660-4db5-9a16-5003c11b4ac1"
+    "scryfallId": "8ab0f4c0-b331-4c57-b68f-2e24bb5ba06c"
   },
   "Island": {
     "cardName": "Island",
@@ -921,26 +921,10 @@
     "conditionalEntryText": null,
     "abilities": [],
     "oracleText": "",
-    "scryfallId": "c6aa89a8-3584-4906-b9a9-41ef2f021f8e"
+    "scryfallId": "f3cc07cd-cc79-4745-b0b7-eade60175cc3"
   },
   "Cairo, the Eternal": {
     "cardName": "Cairo, the Eternal",
-    "manaCost": "",
-    "manaValue": 0,
-    "typeLine": "Unknown",
-    "cardType": "other",
-    "subtypes": [],
-    "keywords": [],
-    "manaProduction": null,
-    "entryTapRule": null,
-    "conditionalEntryText": null,
-    "abilities": [],
-    "oracleText": "",
-    "scryfallId": null,
-    "note": "MANUAL PLACEHOLDER: no data for this card in Scryfall at extraction time"
-  },
-  "Soul Attendant": {
-    "cardName": "Soul Attendant",
     "manaCost": "",
     "manaValue": 0,
     "typeLine": "Unknown",
@@ -1680,7 +1664,7 @@
       }
     ],
     "oracleText": "{T}: Add one mana of any color that a land an opponent controls could produce.",
-    "scryfallId": "8853ff94-bf44-4cfd-9d3a-0743c361fb0d"
+    "scryfallId": "d11c5fe0-1528-4c94-a8cc-42bcab9d7487"
   },
   "Soul's Attendant": {
     "cardName": "Soul's Attendant",
@@ -3189,7 +3173,7 @@
       }
     ],
     "oracleText": "{T}: Add {C}.\n{1}, {T}, Sacrifice this artifact: Draw a card.",
-    "scryfallId": "ad881aa0-decc-447b-8c8a-983546a9a55a"
+    "scryfallId": "b30a8f92-ce42-4b27-a893-bcf97fde228d"
   },
   "Commander's Sphere": {
     "cardName": "Commander's Sphere",
@@ -3277,7 +3261,7 @@
       }
     ],
     "oracleText": "You have no maximum hand size.\n{T}: Add {C}.",
-    "scryfallId": "6ec6a910-f6d0-4225-8b55-d329dc788c64"
+    "scryfallId": "ad077996-6b5e-4eb8-bb6e-93d43c5efa8f"
   },
   "Everflowing Chalice": {
     "cardName": "Everflowing Chalice",

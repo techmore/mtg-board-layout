@@ -88,6 +88,11 @@ export function createCardMovement(set: SetFn, get: () => GameState): Pick<GameS
       }
       if (zone === 'battlefield' && cardBefore && cardBefore.zone !== 'battlefield') {
         get().emitGameEvent({ type: 'etb', cardId, cardName: cardBefore.name })
+        // Landfall triggers fire whenever a land enters the battlefield
+        // (Lotus Cobra, Evolution Sage, ...).
+        if (cardBefore.type === 'land') {
+          get().emitGameEvent({ type: 'landfall', cardId, cardName: cardBefore.name })
+        }
       }
       if (zone === 'graveyard' && wasOnBattlefield) {
         get().emitGameEvent({ type: 'dies', cardId, cardName: cardBefore!.name })

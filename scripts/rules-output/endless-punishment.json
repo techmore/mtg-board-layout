@@ -34,297 +34,6 @@
     "oracleText": "Flying\nWard—Pay 2 life.\nWhenever an opponent loses life for the first time during each of their turns, put a +1/+1 counter on Valgavoth and draw a card.",
     "scryfallId": "8d7c1f6c-af45-4449-8cf8-e13830b3df8a"
   },
-  "Tinybones, Bauble Burglar": {
-    "cardName": "Tinybones, Bauble Burglar",
-    "manaCost": "{1}{B}",
-    "manaValue": 2,
-    "typeLine": "Legendary Creature — Skeleton Rogue",
-    "cardType": "creature",
-    "subtypes": [
-      "Skeleton",
-      "Rogue"
-    ],
-    "keywords": [],
-    "manaProduction": null,
-    "entryTapRule": null,
-    "conditionalEntryText": null,
-    "abilities": [
-      {
-        "abilityType": "triggered",
-        "triggerEvent": "graveyard",
-        "triggerCondition": "an opponent discards a card",
-        "isOptional": false,
-        "cost": null,
-        "targets": 0,
-        "targetFilter": null,
-        "effect": {
-          "kind": "exile",
-          "params": {}
-        }
-      },
-      {
-        "abilityType": "triggered",
-        "triggerEvent": null,
-        "triggerCondition": null,
-        "isOptional": true,
-        "cost": null,
-        "targets": 0,
-        "targetFilter": null,
-        "effect": {
-          "kind": "exile",
-          "params": {}
-        }
-      },
-      {
-        "abilityType": "activated",
-        "triggerEvent": null,
-        "triggerCondition": null,
-        "isOptional": false,
-        "cost": "{T}, {3}{B}",
-        "targets": 0,
-        "targetFilter": null,
-        "effect": {
-          "kind": "other",
-          "params": {}
-        }
-      }
-    ],
-    "oracleText": "Whenever an opponent discards a card, exile it from their graveyard with a stash counter on it.\nDuring your turn, you may play cards you don't own with stash counters on them from exile, and mana of any type can be spent to cast those spells.\n{3}{B}, {T}: Each opponent discards a card. Activate only as a sorcery.",
-    "scryfallId": "ff3d85bc-ef2d-4251-baf4-a14bd0cee61e"
-  },
-  "Sheoldred, the Apocalypse": {
-    "cardName": "Sheoldred, the Apocalypse",
-    "manaCost": "{2}{B}{B}",
-    "manaValue": 4,
-    "typeLine": "Legendary Creature — Phyrexian Praetor",
-    "cardType": "creature",
-    "subtypes": [
-      "Phyrexian",
-      "Praetor"
-    ],
-    "keywords": [
-      "deathtouch"
-    ],
-    "manaProduction": null,
-    "entryTapRule": null,
-    "conditionalEntryText": null,
-    "abilities": [
-      {
-        "abilityType": "static",
-        "triggerEvent": null,
-        "triggerCondition": null,
-        "isOptional": false,
-        "cost": null,
-        "targets": 0,
-        "targetFilter": null,
-        "effect": {
-          "kind": "draw_cards",
-          "params": {
-            "amount": 2
-          }
-        }
-      },
-      {
-        "abilityType": "triggered",
-        "triggerEvent": null,
-        "triggerCondition": null,
-        "isOptional": false,
-        "cost": null,
-        "targets": 0,
-        "targetFilter": null,
-        "effect": {
-          "kind": "lose_life",
-          "params": {
-            "amount": 2
-          }
-        }
-      }
-    ],
-    "oracleText": "Deathtouch\nWhenever you draw a card, you gain 2 life.\nWhenever an opponent draws a card, they lose 2 life.",
-    "scryfallId": "d67be074-cdd4-41d9-ac89-0a0456c4e4b2"
-  },
-  "Megrim": {
-    "cardName": "Megrim",
-    "manaCost": "{2}{B}",
-    "manaValue": 3,
-    "typeLine": "Enchantment",
-    "cardType": "enchantment",
-    "subtypes": [],
-    "keywords": [],
-    "manaProduction": null,
-    "entryTapRule": null,
-    "conditionalEntryText": null,
-    "abilities": [
-      {
-        "abilityType": "triggered",
-        "triggerEvent": null,
-        "triggerCondition": null,
-        "isOptional": false,
-        "cost": null,
-        "targets": 0,
-        "targetFilter": null,
-        "effect": {
-          "kind": "deal_damage",
-          "params": {}
-        }
-      }
-    ],
-    "oracleText": "Whenever an opponent discards a card, this enchantment deals 2 damage to that player.",
-    "scryfallId": "3b04fca4-b4de-4343-ba58-d8aea39edc19"
-  },
-  "Liliana, Dreadhorde General": {
-    "cardName": "Liliana, Dreadhorde General",
-    "manaCost": "{4}{B}{B}",
-    "manaValue": 6,
-    "typeLine": "Legendary Planeswalker — Liliana",
-    "cardType": "planeswalker",
-    "subtypes": [
-      "Liliana"
-    ],
-    "keywords": [],
-    "manaProduction": null,
-    "entryTapRule": null,
-    "conditionalEntryText": null,
-    "abilities": [
-      {
-        "abilityType": "activated",
-        "triggerEvent": null,
-        "triggerCondition": null,
-        "isOptional": false,
-        "cost": "+1",
-        "targets": 0,
-        "targetFilter": null,
-        "effect": {
-          "kind": "create_token",
-          "params": {
-            "tokenPower": 2,
-            "tokenToughness": 2,
-            "tokenName": "Zombie creature",
-            "amount": 1
-          }
-        }
-      },
-      {
-        "abilityType": "activated",
-        "triggerEvent": null,
-        "triggerCondition": null,
-        "isOptional": false,
-        "cost": "−4",
-        "targets": 0,
-        "targetFilter": null,
-        "effect": {
-          "kind": "other",
-          "params": {}
-        }
-      },
-      {
-        "abilityType": "activated",
-        "triggerEvent": null,
-        "triggerCondition": null,
-        "isOptional": false,
-        "cost": "−9",
-        "targets": 0,
-        "targetFilter": null,
-        "effect": {
-          "kind": "other",
-          "params": {}
-        }
-      }
-    ],
-    "oracleText": "Whenever a creature you control dies, draw a card.\n+1: Create a 2/2 black Zombie creature token.\n−4: Each player sacrifices two creatures of their choice.\n−9: Each opponent chooses a permanent they control of each permanent type and sacrifices the rest.",
-    "scryfallId": "cb28d217-795e-4320-a032-cd713f7ecc8a"
-  },
-  "Torment of Hailfire": {
-    "cardName": "Torment of Hailfire",
-    "manaCost": "{X}{B}{B}",
-    "manaValue": 2,
-    "typeLine": "Sorcery",
-    "cardType": "sorcery",
-    "subtypes": [],
-    "keywords": [],
-    "manaProduction": null,
-    "entryTapRule": null,
-    "conditionalEntryText": null,
-    "abilities": [
-      {
-        "abilityType": "spell",
-        "triggerEvent": null,
-        "triggerCondition": null,
-        "isOptional": false,
-        "cost": null,
-        "targets": 0,
-        "targetFilter": null,
-        "effect": {
-          "kind": "lose_life",
-          "params": {
-            "amount": 3
-          }
-        }
-      }
-    ],
-    "oracleText": "Repeat the following process X times. Each opponent loses 3 life unless that player sacrifices a nonland permanent of their choice or discards a card.",
-    "scryfallId": "f69d77d1-5980-436c-bf48-790939b069aa"
-  },
-  "Painful Quandary": {
-    "cardName": "Painful Quandary",
-    "manaCost": "{3}{B}{B}",
-    "manaValue": 5,
-    "typeLine": "Enchantment",
-    "cardType": "enchantment",
-    "subtypes": [],
-    "keywords": [],
-    "manaProduction": null,
-    "entryTapRule": null,
-    "conditionalEntryText": null,
-    "abilities": [
-      {
-        "abilityType": "triggered",
-        "triggerEvent": "discard",
-        "triggerCondition": "an opponent casts a spell",
-        "isOptional": false,
-        "cost": null,
-        "targets": 0,
-        "targetFilter": null,
-        "effect": {
-          "kind": "lose_life",
-          "params": {
-            "amount": 5
-          }
-        }
-      }
-    ],
-    "oracleText": "Whenever an opponent casts a spell, that player loses 5 life unless they discard a card.",
-    "scryfallId": "05757669-e8a6-4a2f-8479-d4e2ade822ca"
-  },
-  "Underworld Dreams": {
-    "cardName": "Underworld Dreams",
-    "manaCost": "{B}{B}{B}",
-    "manaValue": 3,
-    "typeLine": "Enchantment",
-    "cardType": "enchantment",
-    "subtypes": [],
-    "keywords": [],
-    "manaProduction": null,
-    "entryTapRule": null,
-    "conditionalEntryText": null,
-    "abilities": [
-      {
-        "abilityType": "triggered",
-        "triggerEvent": null,
-        "triggerCondition": null,
-        "isOptional": false,
-        "cost": null,
-        "targets": 0,
-        "targetFilter": null,
-        "effect": {
-          "kind": "deal_damage",
-          "params": {}
-        }
-      }
-    ],
-    "oracleText": "Whenever an opponent draws a card, this enchantment deals 1 damage to that player.",
-    "scryfallId": "03919c86-1c4a-43b0-a2db-54ca6ae1ac57"
-  },
   "Fate Unraveler": {
     "cardName": "Fate Unraveler",
     "manaCost": "{3}{B}",
@@ -355,97 +64,6 @@
     ],
     "oracleText": "Whenever an opponent draws a card, this creature deals 1 damage to that player.",
     "scryfallId": "30250c4d-2c16-4d03-874e-aec39d8e72a9"
-  },
-  "Rise of the Dark Realms": {
-    "cardName": "Rise of the Dark Realms",
-    "manaCost": "{7}{B}{B}",
-    "manaValue": 9,
-    "typeLine": "Sorcery",
-    "cardType": "sorcery",
-    "subtypes": [],
-    "keywords": [],
-    "manaProduction": null,
-    "entryTapRule": null,
-    "conditionalEntryText": null,
-    "abilities": [
-      {
-        "abilityType": "spell",
-        "triggerEvent": null,
-        "triggerCondition": null,
-        "isOptional": false,
-        "cost": null,
-        "targets": 0,
-        "targetFilter": null,
-        "effect": {
-          "kind": "return_from_graveyard",
-          "params": {}
-        }
-      }
-    ],
-    "oracleText": "Put all creature cards from all graveyards onto the battlefield under your control.",
-    "scryfallId": "8645bf0c-631f-4003-bd24-3e069ae23513"
-  },
-  "Exquisite Blood": {
-    "cardName": "Exquisite Blood",
-    "manaCost": "{4}{B}",
-    "manaValue": 5,
-    "typeLine": "Enchantment",
-    "cardType": "enchantment",
-    "subtypes": [],
-    "keywords": [],
-    "manaProduction": null,
-    "entryTapRule": null,
-    "conditionalEntryText": null,
-    "abilities": [
-      {
-        "abilityType": "triggered",
-        "triggerEvent": "life_loss",
-        "triggerCondition": "an opponent loses life",
-        "isOptional": false,
-        "cost": null,
-        "targets": 0,
-        "targetFilter": null,
-        "effect": {
-          "kind": "lose_life",
-          "params": {
-            "amount": 1
-          }
-        }
-      }
-    ],
-    "oracleText": "Whenever an opponent loses life, you gain that much life.",
-    "scryfallId": "0e8ccfa7-4178-476a-a155-0ca1c98556c9"
-  },
-  "Sanguine Bond": {
-    "cardName": "Sanguine Bond",
-    "manaCost": "{3}{B}{B}",
-    "manaValue": 5,
-    "typeLine": "Enchantment",
-    "cardType": "enchantment",
-    "subtypes": [],
-    "keywords": [],
-    "manaProduction": null,
-    "entryTapRule": null,
-    "conditionalEntryText": null,
-    "abilities": [
-      {
-        "abilityType": "triggered",
-        "triggerEvent": "life_gain",
-        "triggerCondition": "you gain life",
-        "isOptional": false,
-        "cost": null,
-        "targets": 1,
-        "targetFilter": "opponent loses that much life",
-        "effect": {
-          "kind": "lose_life",
-          "params": {
-            "amount": 1
-          }
-        }
-      }
-    ],
-    "oracleText": "Whenever you gain life, target opponent loses that much life.",
-    "scryfallId": "ad4de9f1-7a39-45af-828e-c59234d9e9b9"
   },
   "Sol Ring": {
     "cardName": "Sol Ring",
@@ -559,115 +177,6 @@
     "oracleText": "{T}: Add one mana of any color in your commander's color identity.",
     "scryfallId": "0548fb60-c843-4f8f-a029-6f10efc63a41"
   },
-  "Nykthos, Shrine to Nyx": {
-    "cardName": "Nykthos, Shrine to Nyx",
-    "manaCost": "",
-    "manaValue": 0,
-    "typeLine": "Legendary Land",
-    "cardType": "land",
-    "subtypes": [],
-    "keywords": [],
-    "manaProduction": {
-      "colors": [
-        "C"
-      ],
-      "amount": 1
-    },
-    "entryTapRule": null,
-    "conditionalEntryText": null,
-    "abilities": [
-      {
-        "abilityType": "activated",
-        "triggerEvent": null,
-        "triggerCondition": null,
-        "isOptional": false,
-        "cost": "{T}",
-        "targets": 0,
-        "targetFilter": null,
-        "effect": {
-          "kind": "add_mana",
-          "params": {}
-        }
-      },
-      {
-        "abilityType": "activated",
-        "triggerEvent": null,
-        "triggerCondition": null,
-        "isOptional": false,
-        "cost": "{T}, {2}",
-        "targets": 0,
-        "targetFilter": null,
-        "effect": {
-          "kind": "other",
-          "params": {}
-        }
-      },
-      {
-        "abilityType": "triggered",
-        "triggerEvent": null,
-        "triggerCondition": null,
-        "isOptional": false,
-        "cost": null,
-        "targets": 0,
-        "targetFilter": null,
-        "effect": {
-          "kind": "add_mana",
-          "params": {}
-        }
-      }
-    ],
-    "oracleText": "{T}: Add {C}.\n{2}, {T}: Choose a color. Add an amount of mana of that color equal to your devotion to that color. (Your devotion to a color is the number of mana symbols of that color in the mana costs of permanents you control.)",
-    "scryfallId": "834b27a0-dfd7-4f96-8cde-cacac4b24acc"
-  },
-  "Cabal Coffers": {
-    "cardName": "Cabal Coffers",
-    "manaCost": "",
-    "manaValue": 0,
-    "typeLine": "Land",
-    "cardType": "land",
-    "subtypes": [],
-    "keywords": [],
-    "manaProduction": {
-      "colors": [
-        "B"
-      ],
-      "amount": 1
-    },
-    "entryTapRule": null,
-    "conditionalEntryText": null,
-    "abilities": [
-      {
-        "abilityType": "activated",
-        "triggerEvent": null,
-        "triggerCondition": null,
-        "isOptional": false,
-        "cost": "{T}, {2}",
-        "targets": 0,
-        "targetFilter": null,
-        "effect": {
-          "kind": "add_mana",
-          "params": {}
-        }
-      }
-    ],
-    "oracleText": "{2}, {T}: Add {B} for each Swamp you control.",
-    "scryfallId": "e1efb0d3-2c72-46ff-bdc1-1069967365a0"
-  },
-  "Urborg, Tomb of Yawgmoth": {
-    "cardName": "Urborg, Tomb of Yawgmoth",
-    "manaCost": "",
-    "manaValue": 0,
-    "typeLine": "Legendary Land",
-    "cardType": "land",
-    "subtypes": [],
-    "keywords": [],
-    "manaProduction": null,
-    "entryTapRule": null,
-    "conditionalEntryText": null,
-    "abilities": [],
-    "oracleText": "Each land is a Swamp in addition to its other land types.",
-    "scryfallId": "9e1a9e38-6ffc-490f-b0be-23ba4e8204c6"
-  },
   "Swamp": {
     "cardName": "Swamp",
     "manaCost": "",
@@ -688,7 +197,7 @@
     "conditionalEntryText": null,
     "abilities": [],
     "oracleText": "",
-    "scryfallId": "4031e5e4-e573-4130-8d20-4a606edef0a0"
+    "scryfallId": "b7387103-1df1-4fd0-9e91-1544509792c7"
   },
   "Mountain": {
     "cardName": "Mountain",
@@ -710,7 +219,7 @@
     "conditionalEntryText": null,
     "abilities": [],
     "oracleText": "",
-    "scryfallId": "c49d378e-9549-4320-b3c6-1aeb216d1e98"
+    "scryfallId": "2a844b96-6616-4c39-8f4f-5d14a3b2bd55"
   },
   "The Lord of Pain": {
     "cardName": "The Lord of Pain",
@@ -1561,7 +1070,7 @@
     "abilities": [
       {
         "abilityType": "triggered",
-        "triggerEvent": "etb",
+        "triggerEvent": "landfall",
         "triggerCondition": "a land an opponent controls enters",
         "isOptional": false,
         "cost": null,
@@ -1697,7 +1206,7 @@
       }
     ],
     "oracleText": "The owner of target permanent shuffles it into their library, then reveals the top card of their library. If it's a permanent card, they put it onto the battlefield.",
-    "scryfallId": "57f61970-382e-415c-868b-6bbb6c78825d"
+    "scryfallId": "fb8d8106-b9bd-405c-886e-72fc301c65e1"
   },
   "Combustible Gearhulk": {
     "cardName": "Combustible Gearhulk",
@@ -2441,7 +1950,7 @@
       }
     ],
     "oracleText": "{T}: Add one mana of any color that a land an opponent controls could produce.",
-    "scryfallId": "8853ff94-bf44-4cfd-9d3a-0743c361fb0d"
+    "scryfallId": "d11c5fe0-1528-4c94-a8cc-42bcab9d7487"
   },
   "Foreboding Ruins": {
     "cardName": "Foreboding Ruins",
@@ -3664,7 +3173,7 @@
       }
     ],
     "oracleText": "{T}: Add one mana of any color that a land an opponent controls could produce.",
-    "scryfallId": "385b9f5e-81dd-49f6-a644-59d53245e3dc"
+    "scryfallId": "3ef87948-0ad9-4757-a692-2262c8e24367"
   },
   "Mind Stone": {
     "cardName": "Mind Stone",
@@ -3713,7 +3222,7 @@
       }
     ],
     "oracleText": "{T}: Add {C}.\n{1}, {T}, Sacrifice this artifact: Draw a card.",
-    "scryfallId": "ad881aa0-decc-447b-8c8a-983546a9a55a"
+    "scryfallId": "b30a8f92-ce42-4b27-a893-bcf97fde228d"
   },
   "Rakdos Signet": {
     "cardName": "Rakdos Signet",
@@ -3844,7 +3353,7 @@
       }
     ],
     "oracleText": "You have no maximum hand size.\n{T}: Add {C}.",
-    "scryfallId": "6ec6a910-f6d0-4225-8b55-d329dc788c64"
+    "scryfallId": "ad077996-6b5e-4eb8-bb6e-93d43c5efa8f"
   },
   "Ash Barrens": {
     "cardName": "Ash Barrens",

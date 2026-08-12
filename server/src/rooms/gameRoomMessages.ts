@@ -13,6 +13,7 @@ export interface GameRoomUtilityMessageContext {
   drawCards: (player: PlayerState, count: number) => void
   updateCounts: (player: PlayerState) => void
   emitEvent: (event: ServerEvent) => void
+  getStatus: () => string
   reorderBattlefield: (player: PlayerState, cardId: string, direction: 'closer' | 'farther') => void
   resolveConditionalEntry: (player: PlayerState, cardId: string, tapped: boolean) => void
   discardCard: (player: PlayerState, cardId: string) => void
@@ -28,6 +29,7 @@ export function registerGameRoomUtilityMessages(context: GameRoomUtilityMessageC
     drawCards,
     updateCounts,
     emitEvent,
+    getStatus,
     reorderBattlefield,
     resolveConditionalEntry,
     discardCard,
@@ -35,6 +37,7 @@ export function registerGameRoomUtilityMessages(context: GameRoomUtilityMessageC
 
   onMessage('reshuffle', (client) => {
     const player = getPlayer(client)
+    if (getStatus() !== 'waiting') return
     const privateState = player && privateZones.get(player.playerId)
     if (player && privateState) {
       privateState.library = shuffleArray([...privateState.library, ...privateState.hand])
@@ -46,6 +49,7 @@ export function registerGameRoomUtilityMessages(context: GameRoomUtilityMessageC
 
   onMessage('redeal', (client, message) => {
     const player = getPlayer(client)
+    if (getStatus() !== 'waiting') return
     const privateState = player && privateZones.get(player.playerId)
     if (player && privateState) {
       privateState.library = shuffleArray([...privateState.library, ...privateState.hand])

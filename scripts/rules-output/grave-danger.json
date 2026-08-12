@@ -92,406 +92,6 @@
     "oracleText": "Storm (When you cast this spell, copy it for each spell cast before it this turn.)\nProliferate. (Choose any number of permanents and/or players, then give each another counter of each kind already there.)",
     "scryfallId": "d778cdec-8fc7-4174-bae1-4c8e8ccdfab3"
   },
-  "Soul-Scar Mage": {
-    "cardName": "Soul-Scar Mage",
-    "manaCost": "{R}",
-    "manaValue": 1,
-    "typeLine": "Creature — Human Wizard",
-    "cardType": "creature",
-    "subtypes": [
-      "Human",
-      "Wizard"
-    ],
-    "keywords": [
-      "prowess"
-    ],
-    "manaProduction": null,
-    "entryTapRule": null,
-    "conditionalEntryText": null,
-    "abilities": [
-      {
-        "abilityType": "triggered",
-        "triggerEvent": null,
-        "triggerCondition": null,
-        "isOptional": false,
-        "cost": null,
-        "targets": 0,
-        "targetFilter": null,
-        "effect": {
-          "kind": "put_counter",
-          "params": {}
-        }
-      }
-    ],
-    "oracleText": "Prowess\nIf a source you control would deal noncombat damage to a creature an opponent controls, put that many -1/-1 counters on that creature instead.",
-    "scryfallId": "a8003786-6e2a-4e2d-a915-f23293c7273a"
-  },
-  "The Master, Multiplied": {
-    "cardName": "The Master, Multiplied",
-    "manaCost": "{4}{B}{R}",
-    "manaValue": 6,
-    "typeLine": "Legendary Creature — Time Lord Rogue",
-    "cardType": "creature",
-    "subtypes": [
-      "Time",
-      "Lord",
-      "Rogue"
-    ],
-    "keywords": [],
-    "manaProduction": null,
-    "entryTapRule": null,
-    "conditionalEntryText": null,
-    "abilities": [
-      {
-        "abilityType": "triggered",
-        "triggerEvent": null,
-        "triggerCondition": null,
-        "isOptional": false,
-        "cost": null,
-        "targets": 0,
-        "targetFilter": null,
-        "effect": {
-          "kind": "exile",
-          "params": {}
-        }
-      }
-    ],
-    "oracleText": "Myriad\nThe \"legend rule\" doesn't apply to creature tokens you control.\nTriggered abilities you control can't cause you to sacrifice or exile creature tokens you control.",
-    "scryfallId": "7f734ca0-91bc-4496-9bd7-2d09415e850f"
-  },
-  "Niv-Mizzet, Parun": {
-    "cardName": "Niv-Mizzet, Parun",
-    "manaCost": "{U}{U}{U}{R}{R}{R}",
-    "manaValue": 6,
-    "typeLine": "Legendary Creature — Dragon Wizard",
-    "cardType": "creature",
-    "subtypes": [
-      "Dragon",
-      "Wizard"
-    ],
-    "keywords": [
-      "flying"
-    ],
-    "manaProduction": null,
-    "entryTapRule": null,
-    "conditionalEntryText": null,
-    "abilities": [
-      {
-        "abilityType": "static",
-        "triggerEvent": null,
-        "triggerCondition": null,
-        "isOptional": false,
-        "cost": null,
-        "targets": 0,
-        "targetFilter": null,
-        "effect": {
-          "kind": "other",
-          "params": {}
-        }
-      },
-      {
-        "abilityType": "triggered",
-        "triggerEvent": "card_drawn",
-        "triggerCondition": "Flying Whenever you draw a card",
-        "isOptional": false,
-        "cost": null,
-        "targets": 0,
-        "targetFilter": null,
-        "effect": {
-          "kind": "deal_damage",
-          "params": {}
-        }
-      },
-      {
-        "abilityType": "triggered",
-        "triggerEvent": "card_drawn",
-        "triggerCondition": "a player casts an instant or sorcery spell",
-        "isOptional": false,
-        "cost": null,
-        "targets": 0,
-        "targetFilter": null,
-        "effect": {
-          "kind": "draw_cards",
-          "params": {
-            "amount": 1
-          }
-        }
-      }
-    ],
-    "oracleText": "This spell can't be countered.\nFlying\nWhenever you draw a card, Niv-Mizzet deals 1 damage to any target.\nWhenever a player casts an instant or sorcery spell, you draw a card.",
-    "scryfallId": "86c5c337-d25f-4c3e-9762-09ed0c2d36d7"
-  },
-  "The Locust God": {
-    "cardName": "The Locust God",
-    "manaCost": "{4}{U}{R}",
-    "manaValue": 6,
-    "typeLine": "Legendary Creature — God",
-    "cardType": "creature",
-    "subtypes": [
-      "God"
-    ],
-    "keywords": [
-      "flying",
-      "haste"
-    ],
-    "manaProduction": null,
-    "entryTapRule": null,
-    "conditionalEntryText": null,
-    "abilities": [
-      {
-        "abilityType": "triggered",
-        "triggerEvent": "card_drawn",
-        "triggerCondition": "Flying Whenever you draw a card",
-        "isOptional": false,
-        "cost": null,
-        "targets": 0,
-        "targetFilter": null,
-        "effect": {
-          "kind": "create_token",
-          "params": {
-            "tokenPower": 1,
-            "tokenToughness": 1,
-            "tokenName": "Insect creature",
-            "amount": 1
-          }
-        }
-      },
-      {
-        "abilityType": "triggered",
-        "triggerEvent": null,
-        "triggerCondition": null,
-        "isOptional": false,
-        "cost": null,
-        "targets": 0,
-        "targetFilter": null,
-        "effect": {
-          "kind": "draw_cards",
-          "params": {
-            "amount": 2
-          }
-        }
-      },
-      {
-        "abilityType": "triggered",
-        "triggerEvent": "dies",
-        "triggerCondition": "The Locust God dies",
-        "isOptional": false,
-        "cost": null,
-        "targets": 0,
-        "targetFilter": null,
-        "effect": {
-          "kind": "return_from_graveyard",
-          "params": {}
-        }
-      }
-    ],
-    "oracleText": "Flying\nWhenever you draw a card, create a 1/1 blue and red Insect creature token with flying and haste.\n{2}{U}{R}: Draw a card, then discard a card.\nWhen The Locust God dies, return it to its owner's hand at the beginning of the next end step.",
-    "scryfallId": "7e599847-8ab0-4fd6-b2c0-cb44a7669aa5"
-  },
-  "The Scarab God": {
-    "cardName": "The Scarab God",
-    "manaCost": "{3}{U}{B}",
-    "manaValue": 5,
-    "typeLine": "Legendary Creature — God",
-    "cardType": "creature",
-    "subtypes": [
-      "God"
-    ],
-    "keywords": [],
-    "manaProduction": null,
-    "entryTapRule": null,
-    "conditionalEntryText": null,
-    "abilities": [
-      {
-        "abilityType": "triggered",
-        "triggerEvent": "upkeep",
-        "triggerCondition": "your upkeep",
-        "isOptional": false,
-        "cost": null,
-        "targets": 0,
-        "targetFilter": null,
-        "effect": {
-          "kind": "lose_life",
-          "params": {
-            "amount": "X"
-          }
-        }
-      },
-      {
-        "abilityType": "triggered",
-        "triggerEvent": null,
-        "triggerCondition": null,
-        "isOptional": false,
-        "cost": null,
-        "targets": 1,
-        "targetFilter": "creature card from a graveyard",
-        "effect": {
-          "kind": "exile",
-          "params": {
-            "targetHint": "target creature card"
-          }
-        }
-      },
-      {
-        "abilityType": "triggered",
-        "triggerEvent": null,
-        "triggerCondition": null,
-        "isOptional": false,
-        "cost": null,
-        "targets": 0,
-        "targetFilter": null,
-        "effect": {
-          "kind": "create_token",
-          "params": {
-            "tokenPower": 4,
-            "tokenToughness": 4,
-            "tokenName": "a",
-            "amount": 1
-          }
-        }
-      },
-      {
-        "abilityType": "triggered",
-        "triggerEvent": "dies",
-        "triggerCondition": "The Scarab God dies",
-        "isOptional": false,
-        "cost": null,
-        "targets": 0,
-        "targetFilter": null,
-        "effect": {
-          "kind": "return_from_graveyard",
-          "params": {}
-        }
-      }
-    ],
-    "oracleText": "At the beginning of your upkeep, each opponent loses X life and you scry X, where X is the number of Zombies you control.\n{2}{U}{B}: Exile target creature card from a graveyard. Create a token that's a copy of it, except it's a 4/4 black Zombie.\nWhen The Scarab God dies, return it to its owner's hand at the beginning of the next end step.",
-    "scryfallId": "f4f414ef-84a2-4694-9e98-51bee4576c84"
-  },
-  "Bruvac the Grandiloquent": {
-    "cardName": "Bruvac the Grandiloquent",
-    "manaCost": "{2}{U}",
-    "manaValue": 3,
-    "typeLine": "Legendary Creature — Human Advisor",
-    "cardType": "creature",
-    "subtypes": [
-      "Human",
-      "Advisor"
-    ],
-    "keywords": [],
-    "manaProduction": null,
-    "entryTapRule": null,
-    "conditionalEntryText": null,
-    "abilities": [
-      {
-        "abilityType": "static",
-        "triggerEvent": null,
-        "triggerCondition": null,
-        "isOptional": false,
-        "cost": null,
-        "targets": 0,
-        "targetFilter": null,
-        "effect": {
-          "kind": "other",
-          "params": {
-            "description": "If an opponent would mill one or more cards, they mill twice that many cards instead"
-          }
-        }
-      }
-    ],
-    "oracleText": "If an opponent would mill one or more cards, they mill twice that many cards instead. (To mill a card, a player puts the top card of their library into their graveyard.)",
-    "scryfallId": "2ce2d73f-3f64-44db-a2bc-a8f4a37dc487"
-  },
-  "Maddening Cacophony": {
-    "cardName": "Maddening Cacophony",
-    "manaCost": "{1}{U}",
-    "manaValue": 2,
-    "typeLine": "Sorcery",
-    "cardType": "sorcery",
-    "subtypes": [],
-    "keywords": [],
-    "manaProduction": null,
-    "entryTapRule": null,
-    "conditionalEntryText": null,
-    "abilities": [
-      {
-        "abilityType": "spell",
-        "triggerEvent": null,
-        "triggerCondition": null,
-        "isOptional": false,
-        "cost": null,
-        "targets": 0,
-        "targetFilter": null,
-        "effect": {
-          "kind": "other",
-          "params": {
-            "description": "Each opponent mills eight cards (or half their library rounded up if kicked)"
-          }
-        }
-      }
-    ],
-    "oracleText": "Kicker {3}{U}\nEach opponent mills eight cards. If this spell was kicked, instead each opponent mills half their library, rounded up.",
-    "scryfallId": "10a79733-702c-4611-b073-71db7f1158b2"
-  },
-  "Fleet Swallower": {
-    "cardName": "Fleet Swallower",
-    "manaCost": "{5}{U}{U}",
-    "manaValue": 7,
-    "typeLine": "Creature — Fish",
-    "cardType": "creature",
-    "subtypes": [
-      "Fish"
-    ],
-    "keywords": [],
-    "manaProduction": null,
-    "entryTapRule": null,
-    "conditionalEntryText": null,
-    "abilities": [
-      {
-        "abilityType": "triggered",
-        "triggerEvent": "attack",
-        "triggerCondition": "this creature attacks",
-        "isOptional": false,
-        "cost": null,
-        "targets": 1,
-        "targetFilter": "player mills half their library",
-        "effect": {
-          "kind": "other",
-          "params": {}
-        }
-      }
-    ],
-    "oracleText": "Whenever this creature attacks, target player mills half their library, rounded up.",
-    "scryfallId": "7edbde38-1653-4eb5-b196-8881375781cb"
-  },
-  "Traumatize": {
-    "cardName": "Traumatize",
-    "manaCost": "{3}{U}{U}",
-    "manaValue": 5,
-    "typeLine": "Sorcery",
-    "cardType": "sorcery",
-    "subtypes": [],
-    "keywords": [],
-    "manaProduction": null,
-    "entryTapRule": null,
-    "conditionalEntryText": null,
-    "abilities": [
-      {
-        "abilityType": "spell",
-        "triggerEvent": null,
-        "triggerCondition": null,
-        "isOptional": false,
-        "cost": null,
-        "targets": 1,
-        "targetFilter": "player mills half their library",
-        "effect": {
-          "kind": "other",
-          "params": {}
-        }
-      }
-    ],
-    "oracleText": "Target player mills half their library, rounded down.",
-    "scryfallId": "9b8784dd-83f9-41f8-aedc-f0f81073ffcb"
-  },
   "Sol Ring": {
     "cardName": "Sol Ring",
     "manaCost": "{1}",
@@ -624,29 +224,7 @@
     "conditionalEntryText": null,
     "abilities": [],
     "oracleText": "",
-    "scryfallId": "c6aa89a8-3584-4906-b9a9-41ef2f021f8e"
-  },
-  "Mountain": {
-    "cardName": "Mountain",
-    "manaCost": "",
-    "manaValue": 0,
-    "typeLine": "Basic Land — Mountain",
-    "cardType": "land",
-    "subtypes": [
-      "Mountain"
-    ],
-    "keywords": [],
-    "manaProduction": {
-      "colors": [
-        "R"
-      ],
-      "amount": 1
-    },
-    "entryTapRule": "never",
-    "conditionalEntryText": null,
-    "abilities": [],
-    "oracleText": "",
-    "scryfallId": "c49d378e-9549-4320-b3c6-1aeb216d1e98"
+    "scryfallId": "f3cc07cd-cc79-4745-b0b7-eade60175cc3"
   },
   "Swamp": {
     "cardName": "Swamp",
@@ -668,7 +246,7 @@
     "conditionalEntryText": null,
     "abilities": [],
     "oracleText": "",
-    "scryfallId": "4031e5e4-e573-4130-8d20-4a606edef0a0"
+    "scryfallId": "b7387103-1df1-4fd0-9e91-1544509792c7"
   },
   "The Master, Transcendent": {
     "cardName": "The Master, Transcendent",
@@ -1050,7 +628,7 @@
       {
         "abilityType": "triggered",
         "triggerEvent": "dies",
-        "triggerCondition": "Vigilance",
+        "triggerCondition": "Reach",
         "isOptional": false,
         "cost": null,
         "targets": 0,
@@ -1074,7 +652,7 @@
         }
       }
     ],
-    "oracleText": "Vigilance, reach\nWhen Harold and Bob dies, if it was a creature, return it to the battlefield. It's an Aura enchantment with enchant Forest you control and \"Enchanted Forest has '{T}: Add three mana of any one color. You get two rad counters.'\" Harold and Bob loses all other abilities.",
+    "oracleText": "Reach, vigilance\nWhen Harold and Bob dies, if it was a creature, return it to the battlefield. It's an Aura enchantment with enchant Forest you control and \"Enchanted Forest has '{T}: Add three mana of any one color. You get two rad counters.'\" Harold and Bob loses all other abilities.",
     "scryfallId": "d730ac69-20ec-4ef3-85ee-a5fd24e5f277"
   },
   "Lily Bowen, Raging Grandma": {
@@ -1232,7 +810,7 @@
     "abilities": [
       {
         "abilityType": "triggered",
-        "triggerEvent": "etb",
+        "triggerEvent": "landfall",
         "triggerCondition": "Landfall — Whenever a land you control enters",
         "isOptional": true,
         "cost": null,
@@ -1475,7 +1053,7 @@
     "abilities": [
       {
         "abilityType": "triggered",
-        "triggerEvent": "etb",
+        "triggerEvent": "landfall",
         "triggerCondition": "Landfall — Whenever a land you control enters",
         "isOptional": false,
         "cost": null,
@@ -4119,7 +3697,7 @@
     "conditionalEntryText": null,
     "abilities": [],
     "oracleText": "",
-    "scryfallId": "c3e84b42-5423-4d4d-b8fc-cfbb2c53a4ca"
+    "scryfallId": "dce15387-4114-4b3e-91aa-5b42b45c44ac"
   },
   "Find": {
     "cardName": "Find // Finality",

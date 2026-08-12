@@ -2,7 +2,7 @@ import type { BoardCard, ManaPool, Zone } from '../types/card'
 import type { ActivePlayer } from './gameStore'
 import type { GameState } from './gameStore'
 import { shuffle, classifyType, parseManaCost, getCardPower, canPayManaCost } from '../utils/misc'
-import { pushUndo, attachAuras } from './gameRules'
+import { pushUndo, attachAuras, moveCastSpellsToGraveyard } from './gameRules'
 import { getCardTypeFeatures } from '../data/cardFeatures'
 import { getCachedCardRules, getCardRule } from './cardRulesLoader'
 import { localCardImage } from '../data/localCardImages'
@@ -33,7 +33,7 @@ export function aiCastInstant(set: SetFn, get: () => GameState): boolean {
       turnAnnouncement: { id: Date.now(), text: `OPPONENT casts ${trick.name}` },
     }))
     resolveAISpellAbilities(set, get, trick)
-    set({ cards: attachAuras(get().cards) })
+    set({ cards: attachAuras(moveCastSpellsToGraveyard(get().cards)) })
     return true
   }
   return false
@@ -80,7 +80,8 @@ function aiActivatePlaneswalkers(set: SetFn, get: () => GameState) {
     for (const ability of loyalty) {
       const sign = (ability.cost ?? '').charAt(0)
       const amount = parseInt((ability.cost ?? '').slice(1), 10)
-      if (sign === '-') {
+      // Scryfall/parser emit the Unicode minus (U+2212); ASCII '-' also occurs.
+      if (sign === '-' || sign === '\u2212' || sign === '−') {
         if ((card.counters ?? 0) < amount) continue
         set({ cards: get().cards.map((c) => c.id === card.id ? { ...c, counters: (c.counters ?? 0) - amount } : c) })
       } else {
@@ -280,7 +281,7 @@ export function createOpponentAI(set: SetFn, get: () => GameState): Pick<GameSta
                 }
               })
               resolveAISpellAbilities(set, get, toCast)
-              set({ cards: attachAuras(get().cards) })
+              set({ cards: attachAuras(moveCastSpellsToGraveyard(get().cards)) })
               if (toCast.type !== 'instant' && toCast.type !== 'sorcery') {
                 resolveAIAutoAbilities(set, get, toCast, 'etb')
               }

@@ -340,45 +340,6 @@
     "oracleText": "{T}: Add one mana of any color in your commander's color identity.",
     "scryfallId": "1cad1bd2-7c56-4ce0-99a6-b2a49c1288dd"
   },
-  "Command Tower": {
-    "cardName": "Command Tower",
-    "manaCost": "",
-    "manaValue": 0,
-    "typeLine": "Land",
-    "cardType": "land",
-    "subtypes": [],
-    "keywords": [],
-    "manaProduction": {
-      "colors": [
-        "W",
-        "U",
-        "B",
-        "R",
-        "G",
-        "C"
-      ],
-      "amount": 1
-    },
-    "entryTapRule": null,
-    "conditionalEntryText": null,
-    "abilities": [
-      {
-        "abilityType": "activated",
-        "triggerEvent": null,
-        "triggerCondition": null,
-        "isOptional": false,
-        "cost": "{T}",
-        "targets": 0,
-        "targetFilter": null,
-        "effect": {
-          "kind": "add_mana",
-          "params": {}
-        }
-      }
-    ],
-    "oracleText": "{T}: Add one mana of any color in your commander's color identity.",
-    "scryfallId": "0548fb60-c843-4f8f-a029-6f10efc63a41"
-  },
   "Swamp": {
     "cardName": "Swamp",
     "manaCost": "",
@@ -399,109 +360,7 @@
     "conditionalEntryText": null,
     "abilities": [],
     "oracleText": "",
-    "scryfallId": "4031e5e4-e573-4130-8d20-4a606edef0a0"
-  },
-  "Mountain": {
-    "cardName": "Mountain",
-    "manaCost": "",
-    "manaValue": 0,
-    "typeLine": "Basic Land — Mountain",
-    "cardType": "land",
-    "subtypes": [
-      "Mountain"
-    ],
-    "keywords": [],
-    "manaProduction": {
-      "colors": [
-        "R"
-      ],
-      "amount": 1
-    },
-    "entryTapRule": "never",
-    "conditionalEntryText": null,
-    "abilities": [],
-    "oracleText": "",
-    "scryfallId": "c49d378e-9549-4320-b3c6-1aeb216d1e98"
-  },
-  "Orikan the Diviner": {
-    "cardName": "Orikan the Diviner",
-    "manaCost": "",
-    "manaValue": 0,
-    "typeLine": "Unknown",
-    "cardType": "other",
-    "subtypes": [],
-    "keywords": [],
-    "manaProduction": null,
-    "entryTapRule": null,
-    "conditionalEntryText": null,
-    "abilities": [],
-    "oracleText": "",
-    "scryfallId": null,
-    "note": "MANUAL PLACEHOLDER: no data for this card in Scryfall at extraction time"
-  },
-  "The Silent King": {
-    "cardName": "The Silent King",
-    "manaCost": "",
-    "manaValue": 0,
-    "typeLine": "Unknown",
-    "cardType": "other",
-    "subtypes": [],
-    "keywords": [],
-    "manaProduction": null,
-    "entryTapRule": null,
-    "conditionalEntryText": null,
-    "abilities": [],
-    "oracleText": "",
-    "scryfallId": null,
-    "note": "MANUAL PLACEHOLDER: no data for this card in Scryfall at extraction time"
-  },
-  "Doomstalker": {
-    "cardName": "Doomstalker",
-    "manaCost": "",
-    "manaValue": 0,
-    "typeLine": "Unknown",
-    "cardType": "other",
-    "subtypes": [],
-    "keywords": [],
-    "manaProduction": null,
-    "entryTapRule": null,
-    "conditionalEntryText": null,
-    "abilities": [],
-    "oracleText": "",
-    "scryfallId": null,
-    "note": "MANUAL PLACEHOLDER: no data for this card in Scryfall at extraction time"
-  },
-  "Lokhust Heavy Destroyers": {
-    "cardName": "Lokhust Heavy Destroyers",
-    "manaCost": "",
-    "manaValue": 0,
-    "typeLine": "Unknown",
-    "cardType": "other",
-    "subtypes": [],
-    "keywords": [],
-    "manaProduction": null,
-    "entryTapRule": null,
-    "conditionalEntryText": null,
-    "abilities": [],
-    "oracleText": "",
-    "scryfallId": null,
-    "note": "MANUAL PLACEHOLDER: no data for this card in Scryfall at extraction time"
-  },
-  "Warhammer 40k": {
-    "cardName": "Warhammer 40k",
-    "manaCost": "",
-    "manaValue": 0,
-    "typeLine": "Unknown",
-    "cardType": "other",
-    "subtypes": [],
-    "keywords": [],
-    "manaProduction": null,
-    "entryTapRule": null,
-    "conditionalEntryText": null,
-    "abilities": [],
-    "oracleText": "",
-    "scryfallId": null,
-    "note": "MANUAL PLACEHOLDER: deck list entry is a product name, not a Magic card; no Scryfall data exists"
+    "scryfallId": "b7387103-1df1-4fd0-9e91-1544509792c7"
   },
   "Szarekh, the Silent King": {
     "cardName": "Szarekh, the Silent King",
@@ -2688,7 +2547,7 @@
       }
     ],
     "oracleText": "{T}: Add {C}.\n{1}, {T}, Sacrifice this artifact: Draw a card.",
-    "scryfallId": "ad881aa0-decc-447b-8c8a-983546a9a55a"
+    "scryfallId": "b30a8f92-ce42-4b27-a893-bcf97fde228d"
   },
   "Thought Vessel": {
     "cardName": "Thought Vessel",
@@ -2722,7 +2581,7 @@
       }
     ],
     "oracleText": "You have no maximum hand size.\n{T}: Add {C}.",
-    "scryfallId": "6ec6a910-f6d0-4225-8b55-d329dc788c64"
+    "scryfallId": "ad077996-6b5e-4eb8-bb6e-93d43c5efa8f"
   },
   "Unstable Obelisk": {
     "cardName": "Unstable Obelisk",

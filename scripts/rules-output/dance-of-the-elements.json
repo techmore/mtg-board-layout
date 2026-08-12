@@ -334,7 +334,7 @@
       },
       {
         "abilityType": "triggered",
-        "triggerEvent": "etb",
+        "triggerEvent": "landfall",
         "triggerCondition": "Landfall — Whenever a land you control enters",
         "isOptional": true,
         "cost": null,
@@ -597,7 +597,7 @@
     "abilities": [
       {
         "abilityType": "triggered",
-        "triggerEvent": "etb",
+        "triggerEvent": "landfall",
         "triggerCondition": "Landfall — Whenever a land you control enters",
         "isOptional": false,
         "cost": null,
@@ -680,7 +680,7 @@
       },
       {
         "abilityType": "triggered",
-        "triggerEvent": "etb",
+        "triggerEvent": "landfall",
         "triggerCondition": "Landfall — Whenever a land you control enters",
         "isOptional": false,
         "cost": null,
@@ -1028,7 +1028,7 @@
       }
     ],
     "oracleText": "Lands you control have \"{T}: Add one mana of any color.\"\n{T}: Add one mana of any color.",
-    "scryfallId": "693da13a-49af-4f7e-b247-36b454fb31a0"
+    "scryfallId": "9b29492a-8bdd-4806-8d1b-3058ed277cc1"
   },
   "Primal Beyond": {
     "cardName": "Primal Beyond",
@@ -1119,7 +1119,7 @@
       }
     ],
     "oracleText": "{T}: Add one mana of any color that a land an opponent controls could produce.",
-    "scryfallId": "8853ff94-bf44-4cfd-9d3a-0743c361fb0d"
+    "scryfallId": "d11c5fe0-1528-4c94-a8cc-42bcab9d7487"
   },
   "Path to Exile": {
     "cardName": "Path to Exile",
@@ -1526,7 +1526,7 @@
       }
     ],
     "oracleText": "{T}: Add one mana of any color that a land an opponent controls could produce.",
-    "scryfallId": "385b9f5e-81dd-49f6-a644-59d53245e3dc"
+    "scryfallId": "3ef87948-0ad9-4757-a692-2262c8e24367"
   },
   "Kodama's Reach": {
     "cardName": "Kodama's Reach",
@@ -1640,7 +1640,7 @@
       }
     ],
     "oracleText": "This land enters tapped.\n{T}: Add one mana of any color in your commander's color identity. When that mana is spent to cast a creature spell that shares a creature type with your commander, scry 1. (Look at the top card of your library. You may put that card on the bottom.)",
-    "scryfallId": "836b8f52-10d2-4716-9f7b-38fb23bc68de"
+    "scryfallId": "b1aaa7b0-1cac-4a92-b880-7ef1ac00618f"
   },
   "Plains": {
     "cardName": "Plains",
@@ -1662,7 +1662,7 @@
     "conditionalEntryText": null,
     "abilities": [],
     "oracleText": "",
-    "scryfallId": "7b7c408b-8660-4db5-9a16-5003c11b4ac1"
+    "scryfallId": "8ab0f4c0-b331-4c57-b68f-2e24bb5ba06c"
   },
   "Island": {
     "cardName": "Island",
@@ -1684,7 +1684,7 @@
     "conditionalEntryText": null,
     "abilities": [],
     "oracleText": "",
-    "scryfallId": "c6aa89a8-3584-4906-b9a9-41ef2f021f8e"
+    "scryfallId": "f3cc07cd-cc79-4745-b0b7-eade60175cc3"
   },
   "Swamp": {
     "cardName": "Swamp",
@@ -1706,7 +1706,7 @@
     "conditionalEntryText": null,
     "abilities": [],
     "oracleText": "",
-    "scryfallId": "4031e5e4-e573-4130-8d20-4a606edef0a0"
+    "scryfallId": "b7387103-1df1-4fd0-9e91-1544509792c7"
   },
   "Mountain": {
     "cardName": "Mountain",
@@ -1728,7 +1728,7 @@
     "conditionalEntryText": null,
     "abilities": [],
     "oracleText": "",
-    "scryfallId": "c49d378e-9549-4320-b3c6-1aeb216d1e98"
+    "scryfallId": "2a844b96-6616-4c39-8f4f-5d14a3b2bd55"
   },
   "Forest": {
     "cardName": "Forest",
@@ -1750,7 +1750,7 @@
     "conditionalEntryText": null,
     "abilities": [],
     "oracleText": "",
-    "scryfallId": "c3e84b42-5423-4d4d-b8fc-cfbb2c53a4ca"
+    "scryfallId": "dce15387-4114-4b3e-91aa-5b42b45c44ac"
   },
   "Abundant Countryside": {
     "cardName": "Abundant Countryside",

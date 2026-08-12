@@ -406,7 +406,8 @@ function parseManaProduction(oracleText) {
 
 // ─── Ability parsing ───────────────────────────────────────────────────────
 const TRIGGER_PATTERNS = [
-  { event: 'etb', patterns: [/\bwhen(?:ever)?\s+(this|~|[a-z ]+)\s+enters?\b/i, /\bwhen(?:ever)?\s+.*\benters?\s+the\s+battlefield\b/i] },
+  { event: 'landfall', patterns: [/\bwhen(?:ever)?\s+a\s+land\b[^.,;]{0,40}\benters?\b/i, /\blandfall\b/i] },
+  { event: 'etb', patterns: [/\bwhen(?:ever)?\s+(?!a\s+land\b)(this|~|[a-z ]+)\s+enters?\b/i, /\bwhen(?:ever)?\s+.*\benters?\s+the\s+battlefield\b/i] },
   { event: 'dies', patterns: [/\bwhen(?:ever)?\s+.*\b(dies|die|dies|is put into a graveyard|leaves the battlefield)\b/i] },
   { event: 'upkeep', patterns: [/\bat\s+the\s+beginning\s+of\s+(your|each|the)\s+upkeep\b/i] },
   { event: 'draw_step', patterns: [/\bat\s+the\s+beginning\s+of\s+(your|each|the)\s+draw\s+step\b/i] },
@@ -414,7 +415,6 @@ const TRIGGER_PATTERNS = [
   { event: 'combat_damage', patterns: [/\bwhen(?:ever)?\s+.*\b(combat damage|deals combat damage|attacks and isn't blocked)\b/i] },
   { event: 'attack', patterns: [/\bwhen(?:ever)?\s+.*\battacks?\b/i] },
   { event: 'counter_placed', patterns: [/\bwhen(?:ever)?\s+.*\b(counter|counters)\s+(are\s+)?(is\s+)?put\s+on\b/i, /\bwhen(?:ever)?\s+.*\bput\b.{0,20}\b(counter|counters)\b/i] },
-  { event: 'landfall', patterns: [/\bwhen(?:ever)?\s+a\s+land\s+enters?\b/i, /\blandfall\b/i] },
   { event: 'card_drawn', patterns: [/\bwhen(?:ever)?\s+.*\bdraw\b/i] },
   { event: 'life_gain', patterns: [/\bwhen(?:ever)?\s+.*\bgains?\s+life\b/i] },
   { event: 'life_loss', patterns: [/\bwhen(?:ever)?\s+.*\bloses?\s+life\b/i] },
@@ -733,6 +733,13 @@ async function main() {
     }
     count++
     if (count % 25 === 0) console.log(`  ${count}/${ordered.length}...`)
+  }
+
+  // Prune entries for cards no longer in the decklist (stale from older runs).
+  // Without this, removed cards keep their old rules forever and stale copies
+  // in later-alphabetical deck files override fresh entries at merge time.
+  for (const key of Object.keys(output)) {
+    if (!ordered.includes(key)) delete output[key]
   }
 
   validateOutput(output, ordered)

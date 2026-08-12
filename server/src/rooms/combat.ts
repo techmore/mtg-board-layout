@@ -59,6 +59,13 @@ export function resolveCombat(
   const result: CombatResolution = { cardDamage: [], deadIds: [], playerDamage: [], lifeGain: [], assignments: {} }
   const attackerIds = attackers.map((a) => a.id)
 
+  // Opposing players: everyone except the attacker, and (in team modes with a
+  // real teamId like 'team1'/'team2') the attacker's teammates. In 1v1/4ffa
+  // every player's teamId is '' — never treat '' as a shared team, or nobody
+  // would ever take damage.
+  const isOpponent = (player: { id: string; teamId: string }) =>
+    player.id !== attackerOwnerId && (attackerTeamId === '' || player.teamId !== attackerTeamId)
+
   const findCard = (cardId: string): Combatant | undefined =>
     allPlayers.flatMap((p) => p.battlefield).find((c) => c.id === cardId)
 
@@ -132,7 +139,7 @@ export function resolveCombat(
         const excess = aPower - bToughness
         if (excess > 0) {
           for (const player of allPlayers) {
-            if (player.id === attackerOwnerId || player.teamId === attackerTeamId) continue
+            if (!isOpponent(player)) continue
             result.playerDamage.push({ attackerId: attacker.id, defenderId: player.id, amount: excess })
           }
         }
@@ -190,7 +197,7 @@ export function resolveCombat(
     const power = parsePower(attacker.typeLine)
     if (power === 0) continue
     for (const player of allPlayers) {
-      if (player.id === attackerOwnerId || player.teamId === attackerTeamId) continue
+      if (!isOpponent(player)) continue
       result.playerDamage.push({ attackerId: attacker.id, defenderId: player.id, amount: power })
     }
     const aKeywords = parseKeywords(attacker.oracleText)

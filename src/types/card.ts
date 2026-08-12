@@ -251,3 +251,4 @@ export type GameEvent =
   | { type: 'cast'; cardId: string; cardName: string }
   | { type: 'attack'; cardId: string; cardName: string }
   | { type: 'combat_damage'; sourceCardId: string; sourceCardName: string; targetCardId?: string; amount: number }
+  | { type: 'landfall'; cardId: string; cardName: string }

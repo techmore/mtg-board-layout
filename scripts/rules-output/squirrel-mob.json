@@ -176,306 +176,6 @@
     "oracleText": "Enchant land\nEnchanted land has \"{T}: Create a 1/1 green Squirrel creature token.\"",
     "scryfallId": "6f2aa025-e041-4ed5-a046-9debc474fda0"
   },
-  "Druid Class": {
-    "cardName": "Druid Class",
-    "manaCost": "{1}{G}",
-    "manaValue": 2,
-    "typeLine": "Enchantment — Class",
-    "cardType": "enchantment",
-    "subtypes": [
-      "Class"
-    ],
-    "keywords": [
-      "haste"
-    ],
-    "manaProduction": null,
-    "entryTapRule": null,
-    "conditionalEntryText": null,
-    "abilities": [
-      {
-        "abilityType": "static",
-        "triggerEvent": null,
-        "triggerCondition": null,
-        "isOptional": false,
-        "cost": null,
-        "targets": 0,
-        "targetFilter": null,
-        "effect": {
-          "kind": "gain_life",
-          "params": {
-            "amount": 1
-          }
-        }
-      },
-      {
-        "abilityType": "triggered",
-        "triggerEvent": null,
-        "triggerCondition": null,
-        "isOptional": false,
-        "cost": null,
-        "targets": 1,
-        "targetFilter": "land you control becomes a creature with haste and \"This creature's power and toughness are each equal to the number of lands you control",
-        "effect": {
-          "kind": "other",
-          "params": {}
-        }
-      }
-    ],
-    "oracleText": "(Gain the next level as a sorcery to add its ability.)\nLandfall — Whenever a land you control enters, you gain 1 life.\n{2}{G}: Level 2\nYou may play an additional land on each of your turns.\n{4}{G}: Level 3\nWhen this Class becomes level 3, target land you control becomes a creature with haste and \"This creature's power and toughness are each equal to the number of lands you control.\" It's still a land.",
-    "scryfallId": "09278e95-eaae-4cd4-a0d8-a2d15b0abb58"
-  },
-  "Acorn Harvest": {
-    "cardName": "Acorn Harvest",
-    "manaCost": "{3}{G}",
-    "manaValue": 4,
-    "typeLine": "Sorcery",
-    "cardType": "sorcery",
-    "subtypes": [],
-    "keywords": [],
-    "manaProduction": null,
-    "entryTapRule": null,
-    "conditionalEntryText": null,
-    "abilities": [
-      {
-        "abilityType": "spell",
-        "triggerEvent": null,
-        "triggerCondition": null,
-        "isOptional": false,
-        "cost": null,
-        "targets": 0,
-        "targetFilter": null,
-        "effect": {
-          "kind": "exile",
-          "params": {}
-        }
-      }
-    ],
-    "oracleText": "Create two 1/1 green Squirrel creature tokens.\nFlashback—{1}{G}, Pay 3 life. (You may cast this card from your graveyard for its flashback cost. Then exile it.)",
-    "scryfallId": "32987720-cc0c-416b-b79b-217d3b37542d"
-  },
-  "Squirrel Mob": {
-    "cardName": "Squirrel Mob",
-    "manaCost": "{1}{G}{G}",
-    "manaValue": 3,
-    "typeLine": "Creature — Squirrel",
-    "cardType": "creature",
-    "subtypes": [
-      "Squirrel"
-    ],
-    "keywords": [],
-    "manaProduction": null,
-    "entryTapRule": null,
-    "conditionalEntryText": null,
-    "abilities": [
-      {
-        "abilityType": "static",
-        "triggerEvent": null,
-        "triggerCondition": null,
-        "isOptional": false,
-        "cost": null,
-        "targets": 0,
-        "targetFilter": null,
-        "effect": {
-          "kind": "other",
-          "params": {}
-        }
-      }
-    ],
-    "oracleText": "This creature gets +1/+1 for each other Squirrel on the battlefield.",
-    "scryfallId": "fa6bfc95-ec7e-46dd-88fd-b0e1ba48bfbc"
-  },
-  "Verdant Command": {
-    "cardName": "Verdant Command",
-    "manaCost": "{1}{G}",
-    "manaValue": 2,
-    "typeLine": "Instant",
-    "cardType": "instant",
-    "subtypes": [],
-    "keywords": [],
-    "manaProduction": null,
-    "entryTapRule": null,
-    "conditionalEntryText": null,
-    "abilities": [
-      {
-        "abilityType": "spell",
-        "triggerEvent": null,
-        "triggerCondition": null,
-        "isOptional": false,
-        "cost": null,
-        "targets": 1,
-        "targetFilter": "player creates two tapped 1/1 green Squirrel creature tokens",
-        "effect": {
-          "kind": "other",
-          "params": {}
-        }
-      },
-      {
-        "abilityType": "spell",
-        "triggerEvent": null,
-        "triggerCondition": null,
-        "isOptional": false,
-        "cost": null,
-        "targets": 0,
-        "targetFilter": null,
-        "effect": {
-          "kind": "exile",
-          "params": {
-            "targetHint": "target card from"
-          }
-        }
-      },
-      {
-        "abilityType": "static",
-        "triggerEvent": null,
-        "triggerCondition": null,
-        "isOptional": false,
-        "cost": null,
-        "targets": 1,
-        "targetFilter": "player gains 3 life",
-        "effect": {
-          "kind": "gain_life",
-          "params": {
-            "amount": 3
-          }
-        }
-      }
-    ],
-    "oracleText": "Choose two —\n• Target player creates two tapped 1/1 green Squirrel creature tokens.\n• Counter target loyalty ability of a planeswalker.\n• Exile target card from a graveyard.\n• Target player gains 3 life.",
-    "scryfallId": "83031ea8-a6c9-4318-af16-bba701dd76bb"
-  },
-  "Scurry Oak": {
-    "cardName": "Scurry Oak",
-    "manaCost": "{2}{G}",
-    "manaValue": 3,
-    "typeLine": "Creature — Treefolk",
-    "cardType": "creature",
-    "subtypes": [
-      "Treefolk"
-    ],
-    "keywords": [],
-    "manaProduction": null,
-    "entryTapRule": null,
-    "conditionalEntryText": null,
-    "abilities": [
-      {
-        "abilityType": "triggered",
-        "triggerEvent": "etb",
-        "triggerCondition": "Evolve (Whenever a creature you control enters",
-        "isOptional": false,
-        "cost": null,
-        "targets": 0,
-        "targetFilter": null,
-        "effect": {
-          "kind": "put_counter",
-          "params": {}
-        }
-      },
-      {
-        "abilityType": "triggered",
-        "triggerEvent": "counter_placed",
-        "triggerCondition": ") Whenever one or more +1/+1 counters are put on this creature",
-        "isOptional": true,
-        "cost": null,
-        "targets": 0,
-        "targetFilter": null,
-        "effect": {
-          "kind": "create_token",
-          "params": {
-            "counterKind": "-1/-1",
-            "amount": 1,
-            "tokenPower": 1,
-            "tokenToughness": 1,
-            "tokenName": "Squirrel creature"
-          }
-        }
-      }
-    ],
-    "oracleText": "Evolve (Whenever a creature you control enters, if that creature has greater power or toughness than this creature, put a +1/+1 counter on this creature.)\nWhenever one or more +1/+1 counters are put on this creature, you may create a 1/1 green Squirrel creature token.",
-    "scryfallId": "0fb48c2e-ee0f-4fae-9c22-247870c10d5b"
-  },
-  "Deepwood Denizen": {
-    "cardName": "Deepwood Denizen",
-    "manaCost": "{2}{G}",
-    "manaValue": 3,
-    "typeLine": "Creature — Elf Warrior",
-    "cardType": "creature",
-    "subtypes": [
-      "Elf",
-      "Warrior"
-    ],
-    "keywords": [
-      "vigilance"
-    ],
-    "manaProduction": null,
-    "entryTapRule": null,
-    "conditionalEntryText": null,
-    "abilities": [
-      {
-        "abilityType": "activated",
-        "triggerEvent": null,
-        "triggerCondition": null,
-        "isOptional": false,
-        "cost": "{T}, {5}{G}",
-        "targets": 0,
-        "targetFilter": null,
-        "effect": {
-          "kind": "draw_cards",
-          "params": {
-            "amount": 5
-          }
-        }
-      }
-    ],
-    "oracleText": "Vigilance (Attacking doesn't cause this creature to tap.)\n{5}{G}, {T}: Draw a card. This ability costs {1} less to activate for each +1/+1 counter on creatures you control.",
-    "scryfallId": "333f02f7-3b8a-41e3-9ae5-2151539e64ad"
-  },
-  "Memorial to Unity": {
-    "cardName": "Memorial to Unity",
-    "manaCost": "",
-    "manaValue": 0,
-    "typeLine": "Land",
-    "cardType": "land",
-    "subtypes": [],
-    "keywords": [],
-    "manaProduction": {
-      "colors": [
-        "G"
-      ],
-      "amount": 1
-    },
-    "entryTapRule": "always",
-    "conditionalEntryText": null,
-    "abilities": [
-      {
-        "abilityType": "activated",
-        "triggerEvent": null,
-        "triggerCondition": null,
-        "isOptional": false,
-        "cost": "{T}",
-        "targets": 0,
-        "targetFilter": null,
-        "effect": {
-          "kind": "add_mana",
-          "params": {}
-        }
-      },
-      {
-        "abilityType": "activated",
-        "triggerEvent": null,
-        "triggerCondition": null,
-        "isOptional": false,
-        "cost": "{T}, {2}{G}, Sacrifice",
-        "targets": 0,
-        "targetFilter": null,
-        "effect": {
-          "kind": "other",
-          "params": {}
-        }
-      }
-    ],
-    "oracleText": "This land enters tapped.\n{T}: Add {G}.\n{2}{G}, {T}, Sacrifice this land: Look at the top five cards of your library. You may reveal a creature card from among them and put it into your hand. Then put the rest on the bottom of your library in a random order.",
-    "scryfallId": "994d903b-0d54-4af4-898f-213e716e9ed4"
-  },
   "Sol Ring": {
     "cardName": "Sol Ring",
     "manaCost": "{1}",
@@ -588,66 +288,6 @@
     "oracleText": "{T}: Add one mana of any color in your commander's color identity.",
     "scryfallId": "0548fb60-c843-4f8f-a029-6f10efc63a41"
   },
-  "Squirrel Sanctuary": {
-    "cardName": "Squirrel Sanctuary",
-    "manaCost": "{G}",
-    "manaValue": 1,
-    "typeLine": "Enchantment",
-    "cardType": "enchantment",
-    "subtypes": [],
-    "keywords": [],
-    "manaProduction": null,
-    "entryTapRule": null,
-    "conditionalEntryText": null,
-    "abilities": [
-      {
-        "abilityType": "triggered",
-        "triggerEvent": "etb",
-        "triggerCondition": "this enchantment enters",
-        "isOptional": false,
-        "cost": null,
-        "targets": 0,
-        "targetFilter": null,
-        "effect": {
-          "kind": "create_token",
-          "params": {
-            "tokenPower": 1,
-            "tokenToughness": 1,
-            "tokenName": "Squirrel creature",
-            "amount": 1
-          }
-        }
-      },
-      {
-        "abilityType": "triggered",
-        "triggerEvent": "dies",
-        "triggerCondition": "a nontoken creature you control dies",
-        "isOptional": true,
-        "cost": null,
-        "targets": 0,
-        "targetFilter": null,
-        "effect": {
-          "kind": "other",
-          "params": {}
-        }
-      },
-      {
-        "abilityType": "triggered",
-        "triggerEvent": null,
-        "triggerCondition": null,
-        "isOptional": false,
-        "cost": null,
-        "targets": 0,
-        "targetFilter": null,
-        "effect": {
-          "kind": "return_from_graveyard",
-          "params": {}
-        }
-      }
-    ],
-    "oracleText": "When this enchantment enters, create a 1/1 green Squirrel creature token.\nWhenever a nontoken creature you control dies, you may pay {1}. If you do, return this enchantment to its owner's hand.",
-    "scryfallId": "ed6ab503-5e9a-4339-a0e7-a909b2908f41"
-  },
   "Forest": {
     "cardName": "Forest",
     "manaCost": "",
@@ -668,29 +308,7 @@
     "conditionalEntryText": null,
     "abilities": [],
     "oracleText": "",
-    "scryfallId": "c3e84b42-5423-4d4d-b8fc-cfbb2c53a4ca"
-  },
-  "Plains": {
-    "cardName": "Plains",
-    "manaCost": "",
-    "manaValue": 0,
-    "typeLine": "Basic Land — Plains",
-    "cardType": "land",
-    "subtypes": [
-      "Plains"
-    ],
-    "keywords": [],
-    "manaProduction": {
-      "colors": [
-        "W"
-      ],
-      "amount": 1
-    },
-    "entryTapRule": "never",
-    "conditionalEntryText": null,
-    "abilities": [],
-    "oracleText": "",
-    "scryfallId": "7b7c408b-8660-4db5-9a16-5003c11b4ac1"
+    "scryfallId": "dce15387-4114-4b3e-91aa-5b42b45c44ac"
   },
   "Swamp": {
     "cardName": "Swamp",
@@ -712,23 +330,7 @@
     "conditionalEntryText": null,
     "abilities": [],
     "oracleText": "",
-    "scryfallId": "4031e5e4-e573-4130-8d20-4a606edef0a0"
-  },
-  "Hardshell Escort": {
-    "cardName": "Hardshell Escort",
-    "manaCost": "",
-    "manaValue": 0,
-    "typeLine": "Unknown",
-    "cardType": "other",
-    "subtypes": [],
-    "keywords": [],
-    "manaProduction": null,
-    "entryTapRule": null,
-    "conditionalEntryText": null,
-    "abilities": [],
-    "oracleText": "",
-    "scryfallId": null,
-    "note": "MANUAL PLACEHOLDER: no data for this card in Scryfall at extraction time"
+    "scryfallId": "b7387103-1df1-4fd0-9e91-1544509792c7"
   },
   "The Odd Acorn Gang": {
     "cardName": "The Odd Acorn Gang",
@@ -760,7 +362,7 @@
         "effect": {
           "kind": "other",
           "params": {
-            "description": "Menace, trample, reach Squirrels you control have \"{T}: Target Squirrel gets +2/+2 and gains trample until end of turn"
+            "description": "Reach, menace, trample Squirrels you control have \"{T}: Target Squirrel gets +2/+2 and gains trample until end of turn"
           }
         }
       },
@@ -778,7 +380,7 @@
         }
       }
     ],
-    "oracleText": "Menace, trample, reach\nSquirrels you control have \"{T}: Target Squirrel gets +2/+2 and gains trample until end of turn. Activate only as a sorcery.\"\nWhenever one or more Squirrels you control deal combat damage to a player, draw a card.",
+    "oracleText": "Reach, menace, trample\nSquirrels you control have \"{T}: Target Squirrel gets +2/+2 and gains trample until end of turn. Activate only as a sorcery.\"\nWhenever one or more Squirrels you control deal combat damage to a player, draw a card.",
     "scryfallId": "791d9ea0-c70a-47a6-b8a3-0f5d36a5c44d"
   },
   "Garruk, Cursed Huntsman": {
@@ -2273,7 +1875,7 @@
       }
     ],
     "oracleText": "{T}: Add one mana of any color that a land an opponent controls could produce.",
-    "scryfallId": "8853ff94-bf44-4cfd-9d3a-0743c361fb0d"
+    "scryfallId": "d11c5fe0-1528-4c94-a8cc-42bcab9d7487"
   },
   "Llanowar Wastes": {
     "cardName": "Llanowar Wastes",
@@ -3771,7 +3373,7 @@
     "abilities": [
       {
         "abilityType": "triggered",
-        "triggerEvent": "etb",
+        "triggerEvent": "landfall",
         "triggerCondition": "Landfall — Whenever a land you control enters",
         "isOptional": false,
         "cost": null,
@@ -4218,7 +3820,7 @@
       }
     ],
     "oracleText": "This land enters tapped.\n{T}: Add one mana of any color in your commander's color identity. When that mana is spent to cast a creature spell that shares a creature type with your commander, scry 1. (Look at the top card of your library. You may put that card on the bottom.)",
-    "scryfallId": "836b8f52-10d2-4716-9f7b-38fb23bc68de"
+    "scryfallId": "b1aaa7b0-1cac-4a92-b880-7ef1ac00618f"
   },
   "Evolving Wilds": {
     "cardName": "Evolving Wilds",

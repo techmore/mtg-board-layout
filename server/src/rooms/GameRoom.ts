@@ -105,6 +105,7 @@ export class GameRoom extends Room<{ state: GameState }> {
         client.send('error', { type: 'error', message: 'No land in hand available to play as an override.' })
         return
       }
+      if (player.landPlaysThisTurn >= 1) return
       player.landPlaysThisTurn++
       this.moveCardToZone(player, cardId, 'battlefield')
       this.emitEvent({ type: 'turnAnnouncement', playerId: player.id, playerName: player.name, text: `${player.name} played a land override and ends the turn` })
@@ -121,7 +122,16 @@ export class GameRoom extends Room<{ state: GameState }> {
       const player = this.requireTurnPlayer(client)
       const cardId = stringField(message, 'cardId')
       const zone = isRecord(message) && validZone(message.zone) ? message.zone : undefined
-      if (player && cardId && zone) this.moveCardToZone(player, cardId, zone)
+      if (!player || !cardId || !zone) return
+      const card = this.findAnyCard(player, cardId)
+      if (!card) return
+      // Lands moving to the battlefield still respect the one-land-per-turn
+      // rule — no bypassing it through the generic move handler.
+      if (zone === 'battlefield' && isLandCard(card) && card.zone === 'hand') {
+        if (player.landPlaysThisTurn >= 1) return
+        player.landPlaysThisTurn++
+      }
+      this.moveCardToZone(player, cardId, zone)
     })
 
     this.onMessage('addCounter', (client, message) => this.changeCounter(client, message, 1))
@@ -252,9 +262,13 @@ export class GameRoom extends Room<{ state: GameState }> {
       drawCards: (player, count) => this.drawCards(player, count),
       updateCounts: (player) => this.updateCounts(player),
       emitEvent: (event) => this.emitEvent(event),
+      getStatus: () => this.state.status,
       reorderBattlefield: (player, cardId, direction) => this.reorderBattlefield(player, cardId, direction),
       resolveConditionalEntry: (player, cardId, tapped) => this.resolveConditionalEntry(player, cardId, tapped),
-      discardCard: (player, cardId) => this.moveCardToZone(player, cardId, 'graveyard'),
+      discardCard: (player, cardId) => {
+        const card = this.findPrivateCard(player, cardId)
+        if (card && card.zone === 'hand') this.moveCardToZone(player, cardId, 'graveyard')
+      },
     }
   }
 
@@ -611,6 +625,8 @@ export class GameRoom extends Room<{ state: GameState }> {
   private endTurn(client: Client) {
     const player = this.requireTurnPlayer(client)
     if (!player) return
+    // Ending the turn mid-combat would leave combatActive stuck forever.
+    if (this.state.combatActive) return
     player.battlefield.forEach((card) => { card.tapped = false; card.damage = 0 })
     player.landPlaysThisTurn = 0
     this.clearMana(player)

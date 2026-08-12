@@ -65,232 +65,6 @@
     "oracleText": "Whenever you roll a 4 or higher, create a 3/3 colorless Robot artifact creature token. If you rolled 6 or higher, instead create that token and a Treasure token.\n{4}, {T}: Roll a six-sided die plus an additional six-sided die for each mana from Treasures spent to activate this ability.",
     "scryfallId": "23eb3cf7-c90d-4bfa-b125-4fbcb5614468"
   },
-  "The Master, Multiplied": {
-    "cardName": "The Master, Multiplied",
-    "manaCost": "{4}{B}{R}",
-    "manaValue": 6,
-    "typeLine": "Legendary Creature — Time Lord Rogue",
-    "cardType": "creature",
-    "subtypes": [
-      "Time",
-      "Lord",
-      "Rogue"
-    ],
-    "keywords": [],
-    "manaProduction": null,
-    "entryTapRule": null,
-    "conditionalEntryText": null,
-    "abilities": [
-      {
-        "abilityType": "triggered",
-        "triggerEvent": null,
-        "triggerCondition": null,
-        "isOptional": false,
-        "cost": null,
-        "targets": 0,
-        "targetFilter": null,
-        "effect": {
-          "kind": "exile",
-          "params": {}
-        }
-      }
-    ],
-    "oracleText": "Myriad\nThe \"legend rule\" doesn't apply to creature tokens you control.\nTriggered abilities you control can't cause you to sacrifice or exile creature tokens you control.",
-    "scryfallId": "7f734ca0-91bc-4496-9bd7-2d09415e850f"
-  },
-  "Aligned Hedron Network": {
-    "cardName": "Aligned Hedron Network",
-    "manaCost": "{4}",
-    "manaValue": 4,
-    "typeLine": "Artifact",
-    "cardType": "artifact",
-    "subtypes": [],
-    "keywords": [],
-    "manaProduction": null,
-    "entryTapRule": null,
-    "conditionalEntryText": null,
-    "abilities": [
-      {
-        "abilityType": "triggered",
-        "triggerEvent": "etb",
-        "triggerCondition": "this artifact enters",
-        "isOptional": false,
-        "cost": null,
-        "targets": 0,
-        "targetFilter": null,
-        "effect": {
-          "kind": "exile",
-          "params": {}
-        }
-      }
-    ],
-    "oracleText": "When this artifact enters, exile all creatures with power 5 or greater until this artifact leaves the battlefield. (Those creatures return under their owners' control.)",
-    "scryfallId": "c0ef436b-e82e-4e1f-9da0-5e35f0c37bde"
-  },
-  "Chaos Warp": {
-    "cardName": "Chaos Warp",
-    "manaCost": "{2}{R}",
-    "manaValue": 3,
-    "typeLine": "Instant",
-    "cardType": "instant",
-    "subtypes": [],
-    "keywords": [],
-    "manaProduction": null,
-    "entryTapRule": null,
-    "conditionalEntryText": null,
-    "abilities": [
-      {
-        "abilityType": "spell",
-        "triggerEvent": null,
-        "triggerCondition": null,
-        "isOptional": false,
-        "cost": null,
-        "targets": 1,
-        "targetFilter": "permanent shuffles it into their library",
-        "effect": {
-          "kind": "other",
-          "params": {}
-        }
-      }
-    ],
-    "oracleText": "The owner of target permanent shuffles it into their library, then reveals the top card of their library. If it's a permanent card, they put it onto the battlefield.",
-    "scryfallId": "57f61970-382e-415c-868b-6bbb6c78825d"
-  },
-  "Generous Gift": {
-    "cardName": "Generous Gift",
-    "manaCost": "{2}{W}",
-    "manaValue": 3,
-    "typeLine": "Instant",
-    "cardType": "instant",
-    "subtypes": [],
-    "keywords": [],
-    "manaProduction": null,
-    "entryTapRule": null,
-    "conditionalEntryText": null,
-    "abilities": [
-      {
-        "abilityType": "spell",
-        "triggerEvent": null,
-        "triggerCondition": null,
-        "isOptional": false,
-        "cost": null,
-        "targets": 1,
-        "targetFilter": "permanent",
-        "effect": {
-          "kind": "destroy",
-          "params": {
-            "targetHint": "target permanent"
-          }
-        }
-      }
-    ],
-    "oracleText": "Destroy target permanent. Its controller creates a 3/3 green Elephant creature token.",
-    "scryfallId": "c3f9b454-97e9-4c77-b37a-e974221ae385"
-  },
-  "Swords to Plowshares": {
-    "cardName": "Swords to Plowshares",
-    "manaCost": "{W}",
-    "manaValue": 1,
-    "typeLine": "Instant",
-    "cardType": "instant",
-    "subtypes": [],
-    "keywords": [],
-    "manaProduction": null,
-    "entryTapRule": null,
-    "conditionalEntryText": null,
-    "abilities": [
-      {
-        "abilityType": "spell",
-        "triggerEvent": null,
-        "triggerCondition": null,
-        "isOptional": false,
-        "cost": null,
-        "targets": 1,
-        "targetFilter": "creature",
-        "effect": {
-          "kind": "exile",
-          "params": {
-            "targetHint": "target creature"
-          }
-        }
-      },
-      {
-        "abilityType": "spell",
-        "triggerEvent": null,
-        "triggerCondition": null,
-        "isOptional": false,
-        "cost": null,
-        "targets": 0,
-        "targetFilter": null,
-        "effect": {
-          "kind": "gain_life",
-          "params": {
-            "amount": 1
-          }
-        }
-      }
-    ],
-    "oracleText": "Exile target creature. Its controller gains life equal to its power.",
-    "scryfallId": "b4e9c870-23c0-413a-ae39-265f09da16d1"
-  },
-  "Cyclonic Rift": {
-    "cardName": "Cyclonic Rift",
-    "manaCost": "{1}{U}",
-    "manaValue": 2,
-    "typeLine": "Instant",
-    "cardType": "instant",
-    "subtypes": [],
-    "keywords": [],
-    "manaProduction": null,
-    "entryTapRule": null,
-    "conditionalEntryText": null,
-    "abilities": [
-      {
-        "abilityType": "spell",
-        "triggerEvent": null,
-        "triggerCondition": null,
-        "isOptional": false,
-        "cost": null,
-        "targets": 0,
-        "targetFilter": null,
-        "effect": {
-          "kind": "return_from_graveyard",
-          "params": {}
-        }
-      }
-    ],
-    "oracleText": "Return target nonland permanent you don't control to its owner's hand.\nOverload {6}{U} (You may cast this spell for its overload cost. If you do, change \"target\" in its text to \"each.\")",
-    "scryfallId": "dfb7c4b9-f2f4-4d4e-baf2-86551c8150fe"
-  },
-  "Magnetic Theft": {
-    "cardName": "Magnetic Theft",
-    "manaCost": "{R}",
-    "manaValue": 1,
-    "typeLine": "Instant",
-    "cardType": "instant",
-    "subtypes": [],
-    "keywords": [],
-    "manaProduction": null,
-    "entryTapRule": null,
-    "conditionalEntryText": null,
-    "abilities": [
-      {
-        "abilityType": "spell",
-        "triggerEvent": null,
-        "triggerCondition": null,
-        "isOptional": false,
-        "cost": null,
-        "targets": 1,
-        "targetFilter": "creature",
-        "effect": {
-          "kind": "other",
-          "params": {}
-        }
-      }
-    ],
-    "oracleText": "Attach target Equipment to target creature. (Control of the Equipment doesn't change.)",
-    "scryfallId": "de0c1e37-fedc-43d9-97fd-b797c6c2fbbe"
-  },
   "Sol Ring": {
     "cardName": "Sol Ring",
     "manaCost": "{1}",
@@ -423,7 +197,7 @@
     "conditionalEntryText": null,
     "abilities": [],
     "oracleText": "",
-    "scryfallId": "c49d378e-9549-4320-b3c6-1aeb216d1e98"
+    "scryfallId": "2a844b96-6616-4c39-8f4f-5d14a3b2bd55"
   },
   "Plains": {
     "cardName": "Plains",
@@ -445,23 +219,7 @@
     "conditionalEntryText": null,
     "abilities": [],
     "oracleText": "",
-    "scryfallId": "7b7c408b-8660-4db5-9a16-5003c11b4ac1"
-  },
-  "Dice Chamber": {
-    "cardName": "Dice Chamber",
-    "manaCost": "",
-    "manaValue": 0,
-    "typeLine": "Unknown",
-    "cardType": "other",
-    "subtypes": [],
-    "keywords": [],
-    "manaProduction": null,
-    "entryTapRule": null,
-    "conditionalEntryText": null,
-    "abilities": [],
-    "oracleText": "",
-    "scryfallId": null,
-    "note": "MANUAL PLACEHOLDER: no data for this card in Scryfall at extraction time"
+    "scryfallId": "8ab0f4c0-b331-4c57-b68f-2e24bb5ba06c"
   },
   "Caesar, Legion's Emperor": {
     "cardName": "Caesar, Legion's Emperor",
@@ -4285,7 +4043,7 @@
     "conditionalEntryText": null,
     "abilities": [],
     "oracleText": "",
-    "scryfallId": "4031e5e4-e573-4130-8d20-4a606edef0a0"
+    "scryfallId": "b7387103-1df1-4fd0-9e91-1544509792c7"
   },
   "Wear": {
     "cardName": "Wear // Tear",

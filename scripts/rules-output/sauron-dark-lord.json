@@ -63,167 +63,6 @@
     "oracleText": "Ward—Sacrifice a legendary artifact or legendary creature.\nWhenever an opponent casts a spell, amass Orcs 1.\nWhenever an Army you control deals combat damage to a player, the Ring tempts you.\nWhenever the Ring tempts you, you may discard your hand. If you do, draw four cards.",
     "scryfallId": "034e0929-b2c7-4b5f-94f2-8eaf4fb1a2a1"
   },
-  "Saruman of Many Colors": {
-    "cardName": "Saruman of Many Colors",
-    "manaCost": "{3}{W}{U}{B}",
-    "manaValue": 6,
-    "typeLine": "Legendary Creature — Avatar Wizard",
-    "cardType": "creature",
-    "subtypes": [
-      "Avatar",
-      "Wizard"
-    ],
-    "keywords": [
-      "ward"
-    ],
-    "manaProduction": null,
-    "entryTapRule": null,
-    "conditionalEntryText": null,
-    "abilities": [
-      {
-        "abilityType": "triggered",
-        "triggerEvent": "cast",
-        "triggerCondition": "you cast your second spell each turn",
-        "isOptional": false,
-        "cost": null,
-        "targets": 0,
-        "targetFilter": null,
-        "effect": {
-          "kind": "other",
-          "params": {}
-        }
-      },
-      {
-        "abilityType": "triggered",
-        "triggerEvent": "graveyard",
-        "triggerCondition": "one or more cards are milled this way",
-        "isOptional": false,
-        "cost": null,
-        "targets": 1,
-        "targetFilter": "enchantment",
-        "effect": {
-          "kind": "exile",
-          "params": {
-            "targetHint": "target enchantment"
-          }
-        }
-      }
-    ],
-    "oracleText": "Ward—Discard an enchantment, instant, or sorcery card.\nWhenever you cast your second spell each turn, each opponent mills two cards. When one or more cards are milled this way, exile target enchantment, instant, or sorcery card with equal or lesser mana value than that spell from an opponent's graveyard. Copy the exiled card. You may cast the copy without paying its mana cost.",
-    "scryfallId": "62c8fa9c-d8ba-4ce0-946c-42fdc26b49d1"
-  },
-  "Saruman the White": {
-    "cardName": "Saruman the White",
-    "manaCost": "{4}{U}",
-    "manaValue": 5,
-    "typeLine": "Legendary Creature — Avatar Wizard",
-    "cardType": "creature",
-    "subtypes": [
-      "Avatar",
-      "Wizard"
-    ],
-    "keywords": [
-      "ward"
-    ],
-    "manaProduction": null,
-    "entryTapRule": null,
-    "conditionalEntryText": null,
-    "abilities": [
-      {
-        "abilityType": "triggered",
-        "triggerEvent": "cast",
-        "triggerCondition": "Ward {2} Whenever you cast your second spell each turn",
-        "isOptional": false,
-        "cost": null,
-        "targets": 0,
-        "targetFilter": null,
-        "effect": {
-          "kind": "other",
-          "params": {}
-        }
-      },
-      {
-        "abilityType": "triggered",
-        "triggerEvent": null,
-        "triggerCondition": null,
-        "isOptional": false,
-        "cost": null,
-        "targets": 0,
-        "targetFilter": null,
-        "effect": {
-          "kind": "put_counter",
-          "params": {}
-        }
-      },
-      {
-        "abilityType": "triggered",
-        "triggerEvent": null,
-        "triggerCondition": null,
-        "isOptional": false,
-        "cost": null,
-        "targets": 0,
-        "targetFilter": null,
-        "effect": {
-          "kind": "create_token",
-          "params": {
-            "tokenPower": 0,
-            "tokenToughness": 0,
-            "tokenName": "Army creature",
-            "amount": 1
-          }
-        }
-      }
-    ],
-    "oracleText": "Ward {2}\nWhenever you cast your second spell each turn, amass Orcs 2. (Put two +1/+1 counters on an Army you control. It's also an Orc. If you don't control an Army, create a 0/0 black Orc Army creature token first.)",
-    "scryfallId": "1bfccbab-29fa-4e92-8919-6cd4815fb655"
-  },
-  "Nazgûl": {
-    "cardName": "Nazgûl",
-    "manaCost": "{2}{B}",
-    "manaValue": 3,
-    "typeLine": "Creature — Wraith Knight",
-    "cardType": "creature",
-    "subtypes": [
-      "Wraith",
-      "Knight"
-    ],
-    "keywords": [
-      "deathtouch"
-    ],
-    "manaProduction": null,
-    "entryTapRule": null,
-    "conditionalEntryText": null,
-    "abilities": [
-      {
-        "abilityType": "triggered",
-        "triggerEvent": "etb",
-        "triggerCondition": "Deathtouch When this creature enters",
-        "isOptional": false,
-        "cost": null,
-        "targets": 0,
-        "targetFilter": null,
-        "effect": {
-          "kind": "other",
-          "params": {}
-        }
-      },
-      {
-        "abilityType": "triggered",
-        "triggerEvent": "counter_placed",
-        "triggerCondition": "the Ring tempts you",
-        "isOptional": false,
-        "cost": null,
-        "targets": 0,
-        "targetFilter": null,
-        "effect": {
-          "kind": "put_counter",
-          "params": {}
-        }
-      }
-    ],
-    "oracleText": "Deathtouch\nWhen this creature enters, the Ring tempts you.\nWhenever the Ring tempts you, put a +1/+1 counter on each Wraith you control.\nA deck can have up to nine cards named Nazgûl.",
-    "scryfallId": "833936c6-9381-4c0b-a81c-4a938be95040"
-  },
   "Lord of the Nazgûl": {
     "cardName": "Lord of the Nazgûl",
     "manaCost": "{3}{U}{B}",
@@ -263,344 +102,6 @@
     ],
     "oracleText": "Flying\nWraiths you control have protection from Ring-bearers.\nWhenever you cast an instant or sorcery spell, create a 3/3 black Wraith creature token with menace. Then if you control nine or more Wraiths, Wraiths you control have base power and toughness 9/9 until end of turn.",
     "scryfallId": "41e3d118-8f97-4c68-acff-2f90a055af5b"
-  },
-  "Ringwraiths": {
-    "cardName": "Ringwraiths",
-    "manaCost": "{4}{B}{B}",
-    "manaValue": 6,
-    "typeLine": "Creature — Wraith Knight",
-    "cardType": "creature",
-    "subtypes": [
-      "Wraith",
-      "Knight"
-    ],
-    "keywords": [],
-    "manaProduction": null,
-    "entryTapRule": null,
-    "conditionalEntryText": null,
-    "abilities": [
-      {
-        "abilityType": "triggered",
-        "triggerEvent": "etb",
-        "triggerCondition": "this creature enters",
-        "isOptional": false,
-        "cost": null,
-        "targets": 1,
-        "targetFilter": "creature an opponent controls gets -3/-3 until end of turn",
-        "effect": {
-          "kind": "other",
-          "params": {}
-        }
-      },
-      {
-        "abilityType": "triggered",
-        "triggerEvent": null,
-        "triggerCondition": null,
-        "isOptional": false,
-        "cost": null,
-        "targets": 0,
-        "targetFilter": null,
-        "effect": {
-          "kind": "lose_life",
-          "params": {
-            "amount": 3
-          }
-        }
-      },
-      {
-        "abilityType": "triggered",
-        "triggerEvent": "graveyard",
-        "triggerCondition": "the Ring tempts you",
-        "isOptional": false,
-        "cost": null,
-        "targets": 0,
-        "targetFilter": null,
-        "effect": {
-          "kind": "return_from_graveyard",
-          "params": {}
-        }
-      }
-    ],
-    "oracleText": "When this creature enters, target creature an opponent controls gets -3/-3 until end of turn. If that creature is legendary, its controller loses 3 life.\nWhen the Ring tempts you, return this card from your graveyard to your hand.",
-    "scryfallId": "2a8495c3-96cf-40ab-b68a-1b5711b7659e"
-  },
-  "Call of the Ring": {
-    "cardName": "Call of the Ring",
-    "manaCost": "{1}{B}",
-    "manaValue": 2,
-    "typeLine": "Enchantment",
-    "cardType": "enchantment",
-    "subtypes": [],
-    "keywords": [],
-    "manaProduction": null,
-    "entryTapRule": null,
-    "conditionalEntryText": null,
-    "abilities": [
-      {
-        "abilityType": "triggered",
-        "triggerEvent": "upkeep",
-        "triggerCondition": "your upkeep",
-        "isOptional": false,
-        "cost": null,
-        "targets": 0,
-        "targetFilter": null,
-        "effect": {
-          "kind": "other",
-          "params": {}
-        }
-      },
-      {
-        "abilityType": "triggered",
-        "triggerEvent": null,
-        "triggerCondition": null,
-        "isOptional": false,
-        "cost": null,
-        "targets": 0,
-        "targetFilter": null,
-        "effect": {
-          "kind": "draw_cards",
-          "params": {
-            "amount": 1
-          }
-        }
-      }
-    ],
-    "oracleText": "At the beginning of your upkeep, the Ring tempts you.\nWhenever you choose a creature as your Ring-bearer, you may pay 2 life. If you do, draw a card.",
-    "scryfallId": "a92a2c5a-e450-494a-b23b-7ac0a6c50535"
-  },
-  "The One Ring": {
-    "cardName": "The One Ring",
-    "manaCost": "{4}",
-    "manaValue": 4,
-    "typeLine": "Legendary Artifact",
-    "cardType": "artifact",
-    "subtypes": [],
-    "keywords": [
-      "indestructible"
-    ],
-    "manaProduction": null,
-    "entryTapRule": null,
-    "conditionalEntryText": null,
-    "abilities": [
-      {
-        "abilityType": "triggered",
-        "triggerEvent": "etb",
-        "triggerCondition": "Indestructible When The One Ring enters",
-        "isOptional": false,
-        "cost": null,
-        "targets": 0,
-        "targetFilter": null,
-        "effect": {
-          "kind": "other",
-          "params": {}
-        }
-      },
-      {
-        "abilityType": "triggered",
-        "triggerEvent": "upkeep",
-        "triggerCondition": "your upkeep",
-        "isOptional": false,
-        "cost": null,
-        "targets": 0,
-        "targetFilter": null,
-        "effect": {
-          "kind": "lose_life",
-          "params": {
-            "amount": 1
-          }
-        }
-      },
-      {
-        "abilityType": "activated",
-        "triggerEvent": null,
-        "triggerCondition": null,
-        "isOptional": false,
-        "cost": "{T}",
-        "targets": 0,
-        "targetFilter": null,
-        "effect": {
-          "kind": "put_counter",
-          "params": {}
-        }
-      }
-    ],
-    "oracleText": "Indestructible\nWhen The One Ring enters, if you cast it, you gain protection from everything until your next turn.\nAt the beginning of your upkeep, you lose 1 life for each burden counter on The One Ring.\n{T}: Put a burden counter on The One Ring, then draw a card for each burden counter on The One Ring.",
-    "scryfallId": "d5806e68-1054-458e-866d-1f2470f682b2"
-  },
-  "Orcish Bowmasters": {
-    "cardName": "Orcish Bowmasters",
-    "manaCost": "{1}{B}",
-    "manaValue": 2,
-    "typeLine": "Creature — Orc Archer",
-    "cardType": "creature",
-    "subtypes": [
-      "Orc",
-      "Archer"
-    ],
-    "keywords": [
-      "flash"
-    ],
-    "manaProduction": null,
-    "entryTapRule": null,
-    "conditionalEntryText": null,
-    "abilities": [
-      {
-        "abilityType": "triggered",
-        "triggerEvent": "etb",
-        "triggerCondition": "Flash When this creature enters and whenever an opponent draws a card except the first one they draw in each of their draw steps",
-        "isOptional": false,
-        "cost": null,
-        "targets": 0,
-        "targetFilter": null,
-        "effect": {
-          "kind": "deal_damage",
-          "params": {}
-        }
-      }
-    ],
-    "oracleText": "Flash\nWhen this creature enters and whenever an opponent draws a card except the first one they draw in each of their draw steps, this creature deals 1 damage to any target. Then amass Orcs 1.",
-    "scryfallId": "881b6202-6d02-489b-b79c-62142c42ed1f"
-  },
-  "Gollum, Scheming Guide": {
-    "cardName": "Gollum, Scheming Guide",
-    "manaCost": "{1}{B}",
-    "manaValue": 2,
-    "typeLine": "Legendary Creature — Halfling Horror",
-    "cardType": "creature",
-    "subtypes": [
-      "Halfling",
-      "Horror"
-    ],
-    "keywords": [],
-    "manaProduction": null,
-    "entryTapRule": null,
-    "conditionalEntryText": null,
-    "abilities": [
-      {
-        "abilityType": "triggered",
-        "triggerEvent": "attack",
-        "triggerCondition": "Gollum attacks",
-        "isOptional": false,
-        "cost": null,
-        "targets": 0,
-        "targetFilter": null,
-        "effect": {
-          "kind": "other",
-          "params": {}
-        }
-      },
-      {
-        "abilityType": "static",
-        "triggerEvent": null,
-        "triggerCondition": null,
-        "isOptional": false,
-        "cost": null,
-        "targets": 0,
-        "targetFilter": null,
-        "effect": {
-          "kind": "draw_cards",
-          "params": {
-            "amount": 1
-          }
-        }
-      }
-    ],
-    "oracleText": "Whenever Gollum attacks, look at the top two cards of your library, put them back in any order, then choose land or nonland. An opponent guesses whether the top card of your library is the chosen kind. Reveal that card. If they guessed right, remove Gollum from combat. Otherwise, you draw a card and Gollum can't be blocked this turn.",
-    "scryfallId": "7f93ad17-b655-4a10-990e-b26ead90d221"
-  },
-  "Mirkwood Bats": {
-    "cardName": "Mirkwood Bats",
-    "manaCost": "{3}{B}",
-    "manaValue": 4,
-    "typeLine": "Creature — Bat",
-    "cardType": "creature",
-    "subtypes": [
-      "Bat"
-    ],
-    "keywords": [
-      "flying"
-    ],
-    "manaProduction": null,
-    "entryTapRule": null,
-    "conditionalEntryText": null,
-    "abilities": [
-      {
-        "abilityType": "triggered",
-        "triggerEvent": "sacrifice",
-        "triggerCondition": "Flying Whenever you create or sacrifice a token",
-        "isOptional": false,
-        "cost": null,
-        "targets": 0,
-        "targetFilter": null,
-        "effect": {
-          "kind": "create_token",
-          "params": {
-            "tokenName": "sacrifice a"
-          }
-        }
-      }
-    ],
-    "oracleText": "Flying\nWhenever you create or sacrifice a token, each opponent loses 1 life.",
-    "scryfallId": "15f035df-784a-4dc8-b7f5-77139a4e6e99"
-  },
-  "Palantír of Orthanc": {
-    "cardName": "Palantír of Orthanc",
-    "manaCost": "{3}",
-    "manaValue": 3,
-    "typeLine": "Legendary Artifact",
-    "cardType": "artifact",
-    "subtypes": [],
-    "keywords": [],
-    "manaProduction": null,
-    "entryTapRule": null,
-    "conditionalEntryText": null,
-    "abilities": [
-      {
-        "abilityType": "triggered",
-        "triggerEvent": "end_of_turn",
-        "triggerCondition": "your end step",
-        "isOptional": false,
-        "cost": null,
-        "targets": 0,
-        "targetFilter": null,
-        "effect": {
-          "kind": "put_counter",
-          "params": {}
-        }
-      },
-      {
-        "abilityType": "triggered",
-        "triggerEvent": null,
-        "triggerCondition": null,
-        "isOptional": true,
-        "cost": null,
-        "targets": 1,
-        "targetFilter": "opponent may have you draw a card",
-        "effect": {
-          "kind": "draw_cards",
-          "params": {
-            "amount": 1
-          }
-        }
-      },
-      {
-        "abilityType": "triggered",
-        "triggerEvent": null,
-        "triggerCondition": null,
-        "isOptional": false,
-        "cost": null,
-        "targets": 0,
-        "targetFilter": null,
-        "effect": {
-          "kind": "lose_life",
-          "params": {
-            "amount": "X"
-          }
-        }
-      }
-    ],
-    "oracleText": "At the beginning of your end step, put an influence counter on Palantír of Orthanc and scry 2. Then target opponent may have you draw a card. If that player doesn't, you mill X cards, where X is the number of influence counters on Palantír of Orthanc, and that player loses life equal to the total mana value of those cards.",
-    "scryfallId": "a6a887e4-7cee-4107-8a9a-afbfa2e91bdc"
   },
   "Sol Ring": {
     "cardName": "Sol Ring",
@@ -734,7 +235,7 @@
     "conditionalEntryText": null,
     "abilities": [],
     "oracleText": "",
-    "scryfallId": "4031e5e4-e573-4130-8d20-4a606edef0a0"
+    "scryfallId": "b7387103-1df1-4fd0-9e91-1544509792c7"
   },
   "Island": {
     "cardName": "Island",
@@ -756,7 +257,7 @@
     "conditionalEntryText": null,
     "abilities": [],
     "oracleText": "",
-    "scryfallId": "c6aa89a8-3584-4906-b9a9-41ef2f021f8e"
+    "scryfallId": "f3cc07cd-cc79-4745-b0b7-eade60175cc3"
   },
   "Mountain": {
     "cardName": "Mountain",
@@ -778,39 +279,7 @@
     "conditionalEntryText": null,
     "abilities": [],
     "oracleText": "",
-    "scryfallId": "c49d378e-9549-4320-b3c6-1aeb216d1e98"
-  },
-  "The Witch-King, Bringer of Ruin": {
-    "cardName": "The Witch-King, Bringer of Ruin",
-    "manaCost": "",
-    "manaValue": 0,
-    "typeLine": "Unknown",
-    "cardType": "other",
-    "subtypes": [],
-    "keywords": [],
-    "manaProduction": null,
-    "entryTapRule": null,
-    "conditionalEntryText": null,
-    "abilities": [],
-    "oracleText": "",
-    "scryfallId": null,
-    "note": "MANUAL PLACEHOLDER: no data for this card in Scryfall at extraction time"
-  },
-  "Mordor Siege": {
-    "cardName": "Mordor Siege",
-    "manaCost": "",
-    "manaValue": 0,
-    "typeLine": "Unknown",
-    "cardType": "other",
-    "subtypes": [],
-    "keywords": [],
-    "manaProduction": null,
-    "entryTapRule": null,
-    "conditionalEntryText": null,
-    "abilities": [],
-    "oracleText": "",
-    "scryfallId": null,
-    "note": "MANUAL PLACEHOLDER: no data for this card in Scryfall at extraction time"
+    "scryfallId": "2a844b96-6616-4c39-8f4f-5d14a3b2bd55"
   },
   "Choked Estuary": {
     "cardName": "Choked Estuary",
@@ -1202,7 +671,7 @@
       }
     ],
     "oracleText": "This land enters tapped.\n{T}: Add one mana of any color in your commander's color identity. When that mana is spent to cast a creature spell that shares a creature type with your commander, scry 1. (Look at the top card of your library. You may put that card on the bottom.)",
-    "scryfallId": "836b8f52-10d2-4716-9f7b-38fb23bc68de"
+    "scryfallId": "b1aaa7b0-1cac-4a92-b880-7ef1ac00618f"
   },
   "Rogue's Passage": {
     "cardName": "Rogue's Passage",
@@ -1519,7 +988,7 @@
       }
     ],
     "oracleText": "As The Black Gate enters, you may pay 3 life. If you don't, it enters tapped.\n{T}: Add {B}.\n{1}{B}, {T}: Choose a player with the most life or tied for most life. Target creature can't be blocked by creatures that player controls this turn.",
-    "scryfallId": "db3710f3-fd63-43d9-b9d6-dfac041954fa"
+    "scryfallId": "46418186-c215-47c4-9d0a-d15a1d8ca613"
   },
   "Underground River": {
     "cardName": "Underground River",
@@ -2027,7 +1496,7 @@
       }
     ],
     "oracleText": "Gríma can't be blocked.\nWhenever Gríma deals combat damage to a player, that player exiles cards from the top of their library until they exile an instant or sorcery card. You may cast that card without paying its mana cost. Then that player puts the exiled cards that weren't cast this way on the bottom of their library in a random order.",
-    "scryfallId": "3c8f0bfc-767a-411c-b870-f2764f3706f4"
+    "scryfallId": "00f40514-d37d-423f-aa0c-1875300f43a8"
   },
   "Hostage Taker": {
     "cardName": "Hostage Taker",
@@ -2868,7 +2337,7 @@
       }
     ],
     "oracleText": "This spell costs {X} less to cast, where X is the greatest number of artifacts an opponent controls.\nFlying, trample, haste\nWhenever this creature deals combat damage to a player, you create a Treasure token for each artifact that player controls.",
-    "scryfallId": "e70e4fba-4217-472a-9adb-f7d63424ef2f"
+    "scryfallId": "c67e509e-a219-4f7f-b7eb-8c446cc0620a"
   },
   "Consider": {
     "cardName": "Consider",
@@ -3850,7 +3319,7 @@
       }
     ],
     "oracleText": "{T}: Add {C}.\n{1}, {T}, Sacrifice this artifact: Draw a card.",
-    "scryfallId": "ad881aa0-decc-447b-8c8a-983546a9a55a"
+    "scryfallId": "b30a8f92-ce42-4b27-a893-bcf97fde228d"
   },
   "Basalt Monolith": {
     "cardName": "Basalt Monolith",
@@ -4026,7 +3495,7 @@
       }
     ],
     "oracleText": "{T}: Add two mana in any combination of {U}, {B}, and/or {R}.\n{3}, {T}: Draw two cards, then discard a card.",
-    "scryfallId": "8caea27b-040e-43c6-a8e0-0f3c0e40f411"
+    "scryfallId": "175b3d28-5c74-4972-9b5c-5e39762c78f4"
   },
   "Fiery Inscription": {
     "cardName": "Fiery Inscription",

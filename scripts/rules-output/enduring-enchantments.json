@@ -52,37 +52,6 @@
     "oracleText": "Menace\nOther enchantment creatures you control have menace.\nWhenever Anikthea enters or attacks, exile up to one target non-Aura enchantment card from your graveyard. Create a token that's a copy of that card, except it's a 3/3 black Zombie creature in addition to its other types.",
     "scryfallId": "8b796a56-1611-4835-ac5b-48b4e9263685"
   },
-  "Eidolon of Countless Battles": {
-    "cardName": "Eidolon of Countless Battles",
-    "manaCost": "{1}{W}{W}",
-    "manaValue": 3,
-    "typeLine": "Enchantment Creature — Spirit",
-    "cardType": "creature",
-    "subtypes": [
-      "Spirit"
-    ],
-    "keywords": [],
-    "manaProduction": null,
-    "entryTapRule": null,
-    "conditionalEntryText": null,
-    "abilities": [
-      {
-        "abilityType": "static",
-        "triggerEvent": null,
-        "triggerCondition": null,
-        "isOptional": false,
-        "cost": null,
-        "targets": 0,
-        "targetFilter": null,
-        "effect": {
-          "kind": "other",
-          "params": {}
-        }
-      }
-    ],
-    "oracleText": "Bestow {2}{W}{W} (If you cast this card for its bestow cost, it's an Aura spell with enchant creature. It becomes a creature again if it's not attached.)\nThis creature and enchanted creature each get +1/+1 for each creature you control and +1/+1 for each Aura you control.",
-    "scryfallId": "4ad6fcb1-7c35-4111-8f1e-d18a2fae5638"
-  },
   "Doomwake Giant": {
     "cardName": "Doomwake Giant",
     "manaCost": "{4}{B}",
@@ -116,151 +85,6 @@
     ],
     "oracleText": "Constellation — Whenever this creature or another enchantment you control enters, creatures your opponents control get -1/-1 until end of turn.",
     "scryfallId": "0be3f848-ba01-4890-a3a1-ed0dfb564632"
-  },
-  "Nylea, God of the Hunt": {
-    "cardName": "Nylea, God of the Hunt",
-    "manaCost": "{3}{G}",
-    "manaValue": 4,
-    "typeLine": "Legendary Enchantment Creature — God",
-    "cardType": "creature",
-    "subtypes": [
-      "God"
-    ],
-    "keywords": [
-      "indestructible",
-      "trample"
-    ],
-    "manaProduction": null,
-    "entryTapRule": null,
-    "conditionalEntryText": null,
-    "abilities": [
-      {
-        "abilityType": "static",
-        "triggerEvent": null,
-        "triggerCondition": null,
-        "isOptional": false,
-        "cost": null,
-        "targets": 0,
-        "targetFilter": null,
-        "effect": {
-          "kind": "other",
-          "params": {}
-        }
-      },
-      {
-        "abilityType": "static",
-        "triggerEvent": null,
-        "triggerCondition": null,
-        "isOptional": false,
-        "cost": null,
-        "targets": 1,
-        "targetFilter": "creature gets +2/+2 until end of turn",
-        "effect": {
-          "kind": "other",
-          "params": {}
-        }
-      }
-    ],
-    "oracleText": "Indestructible\nAs long as your devotion to green is less than five, Nylea isn't a creature. (Each {G} in the mana costs of permanents you control counts toward your devotion to green.)\nOther creatures you control have trample.\n{3}{G}: Target creature gets +2/+2 until end of turn.",
-    "scryfallId": "f185a734-a32a-4244-88e8-dabafbfd064f"
-  },
-  "Erebos, God of the Dead": {
-    "cardName": "Erebos, God of the Dead",
-    "manaCost": "{3}{B}",
-    "manaValue": 4,
-    "typeLine": "Legendary Enchantment Creature — God",
-    "cardType": "creature",
-    "subtypes": [
-      "God"
-    ],
-    "keywords": [
-      "indestructible"
-    ],
-    "manaProduction": null,
-    "entryTapRule": null,
-    "conditionalEntryText": null,
-    "abilities": [
-      {
-        "abilityType": "triggered",
-        "triggerEvent": null,
-        "triggerCondition": null,
-        "isOptional": false,
-        "cost": null,
-        "targets": 0,
-        "targetFilter": null,
-        "effect": {
-          "kind": "gain_life",
-          "params": {
-            "amount": 1
-          }
-        }
-      },
-      {
-        "abilityType": "activated",
-        "triggerEvent": null,
-        "triggerCondition": null,
-        "isOptional": false,
-        "cost": "{1}{B}, Pay 2 life",
-        "targets": 0,
-        "targetFilter": null,
-        "effect": {
-          "kind": "draw_cards",
-          "params": {
-            "amount": 1
-          }
-        }
-      }
-    ],
-    "oracleText": "Indestructible\nAs long as your devotion to black is less than five, Erebos isn't a creature. (Each {B} in the mana costs of permanents you control counts toward your devotion to black.)\nYour opponents can't gain life.\n{1}{B}, Pay 2 life: Draw a card.",
-    "scryfallId": "d0787e1f-0b75-44ab-a8fd-90358906a787"
-  },
-  "Thassa, God of the Sea": {
-    "cardName": "Thassa, God of the Sea",
-    "manaCost": "{2}{U}",
-    "manaValue": 3,
-    "typeLine": "Legendary Enchantment Creature — God",
-    "cardType": "creature",
-    "subtypes": [
-      "God"
-    ],
-    "keywords": [
-      "indestructible"
-    ],
-    "manaProduction": null,
-    "entryTapRule": null,
-    "conditionalEntryText": null,
-    "abilities": [
-      {
-        "abilityType": "triggered",
-        "triggerEvent": "upkeep",
-        "triggerCondition": ") At the beginning of your upkeep",
-        "isOptional": false,
-        "cost": null,
-        "targets": 0,
-        "targetFilter": null,
-        "effect": {
-          "kind": "scry",
-          "params": {
-            "amount": 1
-          }
-        }
-      },
-      {
-        "abilityType": "static",
-        "triggerEvent": null,
-        "triggerCondition": null,
-        "isOptional": false,
-        "cost": null,
-        "targets": 1,
-        "targetFilter": "creature you control can't be blocked this turn",
-        "effect": {
-          "kind": "other",
-          "params": {}
-        }
-      }
-    ],
-    "oracleText": "Indestructible\nAs long as your devotion to blue is less than five, Thassa isn't a creature. (Each {U} in the mana costs of permanents you control counts toward your devotion to blue.)\nAt the beginning of your upkeep, scry 1.\n{1}{U}: Target creature you control can't be blocked this turn.",
-    "scryfallId": "9f9db424-e668-48b4-b275-7b35be4e1bf8"
   },
   "Heliod, God of the Sun": {
     "cardName": "Heliod, God of the Sun",
@@ -300,139 +124,6 @@
     ],
     "oracleText": "Indestructible\nAs long as your devotion to white is less than five, Heliod isn't a creature. (Each {W} in the mana costs of permanents you control counts toward your devotion to white.)\nOther creatures you control have vigilance.\n{2}{W}{W}: Create a 2/1 white Cleric enchantment creature token.",
     "scryfallId": "b83e9693-4996-498c-95f7-884d40341298"
-  },
-  "Purphoros, God of the Forge": {
-    "cardName": "Purphoros, God of the Forge",
-    "manaCost": "{3}{R}",
-    "manaValue": 4,
-    "typeLine": "Legendary Enchantment Creature — God",
-    "cardType": "creature",
-    "subtypes": [
-      "God"
-    ],
-    "keywords": [
-      "indestructible"
-    ],
-    "manaProduction": null,
-    "entryTapRule": null,
-    "conditionalEntryText": null,
-    "abilities": [
-      {
-        "abilityType": "triggered",
-        "triggerEvent": "etb",
-        "triggerCondition": "another creature you control enters",
-        "isOptional": false,
-        "cost": null,
-        "targets": 0,
-        "targetFilter": null,
-        "effect": {
-          "kind": "deal_damage",
-          "params": {}
-        }
-      },
-      {
-        "abilityType": "static",
-        "triggerEvent": null,
-        "triggerCondition": null,
-        "isOptional": false,
-        "cost": null,
-        "targets": 0,
-        "targetFilter": null,
-        "effect": {
-          "kind": "other",
-          "params": {}
-        }
-      }
-    ],
-    "oracleText": "Indestructible\nAs long as your devotion to red is less than five, Purphoros isn't a creature.\nWhenever another creature you control enters, Purphoros deals 2 damage to each opponent.\n{2}{R}: Creatures you control get +1/+0 until end of turn.",
-    "scryfallId": "4736a2c4-c89c-48db-a104-6303e7e2eee8"
-  },
-  "Sphere of Safety": {
-    "cardName": "Sphere of Safety",
-    "manaCost": "{4}{W}",
-    "manaValue": 5,
-    "typeLine": "Enchantment",
-    "cardType": "enchantment",
-    "subtypes": [],
-    "keywords": [],
-    "manaProduction": null,
-    "entryTapRule": null,
-    "conditionalEntryText": null,
-    "abilities": [
-      {
-        "abilityType": "static",
-        "triggerEvent": null,
-        "triggerCondition": null,
-        "isOptional": false,
-        "cost": null,
-        "targets": 0,
-        "targetFilter": null,
-        "effect": {
-          "kind": "other",
-          "params": {}
-        }
-      }
-    ],
-    "oracleText": "Creatures can't attack you or planeswalkers you control unless their controller pays {X} for each of those creatures, where X is the number of enchantments you control.",
-    "scryfallId": "5c4e3031-ffc2-4d4d-a9f9-e85820059315"
-  },
-  "Ghostly Prison": {
-    "cardName": "Ghostly Prison",
-    "manaCost": "{2}{W}",
-    "manaValue": 3,
-    "typeLine": "Enchantment",
-    "cardType": "enchantment",
-    "subtypes": [],
-    "keywords": [],
-    "manaProduction": null,
-    "entryTapRule": null,
-    "conditionalEntryText": null,
-    "abilities": [
-      {
-        "abilityType": "static",
-        "triggerEvent": null,
-        "triggerCondition": null,
-        "isOptional": false,
-        "cost": null,
-        "targets": 0,
-        "targetFilter": null,
-        "effect": {
-          "kind": "other",
-          "params": {}
-        }
-      }
-    ],
-    "oracleText": "Creatures can't attack you unless their controller pays {2} for each creature they control that's attacking you.",
-    "scryfallId": "e1f723a8-0be9-4270-b451-a52d6b2fda4e"
-  },
-  "Propaganda": {
-    "cardName": "Propaganda",
-    "manaCost": "{2}{U}",
-    "manaValue": 3,
-    "typeLine": "Enchantment",
-    "cardType": "enchantment",
-    "subtypes": [],
-    "keywords": [],
-    "manaProduction": null,
-    "entryTapRule": null,
-    "conditionalEntryText": null,
-    "abilities": [
-      {
-        "abilityType": "static",
-        "triggerEvent": null,
-        "triggerCondition": null,
-        "isOptional": false,
-        "cost": null,
-        "targets": 0,
-        "targetFilter": null,
-        "effect": {
-          "kind": "other",
-          "params": {}
-        }
-      }
-    ],
-    "oracleText": "Creatures can't attack you unless their controller pays {2} for each creature they control that's attacking you.",
-    "scryfallId": "ac943e31-26bc-4b54-b73f-460e6e402d86"
   },
   "Starfield Mystic": {
     "cardName": "Starfield Mystic",
@@ -565,53 +256,6 @@
     "oracleText": "Whenever you cast an enchantment spell, draw a card.",
     "scryfallId": "3f50538b-f866-4e75-8856-2ad8af635011"
   },
-  "Argothian Enchantress": {
-    "cardName": "Argothian Enchantress",
-    "manaCost": "{1}{G}",
-    "manaValue": 2,
-    "typeLine": "Creature — Human Druid",
-    "cardType": "creature",
-    "subtypes": [
-      "Human",
-      "Druid"
-    ],
-    "keywords": [],
-    "manaProduction": null,
-    "entryTapRule": null,
-    "conditionalEntryText": null,
-    "abilities": [
-      {
-        "abilityType": "static",
-        "triggerEvent": null,
-        "triggerCondition": null,
-        "isOptional": false,
-        "cost": null,
-        "targets": 0,
-        "targetFilter": null,
-        "effect": {
-          "kind": "other",
-          "params": {}
-        }
-      },
-      {
-        "abilityType": "triggered",
-        "triggerEvent": "card_drawn",
-        "triggerCondition": ") Whenever you cast an enchantment spell",
-        "isOptional": false,
-        "cost": null,
-        "targets": 0,
-        "targetFilter": null,
-        "effect": {
-          "kind": "draw_cards",
-          "params": {
-            "amount": 1
-          }
-        }
-      }
-    ],
-    "oracleText": "Shroud (This creature can't be the target of spells or abilities.)\nWhenever you cast an enchantment spell, draw a card.",
-    "scryfallId": "b99ff81f-08d9-4b4a-a879-de5e5e402802"
-  },
   "Sigil of the Empty Throne": {
     "cardName": "Sigil of the Empty Throne",
     "manaCost": "{3}{W}{W}",
@@ -647,55 +291,6 @@
     ],
     "oracleText": "Whenever you cast an enchantment spell, create a 4/4 white Angel creature token with flying.",
     "scryfallId": "6875be24-1515-488f-a899-929c8e480dfd"
-  },
-  "Luminarch Ascension": {
-    "cardName": "Luminarch Ascension",
-    "manaCost": "{1}{W}",
-    "manaValue": 2,
-    "typeLine": "Enchantment",
-    "cardType": "enchantment",
-    "subtypes": [],
-    "keywords": [
-      "flying"
-    ],
-    "manaProduction": null,
-    "entryTapRule": null,
-    "conditionalEntryText": null,
-    "abilities": [
-      {
-        "abilityType": "triggered",
-        "triggerEvent": null,
-        "triggerCondition": null,
-        "isOptional": true,
-        "cost": null,
-        "targets": 0,
-        "targetFilter": null,
-        "effect": {
-          "kind": "put_counter",
-          "params": {}
-        }
-      },
-      {
-        "abilityType": "triggered",
-        "triggerEvent": null,
-        "triggerCondition": null,
-        "isOptional": false,
-        "cost": null,
-        "targets": 0,
-        "targetFilter": null,
-        "effect": {
-          "kind": "create_token",
-          "params": {
-            "tokenPower": 4,
-            "tokenToughness": 4,
-            "tokenName": "Angel creature",
-            "amount": 1
-          }
-        }
-      }
-    ],
-    "oracleText": "At the beginning of each opponent's end step, if you didn't lose life this turn, you may put a quest counter on this enchantment. (Damage causes loss of life.)\n{1}{W}: Create a 4/4 white Angel creature token with flying. Activate only if this enchantment has four or more quest counters on it.",
-    "scryfallId": "b3770d86-4496-4c06-aab1-2917cfec100e"
   },
   "Sol Ring": {
     "cardName": "Sol Ring",
@@ -829,7 +424,7 @@
     "conditionalEntryText": null,
     "abilities": [],
     "oracleText": "",
-    "scryfallId": "4031e5e4-e573-4130-8d20-4a606edef0a0"
+    "scryfallId": "b7387103-1df1-4fd0-9e91-1544509792c7"
   },
   "Forest": {
     "cardName": "Forest",
@@ -851,7 +446,7 @@
     "conditionalEntryText": null,
     "abilities": [],
     "oracleText": "",
-    "scryfallId": "c3e84b42-5423-4d4d-b8fc-cfbb2c53a4ca"
+    "scryfallId": "dce15387-4114-4b3e-91aa-5b42b45c44ac"
   },
   "Plains": {
     "cardName": "Plains",
@@ -873,7 +468,7 @@
     "conditionalEntryText": null,
     "abilities": [],
     "oracleText": "",
-    "scryfallId": "7b7c408b-8660-4db5-9a16-5003c11b4ac1"
+    "scryfallId": "8ab0f4c0-b331-4c57-b68f-2e24bb5ba06c"
   },
   "Ash Barrens": {
     "cardName": "Ash Barrens",
@@ -997,7 +592,7 @@
       }
     ],
     "oracleText": "{T}: Add one mana of any color that a land an opponent controls could produce.",
-    "scryfallId": "8853ff94-bf44-4cfd-9d3a-0743c361fb0d"
+    "scryfallId": "d11c5fe0-1528-4c94-a8cc-42bcab9d7487"
   },
   "Fortified Village": {
     "cardName": "Fortified Village",
@@ -2959,7 +2554,7 @@
     "abilities": [
       {
         "abilityType": "triggered",
-        "triggerEvent": "etb",
+        "triggerEvent": "landfall",
         "triggerCondition": "Landfall — Whenever a land you control enters",
         "isOptional": true,
         "cost": null,
@@ -3114,7 +2709,7 @@
     "abilities": [
       {
         "abilityType": "triggered",
-        "triggerEvent": "etb",
+        "triggerEvent": "landfall",
         "triggerCondition": "Landfall — Whenever a land you control enters",
         "isOptional": true,
         "cost": null,

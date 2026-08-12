@@ -524,7 +524,7 @@ describe('combat keywords', () => {
       vi.advanceTimersByTime(2600)
       const state = useGameStore.getState()
       const cast = state.cards.find((c) => c.id === 'heal')
-      expect(cast?.zone).toBe('battlefield')
+      expect(cast?.zone).toBe('graveyard')
       expect(state.opponentLifeTotal).toBe(44)
       // The AI's land was tapped to pay.
       expect(state.cards.find((c) => c.id === 'plains')?.tapped).toBe(true)
@@ -656,7 +656,7 @@ describe('AI responses to player casts', () => {
 
       vi.advanceTimersByTime(2200)
       const state = useGameStore.getState()
-      expect(state.cards.find((c) => c.id === 'heal')?.zone).toBe('battlefield')
+      expect(state.cards.find((c) => c.id === 'heal')?.zone).toBe('graveyard')
       expect(state.opponentLifeTotal).toBe(44)
     } finally {
       vi.clearAllTimers()
@@ -704,7 +704,7 @@ describe('AI mana sequencing', () => {
       vi.advanceTimersByTime(1800)
       const state = useGameStore.getState()
       const cast = state.cards.find((c) => c.id === 'bolt')
-      expect(cast?.zone).toBe('battlefield')
+      expect(cast?.zone).toBe('graveyard')
       // {1}{R}: the generic {1} is covered by the tapped Mountain's mana, so the
       // Plains stays untapped — its white source is preserved.
       expect(state.cards.find((c) => c.id === 'm')?.tapped).toBe(true)
@@ -1715,6 +1715,34 @@ describe('game store action history', () => {
     useGameStore.getState().undo()
     expect(useGameStore.getState().manaPool).toEqual({ ...emptyManaPool(), W: 1, U: 1 })
     expect(useGameStore.getState().manaLog).toHaveLength(0)
+  })
+
+  it('a single multi-color potential source cannot pay two colored symbols', () => {
+    // Command Tower produces W and U but only one mana per tap: it must not
+    // be able to pay {W}{U} by itself.
+    useGameStore.setState({ manaPool: emptyManaPool(), potentialMana: [{ id: 'tower-tap', colors: ['W', 'U'], sourceCardId: 'tower', sourceCardName: 'Command Tower' }] })
+
+    const spent = useGameStore.getState().spendManaCost('{W}{U}', 'Test spell')
+
+    expect(spent).toBe(false)
+    expect(useGameStore.getState().potentialMana).toHaveLength(1)
+    expect(useGameStore.getState().manaPool).toEqual(emptyManaPool())
+  })
+
+  it('two multi-color potential sources pay one colored symbol each', () => {
+    useGameStore.setState({
+      manaPool: emptyManaPool(),
+      potentialMana: [
+        { id: 'tap-1', colors: ['W', 'U'], sourceCardId: 'tower', sourceCardName: 'Command Tower' },
+        { id: 'tap-2', colors: ['W', 'U'], sourceCardId: 'tower2', sourceCardName: 'Exotic Orchard' },
+      ],
+    })
+
+    const spent = useGameStore.getState().spendManaCost('{W}{U}', 'Test spell')
+
+    expect(spent).toBe(true)
+    expect(useGameStore.getState().manaPool).toEqual(emptyManaPool())
+    expect(useGameStore.getState().potentialMana).toHaveLength(0)
   })
 
   it('undoes a phase transition as one action', () => {

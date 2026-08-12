@@ -75,17 +75,29 @@ export function createManaActions(set: SetFn, get: () => GameState): Pick<GameSt
           }
         }
         const simulatedPool = { ...state.manaPool }
+        const usedSourceIds = new Set<string>()
         const usedSources: { sourceId: string; color: ManaColor; cardId?: string; cardName?: string }[] = []
+        // A single potential source may appear in several color buckets (e.g.
+        // Command Tower produces W and U); it must only ever be spent once.
+        const takeFresh = (bucket: { sourceId: string; color: ManaColor; cardId?: string; cardName?: string }[] | undefined): { sourceId: string; color: ManaColor; cardId?: string; cardName?: string } | null => {
+          while (bucket && bucket.length > 0) {
+            const src = bucket.shift()!
+            if (usedSourceIds.has(src.sourceId)) continue
+            usedSourceIds.add(src.sourceId)
+            return src
+          }
+          return null
+        }
         const parsed = parseManaCost(costSymbols)
         for (const { color, count } of parsed.colored) {
           let have = simulatedPool[color] ?? 0
-          while (have < count && (potentialByColor[color]?.length ?? 0) > 0) {
-            const src = potentialByColor[color]!.shift()!
+          while (have < count) {
+            const src = takeFresh(potentialByColor[color])
+            if (!src) return false
             usedSources.push(src)
             simulatedPool[color] = (simulatedPool[color] ?? 0) + 1
             have++
           }
-          if (have < count) return false
         }
         let generic = parsed.generic
         if (generic > 0) {
@@ -97,8 +109,9 @@ export function createManaActions(set: SetFn, get: () => GameState): Pick<GameSt
           }
           if (generic > 0) {
             for (const color of ['W', 'U', 'B', 'R', 'G', 'C'] as const) {
-              while ((potentialByColor[color]?.length ?? 0) > 0 && generic > 0) {
-                const src = potentialByColor[color]!.shift()!
+              while (generic > 0) {
+                const src = takeFresh(potentialByColor[color])
+                if (!src) break
                 usedSources.push(src)
                 generic--
               }

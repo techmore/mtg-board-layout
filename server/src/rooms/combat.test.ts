@@ -64,6 +64,19 @@ describe('resolveCombat', () => {
     expect(result.playerDamage.map((d) => d.amount)).toEqual([2])
   })
 
+  it('unblocked attackers deal damage in 1v1/4ffa where teamIds are empty', () => {
+    const bear = attacker('bear', '2/2')
+    const result = resolveCombat([bear], [], playersOf({ a: [bear], b: [] }), 'a', '')
+    expect(result.playerDamage.map((d) => d.amount)).toEqual([2])
+  })
+
+  it('trample excess deals to the defender in 1v1/4ffa where teamIds are empty', () => {
+    const wolf = attacker('wolf', '3/3', 'trample')
+    const wall = defender('wall', '0/2')
+    const result = resolveCombat([wolf], ['wall'], playersOf({ a: [wolf], b: [wall] }), 'a', '')
+    expect(result.playerDamage.map((d) => ({ id: d.attackerId, amount: d.amount }))).toEqual([{ id: 'wolf', amount: 1 }])
+  })
+
   it('does not damage players on the attacker team', () => {
     const bear = attacker('bear', '2/2')
     const ally = defender('ally', '1/1', 'a2', 'team1')

@@ -30,172 +30,6 @@
     "oracleText": "Colorless spells you cast from your hand with mana value 7 or greater have \"Cascade, cascade.\" (When you cast one, exile cards from the top of your library until you exile a nonland card that costs less. You may cast it without paying its mana cost. Put the exiled cards on the bottom in a random order. Then do it again.)",
     "scryfallId": "a015461d-4214-4feb-8b04-519c537759eb"
   },
-  "Ulamog, the Ceaseless Hunger": {
-    "cardName": "Ulamog, the Ceaseless Hunger",
-    "manaCost": "{10}",
-    "manaValue": 10,
-    "typeLine": "Legendary Creature — Eldrazi",
-    "cardType": "creature",
-    "subtypes": [
-      "Eldrazi"
-    ],
-    "keywords": [
-      "indestructible"
-    ],
-    "manaProduction": null,
-    "entryTapRule": null,
-    "conditionalEntryText": null,
-    "abilities": [
-      {
-        "abilityType": "triggered",
-        "triggerEvent": "cast",
-        "triggerCondition": "you cast this spell",
-        "isOptional": false,
-        "cost": null,
-        "targets": 1,
-        "targetFilter": "permanent s",
-        "effect": {
-          "kind": "exile",
-          "params": {
-            "targetHint": "target permanents"
-          }
-        }
-      },
-      {
-        "abilityType": "triggered",
-        "triggerEvent": "attack",
-        "triggerCondition": "Indestructible Whenever Ulamog attacks",
-        "isOptional": false,
-        "cost": null,
-        "targets": 0,
-        "targetFilter": null,
-        "effect": {
-          "kind": "other",
-          "params": {}
-        }
-      }
-    ],
-    "oracleText": "When you cast this spell, exile two target permanents.\nIndestructible\nWhenever Ulamog attacks, defending player exiles the top twenty cards of their library.",
-    "scryfallId": "c74ae706-b3b3-4097-a387-6f6c38a9b603"
-  },
-  "Kozilek, Butcher of Truth": {
-    "cardName": "Kozilek, Butcher of Truth",
-    "manaCost": "{10}",
-    "manaValue": 10,
-    "typeLine": "Legendary Creature — Eldrazi",
-    "cardType": "creature",
-    "subtypes": [
-      "Eldrazi"
-    ],
-    "keywords": [],
-    "manaProduction": null,
-    "entryTapRule": null,
-    "conditionalEntryText": null,
-    "abilities": [
-      {
-        "abilityType": "triggered",
-        "triggerEvent": "card_drawn",
-        "triggerCondition": "you cast this spell",
-        "isOptional": false,
-        "cost": null,
-        "targets": 0,
-        "targetFilter": null,
-        "effect": {
-          "kind": "draw_cards",
-          "params": {
-            "amount": 4
-          }
-        }
-      },
-      {
-        "abilityType": "triggered",
-        "triggerEvent": "attack",
-        "triggerCondition": "Annihilator 4 (Whenever this creature attacks",
-        "isOptional": false,
-        "cost": null,
-        "targets": 0,
-        "targetFilter": null,
-        "effect": {
-          "kind": "other",
-          "params": {}
-        }
-      },
-      {
-        "abilityType": "triggered",
-        "triggerEvent": "dies",
-        "triggerCondition": ") When Kozilek is put into a graveyard from anywhere",
-        "isOptional": false,
-        "cost": null,
-        "targets": 0,
-        "targetFilter": null,
-        "effect": {
-          "kind": "return_from_graveyard",
-          "params": {}
-        }
-      }
-    ],
-    "oracleText": "When you cast this spell, draw four cards.\nAnnihilator 4 (Whenever this creature attacks, defending player sacrifices four permanents of their choice.)\nWhen Kozilek is put into a graveyard from anywhere, its owner shuffles their graveyard into their library.",
-    "scryfallId": "d27cf7b7-7982-46bd-a559-7789c0e74bae"
-  },
-  "Emrakul, the Aeons Torn": {
-    "cardName": "Emrakul, the Aeons Torn",
-    "manaCost": "{15}",
-    "manaValue": 15,
-    "typeLine": "Legendary Creature — Eldrazi",
-    "cardType": "creature",
-    "subtypes": [
-      "Eldrazi"
-    ],
-    "keywords": [
-      "flying"
-    ],
-    "manaProduction": null,
-    "entryTapRule": null,
-    "conditionalEntryText": null,
-    "abilities": [
-      {
-        "abilityType": "static",
-        "triggerEvent": null,
-        "triggerCondition": null,
-        "isOptional": false,
-        "cost": null,
-        "targets": 0,
-        "targetFilter": null,
-        "effect": {
-          "kind": "other",
-          "params": {}
-        }
-      },
-      {
-        "abilityType": "triggered",
-        "triggerEvent": "cast",
-        "triggerCondition": "you cast this spell",
-        "isOptional": false,
-        "cost": null,
-        "targets": 0,
-        "targetFilter": null,
-        "effect": {
-          "kind": "other",
-          "params": {}
-        }
-      },
-      {
-        "abilityType": "triggered",
-        "triggerEvent": "dies",
-        "triggerCondition": "Flying",
-        "isOptional": false,
-        "cost": null,
-        "targets": 0,
-        "targetFilter": null,
-        "effect": {
-          "kind": "return_from_graveyard",
-          "params": {}
-        }
-      }
-    ],
-    "oracleText": "This spell can't be countered.\nWhen you cast this spell, take an extra turn after this one.\nFlying, protection from spells that are one or more colors, annihilator 6\nWhen Emrakul is put into a graveyard from anywhere, its owner shuffles their graveyard into their library.",
-    "scryfallId": "249db4d4-2542-47ee-a216-e13ffbc2319c"
-  },
   "It That Betrays": {
     "cardName": "It That Betrays",
     "manaCost": "{12}",
@@ -228,50 +62,6 @@
     ],
     "oracleText": "Annihilator 2 (Whenever this creature attacks, defending player sacrifices two permanents of their choice.)\nWhenever an opponent sacrifices a nontoken permanent, put that card onto the battlefield under your control.",
     "scryfallId": "ca08b369-783d-4fe4-8fc8-9cd595638550"
-  },
-  "Pathrazer of Ulamog": {
-    "cardName": "Pathrazer of Ulamog",
-    "manaCost": "{11}",
-    "manaValue": 11,
-    "typeLine": "Creature — Eldrazi",
-    "cardType": "creature",
-    "subtypes": [
-      "Eldrazi"
-    ],
-    "keywords": [],
-    "manaProduction": null,
-    "entryTapRule": null,
-    "conditionalEntryText": null,
-    "abilities": [
-      {
-        "abilityType": "triggered",
-        "triggerEvent": "attack",
-        "triggerCondition": "Annihilator 3 (Whenever this creature attacks",
-        "isOptional": false,
-        "cost": null,
-        "targets": 0,
-        "targetFilter": null,
-        "effect": {
-          "kind": "other",
-          "params": {}
-        }
-      },
-      {
-        "abilityType": "static",
-        "triggerEvent": null,
-        "triggerCondition": null,
-        "isOptional": false,
-        "cost": null,
-        "targets": 0,
-        "targetFilter": null,
-        "effect": {
-          "kind": "other",
-          "params": {}
-        }
-      }
-    ],
-    "oracleText": "Annihilator 3 (Whenever this creature attacks, defending player sacrifices three permanents of their choice.)\nThis creature can't be blocked except by three or more creatures.",
-    "scryfallId": "c9b1d4d8-7df9-41e0-b2d9-dbca9c9f6994"
   },
   "Artisan of Kozilek": {
     "cardName": "Artisan of Kozilek",
@@ -318,70 +108,6 @@
     ],
     "oracleText": "When you cast this spell, you may return target creature card from your graveyard to the battlefield.\nAnnihilator 2 (Whenever this creature attacks, defending player sacrifices two permanents of their choice.)",
     "scryfallId": "9312fada-fc31-46ac-b6a1-cfffd776856f"
-  },
-  "Void Winnower": {
-    "cardName": "Void Winnower",
-    "manaCost": "{9}",
-    "manaValue": 9,
-    "typeLine": "Creature — Eldrazi",
-    "cardType": "creature",
-    "subtypes": [
-      "Eldrazi"
-    ],
-    "keywords": [],
-    "manaProduction": null,
-    "entryTapRule": null,
-    "conditionalEntryText": null,
-    "abilities": [
-      {
-        "abilityType": "static",
-        "triggerEvent": null,
-        "triggerCondition": null,
-        "isOptional": false,
-        "cost": null,
-        "targets": 0,
-        "targetFilter": null,
-        "effect": {
-          "kind": "other",
-          "params": {}
-        }
-      }
-    ],
-    "oracleText": "Your opponents can't cast spells with even mana values. (Zero is even.)\nYour opponents can't block with creatures with even mana values.",
-    "scryfallId": "8cbedb0a-34ca-4d42-bb43-cbea0f3c6d02"
-  },
-  "Sire of Stagnation": {
-    "cardName": "Sire of Stagnation",
-    "manaCost": "{4}{U}{B}",
-    "manaValue": 6,
-    "typeLine": "Creature — Eldrazi",
-    "cardType": "creature",
-    "subtypes": [
-      "Eldrazi"
-    ],
-    "keywords": [],
-    "manaProduction": null,
-    "entryTapRule": null,
-    "conditionalEntryText": null,
-    "abilities": [
-      {
-        "abilityType": "triggered",
-        "triggerEvent": "etb",
-        "triggerCondition": ") Whenever a land an opponent controls enters",
-        "isOptional": false,
-        "cost": null,
-        "targets": 0,
-        "targetFilter": null,
-        "effect": {
-          "kind": "draw_cards",
-          "params": {
-            "amount": 2
-          }
-        }
-      }
-    ],
-    "oracleText": "Devoid (This card has no color.)\nWhenever a land an opponent controls enters, that player exiles the top two cards of their library and you draw two cards.",
-    "scryfallId": "d6252913-7b8e-4746-91e0-658ce13cdf18"
   },
   "Endbringer": {
     "cardName": "Endbringer",
@@ -641,35 +367,6 @@
     ],
     "oracleText": "{T}: Add {C}{C}.",
     "scryfallId": "91fdb56b-54d5-4272-8319-505ff987fe9b"
-  },
-  "Eye of Ugin": {
-    "cardName": "Eye of Ugin",
-    "manaCost": "",
-    "manaValue": 0,
-    "typeLine": "Legendary Land",
-    "cardType": "land",
-    "subtypes": [],
-    "keywords": [],
-    "manaProduction": null,
-    "entryTapRule": null,
-    "conditionalEntryText": null,
-    "abilities": [
-      {
-        "abilityType": "activated",
-        "triggerEvent": null,
-        "triggerCondition": null,
-        "isOptional": false,
-        "cost": "{T}, {7}",
-        "targets": 0,
-        "targetFilter": null,
-        "effect": {
-          "kind": "search_library",
-          "params": {}
-        }
-      }
-    ],
-    "oracleText": "Colorless Eldrazi spells you cast cost {2} less to cast.\n{7}, {T}: Search your library for a colorless creature card, reveal it, put it into your hand, then shuffle.",
-    "scryfallId": "d2d5124b-4d73-4aa9-9331-88e03779ffad"
   },
   "Eldrazi Temple": {
     "cardName": "Eldrazi Temple",
@@ -2850,7 +2547,7 @@
       }
     ],
     "oracleText": "You have no maximum hand size.\n{T}: Add {C}.",
-    "scryfallId": "6ec6a910-f6d0-4225-8b55-d329dc788c64"
+    "scryfallId": "ad077996-6b5e-4eb8-bb6e-93d43c5efa8f"
   },
   "Thran Dynamo": {
     "cardName": "Thran Dynamo",
@@ -3357,7 +3054,7 @@
       }
     ],
     "oracleText": "{T}: Add {C}.\n{1}, {T}, Sacrifice this artifact: Draw a card.",
-    "scryfallId": "ad881aa0-decc-447b-8c8a-983546a9a55a"
+    "scryfallId": "b30a8f92-ce42-4b27-a893-bcf97fde228d"
   },
   "Ornithopter of Paradise": {
     "cardName": "Ornithopter of Paradise",
