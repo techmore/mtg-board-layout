@@ -611,8 +611,8 @@ describe('equipment attachment', () => {
   it('leaves unattached equipment on the board instead of killing it', () => {
     const result = attachAuras([sword as any])
     const s = result.find((c: any) => c.id === 'sword')
-    expect(s.zone).toBe('battlefield')
-    expect(s.enchantsCardId).toBeUndefined()
+    expect(s?.zone).toBe('battlefield')
+    expect(s?.enchantsCardId).toBeUndefined()
   })
 
   it('defers unattached attachables when deferUnattached is set', () => {

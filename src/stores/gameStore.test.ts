@@ -1,6 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { useGameStore } from './gameStore'
-import { primeCardRules } from './cardRulesLoader'
+import { primeCardRules, computeStaticPump } from './cardRulesLoader'
 import { resolveAISpellAbilities, resolveAIAutoAbilities, resolveAITriggerInstances } from './spellResolution'
 import type { BoardCard, CardAbilityDef, CardRuleEntry, DeckCard, ManaPool } from '../types/card'
 
@@ -1852,5 +1852,51 @@ describe('game store action history', () => {
     const redone = useGameStore.getState().cards.find((candidate) => candidate.id === land.id)
     expect(redone?.zone).toBe('battlefield')
     expect(redone?.tapped).toBe(true)
+  })
+})
+
+describe('equip', () => {
+  function equipRule(): CardRuleEntry {
+    return {
+      cardName: 'Sword', manaCost: '{3}', manaValue: 3, typeLine: 'Artifact — Equipment', cardType: 'artifact',
+      subtypes: ['Equipment'], keywords: [], manaProduction: null, entryTapRule: null, conditionalEntryText: null,
+      oracleText: 'Equipped creature gets +2/+2. Equip {2} ({2}: Attach to target creature you control.)',
+      scryfallId: 's1',
+      abilities: [
+        { abilityType: 'static', triggerEvent: null, triggerCondition: null, isOptional: false, cost: null, targets: 0, targetFilter: null, effect: { kind: 'pump', params: { power: 2, toughness: 2, scope: 'own' } } },
+        { abilityType: 'activated', triggerEvent: null, triggerCondition: null, isOptional: false, cost: '{2}', targets: 1, targetFilter: 'creature you control', effect: { kind: 'equip', params: { cost: '{2}' } } },
+      ],
+    }
+  }
+
+  it('equip activation attaches the equipment to the chosen creature', () => {
+    const sword = card({ id: 'sword', name: 'Sword', type: 'artifact', typeLine: 'Artifact — Equipment' })
+    const bear = card({ id: 'bear', name: 'Bear', typeLine: '2/2' })
+    const trigger = { id: 't1', sourceCardId: 'sword', sourceCardName: 'Sword', ability: equipRule().abilities[1], event: 'cast' as const, context: {} }
+    useGameStore.setState({ cards: [sword, bear], triggerStack: [trigger] })
+    useGameStore.getState().selectTarget('t1', 'bear', true)
+    const after = useGameStore.getState().cards.find((c) => c.id === 'sword')
+    expect(after?.enchantsCardId).toBe('bear')
+  })
+
+  it('the equipped creature receives the equipment pump in combat math', () => {
+    primeCardRules({ 'Sword': equipRule() })
+    const sword = card({ id: 'sword', name: 'Sword', type: 'artifact', typeLine: 'Artifact — Equipment', enchantsCardId: 'bear', zone: 'battlefield' })
+    const bear = card({ id: 'bear', name: 'Bear', typeLine: '2/2', tapped: true, zone: 'battlefield' })
+    useGameStore.setState({ cards: [sword, bear] })
+    const pump = computeStaticPump([sword, bear], bear)
+    expect(pump).toEqual({ power: 2, toughness: 2 })
+  })
+
+  it('equipment falls off (does not die) when its creature dies', () => {
+    const sword = card({ id: 'sword', name: 'Sword', type: 'artifact', typeLine: 'Artifact — Equipment', enchantsCardId: 'bear', zone: 'battlefield' })
+    const bear = card({ id: 'bear', name: 'Bear', typeLine: '1/1', damage: 3, zone: 'battlefield' })
+    useGameStore.setState({ cards: [sword, bear] })
+    useGameStore.getState().checkStateBasedActions()
+    const after = useGameStore.getState().cards
+    expect(after.find((c) => c.id === 'bear')?.zone).toBe('graveyard')
+    const equip = after.find((c) => c.id === 'sword')
+    expect(equip?.zone).toBe('battlefield')
+    expect(equip?.enchantsCardId).toBeUndefined()
   })
 })

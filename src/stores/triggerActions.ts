@@ -3,6 +3,7 @@ import type { Token, TriggerInstance } from '../types/card'
 import { CARD_BACK_URL } from '../constants'
 import { canPayManaCost } from '../utils/misc'
 import { hasKeyword } from './cardRulesLoader'
+import { attachAuras } from './gameRules'
 import { useToastStore } from './toastStore'
 
 /** True when a trigger instance belongs to the AI (source card is opponent-owned). */
@@ -145,6 +146,13 @@ export function resolveTrigger(get: () => GameState, set: (partial: Partial<Game
       for (const victim of victims) get().moveCard(victim.id, 'exile')
       break
     }
+    case 'equip': {
+      // Untargeted equip (reminder text stripped): auto-attach to the
+      // strongest friendly creature, like aura auto-attach.
+      if (trigger.ability.targets > 0) break
+      set({ cards: attachAuras(state.cards, { preferredTargetId: trigger.sourceCardId }) })
+      break
+    }
     case 'return_from_graveyard': {
       const zone = (params.zone as string) ?? 'battlefield'
       get().moveCard(trigger.sourceCardId, zone as 'battlefield' | 'hand')
@@ -277,6 +285,21 @@ function applyTargetedEffect(get: () => GameState, set: (partial: Partial<GameSt
   const effect = trigger.ability.effect
   const params = effect.params as Record<string, unknown>
   switch (effect.kind) {
+    case 'equip': {
+      // Attach the equipment to the chosen creature.
+      const source = state.cards.find((c) => c.id === trigger.sourceCardId)
+      if (source) {
+        const target = state.cards.find((c) => c.id === cardId)
+        set({
+          cards: state.cards.map((c) =>
+            c.id === source.id
+              ? { ...c, enchantsCardId: target?.id, enchantsCardName: target?.name }
+              : c,
+          ),
+        })
+      }
+      break
+    }
     case 'put_counter':
       get().addCounter(cardId)
       break

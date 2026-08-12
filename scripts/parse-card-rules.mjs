@@ -446,6 +446,7 @@ const EFFECT_PATTERNS = [
   { kind: 'mill', regex: /\bmill\b[^.,;]*?(?:\d+|X|one|two|three|four|five|a)\s*card(s)?/i },
   { kind: 'mill', regex: /\bput\b[^.]*?\bthe\s+top\s+(?:\d+|X|one|two|three|four|five)\s+cards?\b[^.]*\b(graveyard|library)\b/i },
   { kind: 'fight', regex: /\bfight\b/i },
+  { kind: 'equip', regex: /\bequip\s*\{[^}]+\}/i },
   { kind: 'pump', regex: /(?:gets|gain(?:s)?|get)\s*[^.,;]*?([-−+]?\d+)\s*\/\s*([-−+]?\d+)\s*until end of turn/i },
   // Static anthems ("creatures you control get +2/+2") have no time limit;
   // the until-end-of-turn pattern above is more specific and listed first.
@@ -520,6 +521,10 @@ function parseEffect(sentence) {
         }
         params.scope = pumpScope(sentence)
       }
+      if (ep.kind === 'equip') {
+        const costMatch = sentence.match(/equip\s*(\{[^}]+\})/i)
+        if (costMatch) params.cost = costMatch[1]
+      }
       return { kind: ep.kind, params }
     }
   }
@@ -563,7 +568,8 @@ function parseCost(sentence) {
 }
 
 function isActivated(sentence) {
-  return /:\s*\w/i.test(sentence) && (/\{T\}/.test(sentence) || /\bpay\b/i.test(sentence) || /\bsacrifice\b/i.test(sentence))
+  return /\bequip\s*\{[^}]+\}/i.test(sentence) ||
+    (/:\s*\w/i.test(sentence) && (/\{T\}/.test(sentence) || /\bpay\b/i.test(sentence) || /\bsacrifice\b/i.test(sentence)))
 }
 
 function parseAbilities(oracleText, typeLine) {

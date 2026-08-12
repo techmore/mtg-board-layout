@@ -74,6 +74,7 @@ export function createCardMovement(set: SetFn, get: () => GameState): Pick<GameS
           if (candidates.length > 0) {
             set({
               auraPrompt: {
+                kind: 'aura' as const,
                 auraCardId: cardId,
                 auraName: aura.name,
                 candidates: candidates

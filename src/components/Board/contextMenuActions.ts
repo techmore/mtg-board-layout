@@ -1,9 +1,11 @@
 import type { CardAbilityDef } from '../../types/card'
 import { useGameStore } from '../../stores/gameStore'
+import { getCardPower } from '../../utils/misc'
 
 export function effectKindLabel(ab: CardAbilityDef): string {
   const p = ab.effect.params as Record<string, unknown>
   switch (ab.effect.kind) {
+    case 'equip': return `Equip ${(p.cost as string) ?? ''}`
     case 'put_counter': return 'Put counter'
     case 'destroy': return 'Destroy target'
     case 'draw_cards': return `Draw ${(p.amount as number) ?? 1}`
@@ -59,6 +61,24 @@ export function executeActivated(ab: CardAbilityDef, cardId: string, cardName: s
 
   const params = ab.effect.params as Record<string, unknown>
   switch (ab.effect.kind) {
+    case 'equip': {
+      // Equip: pay the cost (already handled above), then choose a creature.
+      const candidates = get().cards.filter(
+        (c) => c.zone === 'battlefield' && (c.owner ?? 'player') === 'player' && c.type === 'creature' && c.id !== cardId,
+      )
+      if (candidates.length === 0) return
+      useGameStore.setState({
+        auraPrompt: {
+          kind: 'equip',
+          auraCardId: cardId,
+          auraName: cardName,
+          candidates: candidates
+            .sort((a, b) => getCardPower(b) - getCardPower(a))
+            .map((c) => ({ id: c.id, name: c.name, power: getCardPower(c) })),
+        },
+      })
+      break
+    }
     case 'put_counter':
       if (ab.targets > 0) {
         get().emitGameEvent({ type: 'counter_placed', cardId, cardName, kind: '' })

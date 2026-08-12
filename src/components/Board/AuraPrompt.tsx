@@ -8,11 +8,14 @@ export function AuraPrompt() {
   const declineAura = useGameStore((s) => s.declineAura)
 
   if (!auraPrompt) return null
+  const isEquip = auraPrompt.kind === 'equip'
 
   return (
-    <Modal open onClose={() => declineAura(auraPrompt.auraCardId)} title="Enchant" accent="#56d364" width={520}>
+    <Modal open onClose={() => declineAura(auraPrompt.auraCardId)} title={isEquip ? 'Equip' : 'Enchant'} accent={isEquip ? '#79c0ff' : '#56d364'} width={520}>
       <div style={{ color: '#d0d7de', fontSize: '0.85rem', lineHeight: 1.5, marginBottom: 14 }}>
-        Choose a creature for <strong>{auraPrompt.auraName}</strong> to enchant:
+        {isEquip
+          ? <>Choose a creature for <strong>{auraPrompt.auraName}</strong> to equip:</>
+          : <>Choose a creature for <strong>{auraPrompt.auraName}</strong> to enchant:</>}
       </div>
       <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8, marginBottom: 14 }}>
         {auraPrompt.candidates.map((candidate) => (
@@ -27,7 +30,9 @@ export function AuraPrompt() {
       </div>
       <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
         <Button variant="ghost" onClick={() => declineAura(auraPrompt.auraCardId)}>
-          No target — send {auraPrompt.auraName} to the graveyard
+          {isEquip
+            ? `Leave ${auraPrompt.auraName} unattached`
+            : `No target — send ${auraPrompt.auraName} to the graveyard`}
         </Button>
       </div>
     </Modal>

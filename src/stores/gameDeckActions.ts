@@ -239,6 +239,7 @@ export function createDeckActions(set: SetFn, get: () => GameState): Pick<GameSt
         if (onBoard.length > 0) {
           set({
             auraPrompt: {
+              kind: 'aura' as const,
               auraCardId: card.id,
               auraName: card.name,
               candidates: onBoard

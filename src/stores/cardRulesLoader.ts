@@ -50,9 +50,9 @@ export function computeStaticPump(
     if (source.zone !== 'battlefield') continue
     if (source.id === card.id) continue
     const sourceOwner = source.owner ?? 'player'
-    // Auras enchant a single creature: their pump applies only to the card
-    // they are attached to.
-    if (/\bauras?\b/i.test(source.typeLine ?? '')) {
+    // Auras and equipment attach to a single creature: their pump applies
+    // only to the card they are attached to.
+    if (/\bauras?\b/i.test(source.typeLine ?? '') || /\bequipment\b/i.test(source.typeLine ?? '')) {
       if (source.enchantsCardId !== card.id) continue
     }
     const rule = getCardRule(source.name, rulesCache)

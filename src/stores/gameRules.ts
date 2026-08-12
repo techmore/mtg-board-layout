@@ -108,6 +108,15 @@ export function isAura(card: Pick<BoardCard, 'type' | 'typeLine'>): boolean {
   return card.type === 'enchantment' && /\baura\b/i.test(card.typeLine ?? '')
 }
 
+export function isEquipment(card: Pick<BoardCard, 'type' | 'typeLine'>): boolean {
+  return card.type === 'artifact' && /\bequipment\b/i.test(card.typeLine ?? '')
+}
+
+/** Aura or equipment: a permanent that attaches to a creature. */
+export function isAttachable(card: Pick<BoardCard, 'type' | 'typeLine'>): boolean {
+  return isAura(card) || isEquipment(card)
+}
+
 /**
  * Attach unattached battlefield auras to a friendly creature (the strongest
  * one by default, or a preferred target). Auras with no valid creature die.
@@ -120,7 +129,7 @@ export function attachAuras(
 ): BoardCard[] {
   let changed = false
   const updated = cards.map((card) => {
-    if (!isAura(card) || card.zone !== 'battlefield' || card.enchantsCardId) return card
+    if (!isAttachable(card) || card.zone !== 'battlefield' || card.enchantsCardId) return card
     if (options.deferUnattached) return card
     const owner = card.owner ?? 'player'
     const candidates = cards.filter(
@@ -134,6 +143,8 @@ export function attachAuras(
       changed = true
       return { ...card, enchantsCardId: target.id, enchantsCardName: target.name }
     }
+    // Unattached auras die; equipment simply stays unattached on the board.
+    if (isEquipment(card)) return card
     changed = true
     return { ...card, zone: 'graveyard' as const, revealed: true }
   })

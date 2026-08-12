@@ -87,7 +87,7 @@ export interface GameState {
   turnAnnouncement: TurnAnnouncement | null
   turnPrompt: TurnPrompt | null
   wardPrompt: { triggerId: string; targetCardId: string; cost: number; spellName: string; targetName: string } | null
-  auraPrompt: { auraCardId: string; auraName: string; candidates: { id: string; name: string; power: number }[] } | null
+  auraPrompt: { kind: 'aura' | 'equip'; auraCardId: string; auraName: string; candidates: { id: string; name: string; power: number }[] } | null
   broadcasting: boolean
   undoStack: GameSnapshot[]
   redoStack: GameSnapshot[]
@@ -291,12 +291,17 @@ export const useGameStore = create<GameState>((set, get) => {
       })),
 
     declineAura: (auraCardId) =>
-      set((state) => ({
-        auraPrompt: null,
-        cards: state.cards.map((c) =>
-          c.id === auraCardId ? { ...c, zone: 'graveyard' as const, revealed: true } : c,
-        ),
-      })),
+      set((state) => {
+        const card = state.cards.find((c) => c.id === auraCardId)
+        // Equipment stays unattached on the board; a declined aura dies.
+        const isEquip = card?.type === 'artifact' && /\bequipment\b/i.test(card.typeLine ?? '')
+        return {
+          auraPrompt: null,
+          cards: state.cards.map((c) =>
+            c.id === auraCardId && !isEquip ? { ...c, zone: 'graveyard' as const, revealed: true } : c,
+          ),
+        }
+      }),
 
 
     toggleProliferateTarget: (triggerId, cardId) => {
