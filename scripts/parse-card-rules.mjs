@@ -396,6 +396,8 @@ function parseManaProduction(oracleText) {
   }
   if (colors.size === 0) return null
   const amount = Math.max(...addClauses.map(c => {
+    // "Add {B} or {R}" produces one mana of either color — never two.
+    if (/\bor\b/i.test(c) && !/\b(one|two|three|four|five)\b/i.test(c)) return 1
     const n = c.match(/\b(one|two|three|four|five)\b/i)
     if (n) return ({ one: 1, two: 2, three: 3, four: 4, five: 5 })[n[1].toLowerCase()]
     const syms = c.match(/\{[WUBRGC]\}/gi) ?? []

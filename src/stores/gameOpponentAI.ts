@@ -4,7 +4,7 @@ import type { GameState } from './gameStore'
 import { shuffle, classifyType, parseManaCost, getCardPower, canPayManaCost } from '../utils/misc'
 import { pushUndo, attachAuras, moveCastSpellsToGraveyard } from './gameRules'
 import { getCardTypeFeatures } from '../data/cardFeatures'
-import { getCachedCardRules, getCardRule } from './cardRulesLoader'
+import { getCachedCardRules, getCardRule, hasKeyword } from './cardRulesLoader'
 import { localCardImage } from '../data/localCardImages'
 import { cacheDeckImages } from '../services/cardImageCache'
 import { pickSpell, pickAttackers, pickCommanderCast } from './opponentAI'
@@ -52,6 +52,9 @@ function aiTapManaDorks(set: SetFn, get: () => GameState) {
   let tappedAny = false
   for (const card of cards) {
     if ((card.owner ?? 'player') !== 'opponent' || card.zone !== 'battlefield' || card.tapped) continue
+    // Summoning sickness: creatures can't use {T} abilities the turn they
+    // entered (unless haste); artifacts have no sickness.
+    if (card.type === 'creature' && card.enteredAtTurn === get().turn && !hasKeyword(card, 'haste')) continue
     if (!card.manaProduction) continue
     const rule = getCardRule(card.name, getCachedCardRules())
     const hasManaTap = (rule?.abilities ?? []).some(
@@ -235,8 +238,12 @@ export function createOpponentAI(set: SetFn, get: () => GameState): Pick<GameSta
           const oppHand = s2.cards.filter((c) => (c.owner ?? 'player') === 'opponent' && c.zone === 'hand')
           const land = oppHand.find((c) => c.type === 'land')
           if (land) {
+            // Always-tapped lands (entryTapRule 'always') enter tapped; cards
+            // with a conditional rule are entered tapped too (the condition is
+            // not evaluated by the AI — the conservative choice).
+            const entersTapped = land.entryTapRule === 'always' || land.entryTapRule === 'conditional' || land.entersTapped === true
             set((prev) => ({
-              cards: prev.cards.map((c) => c.id === land.id ? { ...c, zone: 'battlefield' as const, tapped: false, revealed: false, enteredAtTurn: prev.turn } : c),
+              cards: prev.cards.map((c) => c.id === land.id ? { ...c, zone: 'battlefield' as const, tapped: entersTapped, revealed: false, enteredAtTurn: prev.turn } : c),
               opponentLandPlaysThisTurn: 1,
               currentPhase: 'precombat_main',
               turnAnnouncement: { id: Date.now(), text: `OPPONENT plays ${land.name}` },

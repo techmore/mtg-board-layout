@@ -1926,7 +1926,7 @@
         "U",
         "R"
       ],
-      "amount": 3
+      "amount": 1
     },
     "entryTapRule": "always",
     "conditionalEntryText": null,
@@ -1962,7 +1962,7 @@
         "G",
         "W"
       ],
-      "amount": 3
+      "amount": 1
     },
     "entryTapRule": "always",
     "conditionalEntryText": null,
@@ -2050,7 +2050,7 @@
         "G",
         "U"
       ],
-      "amount": 3
+      "amount": 1
     },
     "entryTapRule": "always",
     "conditionalEntryText": null,
@@ -2085,7 +2085,7 @@
         "R",
         "G"
       ],
-      "amount": 2
+      "amount": 1
     },
     "entryTapRule": "always",
     "conditionalEntryText": null,
@@ -2136,7 +2136,7 @@
         "G",
         "U"
       ],
-      "amount": 2
+      "amount": 1
     },
     "entryTapRule": "always",
     "conditionalEntryText": null,
@@ -2187,7 +2187,7 @@
         "B",
         "G"
       ],
-      "amount": 3
+      "amount": 1
     },
     "entryTapRule": "always",
     "conditionalEntryText": null,
@@ -2223,7 +2223,7 @@
         "R",
         "G"
       ],
-      "amount": 3
+      "amount": 1
     },
     "entryTapRule": "always",
     "conditionalEntryText": null,
@@ -2259,7 +2259,7 @@
         "W",
         "U"
       ],
-      "amount": 3
+      "amount": 1
     },
     "entryTapRule": "always",
     "conditionalEntryText": null,
@@ -2349,7 +2349,7 @@
         "G",
         "U"
       ],
-      "amount": 2
+      "amount": 1
     },
     "entryTapRule": "conditional",
     "conditionalEntryText": ") This land enters tapped unless you control two or more basic lands",

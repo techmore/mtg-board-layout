@@ -1908,7 +1908,7 @@
         "G",
         "U"
       ],
-      "amount": 6
+      "amount": 1
     },
     "entryTapRule": null,
     "conditionalEntryText": null,
@@ -1956,7 +1956,7 @@
         "G",
         "U"
       ],
-      "amount": 2
+      "amount": 1
     },
     "entryTapRule": "conditional",
     "conditionalEntryText": "This land enters tapped unless you control a Forest or an Island",
@@ -2088,7 +2088,7 @@
         "G",
         "U"
       ],
-      "amount": 2
+      "amount": 1
     },
     "entryTapRule": "always",
     "conditionalEntryText": null,
@@ -2138,7 +2138,7 @@
         "G",
         "U"
       ],
-      "amount": 2
+      "amount": 1
     },
     "entryTapRule": "conditional",
     "conditionalEntryText": "If you don't, this land enters tapped",
@@ -2174,7 +2174,7 @@
         "G",
         "U"
       ],
-      "amount": 2
+      "amount": 1
     },
     "entryTapRule": null,
     "conditionalEntryText": null,
@@ -2950,7 +2950,7 @@
         "G",
         "U"
       ],
-      "amount": 2
+      "amount": 1
     },
     "entryTapRule": "always",
     "conditionalEntryText": null,
@@ -3085,7 +3085,7 @@
         "G",
         "U"
       ],
-      "amount": 2
+      "amount": 1
     },
     "entryTapRule": "always",
     "conditionalEntryText": null,
@@ -3154,7 +3154,7 @@
         "G",
         "U"
       ],
-      "amount": 2
+      "amount": 1
     },
     "entryTapRule": "always",
     "conditionalEntryText": null,

@@ -1286,7 +1286,7 @@
         "R",
         "W"
       ],
-      "amount": 2
+      "amount": 1
     },
     "entryTapRule": null,
     "conditionalEntryText": null,
@@ -1348,7 +1348,7 @@
         "B",
         "G"
       ],
-      "amount": 2
+      "amount": 1
     },
     "entryTapRule": null,
     "conditionalEntryText": null,
@@ -1410,7 +1410,7 @@
         "G",
         "W"
       ],
-      "amount": 2
+      "amount": 1
     },
     "entryTapRule": null,
     "conditionalEntryText": null,
@@ -1472,7 +1472,7 @@
         "U",
         "B"
       ],
-      "amount": 2
+      "amount": 1
     },
     "entryTapRule": null,
     "conditionalEntryText": null,
@@ -1567,7 +1567,7 @@
         "W",
         "U"
       ],
-      "amount": 2
+      "amount": 1
     },
     "entryTapRule": null,
     "conditionalEntryText": null,
@@ -1629,7 +1629,7 @@
         "R",
         "G"
       ],
-      "amount": 2
+      "amount": 1
     },
     "entryTapRule": null,
     "conditionalEntryText": null,
@@ -1691,7 +1691,7 @@
         "G",
         "U"
       ],
-      "amount": 2
+      "amount": 1
     },
     "entryTapRule": null,
     "conditionalEntryText": null,
@@ -1753,7 +1753,7 @@
         "B",
         "R"
       ],
-      "amount": 2
+      "amount": 1
     },
     "entryTapRule": null,
     "conditionalEntryText": null,
@@ -1815,7 +1815,7 @@
         "W",
         "B"
       ],
-      "amount": 2
+      "amount": 1
     },
     "entryTapRule": null,
     "conditionalEntryText": null,
@@ -1877,7 +1877,7 @@
         "U",
         "R"
       ],
-      "amount": 2
+      "amount": 1
     },
     "entryTapRule": null,
     "conditionalEntryText": null,
@@ -1974,7 +1974,7 @@
         "B",
         "G"
       ],
-      "amount": 2
+      "amount": 1
     },
     "entryTapRule": "always",
     "conditionalEntryText": null,
@@ -2024,7 +2024,7 @@
         "W",
         "B"
       ],
-      "amount": 2
+      "amount": 1
     },
     "entryTapRule": "always",
     "conditionalEntryText": null,
@@ -3177,7 +3177,7 @@
         "B",
         "G"
       ],
-      "amount": 2
+      "amount": 1
     },
     "entryTapRule": null,
     "conditionalEntryText": null,
@@ -3895,7 +3895,7 @@
         "G",
         "U"
       ],
-      "amount": 2
+      "amount": 1
     },
     "entryTapRule": null,
     "conditionalEntryText": null,
@@ -3957,7 +3957,7 @@
         "R",
         "G"
       ],
-      "amount": 2
+      "amount": 1
     },
     "entryTapRule": null,
     "conditionalEntryText": null,
@@ -4099,7 +4099,7 @@
         "U",
         "B"
       ],
-      "amount": 2
+      "amount": 1
     },
     "entryTapRule": null,
     "conditionalEntryText": null,

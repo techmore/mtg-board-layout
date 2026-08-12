@@ -1803,7 +1803,7 @@
         "B",
         "R"
       ],
-      "amount": 2
+      "amount": 1
     },
     "entryTapRule": "conditional",
     "conditionalEntryText": "This land enters tapped unless you control two or fewer other lands",
@@ -1841,7 +1841,7 @@
         "B",
         "R"
       ],
-      "amount": 2
+      "amount": 1
     },
     "entryTapRule": "always",
     "conditionalEntryText": null,
@@ -1891,7 +1891,7 @@
         "B",
         "R"
       ],
-      "amount": 2
+      "amount": 1
     },
     "entryTapRule": "conditional",
     "conditionalEntryText": "This land enters tapped unless you control a Swamp or a Mountain",
@@ -1965,7 +1965,7 @@
         "B",
         "R"
       ],
-      "amount": 2
+      "amount": 1
     },
     "entryTapRule": "conditional",
     "conditionalEntryText": "If you don't, this land enters tapped",
@@ -2001,7 +2001,7 @@
         "B",
         "R"
       ],
-      "amount": 6
+      "amount": 1
     },
     "entryTapRule": null,
     "conditionalEntryText": null,
@@ -2134,7 +2134,7 @@
         "B",
         "R"
       ],
-      "amount": 2
+      "amount": 1
     },
     "entryTapRule": "conditional",
     "conditionalEntryText": ") This land enters tapped unless you control two or more basic lands",
@@ -2232,7 +2232,7 @@
         "B",
         "R"
       ],
-      "amount": 2
+      "amount": 1
     },
     "entryTapRule": null,
     "conditionalEntryText": null,
@@ -2293,7 +2293,7 @@
         "B",
         "R"
       ],
-      "amount": 2
+      "amount": 1
     },
     "entryTapRule": "always",
     "conditionalEntryText": null,
@@ -3273,7 +3273,7 @@
         "B",
         "R"
       ],
-      "amount": 2
+      "amount": 1
     },
     "entryTapRule": null,
     "conditionalEntryText": null,
@@ -3415,7 +3415,7 @@
         "B",
         "R"
       ],
-      "amount": 2
+      "amount": 1
     },
     "entryTapRule": "always",
     "conditionalEntryText": null,
@@ -3497,7 +3497,7 @@
         "B",
         "R"
       ],
-      "amount": 2
+      "amount": 1
     },
     "entryTapRule": "always",
     "conditionalEntryText": null,
@@ -3584,7 +3584,7 @@
         "B",
         "R"
       ],
-      "amount": 2
+      "amount": 1
     },
     "entryTapRule": null,
     "conditionalEntryText": null,

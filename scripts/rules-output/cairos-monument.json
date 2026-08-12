@@ -1000,7 +1000,7 @@
         "W",
         "U"
       ],
-      "amount": 2
+      "amount": 1
     },
     "entryTapRule": "conditional",
     "conditionalEntryText": "This land enters tapped unless you control a Plains or an Island",
@@ -1038,7 +1038,7 @@
         "W",
         "U"
       ],
-      "amount": 2
+      "amount": 1
     },
     "entryTapRule": "conditional",
     "conditionalEntryText": "If you don't, it enters tapped",
@@ -1074,7 +1074,7 @@
         "W",
         "U"
       ],
-      "amount": 2
+      "amount": 1
     },
     "entryTapRule": null,
     "conditionalEntryText": null,
@@ -1138,7 +1138,7 @@
         "W",
         "U"
       ],
-      "amount": 2
+      "amount": 1
     },
     "entryTapRule": "conditional",
     "conditionalEntryText": ") This land enters tapped unless you control two or more basic lands",
@@ -1173,7 +1173,7 @@
         "W",
         "U"
       ],
-      "amount": 2
+      "amount": 1
     },
     "entryTapRule": "conditional",
     "conditionalEntryText": "If you don't, this land enters tapped",
@@ -1270,7 +1270,7 @@
         "W",
         "U"
       ],
-      "amount": 2
+      "amount": 1
     },
     "entryTapRule": "always",
     "conditionalEntryText": null,
@@ -1355,7 +1355,7 @@
         "W",
         "U"
       ],
-      "amount": 2
+      "amount": 1
     },
     "entryTapRule": "always",
     "conditionalEntryText": null,
@@ -3078,7 +3078,7 @@
         "W",
         "U"
       ],
-      "amount": 2
+      "amount": 1
     },
     "entryTapRule": null,
     "conditionalEntryText": null,

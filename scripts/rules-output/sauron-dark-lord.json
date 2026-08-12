@@ -294,7 +294,7 @@
         "U",
         "B"
       ],
-      "amount": 2
+      "amount": 1
     },
     "entryTapRule": "conditional",
     "conditionalEntryText": "If you don't, this land enters tapped",
@@ -330,7 +330,7 @@
         "B",
         "R"
       ],
-      "amount": 3
+      "amount": 1
     },
     "entryTapRule": "always",
     "conditionalEntryText": null,
@@ -414,7 +414,7 @@
         "B",
         "R"
       ],
-      "amount": 2
+      "amount": 1
     },
     "entryTapRule": "conditional",
     "conditionalEntryText": "This land enters tapped unless you control a Swamp or a Mountain",
@@ -449,7 +449,7 @@
         "U",
         "B"
       ],
-      "amount": 2
+      "amount": 1
     },
     "entryTapRule": "conditional",
     "conditionalEntryText": "This land enters tapped unless you control an Island or a Swamp",
@@ -562,7 +562,7 @@
         "B",
         "R"
       ],
-      "amount": 2
+      "amount": 1
     },
     "entryTapRule": "conditional",
     "conditionalEntryText": "If you don't, this land enters tapped",
@@ -597,7 +597,7 @@
         "U",
         "R"
       ],
-      "amount": 2
+      "amount": 1
     },
     "entryTapRule": "conditional",
     "conditionalEntryText": "If you don't, this land enters tapped",
@@ -738,7 +738,7 @@
         "B",
         "R"
       ],
-      "amount": 2
+      "amount": 1
     },
     "entryTapRule": "conditional",
     "conditionalEntryText": ") This land enters tapped unless you control two or more basic lands",
@@ -773,7 +773,7 @@
         "U",
         "R"
       ],
-      "amount": 2
+      "amount": 1
     },
     "entryTapRule": "conditional",
     "conditionalEntryText": "This land enters tapped unless you control an Island or a Mountain",
@@ -809,7 +809,7 @@
         "B",
         "R"
       ],
-      "amount": 2
+      "amount": 1
     },
     "entryTapRule": null,
     "conditionalEntryText": null,
@@ -873,7 +873,7 @@
         "U",
         "B"
       ],
-      "amount": 2
+      "amount": 1
     },
     "entryTapRule": "conditional",
     "conditionalEntryText": ") This land enters tapped unless you control two or more basic lands",
@@ -1004,7 +1004,7 @@
         "U",
         "B"
       ],
-      "amount": 2
+      "amount": 1
     },
     "entryTapRule": null,
     "conditionalEntryText": null,
