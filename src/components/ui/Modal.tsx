@@ -10,15 +10,14 @@ interface OverlayProps {
 
 /** Full-screen backdrop used by modals and lightbox overlays. */
 export function Overlay({ onClose, children, zIndex = 85, style }: OverlayProps) {
-  if (onClose) {
-    useEffect(() => {
-      const onKey = (event: KeyboardEvent) => {
-        if (event.key === 'Escape') onClose()
-      }
-      window.addEventListener('keydown', onKey)
-      return () => window.removeEventListener('keydown', onKey)
-    }, [onClose])
-  }
+  useEffect(() => {
+    if (!onClose) return
+    const onKey = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') onClose()
+    }
+    window.addEventListener('keydown', onKey)
+    return () => window.removeEventListener('keydown', onKey)
+  }, [onClose])
   return (
     <div
       onMouseDown={onClose ? (event) => { if (event.target === event.currentTarget) onClose() } : undefined}
