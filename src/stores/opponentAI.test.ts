@@ -258,6 +258,20 @@ describe('pickBlockers', () => {
     expect(result.big).toEqual(['weak'])
   })
 
+  it('chump-blocks a commander that would reach 21 commander damage', () => {
+    const weak = creature({ id: 'weak', typeLine: '1/1' })
+    const cmd = creature({ id: 'cmd', name: 'Atarka', typeLine: '6/6', owner: 'player', isCommander: true })
+    const result = pickBlockers(['cmd'], [weak], [weak, cmd], 5, 40, { cmd: 15 })
+    expect(result.cmd).toEqual(['weak'])
+  })
+
+  it('does not chump-block a commander short of 21 commander damage', () => {
+    const weak = creature({ id: 'weak', typeLine: '1/1' })
+    const cmd = creature({ id: 'cmd', name: 'Atarka', typeLine: '6/6', owner: 'player', isCommander: true })
+    const result = pickBlockers(['cmd'], [weak], [weak, cmd], 5, 40, { cmd: 10 })
+    expect(result.cmd).toBeUndefined()
+  })
+
   it('blocks when the blocker kills the attacker even if it dies', () => {
     const trade = creature({ id: 'trade', typeLine: '5/2' })
     const big = creature({ id: 'big', name: 'Big', typeLine: '4/4', owner: 'player' })

@@ -71,6 +71,7 @@ export function pickBlockers(
   allCards: BoardCard[],
   currentTurn: number,
   aiLife?: number,
+  commanderDamage: Record<string, number> = {},
 ): Record<string, string[]> {
   const blockers: Record<string, string[]> = {}
   const available = opponentBattlefield.filter(
@@ -91,6 +92,9 @@ export function pickBlockers(
     if (attPower === 0) continue
     const attackerFlying = hasKeyword(attacker, 'flying')
     const attackerDeathtouch = hasKeyword(attacker, 'deathtouch')
+    // A commander that reaches 21 commander damage with this swing is lethal
+    // regardless of the AI's life total — block it at any cost.
+    const commanderLethal = attacker.isCommander && (commanderDamage[attacker.id] ?? 0) + attPower >= 21
 
     const candidates = available
       .filter((b) => !used.has(b.id))
@@ -111,9 +115,10 @@ export function pickBlockers(
       const chosen = candidates[0]
       const chosenSurvives = getCardToughness(chosen) + computeStaticPump(allCards, chosen).toughness >= attPower
       // Block when the blocker survives, when lethal damage is incoming (block
-      // at any cost), or when the blocker trades favorably (kills the attacker).
+      // at any cost), when the blocker trades favorably (kills the attacker),
+      // or when the attacker is lethal by commander damage.
       const attackerDies = getCardPower(chosen) >= getCardToughness(attacker)
-      if (lethalIncoming || chosenSurvives || attackerDies) {
+      if (lethalIncoming || commanderLethal || chosenSurvives || attackerDies) {
         used.add(chosen.id)
         blockers[attId] = [chosen.id]
       }
