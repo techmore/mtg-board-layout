@@ -51,6 +51,7 @@ export function effectLabelFor(kind: string, params: Record<string, unknown>): s
     deal_damage: (p) => `Deal ${(p as { amount?: number }).amount ?? ''} damage`,
     return_from_graveyard: () => 'Return from graveyard',
     scry: (p) => `Scry ${(p as { amount?: number }).amount ?? 1}`,
+    mill: (p) => `Mill ${(p as { amount?: number }).amount ?? 1} card(s)`,
     proliferate: () => 'Proliferate',
     search_library: () => 'Search library',
     sacrifice: () => 'Sacrifice',

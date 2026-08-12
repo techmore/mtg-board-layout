@@ -45,7 +45,7 @@ export function parseToughness(combatant: Pick<Combatant, 'typeLine' | 'toughnes
 export function parseKeywords(oracleText: string): Set<string> {
   const keywords = new Set<string>()
   const firstLine = oracleText.split('\n')[0] ?? ''
-  for (const keyword of ['flying', 'trample', 'first strike', 'double strike', 'lifelink', 'deathtouch', 'indestructible', 'reach', 'vigilance', 'haste']) {
+  for (const keyword of ['flying', 'trample', 'first strike', 'double strike', 'lifelink', 'deathtouch', 'indestructible', 'reach', 'vigilance', 'haste', 'menace']) {
     if (new RegExp(`\\b${keyword}\\b`, 'i').test(firstLine)) keywords.add(keyword)
   }
   return keywords
@@ -95,8 +95,9 @@ export function resolveCombat(
   })
 
   // Flying/reach block legality: non-flying/reach blockers can't block fliers.
-  // (Applied by the caller before resolution is ideal, but we enforce here for
-  // robustness: an illegal blocker assignment is ignored.)
+  // Menace: an attacker with menace can only be blocked by two or more
+  // creatures. (Applied by the caller before resolution is ideal, but we
+  // enforce here for robustness: an illegal blocker assignment is ignored.)
   const validBlockers = new Map<string, string[]>()
   for (const attacker of attackers) {
     const aKeywords = parseKeywords(attacker.oracleText)
@@ -109,7 +110,13 @@ export function resolveCombat(
       }
       return true
     })
-    validBlockers.set(attacker.id, valid)
+    // Menace needs two or more blockers; a single illegal assignment makes
+    // the attacker unblocked.
+    if (aKeywords.has('menace') && valid.length < 2) {
+      validBlockers.set(attacker.id, [])
+    } else {
+      validBlockers.set(attacker.id, valid)
+    }
   }
 
   const damageTo = new Map<string, number>()

@@ -521,6 +521,22 @@ describe('combat keywords', () => {
     expect(useGameStore.getState().cards.find((c) => c.id === 'w2')?.zone).toBe('battlefield')
   })
 
+  it('a single blocker cannot block a menace attacker in solo combat', () => {
+    startCombat(
+      [
+        card({ id: 'knight', name: 'Knight', typeLine: '3/3', type: 'creature', zone: 'battlefield', tapped: true }),
+        card({ id: 'wall', name: 'Wall', typeLine: '0/4', type: 'creature', zone: 'battlefield', owner: 'opponent' }),
+      ],
+      [ruleFor('Knight', ['menace'])],
+      ['knight'],
+      { knight: ['wall'] },
+    )
+    useGameStore.getState().resolveCombat()
+    // The illegal single block is ignored: the knight is unblocked and deals 3.
+    expect(useGameStore.getState().opponentLifeTotal).toBe(37)
+    expect(useGameStore.getState().cards.find((c) => c.id === 'wall')?.zone).toBe('battlefield')
+  })
+
   it('every attacker deals damage in a multi-attacker combat', () => {
     startCombat(
       [

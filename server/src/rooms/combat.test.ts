@@ -85,6 +85,22 @@ describe('resolveCombat', () => {
     expect(result.playerDamage[0].defenderId).toBe('b')
   })
 
+  it('a single blocker cannot block a menace attacker', () => {
+    const knight = attacker('knight', '3/3', 'Menace')
+    const wall = defender('wall', '0/4')
+    const result = resolveCombat([knight], ['wall'], playersOf({ a: [knight], b: [wall] }), 'a', 'team1')
+    expect(result.playerDamage.map((d) => d.amount)).toEqual([3])
+  })
+
+  it('two blockers can block a menace attacker', () => {
+    const knight = attacker('knight', '3/3', 'Menace')
+    const w1 = defender('w1', '0/2')
+    const w2 = defender('w2', '0/2')
+    const result = resolveCombat([knight], ['w1', 'w2'], playersOf({ a: [knight], b: [w1, w2] }), 'a', 'team1')
+    expect(result.playerDamage).toHaveLength(0)
+    expect(result.deadIds).toContain('w1')
+  })
+
   it('assigns blockers round-robin across attackers', () => {
     const a1 = attacker('a1', '1/1')
     const a2 = attacker('a2', '1/1')

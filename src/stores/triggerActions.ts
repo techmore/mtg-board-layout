@@ -187,6 +187,21 @@ export function resolveTrigger(get: () => GameState, set: (partial: Partial<Game
         ),
       })
       return
+    case 'mill': {
+      const amount = (params.amount as number) ?? 1
+      const owner = state.cards.find((c) => c.id === trigger.sourceCardId)?.owner ?? 'player'
+      const library = state.cards.filter((c) => (c.owner ?? 'player') === owner && c.zone === 'library')
+      const milled = library.slice(0, amount).map((c) => ({ ...c, zone: 'graveyard' as const, revealed: true }))
+      if (milled.length > 0) {
+        set({
+          cards: state.cards.map((c) => {
+            const target = milled.find((m) => m.id === c.id)
+            return target ?? c
+          }),
+        })
+      }
+      break
+    }
     case 'add_mana': {
       const card = state.cards.find((c) => c.id === trigger.sourceCardId)
       if (card?.manaProduction) {

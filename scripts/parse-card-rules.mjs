@@ -443,6 +443,8 @@ const EFFECT_PATTERNS = [
   { kind: 'sacrifice', regex: /\bsacrifice\b[^.,;]*\./i },
   { kind: 'scry', regex: /\bscry\b\s*\d*/i },
   { kind: 'proliferate', regex: /\bproliferate\b/i },
+  { kind: 'mill', regex: /\bmill\b[^.,;]*?(?:\d+|X|one|two|three|four|five|a)\s*card(s)?/i },
+  { kind: 'mill', regex: /\bput\b[^.]*?\bthe\s+top\s+(?:\d+|X|one|two|three|four|five)\s+cards?\b[^.]*\b(graveyard|library)\b/i },
   { kind: 'fight', regex: /\bfight\b/i },
   { kind: 'pump', regex: /(?:gets|gain(?:s)?|get)\s*[^.,;]*?([-−+]?\d+)\s*\/\s*([-−+]?\d+)\s*until end of turn/i },
   // Static anthems ("creatures you control get +2/+2") have no time limit;
@@ -486,6 +488,16 @@ function parseEffect(sentence) {
         const n = sentence.match(/\bcreate\b[^.]*\b(two|three|X|a number of)\b/i)
         if (n) params.amount = ({ two: 2, three: 3, x: 'X', 'a number of': 0 })[n[1].toLowerCase()] ?? 1
         else if (/\bcreate a\b/i.test(sentence) || /\bcreate an?\b/i.test(sentence)) params.amount = 1
+      }
+      // Mill amount
+      if (ep.kind === 'mill') {
+        const n = sentence.match(/\b(two|three|four|five)\s+cards?\b/i)
+        if (n) params.amount = ({ two: 2, three: 3, four: 4, five: 5 })[n[1].toLowerCase()]
+        else {
+          const d = sentence.match(/\b(\d+)\s+cards?\b/i)
+          if (d) params.amount = parseInt(d[1])
+        }
+        if (!params.amount) params.amount = 1
       }
       // Draw / Life amount
       if (['draw_cards', 'lose_life', 'gain_life', 'scry'].includes(ep.kind)) {

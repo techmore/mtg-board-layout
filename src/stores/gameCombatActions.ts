@@ -97,7 +97,12 @@ export function createCombatActions(set: SetFn, get: () => GameState): Pick<Game
             }
             return true
           })
-          assigned = valid.length > 0 ? valid : undefined
+          // Menace requires two or more blockers; fewer makes it unblocked.
+          if (hasKeyword(attacker, 'menace') && valid.length < 2) {
+            assigned = undefined
+          } else {
+            assigned = valid.length > 0 ? valid : undefined
+          }
         }
         pairs.push({ attacker, blockerIds: assigned ?? [] })
       }

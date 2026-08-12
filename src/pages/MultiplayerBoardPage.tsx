@@ -365,6 +365,12 @@ export default function MultiplayerBoardPage() {
           ))}
         </div>
         <div style={controlGroupStyle}>
+          <strong>Roll</strong>
+          <button onClick={() => sendAction({ type: 'rollDice' })} style={smallButtonStyle}>d20</button>
+          <button onClick={() => sendAction({ type: 'flipCoin' })} style={smallButtonStyle}>Coin</button>
+          {lastRoll && <span style={mutedStyle}>{lastRoll}</span>}
+        </div>
+        <div style={controlGroupStyle}>
           <strong>Seat</strong>
           <button onClick={() => moveSeat(0, -24)} style={smallButtonStyle}>↑</button>
           <button onClick={() => moveSeat(-24, 0)} style={smallButtonStyle}>←</button>
