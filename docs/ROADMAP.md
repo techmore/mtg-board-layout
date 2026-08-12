@@ -76,11 +76,10 @@ The AI activates `{T}:` abilities (mana dorks feed its pool), planeswalker loyal
 **Success:** An AI mana dork taps for mana; an AI planeswalker uses a loyalty ability.
 **Effort:** medium — `aiActivatePlaneswalkers` + utility-ability activation in `gameOpponentAI`.
 
-### B5. AI mana & sequencing — [~] partial
-Greedy land tapping improved with color-fixing: generic costs prefer colorless lands, then lands whose colors aren't still needed for the colored portion. Dual lands produce exactly one mana ("{B} or {G}"); enters-tapped lands enter tapped; summoning-sickness blocks dork taps; AI auto-targeting prefers player cards for removal and its own for buffs.
+### B5. AI mana & sequencing — [x] done
+Greedy land tapping improved with color-fixing: generic costs prefer colorless lands, then lands whose colors aren't still needed for the colored portion. **Hold-mana (2026-08-11):** when the AI holds an instant, casts that need mana reserve the instant's colored sources — reserved lands are tapped last. Dual lands produce exactly one mana; enters-tapped lands enter tapped; summoning sickness blocks dork taps; auto-targeting prefers player cards for removal and its own for buffs; proliferate picks the AI's own counters.
 
-**Missing:** no "leave up mana for instants" hold logic.
-**Success:** The AI doesn't tap a red source for a generic cost when it needs red next.
+**Success:** The AI doesn't tap a red source for a generic cost when it needs red next — and keeps a source untapped for the instant in hand.
 
 ---
 
@@ -155,8 +154,8 @@ Entry-tap logic deduped into the shared `mtg-protocol` package (`entryTap.ts`) �
 
 ## Next candidates (not yet started)
 
-- **A7 progress (2026-08-11):** storm + "first spell each turn" now implemented (per-side cast counters, storm copies the spell per prior cast). **Remaining:** annihilator, proliferate AI picks.
-- **B5 AI hold-mana** — reserve untapped sources for a held instant when casting greedily.
+- **A7 progress (2026-08-11):** storm, "first spell each turn", and **annihilator** (defender sacrifices weakest nonlands first) now implemented; attack triggers fire for both sides' combat. **Remaining:** the low-frequency "other" tail (e.g. mind-control-style gain control, "you get {E} counters" energy).
+- **B5 (done 2026-08-11):** hold-mana reserves the held instant's colors.
 - **MP reconnect auth** — playerId takeover is currently unauthenticated (security is out of scope, but this is the cheapest high-value hardening).
 - **Trigger-condition depth** — "whenever you cast your first spell each turn" style stateful conditions.
 - **More A7 effect kinds** — turn the top remaining "other" patterns (storm, annihilator, proliferate AI picks) into resolvable effects.
