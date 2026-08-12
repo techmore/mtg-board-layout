@@ -32164,10 +32164,8 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
-          "params": {
-            "description": "Storm (When you cast this spell, copy it for each spell cast before it this turn"
-          }
+          "kind": "storm",
+          "params": {}
         }
       },
       {
@@ -47297,10 +47295,8 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
-          "params": {
-            "description": "Storm (When you cast this spell, copy it for each spell cast before it this turn"
-          }
+          "kind": "storm",
+          "params": {}
         }
       }
     ],

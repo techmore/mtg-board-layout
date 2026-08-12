@@ -175,6 +175,8 @@ export function takeSnapshot(state: GameState): GameSnapshot {
     opponentLifeTotal: state.opponentLifeTotal,
     turn: state.turn,
     landPlaysThisTurn: state.landPlaysThisTurn,
+    playerSpellsCastThisTurn: state.playerSpellsCastThisTurn ?? 0,
+    opponentSpellsCastThisTurn: state.opponentSpellsCastThisTurn ?? 0,
     drawNotice: state.drawNotice,
     turnAnnouncement: state.turnAnnouncement,
     turnPrompt: state.turnPrompt,
@@ -242,6 +244,8 @@ export function advanceTurnState(state: GameState): Partial<GameState> {
   return {
     turn: state.turn + 1,
     landPlaysThisTurn: 0,
+    playerSpellsCastThisTurn: 0,
+    opponentSpellsCastThisTurn: 0,
     manaPool: emptyManaPool(),
     potentialMana: [] as PotentialManaSource[],
     cards,

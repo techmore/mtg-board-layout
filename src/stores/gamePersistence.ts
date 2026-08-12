@@ -15,7 +15,7 @@ export const STORAGE_KEY = 'mtg-board-state'
 
 export type PersistedGameState = Pick<
   GameState,
-  'activeDeckId' | 'lifeTotal' | 'cards' | 'cardScale' | 'manaPool' | 'potentialMana' | 'manaLog' | 'effectHistory' | 'tokens' | 'backgroundImage' | 'backgrounds' | 'rollHistory' | 'overlay' | 'showOpponent' | 'opponentName' | 'aiFixedDeck' | 'opponentLifeTotal' | 'turnPlayerMs' | 'turnOpponentMs' | 'turn' | 'currentPhase' | 'landPlaysThisTurn' | 'turnAnnouncement' | 'triggerStack' | 'commanderDamage'
+  'activeDeckId' | 'lifeTotal' | 'cards' | 'cardScale' | 'manaPool' | 'potentialMana' | 'manaLog' | 'effectHistory' | 'tokens' | 'backgroundImage' | 'backgrounds' | 'rollHistory' | 'overlay' | 'showOpponent' | 'opponentName' | 'aiFixedDeck' | 'opponentLifeTotal' | 'turnPlayerMs' | 'turnOpponentMs' | 'turn' | 'currentPhase' | 'landPlaysThisTurn' | 'playerSpellsCastThisTurn' | 'opponentSpellsCastThisTurn' | 'turnAnnouncement' | 'triggerStack' | 'commanderDamage'
 >
 
 export const defaultGameState: PersistedGameState & { undoStack: GameSnapshot[]; redoStack: GameSnapshot[] } = {
@@ -42,6 +42,8 @@ export const defaultGameState: PersistedGameState & { undoStack: GameSnapshot[];
   turn: 1,
   currentPhase: 'beginning' as Phase,
   landPlaysThisTurn: 0,
+  playerSpellsCastThisTurn: 0,
+  opponentSpellsCastThisTurn: 0,
   turnAnnouncement: null,
   triggerStack: [],
   undoStack: [],
@@ -112,6 +114,8 @@ export function loadPersistedGameState(): PersistedGameState {
       turn: Number.isFinite(parsed.turn) ? Math.max(1, parsed.turn!) : defaultGameState.turn,
       currentPhase: PHASES.includes(parsed.currentPhase as any) ? parsed.currentPhase as Phase : defaultGameState.currentPhase,
       landPlaysThisTurn: Number.isFinite(parsed.landPlaysThisTurn) ? Math.max(0, Math.floor(parsed.landPlaysThisTurn!)) : defaultGameState.landPlaysThisTurn,
+      playerSpellsCastThisTurn: Number.isFinite(parsed.playerSpellsCastThisTurn) ? Math.max(0, Math.floor(parsed.playerSpellsCastThisTurn!)) : defaultGameState.playerSpellsCastThisTurn,
+      opponentSpellsCastThisTurn: Number.isFinite(parsed.opponentSpellsCastThisTurn) ? Math.max(0, Math.floor(parsed.opponentSpellsCastThisTurn!)) : defaultGameState.opponentSpellsCastThisTurn,
       turnAnnouncement: isTurnAnnouncement(parsed.turnAnnouncement) ? parsed.turnAnnouncement : null,
       triggerStack: Array.isArray(parsed.triggerStack) ? parsed.triggerStack.filter(isTriggerInstance) : defaultGameState.triggerStack,
       commanderDamage: parsed.commanderDamage && typeof parsed.commanderDamage === 'object'
@@ -158,6 +162,8 @@ export function persistGameState(state: GameState) {
       turn: state.turn,
       currentPhase: state.currentPhase,
       landPlaysThisTurn: state.landPlaysThisTurn,
+      playerSpellsCastThisTurn: state.playerSpellsCastThisTurn ?? 0,
+      opponentSpellsCastThisTurn: state.opponentSpellsCastThisTurn ?? 0,
       turnAnnouncement: state.turnAnnouncement,
       triggerStack: state.triggerStack,
       commanderDamage: state.commanderDamage,

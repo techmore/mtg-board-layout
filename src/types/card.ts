@@ -252,7 +252,7 @@ export type GameEvent =
   | { type: 'discard'; cardId: string; cardName: string }
   | { type: 'upkeep'; owner?: 'player' | 'opponent' }
   | { type: 'end_of_turn'; owner?: 'player' | 'opponent' }
-  | { type: 'cast'; cardId: string; cardName: string }
+  | { type: 'cast'; cardId: string; cardName: string; count?: number }
   | { type: 'attack'; cardId: string; cardName: string }
   | { type: 'combat_damage'; sourceCardId: string; sourceCardName: string; targetCardId?: string; amount: number }
   | { type: 'landfall'; cardId: string; cardName: string }

@@ -446,6 +446,7 @@ const EFFECT_PATTERNS = [
   { kind: 'mill', regex: /\bmill\b[^.,;]*?(?:\d+|X|one|two|three|four|five|a)\s*card(s)?/i },
   { kind: 'mill', regex: /\bput\b[^.]*?\bthe\s+top\s+(?:\d+|X|one|two|three|four|five)\s+cards?\b[^.]*\b(graveyard|library)\b/i },
   { kind: 'fight', regex: /\bfight\b/i },
+  { kind: 'storm', regex: /\bstorm\b/i },
   { kind: 'equip', regex: /\bequip\s*\{[^}]+\}/i },
   { kind: 'pump', regex: /(?:gets|gain(?:s)?|get)\s*[^.,;]*?([-−+]?\d+)\s*\/\s*([-−+]?\d+)\s*until end of turn/i },
   // Static anthems ("creatures you control get +2/+2") have no time limit;

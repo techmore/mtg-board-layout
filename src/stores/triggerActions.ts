@@ -2,7 +2,7 @@ import type { GameState } from './gameStore'
 import type { Token, TriggerInstance } from '../types/card'
 import { CARD_BACK_URL } from '../constants'
 import { canPayManaCost } from '../utils/misc'
-import { hasKeyword } from './cardRulesLoader'
+import { hasKeyword, getCardRule, getCachedCardRules } from './cardRulesLoader'
 import { attachAuras } from './gameRules'
 import { useToastStore } from './toastStore'
 
@@ -151,6 +151,33 @@ export function resolveTrigger(get: () => GameState, set: (partial: Partial<Game
       // strongest friendly creature, like aura auto-attach.
       if (trigger.ability.targets > 0) break
       set({ cards: attachAuras(state.cards, { preferredTargetId: trigger.sourceCardId }) })
+      break
+    }
+    case 'storm': {
+      // Copy the spell once for each spell cast before it this turn. Each
+      // copy is the source card's spell abilities re-enqueued on the stack.
+      const count = 'gameEvent' in trigger.context
+        ? (trigger.context.gameEvent as { count?: number }).count
+        : undefined
+      const copies = Math.max(0, (count ?? 1) - 1)
+      if (copies > 0) {
+        const source = state.cards.find((c) => c.id === trigger.sourceCardId)
+        const rule = source ? getCardRule(source.name, getCachedCardRules()) : undefined
+        const spellAbilities = (rule?.abilities ?? []).filter((a) => a.abilityType === 'spell')
+        if (spellAbilities.length > 0) {
+          const copyInstances: TriggerInstance[] = Array.from({ length: copies }, () => spellAbilities.map((ability) => ({
+            id: crypto.randomUUID(),
+            sourceCardId: trigger.sourceCardId,
+            sourceCardName: trigger.sourceCardName,
+            ability,
+            event: 'cast' as const,
+            context: {},
+          }))).flat()
+          set({
+            triggerStack: [...state.triggerStack, ...copyInstances],
+          })
+        }
+      }
       break
     }
     case 'return_from_graveyard': {

@@ -80,6 +80,14 @@ export function triggerConditionMatches(
   if (!condition) return true
   const cond = condition.toLowerCase()
 
+  // "Whenever you cast your first spell each turn": the cast event carries the
+  // caster-side count for this turn; only the first cast qualifies.
+  if (/\bfirst spell\b/.test(cond)) {
+    const count = 'count' in event ? event.count : undefined
+    if (count === undefined) return true
+    return count === 1
+  }
+
   // "your upkeep / your end step / your draw step": only the active player's
   // events qualify, and only for the source's owner.
   if (/\byour\b.*\b(upkeep|end step|draw step)\b/.test(cond)) {

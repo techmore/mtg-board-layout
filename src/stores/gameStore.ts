@@ -54,7 +54,7 @@ export type ActivePlayer = 'player' | 'opponent'
 
 export type GameSnapshot = Pick<
   GameState,
-  'cards' | 'manaPool' | 'potentialMana' | 'manaLog' | 'effectHistory' | 'tokens' | 'lifeTotal' | 'opponentLifeTotal' | 'turn' | 'landPlaysThisTurn' | 'drawNotice' | 'turnAnnouncement' | 'turnPrompt' | 'combatState' | 'currentPhase' | 'activePlayer' | 'opponentManaPool' | 'opponentPotentialMana' | 'opponentLandPlaysThisTurn' | 'commanderDamage'
+  'cards' | 'manaPool' | 'potentialMana' | 'manaLog' | 'effectHistory' | 'tokens' | 'lifeTotal' | 'opponentLifeTotal' | 'turn' | 'landPlaysThisTurn' | 'drawNotice' | 'turnAnnouncement' | 'turnPrompt' | 'combatState' | 'currentPhase' | 'activePlayer' | 'opponentManaPool' | 'opponentPotentialMana' | 'opponentLandPlaysThisTurn' | 'commanderDamage' | 'playerSpellsCastThisTurn' | 'opponentSpellsCastThisTurn'
 >
 
 export interface GameState {
@@ -83,6 +83,9 @@ export interface GameState {
   opponentLandPlaysThisTurn: number
   turn: number
   landPlaysThisTurn: number
+  /** Spells cast this turn by each side (drives storm / 'first spell each turn'). */
+  playerSpellsCastThisTurn: number
+  opponentSpellsCastThisTurn: number
   drawNotice: DrawNotice | null
   turnAnnouncement: TurnAnnouncement | null
   turnPrompt: TurnPrompt | null

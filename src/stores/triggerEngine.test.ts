@@ -1,4 +1,7 @@
 import { afterEach, describe, expect, it } from 'vitest'
+import { useGameStore } from './gameStore'
+import { primeCardRules } from './cardRulesLoader'
+import { resolveTrigger } from './triggerActions'
 import type { BoardCard, CardAbilityDef, CardRuleEntry, TriggerInstance } from '../types/card'
 import {
   buildTriggerInstances,
@@ -366,5 +369,81 @@ describe('trigger condition enforcement', () => {
     registerCardTriggers(card({ id: 'source', name: 'Bitterblossom' }), conditionRules([conditionTrigger('at the beginning of your upkeep', 'upkeep')]))
     const result = buildTriggerInstances({ type: 'upkeep' }, [], [card({ id: 'source', name: 'Bitterblossom' })])
     expect(result.newTriggers).toBe(1)
+  })
+})
+
+describe('storm and first-spell conditions', () => {
+  const stormAbility = (): CardAbilityDef => ({
+    abilityType: 'triggered',
+    triggerEvent: 'cast' as CardAbilityDef['triggerEvent'],
+    triggerCondition: 'Storm (When you cast this spell',
+    isOptional: false,
+    cost: null,
+    targets: 0,
+    targetFilter: null,
+    effect: { kind: 'storm', params: {} },
+  })
+
+  const spellAbility = (): CardAbilityDef => ({
+    abilityType: 'spell',
+    triggerEvent: null,
+    triggerCondition: null,
+    isOptional: false,
+    cost: null,
+    targets: 0,
+    targetFilter: null,
+    effect: { kind: 'create_token', params: { tokenName: 'Squirrel creature', tokenPower: 1, tokenToughness: 1, amount: 1 } },
+  })
+
+  it('storm triggers fire only on the cast of the storm card itself', () => {
+    const rules: CardRuleEntry = {
+      cardName: 'Chatterstorm', manaCost: '{1}{G}', manaValue: 2, typeLine: 'Sorcery', cardType: 'sorcery',
+      subtypes: [], keywords: [], manaProduction: null, entryTapRule: 'never', conditionalEntryText: null,
+      oracleText: 'Storm. Create a Squirrel token.', scryfallId: 's1',
+      abilities: [stormAbility()],
+    }
+    registerCardTriggers(card({ id: 'storm', name: 'Chatterstorm', type: 'sorcery', zone: 'battlefield' }), rules)
+    const self = buildTriggerInstances({ type: 'cast', cardId: 'storm', cardName: 'Chatterstorm', count: 2 }, [], [card({ id: 'storm', name: 'Chatterstorm', type: 'sorcery' })])
+    expect(self.newTriggers).toBe(1)
+  })
+
+  it('a "first spell each turn" condition only matches the first cast', () => {
+    const rules: CardRuleEntry = {
+      cardName: 'Vial Smasher', manaCost: '', manaValue: 3, typeLine: 'Legendary Creature', cardType: 'creature',
+      subtypes: [], keywords: [], manaProduction: null, entryTapRule: 'never', conditionalEntryText: null,
+      oracleText: 'Whenever you cast your first spell each turn, deal 1 damage.', scryfallId: 's1',
+      abilities: [{ abilityType: 'triggered', triggerEvent: 'cast' as CardAbilityDef['triggerEvent'], triggerCondition: 'you cast your first spell each turn', isOptional: false, cost: null, targets: 0, targetFilter: null, effect: { kind: 'deal_damage', params: { amount: 1 } } }],
+    }
+    registerCardTriggers(card({ id: 'v', name: 'Vial Smasher', zone: 'battlefield' }), rules)
+    const first = buildTriggerInstances({ type: 'cast', cardId: 'bolt', cardName: 'Bolt', count: 1 }, [], [card({ id: 'v', name: 'Vial Smasher' })])
+    expect(first.newTriggers).toBe(1)
+    const second = buildTriggerInstances({ type: 'cast', cardId: 'bolt', cardName: 'Bolt', count: 2 }, [], [card({ id: 'v', name: 'Vial Smasher' })])
+    expect(second.newTriggers).toBe(0)
+  })
+
+  it('spell ability copies enqueue on storm resolution', () => {
+    const rules: CardRuleEntry = {
+      cardName: 'Chatterstorm', manaCost: '{1}{G}', manaValue: 2, typeLine: 'Sorcery', cardType: 'sorcery',
+      subtypes: [], keywords: [], manaProduction: null, entryTapRule: 'never', conditionalEntryText: null,
+      oracleText: 'Storm. Create a Squirrel token.', scryfallId: 's1',
+      abilities: [spellAbility(), stormAbility()],
+    }
+    const storm = card({ id: 'storm', name: 'Chatterstorm', type: 'sorcery', zone: 'battlefield' })
+    primeCardRules({ 'Chatterstorm': rules })
+    // The spell ability is enqueued by the cast flow itself; simulate it.
+    const spellInstance = {
+      id: 'spell-1', sourceCardId: 'storm', sourceCardName: 'Chatterstorm', event: 'cast' as const,
+      context: {}, ability: spellAbility(),
+    }
+    useGameStore.setState({ cards: [storm], triggerStack: [spellInstance], playerSpellsCastThisTurn: 2 })
+    useGameStore.getState().emitGameEvent({ type: 'cast', cardId: 'storm', cardName: 'Chatterstorm', count: 2 })
+    const afterCast = useGameStore.getState().triggerStack
+    expect(afterCast.length).toBe(2) // spell ability + storm trigger
+    const stormTrigger = afterCast.find((t) => t.ability.effect.kind === 'storm')
+    expect(stormTrigger).toBeDefined()
+    useGameStore.getState().resolveTrigger(stormTrigger!.id)
+    const afterResolve = useGameStore.getState().triggerStack
+    // 1 copy of the spell ability enqueued (count 2 -> 1 copy) alongside the original.
+    expect(afterResolve.filter((t) => t.ability.effect.kind === 'create_token')).toHaveLength(2)
   })
 })

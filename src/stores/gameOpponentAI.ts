@@ -30,8 +30,10 @@ export function aiCastInstant(set: SetFn, get: () => GameState): boolean {
           : c,
       ),
       opponentManaPool: pool,
+      opponentSpellsCastThisTurn: (prev.opponentSpellsCastThisTurn ?? 0) + 1,
       turnAnnouncement: { id: Date.now(), text: `OPPONENT casts ${trick.name}` },
     }))
+    get().emitGameEvent({ type: 'cast', cardId: trick.id, cardName: trick.name, count: (get().opponentSpellsCastThisTurn ?? 0) })
     resolveAISpellAbilities(set, get, trick)
     set({ cards: attachAuras(moveCastSpellsToGraveyard(get().cards)) })
     return true
@@ -286,9 +288,11 @@ export function createOpponentAI(set: SetFn, get: () => GameState): Pick<GameSta
                 return {
                   cards,
                   opponentManaPool: pool,
+                  opponentSpellsCastThisTurn: (prev.opponentSpellsCastThisTurn ?? 0) + 1,
                   turnAnnouncement: { id: Date.now(), text: `OPPONENT casts ${toCast.name}` },
                 }
               })
+              get().emitGameEvent({ type: 'cast', cardId: toCast.id, cardName: toCast.name, count: (get().opponentSpellsCastThisTurn ?? 0) })
               resolveAISpellAbilities(set, get, toCast)
               set({ cards: attachAuras(moveCastSpellsToGraveyard(get().cards)) })
               if (toCast.type !== 'instant' && toCast.type !== 'sorcery') {
@@ -421,6 +425,8 @@ export function createOpponentAI(set: SetFn, get: () => GameState): Pick<GameSta
           opponentPotentialMana: [],
           opponentLandPlaysThisTurn: 0,
           commanderDamage: {},
+          playerSpellsCastThisTurn: 0,
+          opponentSpellsCastThisTurn: 0,
           triggerStack: [],
           auraPrompt: null,
           wardPrompt: null,
