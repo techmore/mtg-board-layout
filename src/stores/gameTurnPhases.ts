@@ -67,6 +67,9 @@ export function createTurnPhases(set: SetFn, get: () => GameState): Pick<GameSta
             ),
           }))
           if (state.turn > 1) {
+            // Draw-step triggers ("at the beginning of your draw step") fire
+            // before the regular draw.
+            get().emitGameEvent({ type: 'draw_step', owner: 'player' })
             get().drawCards(1)
           }
           set({ currentPhase: 'precombat_main', landPlaysThisTurn: 0 })

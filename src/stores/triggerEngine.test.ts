@@ -237,6 +237,33 @@ describe('buildTriggerInstances', () => {
     expect(result.stack).toEqual(existing)
   })
 
+  it('builds instances for draw_step events with the owning side', () => {
+    const rulesMap: Record<string, CardRuleEntry> = {
+      'Draw Engine': {
+        cardName: 'Draw Engine',
+        manaCost: '',
+        manaValue: 0,
+        typeLine: 'Enchantment',
+        cardType: 'enchantment',
+        subtypes: [],
+        keywords: [],
+        manaProduction: null,
+        entryTapRule: 'never',
+        conditionalEntryText: null,
+        oracleText: '',
+        scryfallId: 's-draw',
+        abilities: [triggeredAbility('draw_step')],
+      },
+    }
+
+    reindexTriggers([card({ id: 'draw', name: 'Draw Engine' })], rulesMap)
+
+    const result = buildTriggerInstances({ type: 'draw_step', owner: 'player' }, [])
+
+    expect(result.newTriggers).toBe(1)
+    expect(result.stack[0]).toMatchObject({ sourceCardId: 'draw', event: 'draw_step' })
+  })
+
   it('appends one instance per matching registered trigger', () => {
     const rules: CardRuleEntry = {
       cardName: 'Soul Warden',

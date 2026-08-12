@@ -251,6 +251,7 @@ export type GameEvent =
   | { type: 'sacrifice'; cardId: string; cardName: string }
   | { type: 'discard'; cardId: string; cardName: string }
   | { type: 'upkeep'; owner?: 'player' | 'opponent' }
+  | { type: 'draw_step'; owner?: 'player' | 'opponent' }
   | { type: 'end_of_turn'; owner?: 'player' | 'opponent' }
   | { type: 'cast'; cardId: string; cardName: string; count?: number }
   | { type: 'attack'; cardId: string; cardName: string }

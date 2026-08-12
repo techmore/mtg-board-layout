@@ -224,6 +224,9 @@ export function createOpponentAI(set: SetFn, get: () => GameState): Pick<GameSta
         const oppCards = s.cards.filter((c) => (c.owner ?? 'player') === 'opponent')
         const libraryCard = oppCards.find((c) => c.zone === 'library')
         if (libraryCard) {
+          // Draw-step triggers ("at the beginning of your draw step") fire
+          // before the regular draw.
+          get().emitGameEvent({ type: 'draw_step', owner: 'opponent' })
           set({ cards: s.cards.map((c) => c.id === libraryCard.id ? { ...c, zone: 'hand' as const } : c) })
         } else if (oppCards.length > 0) {
           // Opponent tried to draw from an empty library — it loses.
