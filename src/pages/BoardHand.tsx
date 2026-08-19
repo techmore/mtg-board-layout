@@ -1,5 +1,6 @@
 import { HoverZoomCard } from '../components/Board/HoverZoomCard'
 import { useGameStore } from '../stores/gameStore'
+import { canPayManaCost } from '../utils/misc'
 import type { BoardCard } from '../types/card'
 import type { CardStack } from './boardViewModel'
 
@@ -24,6 +25,9 @@ export function BoardHand({
   handleRightClick,
   cardLayout,
 }: Props) {
+  // One subscription for the whole hand instead of one per card: mana changes
+  // (every tap/spend) no longer re-render each battlefield card.
+  const manaPool = useGameStore((s) => s.manaPool)
   return (
     <div
       style={{
@@ -84,6 +88,7 @@ export function BoardHand({
             setDragCardId={dragCardId}
             cardHeight={cardLayout.handCardHeight}
             stackOffset={cardLayout.handStackOffset}
+            affordable={stack.card.manaCost ? canPayManaCost(manaPool, stack.card.manaCost) : null}
             onClick={() => useGameStore.getState().castSpell(stack.card.id)}
           />
         ))

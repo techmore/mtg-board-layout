@@ -141,10 +141,10 @@ describe('entersTappedOnBattlefield (server parity with client evaluator)', () =
 })
 
 describe('generateRoomIdSingle / shuffleArray', () => {
-  it('generates a 4-letter room id', () => {
+  it('generates a 5-letter room id (entropy against code guessing)', () => {
     for (let i = 0; i < 20; i++) {
       const id = generateRoomIdSingle()
-      expect(id).toMatch(/^[A-Z]{4}$/)
+      expect(id).toMatch(/^[A-Z]{5}$/)
     }
   })
 

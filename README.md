@@ -23,6 +23,14 @@ npm run server:start
 
 The client defaults to `ws://localhost:2567`. Set `VITE_COLYSEUS_URL` in a local `.env` file for a build-time default, or enter a hostname/IP/URL in the multiplayer screen for a runtime server. The server address is included in room invite links. See [docs/API.md](docs/API.md) for the room lifecycle, state visibility, actions, and events.
 
+#### Production deployment
+
+- `PORT` — server port (default `2567`)
+- `CORS_ORIGIN` — comma-separated allowed browser origins (default `*` for local play). Set it to your app origin before public deployment.
+- **Rate limiting** — the server rejects >30 connection attempts per IP per minute (anti code-guessing). Add reverse-proxy rate limits on room create/join for a very public deployment.
+- **TLS** — run the WebSocket behind a reverse proxy (nginx/caddy) terminating TLS; the app is `ws://` internally.
+- Reconnect is protected by a server-issued per-player auth token; room codes are 5 letters (~11.9M combos).
+
 ## Checks
 
 ```sh
@@ -82,5 +90,5 @@ The browser button controls the public-output window and shows when it is active
 ## Known Issues
 
 - Backgrounds stored as data URLs in localStorage (~5MB limit)
-- Multiplayer room access is code-based and does not provide authentication; add auth/rate limiting before public deployment
-- Full priority system (formal instant-speed windows) not yet modeled; the AI responds to player spells with instants, but players don't get structured response prompts for every action
+- Room codes (5 letters) are shareable invite codes; reconnect is protected by a server-issued auth token, but there is no per-IP rate limiting on room creation/join — add reverse-proxy rate limits before a very public deployment
+- Full priority system — partial: players get response windows when the AI casts spells (play an instant or pass); formal pass-priority rounds in every phase, response prompts for AI attacks, and multiplayer priority sync are not yet modeled.

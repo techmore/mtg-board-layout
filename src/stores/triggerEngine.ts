@@ -20,12 +20,14 @@ export function registerCardTriggers(card: BoardCard, rules: CardRuleEntry | und
   if (!rules || card.zone !== 'battlefield') return
   for (const ability of rules.abilities) {
     if (ability.abilityType !== 'triggered' || !ability.triggerEvent) continue
-    triggerRegistry.push({
-      cardId: card.id,
-      cardName: card.name,
-      ability,
-      event: ability.triggerEvent,
-    })
+    for (const event of ability.triggerEvents ?? [ability.triggerEvent]) {
+      triggerRegistry.push({
+        cardId: card.id,
+        cardName: card.name,
+        ability,
+        event,
+      })
+    }
   }
 }
 
@@ -52,12 +54,14 @@ export function reindexTriggers(cards: BoardCard[], rulesMap: Record<string, Car
     if (!rule) continue
     for (const ability of rule.abilities) {
       if (ability.abilityType !== 'triggered' || !ability.triggerEvent) continue
-      triggerRegistry.push({
-        cardId: card.id,
-        cardName: card.name,
-        ability,
-        event: ability.triggerEvent,
-      })
+      for (const event of ability.triggerEvents ?? [ability.triggerEvent]) {
+        triggerRegistry.push({
+          cardId: card.id,
+          cardName: card.name,
+          ability,
+          event,
+        })
+      }
     }
   }
 }
@@ -122,13 +126,24 @@ export function buildTriggerInstances(
   event: GameEvent,
   existingStack: TriggerInstance[],
   cards?: { id: string; name: string; type: string; owner?: 'player' | 'opponent' }[],
+  tokens?: { id: string; name: string; type?: string; owner?: 'player' | 'opponent' }[],
 ): { stack: TriggerInstance[]; newTriggers: number } {
   const matching = getTriggersForEvent(event.type)
   if (matching.length === 0) return { stack: existingStack, newTriggers: 0 }
 
-  const eventCard = 'cardId' in event
-    ? cards?.find((c) => c.id === event.cardId)
-    : undefined
+  const eventCardId = 'cardId' in event
+    ? event.cardId
+    : 'sourceCardId' in event
+      ? event.sourceCardId
+      : undefined
+  let eventCard: { id: string; name: string; type: string; owner?: 'player' | 'opponent' } | undefined
+  if (eventCardId) {
+    eventCard = cards?.find((c) => c.id === eventCardId)
+    if (!eventCard) {
+      const token = tokens?.find((t) => t.id === eventCardId)
+      if (token) eventCard = { id: token.id, name: token.name, type: token.type ?? 'creature', owner: token.owner }
+    }
+  }
   const newInstances: TriggerInstance[] = matching
     .filter((t) => {
       const sourceCard = cards?.find((c) => c.id === t.cardId)

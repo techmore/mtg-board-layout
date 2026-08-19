@@ -239,7 +239,7 @@ describe('selectTarget', () => {
 
     selectTarget(harness.get, harness.set, 't1', 'target-1')
 
-    expect(harness.addCounter).toHaveBeenCalledWith('target-1')
+    expect(harness.addCounter).toHaveBeenCalledWith('target-1', '+1/+1')
     expect(harness.state.triggerStack).toHaveLength(0)
   })
 
@@ -314,5 +314,93 @@ describe('selectTarget', () => {
     expect(harness.addCounter).not.toHaveBeenCalled()
     expect(harness.checkStateBasedActions).toHaveBeenCalled()
     expect(harness.state.triggerStack).toHaveLength(0)
+  })
+})
+
+describe('resolveTrigger regression fixes (deep audit 2026-08)', () => {
+  it('honors the parsed amount for create_token', () => {
+    const harness = makeHarness({ triggerStack: [trigger('t1', { kind: 'create_token', params: { tokenName: 'Zombie', amount: 2 } })] })
+
+    resolveTrigger(harness.get, harness.set, 't1')
+
+    expect(harness.addToken).toHaveBeenCalledTimes(2)
+    expect(harness.addToken).toHaveBeenCalledWith(expect.objectContaining({ name: 'Zombie' }))
+    expect(harness.state.triggerStack).toHaveLength(0)
+  })
+
+  it('defaults a non-numeric create_token amount (X) to one token', () => {
+    const harness = makeHarness({ triggerStack: [trigger('t1', { kind: 'create_token', params: { tokenName: 'Goat', amount: 'X' } })] })
+
+    resolveTrigger(harness.get, harness.set, 't1')
+
+    expect(harness.addToken).toHaveBeenCalledTimes(1)
+  })
+
+  it('mass deal_damage applies the parsed amount and runs state-based actions', () => {
+    const harness = makeHarness({
+      cards: [card({ id: 'a' }), card({ id: 'b' }), card({ id: 'land', type: 'land', typeLine: 'Basic Land' })],
+      triggerStack: [trigger('t1', { kind: 'deal_damage', params: { amount: 3 } })],
+    })
+
+    resolveTrigger(harness.get, harness.set, 't1')
+
+    expect(harness.addDamage).toHaveBeenCalledTimes(2)
+    expect(harness.addDamage).toHaveBeenCalledWith('a', 3)
+    expect(harness.addDamage).toHaveBeenCalledWith('b', 3)
+    expect(harness.checkStateBasedActions).toHaveBeenCalled()
+  })
+
+  it('a non-numeric deal_damage amount (X) falls back to 1 instead of NaN', () => {
+    const harness = makeHarness({
+      cards: [card({ id: 'a' })],
+      triggerStack: [trigger('t1', { kind: 'deal_damage', params: { amount: 'X' } })],
+    })
+
+    resolveTrigger(harness.get, harness.set, 't1')
+
+    expect(harness.addDamage).toHaveBeenCalledWith('a', 1)
+  })
+
+  it('a non-numeric lose_life amount (X) no longer corrupts life', () => {
+    const harness = makeHarness({ triggerStack: [trigger('t1', { kind: 'lose_life', params: { amount: 'X' } })] })
+
+    resolveTrigger(harness.get, harness.set, 't1')
+
+    expect(harness.setLife).toHaveBeenCalledWith(19)
+  })
+
+  it('puts -1/-1 counters with the parsed kind and amount, scoped to the board', () => {
+    const source = card({ id: 'source-1', zone: 'battlefield' })
+    const mine = card({ id: 'mine', zone: 'battlefield' })
+    const theirs = card({ id: 'theirs', zone: 'battlefield', owner: 'opponent' })
+    const harness = makeHarness({
+      cards: [source, mine, theirs],
+      triggerStack: [trigger('t1', { kind: 'put_counter', params: { counterKind: '-1/-1', amount: 2, scope: 'all' } })],
+    })
+
+    resolveTrigger(harness.get, harness.set, 't1')
+
+    expect(harness.addCounter).toHaveBeenCalledTimes(6)
+    expect(harness.addCounter).toHaveBeenCalledWith('source-1', '-1/-1')
+    expect(harness.addCounter).toHaveBeenCalledWith('mine', '-1/-1')
+    expect(harness.addCounter).toHaveBeenCalledWith('theirs', '-1/-1')
+    expect(harness.state.triggerStack).toHaveLength(0)
+  })
+
+  it('puts +1/+1 counters on own creatures only when scope is "own"', () => {
+    const source = card({ id: 'source-1', zone: 'battlefield' })
+    const mine = card({ id: 'mine', zone: 'battlefield' })
+    const theirs = card({ id: 'theirs', zone: 'battlefield', owner: 'opponent' })
+    const harness = makeHarness({
+      cards: [source, mine, theirs],
+      triggerStack: [trigger('t1', { kind: 'put_counter', params: { counterKind: '+1/+1', amount: 1, scope: 'own' } })],
+    })
+
+    resolveTrigger(harness.get, harness.set, 't1')
+
+    expect(harness.addCounter).toHaveBeenCalledTimes(2)
+    expect(harness.addCounter).toHaveBeenCalledWith('source-1', '+1/+1')
+    expect(harness.addCounter).toHaveBeenCalledWith('mine', '+1/+1')
+    expect(harness.addCounter).not.toHaveBeenCalledWith('theirs', '+1/+1')
   })
 })

@@ -27,7 +27,11 @@
         "targetFilter": null,
         "effect": {
           "kind": "put_counter",
-          "params": {}
+          "params": {
+            "counterKind": "+1/+1",
+            "amount": 1,
+            "scope": "all"
+          }
         }
       }
     ],
@@ -50,15 +54,17 @@
     "abilities": [
       {
         "abilityType": "triggered",
-        "triggerEvent": null,
-        "triggerCondition": null,
+        "triggerEvent": "card_drawn",
+        "triggerCondition": "an opponent draws a card",
         "isOptional": false,
         "cost": null,
         "targets": 0,
         "targetFilter": null,
         "effect": {
           "kind": "deal_damage",
-          "params": {}
+          "params": {
+            "amount": 1
+          }
         }
       }
     ],
@@ -255,12 +261,12 @@
       },
       {
         "abilityType": "triggered",
-        "triggerEvent": null,
-        "triggerCondition": null,
+        "triggerEvent": "cast",
+        "triggerCondition": "a player casts their first spell each turn",
         "isOptional": false,
         "cost": null,
-        "targets": 1,
-        "targetFilter": "player",
+        "targets": 0,
+        "targetFilter": null,
         "effect": {
           "kind": "other",
           "params": {
@@ -278,7 +284,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "deal_damage",
-          "params": {}
+          "params": {
+            "amount": 1
+          }
         }
       }
     ],
@@ -304,15 +312,19 @@
     "abilities": [
       {
         "abilityType": "triggered",
-        "triggerEvent": null,
-        "triggerCondition": null,
+        "triggerEvent": "upkeep",
+        "triggerCondition": "each opponent's upkeep",
         "isOptional": false,
         "cost": null,
         "targets": 1,
         "targetFilter": "creature they control",
         "effect": {
           "kind": "put_counter",
-          "params": {}
+          "params": {
+            "counterKind": "-1/-1",
+            "amount": 1,
+            "scope": "all"
+          }
         }
       },
       {
@@ -325,7 +337,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "return_from_graveyard",
-          "params": {}
+          "params": {
+            "zone": "battlefield"
+          }
         }
       }
     ],
@@ -438,9 +452,9 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
+          "kind": "remove_counters",
           "params": {
-            "description": "At the beginning of your upkeep, remove a time counter"
+            "amount": 1
           }
         }
       },
@@ -490,7 +504,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "deal_damage",
-          "params": {}
+          "params": {
+            "amount": 1
+          }
         }
       }
     ],
@@ -516,15 +532,17 @@
     "abilities": [
       {
         "abilityType": "triggered",
-        "triggerEvent": null,
-        "triggerCondition": null,
+        "triggerEvent": "cast",
+        "triggerCondition": "an opponent casts a noncreature spell",
         "isOptional": false,
         "cost": null,
         "targets": 0,
         "targetFilter": null,
         "effect": {
           "kind": "deal_damage",
-          "params": {}
+          "params": {
+            "amount": 1
+          }
         }
       },
       {
@@ -537,7 +555,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "return_from_graveyard",
-          "params": {}
+          "params": {
+            "zone": "battlefield"
+          }
         }
       }
     ],
@@ -568,13 +588,26 @@
         "triggerCondition": "Menace Whenever this creature attacks",
         "isOptional": false,
         "cost": null,
-        "targets": 0,
-        "targetFilter": null,
+        "targets": 1,
+        "targetFilter": "nonland permanent",
         "effect": {
           "kind": "other",
           "params": {
             "description": "Menace Whenever this creature attacks, choose up to one target nonland permanent"
           }
+        }
+      },
+      {
+        "abilityType": "triggered",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": true,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "sacrifice",
+          "params": {}
         }
       },
       {
@@ -587,7 +620,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "deal_damage",
-          "params": {}
+          "params": {
+            "amount": 5
+          }
         }
       },
       {
@@ -603,6 +638,19 @@
           "params": {
             "amount": 3
           }
+        }
+      },
+      {
+        "abilityType": "triggered",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "sacrifice",
+          "params": {}
         }
       }
     ],
@@ -700,15 +748,17 @@
     "abilities": [
       {
         "abilityType": "triggered",
-        "triggerEvent": null,
-        "triggerCondition": null,
+        "triggerEvent": "upkeep",
+        "triggerCondition": "each opponent's upkeep",
         "isOptional": false,
         "cost": null,
         "targets": 0,
         "targetFilter": null,
         "effect": {
           "kind": "deal_damage",
-          "params": {}
+          "params": {
+            "amount": 2
+          }
         }
       }
     ],
@@ -738,9 +788,26 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
+          "kind": "mass_sacrifice",
           "params": {
-            "description": "At the beginning of your end step, you may sacrifice an artifact, creature, enchantment, land, or planeswalker"
+            "scope": "own",
+            "kind": "creature_or_planeswalker"
+          }
+        }
+      },
+      {
+        "abilityType": "triggered",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": true,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "mass_sacrifice",
+          "params": {
+            "scope": "opponent",
+            "kind": "permanent"
           }
         }
       },
@@ -797,10 +864,8 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
-          "params": {
-            "description": "They can't be regenerated"
-          }
+          "kind": "static_noop",
+          "params": {}
         }
       },
       {
@@ -870,15 +935,17 @@
     "abilities": [
       {
         "abilityType": "triggered",
-        "triggerEvent": null,
-        "triggerCondition": null,
+        "triggerEvent": "card_drawn",
+        "triggerCondition": "an opponent draws a card",
         "isOptional": true,
         "cost": null,
         "targets": 0,
         "targetFilter": null,
         "effect": {
           "kind": "deal_damage",
-          "params": {}
+          "params": {
+            "amount": 1
+          }
         }
       }
     ],
@@ -911,10 +978,8 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
-          "params": {
-            "description": "Equipped creature has flying and lifelink"
-          }
+          "kind": "static_keyword",
+          "params": {}
         }
       },
       {
@@ -926,24 +991,17 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
+          "kind": "optional_pay",
           "params": {
-            "description": "Whenever equipped creature dies, you may pay X life, where X is its power"
-          }
-        }
-      },
-      {
-        "abilityType": "triggered",
-        "triggerEvent": null,
-        "triggerCondition": null,
-        "isOptional": false,
-        "cost": null,
-        "targets": 0,
-        "targetFilter": null,
-        "effect": {
-          "kind": "draw_cards",
-          "params": {
-            "amount": "X"
+            "cost": "",
+            "payer": "self",
+            "then": {
+              "kind": "draw_cards",
+              "params": {
+                "amount": "X"
+              }
+            },
+            "thenIfNotPaid": false
           }
         }
       },
@@ -1112,7 +1170,11 @@
         "targetFilter": null,
         "effect": {
           "kind": "put_counter",
-          "params": {}
+          "params": {
+            "counterKind": "+1/+1",
+            "amount": 1,
+            "scope": "all"
+          }
         }
       }
     ],
@@ -1141,7 +1203,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "deal_damage",
-          "params": {}
+          "params": {
+            "amount": 13
+          }
         }
       }
     ],
@@ -1170,11 +1234,13 @@
         "triggerCondition": null,
         "isOptional": false,
         "cost": null,
-        "targets": 1,
-        "targetFilter": "opponent",
+        "targets": 0,
+        "targetFilter": null,
         "effect": {
           "kind": "deal_damage",
-          "params": {}
+          "params": {
+            "amount": 1
+          }
         }
       },
       {
@@ -1186,10 +1252,8 @@
         "targets": 1,
         "targetFilter": "creature",
         "effect": {
-          "kind": "other",
-          "params": {
-            "description": "{2}{R}, {T}: This creature fights another target creature"
-          }
+          "kind": "fight",
+          "params": {}
         }
       }
     ],
@@ -1222,6 +1286,21 @@
             "description": "The owner of target permanent shuffles it into their library, then reveals the top card of their library"
           }
         }
+      },
+      {
+        "abilityType": "spell",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "return_from_graveyard",
+          "params": {
+            "zone": "battlefield"
+          }
+        }
       }
     ],
     "oracleText": "The owner of target permanent shuffles it into their library, then reveals the top card of their library. If it's a permanent card, they put it onto the battlefield.",
@@ -1249,8 +1328,8 @@
         "triggerCondition": "First strike When this creature enters",
         "isOptional": true,
         "cost": null,
-        "targets": 1,
-        "targetFilter": "opponent may have you draw three cards",
+        "targets": 0,
+        "targetFilter": null,
         "effect": {
           "kind": "draw_cards",
           "params": {
@@ -1268,7 +1347,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "deal_damage",
-          "params": {}
+          "params": {
+            "amount": 1
+          }
         }
       }
     ],
@@ -1297,7 +1378,9 @@
         "targetFilter": "enchantment deals damage equal to its mana value to its controller unless that player sacrifices it",
         "effect": {
           "kind": "deal_damage",
-          "params": {}
+          "params": {
+            "amount": 1
+          }
         }
       }
     ],
@@ -1329,7 +1412,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "deal_damage",
-          "params": {}
+          "params": {
+            "amount": 2
+          }
         }
       }
     ],
@@ -1377,7 +1462,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "deal_damage",
-          "params": {}
+          "params": {
+            "amount": 1
+          }
         }
       }
     ],
@@ -1409,7 +1496,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "deal_damage",
-          "params": {}
+          "params": {
+            "amount": 3
+          }
         }
       },
       {
@@ -1455,6 +1544,21 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
+          "kind": "scry",
+          "params": {
+            "amount": "X"
+          }
+        }
+      },
+      {
+        "abilityType": "triggered",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
           "kind": "exile",
           "params": {}
         }
@@ -1480,15 +1584,17 @@
     "abilities": [
       {
         "abilityType": "triggered",
-        "triggerEvent": null,
-        "triggerCondition": null,
+        "triggerEvent": "cast",
+        "triggerCondition": "an opponent casts a spell",
         "isOptional": false,
         "cost": null,
         "targets": 0,
         "targetFilter": null,
         "effect": {
           "kind": "deal_damage",
-          "params": {}
+          "params": {
+            "amount": 1
+          }
         }
       }
     ],
@@ -1529,8 +1635,8 @@
     "abilities": [
       {
         "abilityType": "triggered",
-        "triggerEvent": null,
-        "triggerCondition": null,
+        "triggerEvent": "draw_step",
+        "triggerCondition": "each player's draw step",
         "isOptional": false,
         "cost": null,
         "targets": 0,
@@ -1544,15 +1650,17 @@
       },
       {
         "abilityType": "triggered",
-        "triggerEvent": null,
-        "triggerCondition": null,
+        "triggerEvent": "card_drawn",
+        "triggerCondition": "a player draws a card",
         "isOptional": false,
         "cost": null,
         "targets": 0,
         "targetFilter": null,
         "effect": {
           "kind": "deal_damage",
-          "params": {}
+          "params": {
+            "amount": 1
+          }
         }
       }
     ],
@@ -1585,7 +1693,7 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "lose_life",
+          "kind": "draw_cards",
           "params": {
             "amount": 1
           }
@@ -1626,11 +1734,13 @@
         "triggerCondition": null,
         "isOptional": false,
         "cost": null,
-        "targets": 1,
-        "targetFilter": "opponent or planeswalker",
+        "targets": 0,
+        "targetFilter": null,
         "effect": {
           "kind": "deal_damage",
-          "params": {}
+          "params": {
+            "amount": 1
+          }
         }
       }
     ],
@@ -1677,7 +1787,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "deal_damage",
-          "params": {}
+          "params": {
+            "amount": 1
+          }
         }
       }
     ],
@@ -1710,10 +1822,8 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
-          "params": {
-            "description": "Equipped creature has deathtouch and lifelink"
-          }
+          "kind": "static_keyword",
+          "params": {}
         }
       },
       {
@@ -2130,7 +2240,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "deal_damage",
-          "params": {}
+          "params": {
+            "amount": 1
+          }
         }
       }
     ],
@@ -2227,10 +2339,8 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
-          "params": {
-            "description": "{R}, {T}: You may play the exiled card without paying its mana cost if an opponent was dealt 7 or more damage this turn"
-          }
+          "kind": "cast_from_graveyard",
+          "params": {}
         }
       }
     ],
@@ -2292,7 +2402,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "deal_damage",
-          "params": {}
+          "params": {
+            "amount": 1
+          }
         }
       }
     ],
@@ -2321,6 +2433,21 @@
         "abilityType": "triggered",
         "triggerEvent": "etb",
         "triggerCondition": "this land enters",
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "scry",
+          "params": {
+            "amount": 1
+          }
+        }
+      },
+      {
+        "abilityType": "triggered",
+        "triggerEvent": null,
+        "triggerCondition": null,
         "isOptional": false,
         "cost": null,
         "targets": 0,
@@ -2390,9 +2517,10 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
+          "kind": "keyword_pump",
           "params": {
-            "description": "{2}, {T}: Target commander gains lifelink until end of turn"
+            "keyword": "lifelink",
+            "scope": "all"
           }
         }
       }
@@ -2424,7 +2552,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "deal_damage",
-          "params": {}
+          "params": {
+            "amount": 4
+          }
         }
       },
       {
@@ -2437,7 +2567,9 @@
         "targetFilter": "creature that player controls",
         "effect": {
           "kind": "deal_damage",
-          "params": {}
+          "params": {
+            "amount": 1
+          }
         }
       }
     ],
@@ -2481,7 +2613,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "deal_damage",
-          "params": {}
+          "params": {
+            "amount": 2
+          }
         }
       }
     ],
@@ -2535,10 +2669,10 @@
         "triggerCondition": null,
         "isOptional": false,
         "cost": null,
-        "targets": 1,
-        "targetFilter": "player draws two cards and loses 2 life",
+        "targets": 0,
+        "targetFilter": null,
         "effect": {
-          "kind": "lose_life",
+          "kind": "draw_cards",
           "params": {
             "amount": 2
           }
@@ -2653,10 +2787,8 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
-          "params": {
-            "description": "Equipped creature has haste and shroud"
-          }
+          "kind": "static_keyword",
+          "params": {}
         }
       },
       {
@@ -2668,10 +2800,8 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
-          "params": {
-            "description": "(It can't be the target of spells or abilities"
-          }
+          "kind": "static_noop",
+          "params": {}
         }
       },
       {
@@ -2762,8 +2892,8 @@
         "triggerCondition": null,
         "isOptional": false,
         "cost": null,
-        "targets": 1,
-        "targetFilter": "player loses 1 life and you gain 1 life",
+        "targets": 0,
+        "targetFilter": null,
         "effect": {
           "kind": "lose_life",
           "params": {
@@ -2798,8 +2928,8 @@
         "triggerCondition": null,
         "isOptional": false,
         "cost": null,
-        "targets": 1,
-        "targetFilter": "player loses 1 life and you gain 1 life",
+        "targets": 0,
+        "targetFilter": null,
         "effect": {
           "kind": "lose_life",
           "params": {
@@ -2923,6 +3053,11 @@
       {
         "abilityType": "triggered",
         "triggerEvent": "dies",
+        "triggerEvents": [
+          "dies",
+          "card_drawn",
+          "graveyard"
+        ],
         "triggerCondition": "one or more other creatures die",
         "isOptional": false,
         "cost": null,
@@ -2957,10 +3092,10 @@
         "triggerCondition": null,
         "isOptional": false,
         "cost": null,
-        "targets": 1,
-        "targetFilter": "player draws two cards and loses 2 life",
+        "targets": 0,
+        "targetFilter": null,
         "effect": {
-          "kind": "lose_life",
+          "kind": "draw_cards",
           "params": {
             "amount": 2
           }
@@ -2988,6 +3123,10 @@
       {
         "abilityType": "triggered",
         "triggerEvent": "dies",
+        "triggerEvents": [
+          "dies",
+          "graveyard"
+        ],
         "triggerCondition": "another creature dies",
         "isOptional": false,
         "cost": null,
@@ -2995,7 +3134,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "deal_damage",
-          "params": {}
+          "params": {
+            "amount": 1
+          }
         }
       }
     ],
@@ -3096,15 +3237,17 @@
     "abilities": [
       {
         "abilityType": "triggered",
-        "triggerEvent": null,
-        "triggerCondition": null,
+        "triggerEvent": "sacrifice",
+        "triggerCondition": "a player sacrifices a permanent",
         "isOptional": false,
         "cost": null,
         "targets": 0,
         "targetFilter": null,
         "effect": {
           "kind": "deal_damage",
-          "params": {}
+          "params": {
+            "amount": 1
+          }
         }
       }
     ],
@@ -3129,8 +3272,8 @@
         "triggerCondition": null,
         "isOptional": true,
         "cost": null,
-        "targets": 1,
-        "targetFilter": "player 's graveyard",
+        "targets": 0,
+        "targetFilter": null,
         "effect": {
           "kind": "exile",
           "params": {
@@ -3163,7 +3306,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "deal_damage",
-          "params": {}
+          "params": {
+            "amount": 1
+          }
         }
       }
     ],
@@ -3348,7 +3493,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "deal_damage",
-          "params": {}
+          "params": {
+            "amount": 1
+          }
         }
       }
     ],

@@ -4,10 +4,14 @@ import { pushUndo } from './gameRules'
 
 type SetFn = (partial: GameState | Partial<GameState> | ((state: GameState) => Partial<GameState>)) => void
 
-export function createTokenActions(set: SetFn, _get: () => GameState): Pick<GameState, 'addToken' | 'addTokenToCard' | 'toggleTokenTap' | 'addTokenCounter' | 'removeTokenCounter' | 'removeToken'> {
+export function createTokenActions(set: SetFn, get: () => GameState): Pick<GameState, 'addToken' | 'addTokenToCard' | 'toggleTokenTap' | 'addTokenCounter' | 'removeTokenCounter' | 'removeToken'> {
   return {
-    addToken: (token) =>
-      set((state) => ({ ...pushUndo(state), tokens: [...state.tokens, token] })),
+    addToken: (token) => {
+      set((state) => ({ ...pushUndo(state), tokens: [...state.tokens, token] }))
+      // Tokens enter the battlefield as creatures: "whenever another creature
+      // enters" triggers must see them.
+      get().emitGameEvent({ type: 'etb', cardId: token.id, cardName: token.name })
+    },
 
     addTokenToCard: (cardId) =>
       set((state) => {

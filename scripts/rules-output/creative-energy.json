@@ -23,13 +23,28 @@
         "triggerCondition": "Menace",
         "isOptional": false,
         "cost": null,
-        "targets": 0,
-        "targetFilter": null,
+        "targets": 1,
+        "targetFilter": "nontoken creature you control",
         "effect": {
           "kind": "create_token",
           "params": {
             "tokenName": "and attacking",
             "amount": 1
+          }
+        }
+      },
+      {
+        "abilityType": "triggered",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "add_energy",
+          "params": {
+            "amount": 2
           }
         }
       }
@@ -62,9 +77,9 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
+          "kind": "add_energy",
           "params": {
-            "description": "First strike When this creature enters, you get {E}{E}"
+            "amount": 2
           }
         }
       },
@@ -381,6 +396,10 @@
       {
         "abilityType": "triggered",
         "triggerEvent": "etb",
+        "triggerEvents": [
+          "etb",
+          "counter_placed"
+        ],
         "triggerCondition": "Fabricate 1 (When this creature enters",
         "isOptional": true,
         "cost": null,
@@ -389,8 +408,9 @@
         "effect": {
           "kind": "create_token",
           "params": {
-            "counterKind": "-1/-1",
+            "counterKind": "+1/+1",
             "amount": 1,
+            "scope": "all",
             "tokenPower": 1,
             "tokenToughness": 1,
             "tokenName": "artifact creature"
@@ -466,7 +486,7 @@
         "triggerEvent": null,
         "triggerCondition": null,
         "isOptional": false,
-        "cost": "{T}, {W}{U}{U}",
+        "cost": "{T}, {W}{U}{U}, Pay 1 {E}",
         "targets": 0,
         "targetFilter": null,
         "effect": {
@@ -503,9 +523,9 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
+          "kind": "add_energy",
           "params": {
-            "description": "When this Vehicle enters, you get {E}{E}{E}{E}"
+            "amount": 4
           }
         }
       },
@@ -574,6 +594,37 @@
         "abilityType": "spell",
         "triggerEvent": null,
         "triggerCondition": null,
+        "isOptional": true,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "add_energy",
+          "params": {
+            "amount": 2
+          }
+        }
+      },
+      {
+        "abilityType": "spell",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "keyword_pump",
+          "params": {
+            "keyword": "indestructible",
+            "scope": "own"
+          }
+        }
+      },
+      {
+        "abilityType": "spell",
+        "triggerEvent": null,
+        "triggerCondition": null,
         "isOptional": false,
         "cost": null,
         "targets": 0,
@@ -600,17 +651,32 @@
     "conditionalEntryText": null,
     "abilities": [
       {
+        "abilityType": "triggered",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "add_energy",
+          "params": {
+            "amount": 2
+          }
+        }
+      },
+      {
         "abilityType": "activated",
         "triggerEvent": null,
         "triggerCondition": null,
         "isOptional": true,
-        "cost": "{T}",
+        "cost": "{T}, Pay 1 {E}",
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
+          "kind": "add_energy",
           "params": {
-            "description": "{T}: You get {E}, then you may pay one or more {E}"
+            "amount": 2
           }
         }
       },
@@ -686,8 +752,10 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "exile",
-          "params": {}
+          "kind": "remove_counters",
+          "params": {
+            "amount": 1
+          }
         }
       }
     ],
@@ -741,7 +809,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "return_from_graveyard",
-          "params": {}
+          "params": {
+            "zone": "battlefield"
+          }
         }
       },
       {
@@ -753,9 +823,10 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
+          "kind": "keyword_pump",
           "params": {
-            "description": "It gains haste"
+            "keyword": "haste",
+            "scope": "all"
           }
         }
       },
@@ -801,9 +872,9 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
+          "kind": "add_energy",
           "params": {
-            "description": "Haste Whenever this creature attacks, you get {E}{E}, then you may pay eight {E}"
+            "amount": 8
           }
         }
       },
@@ -817,7 +888,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "deal_damage",
-          "params": {}
+          "params": {
+            "amount": 8
+          }
         }
       }
     ],
@@ -848,9 +921,9 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
+          "kind": "add_energy",
           "params": {
-            "description": "Whenever this creature or equipped creature attacks, you get {E} , then it gets +X/+X until end of turn, where X is the amount of {E} you have"
+            "amount": 2
           }
         }
       },
@@ -859,7 +932,7 @@
         "triggerEvent": null,
         "triggerCondition": null,
         "isOptional": false,
-        "cost": "{2}",
+        "cost": "{2}, Pay 3 {E}",
         "targets": 1,
         "targetFilter": "creature you control",
         "effect": {
@@ -932,7 +1005,11 @@
         "targetFilter": null,
         "effect": {
           "kind": "put_counter",
-          "params": {}
+          "params": {
+            "counterKind": "+1/+1",
+            "amount": 1,
+            "scope": "all"
+          }
         }
       },
       {
@@ -944,10 +1021,8 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
-          "params": {
-            "description": "Whenever this creature attacks, double its power until end of turn"
-          }
+          "kind": "double_power",
+          "params": {}
         }
       },
       {
@@ -960,7 +1035,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "deal_damage",
-          "params": {}
+          "params": {
+            "amount": 1
+          }
         }
       }
     ],
@@ -990,9 +1067,9 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
+          "kind": "add_energy",
           "params": {
-            "description": "Whenever a creature you control attacks, you get {E}"
+            "amount": 1
           }
         }
       },
@@ -1001,7 +1078,7 @@
         "triggerEvent": null,
         "triggerCondition": null,
         "isOptional": false,
-        "cost": "{T}",
+        "cost": "{T}, Pay 6 {E}",
         "targets": 0,
         "targetFilter": null,
         "effect": {
@@ -1042,7 +1119,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "deal_damage",
-          "params": {}
+          "params": {
+            "amount": 1
+          }
         }
       },
       {
@@ -1055,7 +1134,9 @@
         "targetFilter": "creature you control",
         "effect": {
           "kind": "deal_damage",
-          "params": {}
+          "params": {
+            "amount": 1
+          }
         }
       }
     ],
@@ -1106,9 +1187,9 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
+          "kind": "add_energy",
           "params": {
-            "description": "{3}, {T}: You get {E}{E}{E}"
+            "amount": 3
           }
         }
       },
@@ -1117,7 +1198,7 @@
         "triggerEvent": null,
         "triggerCondition": null,
         "isOptional": false,
-        "cost": "{T}",
+        "cost": "{T}, Pay 3 {E}",
         "targets": 0,
         "targetFilter": null,
         "effect": {
@@ -1142,11 +1223,26 @@
     "conditionalEntryText": null,
     "abilities": [
       {
+        "abilityType": "triggered",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "add_energy",
+          "params": {
+            "amount": 2
+          }
+        }
+      },
+      {
         "abilityType": "activated",
         "triggerEvent": null,
         "triggerCondition": null,
         "isOptional": false,
-        "cost": "{E}",
+        "cost": "{E}, Pay 8 {E}",
         "targets": 0,
         "targetFilter": null,
         "effect": {
@@ -1185,9 +1281,9 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
+          "kind": "add_energy",
           "params": {
-            "description": "Double strike, haste Whenever this creature attacks, you get {E}{E} , then you may pay eight {E}"
+            "amount": 8
           }
         }
       }
@@ -1220,9 +1316,9 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
+          "kind": "add_energy",
           "params": {
-            "description": "Flying When this creature enters, you get six {E}"
+            "amount": 6
           }
         }
       },
@@ -1231,12 +1327,14 @@
         "triggerEvent": null,
         "triggerCondition": null,
         "isOptional": false,
-        "cost": "{E}{E}{E}{E}",
+        "cost": "{E}{E}{E}{E}, Pay 4 {E}",
         "targets": 0,
         "targetFilter": null,
         "effect": {
           "kind": "return_from_graveyard",
-          "params": {}
+          "params": {
+            "zone": "hand"
+          }
         }
       }
     ],
@@ -1267,9 +1365,9 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
+          "kind": "add_energy",
           "params": {
-            "description": "Whenever this creature attacks, you get {E}{E}"
+            "amount": 2
           }
         }
       },
@@ -1278,7 +1376,7 @@
         "triggerEvent": null,
         "triggerCondition": null,
         "isOptional": false,
-        "cost": "{E}{E}",
+        "cost": "{E}{E}, Pay 2 {E}",
         "targets": 0,
         "targetFilter": null,
         "effect": {
@@ -1316,9 +1414,9 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
+          "kind": "add_energy",
           "params": {
-            "description": "Flying When this Vehicle enters, you get {E}{E}"
+            "amount": 2
           }
         }
       },
@@ -1331,9 +1429,10 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
+          "kind": "keyword_pump",
           "params": {
-            "description": "Pay {E}: This Vehicle gains lifelink until end of turn"
+            "keyword": "lifelink",
+            "scope": "all"
           }
         }
       }
@@ -1363,7 +1462,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "deal_damage",
-          "params": {}
+          "params": {
+            "amount": 1
+          }
         }
       },
       {
@@ -1407,6 +1508,21 @@
         "abilityType": "triggered",
         "triggerEvent": "etb",
         "triggerCondition": "this land enters",
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "scry",
+          "params": {
+            "amount": 1
+          }
+        }
+      },
+      {
+        "abilityType": "triggered",
+        "triggerEvent": null,
+        "triggerCondition": null,
         "isOptional": false,
         "cost": null,
         "targets": 0,
@@ -1490,7 +1606,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "deal_damage",
-          "params": {}
+          "params": {
+            "amount": 1
+          }
         }
       }
     ],
@@ -1521,9 +1639,11 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
+          "kind": "create_token",
           "params": {
-            "description": "When this creature enters, create four 1/1 colorless Myr artifact creature tokens"
+            "tokenPower": 1,
+            "tokenToughness": 1,
+            "tokenName": "artifact creature"
           }
         }
       },
@@ -1552,7 +1672,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "deal_damage",
-          "params": {}
+          "params": {
+            "amount": "X"
+          }
         }
       }
     ],
@@ -1584,7 +1706,9 @@
         "targetFilter": "creature that player controls",
         "effect": {
           "kind": "deal_damage",
-          "params": {}
+          "params": {
+            "amount": 1
+          }
         }
       },
       {
@@ -1630,10 +1754,8 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
-          "params": {
-            "description": "Creature tokens you control have haste"
-          }
+          "kind": "static_keyword",
+          "params": {}
         }
       },
       {
@@ -1701,15 +1823,19 @@
       {
         "abilityType": "triggered",
         "triggerEvent": "attack",
+        "triggerEvents": [
+          "attack",
+          "card_drawn"
+        ],
         "triggerCondition": "one or more creatures an opponent controls attack you and aren't blocked",
         "isOptional": false,
         "cost": null,
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
+          "kind": "draw_cards",
           "params": {
-            "description": "Whenever one or more creatures an opponent controls attack you and aren't blocked, that player draws three cards and gains control of this artifact"
+            "amount": 1
           }
         }
       }
@@ -1838,9 +1964,10 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
+          "kind": "keyword_pump",
           "params": {
-            "description": "• Creatures you control gain flying, vigilance, and double strike until end of turn"
+            "keyword": "flying",
+            "scope": "own"
           }
         }
       },
@@ -1853,9 +1980,10 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
+          "kind": "keyword_pump",
           "params": {
-            "description": "• Creatures you control gain lifelink, indestructible, and protection from each color until end of turn"
+            "keyword": "lifelink",
+            "scope": "own"
           }
         }
       }
@@ -1918,7 +2046,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "deal_damage",
-          "params": {}
+          "params": {
+            "amount": 1
+          }
         }
       }
     ],
@@ -1980,7 +2110,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "deal_damage",
-          "params": {}
+          "params": {
+            "amount": 1
+          }
         }
       }
     ],
@@ -2044,6 +2176,21 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
+          "kind": "remove_counters",
+          "params": {
+            "amount": "all"
+          }
+        }
+      },
+      {
+        "abilityType": "triggered",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
           "kind": "add_mana",
           "params": {}
         }
@@ -2074,8 +2221,8 @@
         "triggerCondition": "First strike When this creature enters",
         "isOptional": true,
         "cost": null,
-        "targets": 1,
-        "targetFilter": "opponent may have you draw three cards",
+        "targets": 0,
+        "targetFilter": null,
         "effect": {
           "kind": "draw_cards",
           "params": {
@@ -2093,7 +2240,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "deal_damage",
-          "params": {}
+          "params": {
+            "amount": 1
+          }
         }
       }
     ],
@@ -2121,9 +2270,9 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
+          "kind": "add_energy",
           "params": {
-            "description": "Whenever a permanent you control is put into a graveyard, you get {E}"
+            "amount": 1
           }
         }
       },
@@ -2132,13 +2281,13 @@
         "triggerEvent": null,
         "triggerCondition": null,
         "isOptional": false,
-        "cost": "{T}",
+        "cost": "{T}, Pay 6 {E}",
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
+          "kind": "scry",
           "params": {
-            "description": "{T}, Pay six {E}: Look at the top six cards of your library"
+            "amount": 6
           }
         }
       }
@@ -2167,16 +2316,24 @@
       {
         "abilityType": "triggered",
         "triggerEvent": "etb",
+        "triggerEvents": [
+          "etb",
+          "counter_placed"
+        ],
         "triggerCondition": "Flying",
         "isOptional": false,
         "cost": null,
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "put_counter",
+          "kind": "create_token",
           "params": {
-            "counterKind": "-1/-1",
-            "amount": 2
+            "counterKind": "+1/+1",
+            "amount": 2,
+            "scope": "all",
+            "tokenPower": 1,
+            "tokenToughness": 1,
+            "tokenName": "artifact creature"
           }
         }
       },
@@ -2227,6 +2384,21 @@
             "description": "Choose target artifact or creature"
           }
         }
+      },
+      {
+        "abilityType": "spell",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": true,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "add_energy",
+          "params": {
+            "amount": 5
+          }
+        }
       }
     ],
     "oracleText": "Choose target artifact or creature. You get {E}{E}{E}{E} (four energy counters), then you may pay an amount of {E} equal to that permanent's mana value. If you do, gain control of it.",
@@ -2257,9 +2429,9 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
+          "kind": "add_energy",
           "params": {
-            "description": "Flying Whenever this creature or another creature you control enters, you get {E}"
+            "amount": 1
           }
         }
       },
@@ -2272,23 +2444,20 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
+          "kind": "optional_pay",
           "params": {
-            "description": "Whenever this creature attacks, you may pay {E}{E}"
+            "cost": "{E}",
+            "payer": "self",
+            "then": {
+              "kind": "put_counter",
+              "params": {
+                "counterKind": "+1/+1",
+                "amount": 1,
+                "scope": "all"
+              }
+            },
+            "thenIfNotPaid": false
           }
-        }
-      },
-      {
-        "abilityType": "triggered",
-        "triggerEvent": null,
-        "triggerCondition": null,
-        "isOptional": false,
-        "cost": null,
-        "targets": 1,
-        "targetFilter": "creature defending player controls",
-        "effect": {
-          "kind": "put_counter",
-          "params": {}
         }
       }
     ],
@@ -2320,9 +2489,9 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
+          "kind": "add_energy",
           "params": {
-            "description": "Flying At the beginning of your upkeep, you get {E}{E}{E}"
+            "amount": 3
           }
         }
       },
@@ -2331,14 +2500,12 @@
         "triggerEvent": null,
         "triggerCondition": null,
         "isOptional": false,
-        "cost": "{E}",
+        "cost": "{E}, Pay 8 {E}",
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
-          "params": {
-            "description": "Pay eight {E}: Return all other creatures to their owners' hands"
-          }
+          "kind": "return_all_other",
+          "params": {}
         }
       }
     ],
@@ -2550,7 +2717,7 @@
         "effect": {
           "kind": "draw_cards",
           "params": {
-            "amount": 1
+            "amount": 7
           }
         }
       },
@@ -2708,6 +2875,21 @@
         }
       },
       {
+        "abilityType": "triggered",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "scry",
+          "params": {
+            "amount": 1
+          }
+        }
+      },
+      {
         "abilityType": "activated",
         "triggerEvent": null,
         "triggerCondition": null,
@@ -2792,6 +2974,21 @@
         "abilityType": "triggered",
         "triggerEvent": "etb",
         "triggerCondition": "this land enters",
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "scry",
+          "params": {
+            "amount": 1
+          }
+        }
+      },
+      {
+        "abilityType": "triggered",
+        "triggerEvent": null,
+        "triggerCondition": null,
         "isOptional": false,
         "cost": null,
         "targets": 0,
@@ -2992,8 +3189,25 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
+          "kind": "add_energy",
+          "params": {
+            "amount": 2
+          }
+        }
+      },
+      {
+        "abilityType": "spell",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
           "kind": "return_from_graveyard",
-          "params": {}
+          "params": {
+            "zone": "battlefield"
+          }
         }
       },
       {
@@ -3038,9 +3252,9 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
+          "kind": "add_energy",
           "params": {
-            "description": "{T}: You get {E}{E}"
+            "amount": 2
           }
         }
       },
@@ -3049,14 +3263,12 @@
         "triggerEvent": null,
         "triggerCondition": null,
         "isOptional": false,
-        "cost": "{T}",
+        "cost": "{T}, Pay 2 {E}",
         "targets": 1,
         "targetFilter": "creature",
         "effect": {
-          "kind": "other",
-          "params": {
-            "description": "{T}, Pay {E}{E}: Tap target creature"
-          }
+          "kind": "tap_target",
+          "params": {}
         }
       },
       {
@@ -3064,7 +3276,7 @@
         "triggerEvent": null,
         "triggerCondition": null,
         "isOptional": false,
-        "cost": "{T}",
+        "cost": "{T}, Pay 3 {E}",
         "targets": 0,
         "targetFilter": null,
         "effect": {
@@ -3079,7 +3291,7 @@
         "triggerEvent": null,
         "triggerCondition": null,
         "isOptional": false,
-        "cost": "{E}{E}{E}{E}",
+        "cost": "{E}{E}{E}{E}, Pay 4 {E}",
         "targets": 0,
         "targetFilter": null,
         "effect": {
@@ -3117,9 +3329,9 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
+          "kind": "add_energy",
           "params": {
-            "description": "Landfall — Whenever a land you control enters, you get {E}"
+            "amount": 1
           }
         }
       },
@@ -3128,13 +3340,13 @@
         "triggerEvent": null,
         "triggerCondition": null,
         "isOptional": false,
-        "cost": "{T}",
+        "cost": "{T}, Pay 6 {E}",
         "targets": 0,
         "targetFilter": null,
         "effect": {
           "kind": "draw_cards",
           "params": {
-            "amount": 3
+            "amount": 6
           }
         }
       }
@@ -3163,9 +3375,9 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
+          "kind": "add_energy",
           "params": {
-            "description": "When this artifact enters, you get {E}{E}"
+            "amount": 2
           }
         }
       },
@@ -3179,7 +3391,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "deal_damage",
-          "params": {}
+          "params": {
+            "amount": 1
+          }
         }
       },
       {
@@ -3187,7 +3401,7 @@
         "triggerEvent": null,
         "triggerCondition": null,
         "isOptional": false,
-        "cost": "{T}",
+        "cost": "{T}, Pay 2 {E}",
         "targets": 0,
         "targetFilter": null,
         "effect": {
@@ -3243,9 +3457,9 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
+          "kind": "add_energy",
           "params": {
-            "description": "When this artifact enters, you get {E}{E}{E}"
+            "amount": 3
           }
         }
       },
@@ -3267,7 +3481,7 @@
         "triggerEvent": null,
         "triggerCondition": null,
         "isOptional": false,
-        "cost": "{T}",
+        "cost": "{T}, Pay 1 {E}",
         "targets": 0,
         "targetFilter": null,
         "effect": {
@@ -3302,9 +3516,27 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
+          "kind": "create_token",
           "params": {
-            "description": "When this enchantment enters, create two 1/1 red Gremlin creature tokens"
+            "tokenPower": 1,
+            "tokenToughness": 1,
+            "tokenName": "Gremlin creature",
+            "amount": 2
+          }
+        }
+      },
+      {
+        "abilityType": "triggered",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "add_energy",
+          "params": {
+            "amount": 1
           }
         }
       },
@@ -3341,6 +3573,21 @@
     "entryTapRule": null,
     "conditionalEntryText": null,
     "abilities": [
+      {
+        "abilityType": "triggered",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "add_energy",
+          "params": {
+            "amount": 1
+          }
+        }
+      },
       {
         "abilityType": "activated",
         "triggerEvent": null,
@@ -3415,7 +3662,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "deal_damage",
-          "params": {}
+          "params": {
+            "amount": 1
+          }
         }
       }
     ],
@@ -3481,7 +3730,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "return_from_graveyard",
-          "params": {}
+          "params": {
+            "zone": "hand"
+          }
         }
       },
       {
@@ -3529,7 +3780,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "return_from_graveyard",
-          "params": {}
+          "params": {
+            "zone": "hand"
+          }
         }
       },
       {
@@ -3604,7 +3857,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "deal_damage",
-          "params": {}
+          "params": {
+            "amount": 1
+          }
         }
       }
     ],
@@ -3663,9 +3918,17 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
+          "kind": "optional_pay",
           "params": {
-            "description": "Whenever an artifact or Artificer you control enters, you may pay {1}"
+            "cost": "{1}",
+            "payer": "self",
+            "then": {
+              "kind": "add_energy",
+              "params": {
+                "amount": 2
+              }
+            },
+            "thenIfNotPaid": false
           }
         }
       },
@@ -3674,13 +3937,13 @@
         "triggerEvent": null,
         "triggerCondition": null,
         "isOptional": false,
-        "cost": "{E}, Sacrifice",
+        "cost": "{E}, Sacrifice, Pay 6 {E}",
         "targets": 0,
         "targetFilter": null,
         "effect": {
           "kind": "draw_cards",
           "params": {
-            "amount": 3
+            "amount": 6
           }
         }
       }
@@ -3719,9 +3982,9 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
+          "kind": "add_energy",
           "params": {
-            "description": "When this land enters, you get {E}"
+            "amount": 1
           }
         }
       },
@@ -3743,7 +4006,7 @@
         "triggerEvent": null,
         "triggerCondition": null,
         "isOptional": false,
-        "cost": "{T}",
+        "cost": "{T}, Pay 1 {E}",
         "targets": 0,
         "targetFilter": null,
         "effect": {
@@ -3776,9 +4039,9 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
+          "kind": "add_energy",
           "params": {
-            "description": "Whenever a creature you control enters, you get {E}"
+            "amount": 1
           }
         }
       },
@@ -3792,7 +4055,9 @@
         "targetFilter": "creature you control to its owner's hand",
         "effect": {
           "kind": "return_from_graveyard",
-          "params": {}
+          "params": {
+            "zone": "hand"
+          }
         }
       }
     ],
@@ -3821,6 +4086,21 @@
         "targetFilter": null,
         "effect": {
           "kind": "draw_cards",
+          "params": {
+            "amount": 2
+          }
+        }
+      },
+      {
+        "abilityType": "spell",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "add_energy",
           "params": {
             "amount": 2
           }
@@ -3856,9 +4136,9 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
+          "kind": "add_energy",
           "params": {
-            "description": "When this creature enters, you get {E}{E}{E}"
+            "amount": 3
           }
         }
       },
@@ -3867,7 +4147,7 @@
         "triggerEvent": null,
         "triggerCondition": null,
         "isOptional": false,
-        "cost": "{E}{E}{E}",
+        "cost": "{E}{E}{E}, Pay 3 {E}",
         "targets": 0,
         "targetFilter": null,
         "effect": {
@@ -3939,7 +4219,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "deal_damage",
-          "params": {}
+          "params": {
+            "amount": 1
+          }
         }
       }
     ],

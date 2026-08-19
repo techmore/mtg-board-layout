@@ -16,6 +16,10 @@
       {
         "abilityType": "triggered",
         "triggerEvent": "etb",
+        "triggerEvents": [
+          "etb",
+          "graveyard"
+        ],
         "triggerCondition": "Dogmeat enters",
         "isOptional": false,
         "cost": null,
@@ -23,7 +27,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "return_from_graveyard",
-          "params": {}
+          "params": {
+            "zone": "hand"
+          }
         }
       },
       {
@@ -359,6 +365,19 @@
     "conditionalEntryText": null,
     "abilities": [
       {
+        "abilityType": "triggered",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "static_keyword",
+          "params": {}
+        }
+      },
+      {
         "abilityType": "activated",
         "triggerEvent": null,
         "triggerCondition": null,
@@ -608,7 +627,11 @@
         "targetFilter": null,
         "effect": {
           "kind": "put_counter",
-          "params": {}
+          "params": {
+            "counterKind": "+1/+1",
+            "amount": 2,
+            "scope": "all"
+          }
         }
       }
     ],
@@ -635,6 +658,10 @@
       {
         "abilityType": "triggered",
         "triggerEvent": "dies",
+        "triggerEvents": [
+          "dies",
+          "graveyard"
+        ],
         "triggerCondition": "Vigilance Whenever Cass or another creature you control dies",
         "isOptional": false,
         "cost": null,
@@ -642,7 +669,9 @@
         "targetFilter": "creature",
         "effect": {
           "kind": "return_from_graveyard",
-          "params": {}
+          "params": {
+            "zone": "battlefield"
+          }
         }
       }
     ],
@@ -686,8 +715,8 @@
         "triggerCondition": "you attack",
         "isOptional": false,
         "cost": null,
-        "targets": 0,
-        "targetFilter": null,
+        "targets": 1,
+        "targetFilter": "nonland permanent you control",
         "effect": {
           "kind": "put_counter",
           "params": {}
@@ -765,6 +794,10 @@
       {
         "abilityType": "triggered",
         "triggerEvent": "counter_placed",
+        "triggerEvents": [
+          "counter_placed",
+          "cast"
+        ],
         "triggerCondition": "you cast an Aura or Equipment spell",
         "isOptional": false,
         "cost": null,
@@ -772,7 +805,11 @@
         "targetFilter": null,
         "effect": {
           "kind": "put_counter",
-          "params": {}
+          "params": {
+            "counterKind": "+1/+1",
+            "amount": 1,
+            "scope": "all"
+          }
         }
       },
       {
@@ -784,9 +821,10 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
+          "kind": "create_token",
           "params": {
-            "description": "When this creature dies, create X Junk tokens, where X is the number of +1/+1 counters on it"
+            "tokenName": "Junk",
+            "amount": "X"
           }
         }
       },
@@ -825,6 +863,10 @@
       {
         "abilityType": "triggered",
         "triggerEvent": "etb",
+        "triggerEvents": [
+          "etb",
+          "graveyard"
+        ],
         "triggerCondition": "this creature enters",
         "isOptional": true,
         "cost": null,
@@ -832,7 +874,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "return_from_graveyard",
-          "params": {}
+          "params": {
+            "zone": "battlefield"
+          }
         }
       },
       {
@@ -846,6 +890,21 @@
         "effect": {
           "kind": "put_counter",
           "params": {}
+        }
+      },
+      {
+        "abilityType": "triggered",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": true,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "remove_counters",
+          "params": {
+            "amount": 1
+          }
         }
       }
     ],
@@ -977,7 +1036,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "deal_damage",
-          "params": {}
+          "params": {
+            "amount": 1
+          }
         }
       }
     ],
@@ -1128,6 +1189,11 @@
       {
         "abilityType": "triggered",
         "triggerEvent": "etb",
+        "triggerEvents": [
+          "etb",
+          "dies",
+          "graveyard"
+        ],
         "triggerCondition": "Trample When this creature enters or dies",
         "isOptional": false,
         "cost": null,
@@ -1135,7 +1201,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "return_from_graveyard",
-          "params": {}
+          "params": {
+            "zone": "hand"
+          }
         }
       }
     ],
@@ -1183,6 +1251,21 @@
             "description": "The owner of target permanent shuffles it into their library, then reveals the top card of their library"
           }
         }
+      },
+      {
+        "abilityType": "spell",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "return_from_graveyard",
+          "params": {
+            "zone": "battlefield"
+          }
+        }
       }
     ],
     "oracleText": "The owner of target permanent shuffles it into their library, then reveals the top card of their library. If it's a permanent card, they put it onto the battlefield.",
@@ -1202,7 +1285,24 @@
     "manaProduction": null,
     "entryTapRule": null,
     "conditionalEntryText": null,
-    "abilities": [],
+    "abilities": [
+      {
+        "abilityType": "spell",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "keyword_pump",
+          "params": {
+            "keyword": "hexproof",
+            "scope": "own"
+          }
+        }
+      }
+    ],
     "oracleText": "Permanents you control gain hexproof and indestructible until end of turn.",
     "scryfallId": "e32c67d1-187f-40df-b3b3-6036f5c92834"
   },
@@ -1333,9 +1433,10 @@
         "targets": 1,
         "targetFilter": "creature gains indestructible until end of turn",
         "effect": {
-          "kind": "other",
+          "kind": "keyword_pump",
           "params": {
-            "description": "Choose one — • Target creature gains indestructible until end of turn"
+            "keyword": "indestructible",
+            "scope": "all"
           }
         }
       },
@@ -1407,8 +1508,41 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
+          "kind": "create_token",
+          "params": {
+            "tokenName": "four Treasure"
+          }
+        }
+      },
+      {
+        "abilityType": "spell",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": true,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
           "kind": "deal_damage",
-          "params": {}
+          "params": {
+            "amount": 8
+          }
+        }
+      },
+      {
+        "abilityType": "spell",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": true,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "gain_rad",
+          "params": {
+            "scope": "each",
+            "amount": 4
+          }
         }
       }
     ],
@@ -1426,7 +1560,24 @@
     "manaProduction": null,
     "entryTapRule": null,
     "conditionalEntryText": null,
-    "abilities": [],
+    "abilities": [
+      {
+        "abilityType": "spell",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "mass_sacrifice",
+          "params": {
+            "scope": "all",
+            "kind": "creature_or_planeswalker"
+          }
+        }
+      }
+    ],
     "oracleText": "Each player chooses a creature or planeswalker they control, then sacrifices the rest. Players can't cast creature or planeswalker spells until the end of your next turn.",
     "scryfallId": "ce0e7c6a-e628-4327-a16f-2062c5a662df"
   },
@@ -1452,7 +1603,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "deal_damage",
-          "params": {}
+          "params": {
+            "amount": 13
+          }
         }
       }
     ],
@@ -1549,7 +1702,24 @@
         "targetFilter": null,
         "effect": {
           "kind": "return_from_graveyard",
-          "params": {}
+          "params": {
+            "zone": "battlefield"
+          }
+        }
+      },
+      {
+        "abilityType": "triggered",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": true,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "return_from_graveyard",
+          "params": {
+            "zone": "battlefield"
+          }
         }
       }
     ],
@@ -1581,10 +1751,8 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
-          "params": {
-            "description": "Enchant creature When this Aura enters, untap each creature you control"
-          }
+          "kind": "untap_creatures",
+          "params": {}
         }
       },
       {
@@ -1699,7 +1867,11 @@
         "targetFilter": null,
         "effect": {
           "kind": "put_counter",
-          "params": {}
+          "params": {
+            "counterKind": "+1/+1",
+            "amount": 1,
+            "scope": "all"
+          }
         }
       }
     ],
@@ -1777,6 +1949,10 @@
       {
         "abilityType": "triggered",
         "triggerEvent": "etb",
+        "triggerEvents": [
+          "etb",
+          "graveyard"
+        ],
         "triggerCondition": "Enchant creature you control When this Aura enters",
         "isOptional": false,
         "cost": null,
@@ -1784,7 +1960,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "return_from_graveyard",
-          "params": {}
+          "params": {
+            "zone": "battlefield"
+          }
         }
       },
       {
@@ -1848,9 +2026,10 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
+          "kind": "gain_rad",
           "params": {
-            "description": ") Whenever enchanted creature attacks, defending player gets two rad counters"
+            "scope": "opponent",
+            "amount": 2
           }
         }
       }
@@ -1882,7 +2061,11 @@
         "targetFilter": null,
         "effect": {
           "kind": "put_counter",
-          "params": {}
+          "params": {
+            "counterKind": "+1/+1",
+            "amount": 2,
+            "scope": "all"
+          }
         }
       }
     ],
@@ -1975,10 +2158,8 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
-          "params": {
-            "description": "\" (It can't be blocked except by two or more creatures"
-          }
+          "kind": "static_noop",
+          "params": {}
         }
       },
       {
@@ -2129,7 +2310,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "return_from_graveyard",
-          "params": {}
+          "params": {
+            "zone": "battlefield"
+          }
         }
       }
     ],
@@ -2208,6 +2391,10 @@
       {
         "abilityType": "triggered",
         "triggerEvent": "etb",
+        "triggerEvents": [
+          "etb",
+          "graveyard"
+        ],
         "triggerCondition": "this Equipment enters",
         "isOptional": false,
         "cost": null,
@@ -2215,7 +2402,9 @@
         "targetFilter": "creature card with mana value 3 or less from your graveyard to the battlefield and attach this Equipment to it",
         "effect": {
           "kind": "return_from_graveyard",
-          "params": {}
+          "params": {
+            "zone": "battlefield"
+          }
         }
       },
       {
@@ -2370,7 +2559,11 @@
         "targetFilter": null,
         "effect": {
           "kind": "put_counter",
-          "params": {}
+          "params": {
+            "counterKind": "+1/+1",
+            "amount": 1,
+            "scope": "all"
+          }
         }
       },
       {
@@ -2433,10 +2626,8 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
-          "params": {
-            "description": "Equipped creature has deathtouch and lifelink"
-          }
+          "kind": "static_keyword",
+          "params": {}
         }
       },
       {
@@ -2594,10 +2785,8 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
-          "params": {
-            "description": "(It can't be the target of spells or abilities your opponents control"
-          }
+          "kind": "static_noop",
+          "params": {}
         }
       },
       {
@@ -2684,9 +2873,10 @@
         "targets": 1,
         "targetFilter": "creature s you control each gain haste until end of turn and can't be blocked this turn except by creatures with haste",
         "effect": {
-          "kind": "other",
+          "kind": "keyword_pump",
           "params": {
-            "description": "{3}, {T}: Up to X target creatures you control each gain haste until end of turn and can't be blocked this turn except by creatures with haste, where X is the number of Bobbleheads you control as you "
+            "keyword": "haste",
+            "scope": "own"
           }
         }
       }
@@ -2740,9 +2930,9 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
+          "kind": "scry",
           "params": {
-            "description": "{3}, {T}: Look at the top X cards of your library, where X is the number of Bobbleheads you control"
+            "amount": "X"
           }
         }
       }
@@ -2790,10 +2980,8 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
-          "params": {
-            "description": "(It can't be the target of spells or abilities"
-          }
+          "kind": "static_noop",
+          "params": {}
         }
       },
       {
@@ -2915,6 +3103,19 @@
         }
       },
       {
+        "abilityType": "triggered",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "static_keyword",
+          "params": {}
+        }
+      },
+      {
         "abilityType": "activated",
         "triggerEvent": null,
         "triggerCondition": null,
@@ -2956,9 +3157,24 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
+          "kind": "scry",
           "params": {
-            "description": "Whenever equipped creature attacks, look at the top card of your library"
+            "amount": 1
+          }
+        }
+      },
+      {
+        "abilityType": "triggered",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": true,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "return_from_graveyard",
+          "params": {
+            "zone": "battlefield"
           }
         }
       },
@@ -3006,8 +3222,23 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "deal_damage",
+          "kind": "static_keyword",
           "params": {}
+        }
+      },
+      {
+        "abilityType": "triggered",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "deal_damage",
+          "params": {
+            "amount": 1
+          }
         }
       },
       {
@@ -3047,6 +3278,19 @@
     "conditionalEntryText": null,
     "abilities": [
       {
+        "abilityType": "triggered",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "static_keyword",
+          "params": {}
+        }
+      },
+      {
         "abilityType": "static",
         "triggerEvent": null,
         "triggerCondition": null,
@@ -3055,10 +3299,8 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
-          "params": {
-            "description": "(It can't be the target of spells or abilities your opponents control"
-          }
+          "kind": "static_noop",
+          "params": {}
         }
       },
       {
@@ -3119,9 +3361,10 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
+          "kind": "create_token",
           "params": {
-            "description": "{4}{R}, {T}, Sacrifice this land: Create three Junk tokens"
+            "tokenName": "Junk",
+            "amount": 3
           }
         }
       },
@@ -3656,6 +3899,21 @@
         }
       },
       {
+        "abilityType": "triggered",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "scry",
+          "params": {
+            "amount": 1
+          }
+        }
+      },
+      {
         "abilityType": "activated",
         "triggerEvent": null,
         "triggerCondition": null,
@@ -3706,6 +3964,21 @@
         }
       },
       {
+        "abilityType": "triggered",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "scry",
+          "params": {
+            "amount": 1
+          }
+        }
+      },
+      {
         "abilityType": "activated",
         "triggerEvent": null,
         "triggerCondition": null,
@@ -3744,6 +4017,21 @@
         "abilityType": "triggered",
         "triggerEvent": "etb",
         "triggerCondition": "this land enters",
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "scry",
+          "params": {
+            "amount": 1
+          }
+        }
+      },
+      {
+        "abilityType": "triggered",
+        "triggerEvent": null,
+        "triggerCondition": null,
         "isOptional": false,
         "cost": null,
         "targets": 0,
@@ -3859,7 +4147,9 @@
         "targetFilter": "artifact card from your graveyard to your hand",
         "effect": {
           "kind": "return_from_graveyard",
-          "params": {}
+          "params": {
+            "zone": "hand"
+          }
         }
       }
     ],
@@ -3980,6 +4270,21 @@
             "amount": 1
           }
         }
+      },
+      {
+        "abilityType": "triggered",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "scry",
+          "params": {
+            "amount": 1
+          }
+        }
       }
     ],
     "oracleText": "This land enters tapped.\n{T}: Add one mana of any color in your commander's color identity. When that mana is spent to cast a creature spell that shares a creature type with your commander, scry 1. (Look at the top card of your library. You may put that card on the bottom.)",
@@ -4088,10 +4393,8 @@
         "targets": 1,
         "targetFilter": "creature can't be blocked this turn",
         "effect": {
-          "kind": "other",
-          "params": {
-            "description": "{4}, {T}: Target creature can't be blocked this turn"
-          }
+          "kind": "cant_be_blocked",
+          "params": {}
         }
       }
     ],

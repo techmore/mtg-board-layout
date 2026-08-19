@@ -39,7 +39,9 @@ describe('resolveCombat', () => {
     const wolf = defender('wolf', '1/1')
     const result = resolveCombat([bear], ['wolf'], playersOf({ a: [bear], b: [wolf] }), 'a', 'team1')
     expect(deadIds(result)).toEqual(['wolf'])
-    expect(result.cardDamage).toEqual([{ cardId: 'wolf', amount: 2 }, { cardId: 'bear', amount: 1 }])
+    // Only lethal damage is assigned to the blocker; the rest stays on the
+    // attacker (no player damage without trample).
+    expect(result.cardDamage).toEqual([{ cardId: 'wolf', amount: 1 }, { cardId: 'bear', amount: 1 }])
     expect(result.playerDamage).toEqual([])
     expect(result.assignments).toEqual({ bear: ['wolf'] })
   })
@@ -197,10 +199,81 @@ describe('combat keywords', () => {
     expect(deadIds(result)).toEqual(['drake', 'spider'])
   })
 
-  it('tapped creatures cannot block', () => {
+  it('tapped creatures can block (only attackers must be untapped)', () => {
     const bear = attacker('bear', '2/2')
     const sleepy = { ...defender('sleepy', '1/4'), tapped: true }
     const result = resolveCombat([bear], ['sleepy'], playersOf({ a: [bear], b: [sleepy] }), 'a', 'team1')
-    expect(result.playerDamage.map((d) => d.amount)).toEqual([2])
+    // The tapped blocker still blocks: no player damage, and the attacker and
+    // blocker trade damage.
+    expect(result.playerDamage).toEqual([])
+    expect(result.cardDamage).toEqual([{ cardId: 'sleepy', amount: 2 }, { cardId: 'bear', amount: 1 }])
+    expect(deadIds(result)).toEqual([])
+  })
+
+  it('allocates attacker damage across multiple blockers', () => {
+    const bear = attacker('bear', '3/3')
+    const small = defender('small', '1/1')
+    const wall = defender('wall', '0/4')
+    const result = resolveCombat([bear], ['small', 'wall'], playersOf({ a: [bear], b: [small, wall] }), 'a', 'team1')
+    // Lethal to the first blocker (1), then 2 to the next; both blockers hit
+    // back (1 + 0). No player damage.
+    expect(result.cardDamage).toEqual([
+      { cardId: 'small', amount: 1 },
+      { cardId: 'wall', amount: 2 },
+      { cardId: 'bear', amount: 1 },
+    ])
+    expect(deadIds(result)).toEqual(['small'])
+    expect(result.playerDamage).toEqual([])
+  })
+
+  it('attached equipment pumps the equipped creature in combat', () => {
+    const bear = attacker('bear', '2/2')
+    const sword = { ...defender('sword', 'Artifact — Equipment'), enchantsCardId: 'bear', oracleText: 'Equipped creature gets +2/+2.' }
+    const wolf = defender('wolf', '3/3')
+    const result = resolveCombat([bear], ['wolf'], playersOf({ a: [bear, sword], b: [wolf] }), 'a', 'team1')
+    // Bear is effectively 4/4: it deals 3 (lethal to the 3/3 wolf) and survives
+    // the wolf's 3-damage counterattack.
+    expect(deadIds(result)).toEqual(['wolf'])
+    expect(result.cardDamage).toEqual([{ cardId: 'wolf', amount: 3 }, { cardId: 'bear', amount: 3 }])
+  })
+
+  it('applies static anthem pumps to effective P/T', () => {
+    const bear = attacker('bear', '2/2')
+    const wolf = defender('wolf', '2/2')
+    const anthem = defender('anthem', 'Enchantment', 'b', 'team2', 'Creatures you control get +1/+1.')
+    const result = resolveCombat([bear], ['wolf'], playersOf({ a: [bear], b: [wolf, anthem] }), 'a', 'team1')
+    // The wolf is effectively 3/3: the bear deals 2 (not lethal), the wolf
+    // deals 3 and kills the bear.
+    expect(deadIds(result)).toEqual(['bear'])
+    expect(result.cardDamage).toEqual([{ cardId: 'wolf', amount: 2 }, { cardId: 'bear', amount: 3 }])
+    expect(result.playerDamage).toEqual([])
+  })
+
+  it('does not apply an opponent anthem to the attacker', () => {
+    const bear = attacker('bear', '2/2')
+    const wolf = defender('wolf', '1/1')
+    const anthem = defender('anthem', 'Enchantment', 'b', 'team2', 'Creatures you control get +1/+1.')
+    const result = resolveCombat([bear], ['wolf'], playersOf({ a: [bear], b: [wolf, anthem] }), 'a', 'team1')
+    // Only the defender's creatures are buffed: the wolf is effectively 2/2, so
+    // it takes 2 (not the 3 a buffed attacker would deal) and its counterattack
+    // of 2 kills the unbuffed 2/2 bear.
+    expect(deadIds(result)).toEqual(['bear', 'wolf'])
+    expect(result.cardDamage).toEqual([{ cardId: 'wolf', amount: 2 }, { cardId: 'bear', amount: 2 }])
+  })
+
+  it('a trampler spills leftover damage past its blockers to the player', () => {
+    const wurm = attacker('wurm', '5/5', 'Trample')
+    const small = defender('small', '1/1')
+    const wall = defender('wall', '1/3')
+    const result = resolveCombat([wurm], ['small', 'wall'], playersOf({ a: [wurm], b: [small, wall] }), 'a', 'team1')
+    // 1 lethal to small, then 3 to wall (min of remaining 4 / toughness 3),
+    // and 1 spills over. Both blockers hit back (1 + 1).
+    expect(result.cardDamage).toEqual([
+      { cardId: 'small', amount: 1 },
+      { cardId: 'wall', amount: 3 },
+      { cardId: 'wurm', amount: 2 },
+    ])
+    expect(result.playerDamage.map((d) => d.amount)).toEqual([1])
+    expect(deadIds(result)).toEqual(['small', 'wall'])
   })
 })

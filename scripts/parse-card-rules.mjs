@@ -339,6 +339,7 @@ const KEYWORDS = [
   'indestructible', 'lifelink', 'menace', 'reach', 'trample', 'vigilance',
   'ward', 'flash', 'defender', 'exalted', 'persist', 'undying', 'infect',
   'wither', 'prowess', 'fear', 'intimidate', 'shadow', 'banding', 'totem armor',
+  'skulk',
 ]
 
 function parseKeywords(typeLine, oracleText) {
@@ -407,45 +408,64 @@ function parseManaProduction(oracleText) {
 }
 
 // ─── Ability parsing ───────────────────────────────────────────────────────
+// Owner phrase shared by upkeep/draw-step/end-step patterns: covers
+// "your", "each", "the", "each opponent's", "an opponent's", "each player's".
+const TURN_OWNER = "(?:your|next|each|the|(?:each|an)?\\s*(?:opponent|player)s?'?s?)"
 const TRIGGER_PATTERNS = [
   { event: 'landfall', patterns: [/\bwhen(?:ever)?\s+a\s+land\b[^.,;]{0,40}\benters?\b/i, /\blandfall\b/i] },
-  { event: 'etb', patterns: [/\bwhen(?:ever)?\s+(?!a\s+land\b)(this|~|[a-z ]+)\s+enters?\b/i, /\bwhen(?:ever)?\s+.*\benters?\s+the\s+battlefield\b/i] },
+  { event: 'etb', patterns: [/\bwhen(?:ever)?\s+(?!a\s+land\b)(this|~|[a-z0-9 ]+)\s+enters?\b/i, /\bwhen(?:ever)?\s+.*\benters?\s+the\s+battlefield\b/i] },
   { event: 'dies', patterns: [/\bwhen(?:ever)?\s+.*\b(dies|die|dies|is put into a graveyard|leaves the battlefield)\b/i] },
-  { event: 'upkeep', patterns: [/\bat\s+the\s+beginning\s+of\s+(your|each|the)\s+upkeep\b/i] },
-  { event: 'draw_step', patterns: [/\bat\s+the\s+beginning\s+of\s+(your|each|the)\s+draw\s+step\b/i] },
-  { event: 'end_of_turn', patterns: [/\bat\s+(the\s+)?beginning\s+of\s+(your|each|the)\s+end\s+(step|of\s+turn)\b/i, /\bat\s+the\s+beginning\s+of\s+(your|next|each)\s+end\s+step\b/i] },
+  { event: 'upkeep', patterns: [new RegExp(`at\\s+the\\s+beginning\\s+of\\s+${TURN_OWNER}\\s+upkeep\\b`, 'i')] },
+  { event: 'draw_step', patterns: [new RegExp(`at\\s+the\\s+beginning\\s+of\\s+${TURN_OWNER}\\s+draw\\s+step\\b`, 'i')] },
+  { event: 'end_of_turn', patterns: [new RegExp(`at\\s+(?:the\\s+)?beginning\\s+of\\s+${TURN_OWNER}\\s+end\\s+(?:step|of\\s+turn)\\b`, 'i'), new RegExp(`at\\s+(?:the\\s+)?end\\s+(?:step|of\\s+turn)\\b`, 'i')] },
   { event: 'combat_damage', patterns: [/\bwhen(?:ever)?\s+.*\b(combat damage|deals combat damage|attacks and isn't blocked)\b/i] },
   { event: 'attack', patterns: [/\bwhen(?:ever)?\s+.*\battacks?\b/i] },
   { event: 'counter_placed', patterns: [/\bwhen(?:ever)?\s+.*\b(counter|counters)\s+(are\s+)?(is\s+)?put\s+on\b/i, /\bwhen(?:ever)?\s+.*\bput\b.{0,20}\b(counter|counters)\b/i] },
-  { event: 'card_drawn', patterns: [/\bwhen(?:ever)?\s+.*\bdraw\b/i] },
+  { event: 'card_drawn', patterns: [/\bwhen(?:ever)?\s+.*\bdraws?\b/i] },
   { event: 'life_gain', patterns: [/\bwhen(?:ever)?\s+.*\bgains?\s+life\b/i] },
   { event: 'life_loss', patterns: [/\bwhen(?:ever)?\s+.*\bloses?\s+life\b/i] },
-  { event: 'sacrifice', patterns: [/\bwhen(?:ever)?\s+.*\bsacrifice\b/i] },
-  { event: 'discard', patterns: [/\bwhen(?:ever)?\s+.*\bdiscard\b/i] },
-  { event: 'cast', patterns: [/\bwhen(?:ever)?\s+.*\bcast\b/i] },
+  { event: 'sacrifice', patterns: [/\bwhen(?:ever)?\s+.*\bsacrifices?\b/i] },
+  { event: 'discard', patterns: [/\bwhen(?:ever)?\s+.*\bdiscards?\b/i] },
+  { event: 'cast', patterns: [/\bwhen(?:ever)?\s+.*\bcasts?\b/i] },
   { event: 'graveyard', patterns: [/\bwhen(?:ever)?\s+.*\b(graveyard|dies|die|dies)\b/i] },
 ]
 
 const EFFECT_PATTERNS = [
-  { kind: 'create_token', regex: /\bcreate\b[^.]*\btoken\b/i },
+  { kind: 'create_token', regex: /\bcreate\b[^.]*\btokens?\b/i },
   { kind: 'put_counter', regex: /\bput\b[^.]*\b(counter|counters)\b/i },
+  { kind: 'double_counters', regex: /\bdouble\b[^.]*\bcounters?\b/i },
+  { kind: 'remove_counters', regex: /\bremove\b[^.,;]*\bcounters?\b/i },
   { kind: 'add_mana', regex: /\badd\b[^.,;]*\b(mana|one mana|two mana|any color|any combination)\b/i },
   { kind: 'add_mana', regex: /\badd\b[^.,;]*\{/i },
   { kind: 'deal_damage', regex: /\bdeals?\b[^.]*\bdamage\b/i },
   { kind: 'destroy', regex: /\bdestroy\b[^]*?(?=\.|$)/i },
   { kind: 'exile', regex: /\bexile\b[^]*?(?=\.|$)/i },
-  { kind: 'draw_cards', regex: /\bdraw\b[^.]*\bcard(s)?\b/i },
+  { kind: 'draw_cards', regex: /\bdraws?\b[^.]*\bcard(s)?\b/i },
   { kind: 'lose_life', regex: /\bloses?\b[^.]*\blife\b/i },
   { kind: 'gain_life', regex: /\bgains?\b[^.]*\blife\b/i },
   { kind: 'search_library', regex: /\bsearch\b[^.]*\blibrary\b/i },
-  { kind: 'return_from_graveyard', regex: /\b(return|put)\b[^.]*\b(from|to)\b[^.]*\b(battlefield|hand|graveyard)\b/i },
+  { kind: 'return_from_graveyard', regex: /\b(return|put)\b[^.]*\b(from|to|onto)\b[^.]*\b(battlefield|hand|graveyard)\b/i },
+  { kind: 'cast_from_graveyard', regex: /\b(?:cast|play)\b[^.]*\b(?:from (?:your|a) graveyard|the exiled card|from exile)\b[^.]*\bwithout paying\b/i },
+  { kind: 'return_all_other', regex: /\breturn all other creatures\b[^.]*\bt(?:heir owners')? hands?\b/i },
+  { kind: 'double_power', regex: /\bdouble its power until end of turn\b/i },
+  { kind: 'move_counter', regex: /\bmove\s+(?:a|{?} ?)?(?:counter|the counter)\b/i },
+  { kind: 'exchange_life_toughness', regex: /\bexchange target opponent's life total with\b/i },
   { kind: 'counter_target', regex: /\bcounter\b[^.]*\bspell\b/i },
-  { kind: 'sacrifice', regex: /\bsacrifice\b[^.,;]*\./i },
+  { kind: 'sacrifice', regex: /\bsacrifice\b\s+(?:it|this\s+\w+)\b/i },
+  { kind: 'mass_sacrifice', regex: /\b(?:each (?:player|opponent)|everyone)\b[^.]*\bsacrifices?\b/i },
+  { kind: 'mass_sacrifice', regex: /\b(?:you )?sacrifice\b\s+(?:a|another|an)\s+(?:artifact|creature|enchantment|land|planeswalker|token)\b/i },
+  { kind: 'untap_lands', regex: /\buntap\b[^.]*\ball lands\b/i },
+  { kind: 'untap_creatures', regex: /\buntap\b[^.]*\beach creature\b/i },
+  { kind: 'tap_target', regex: /\btap\b[^.,;]*\btarget\b/i },
+  { kind: 'cant_be_blocked', regex: /\b(?:target|this) (?:creature|Goblin, Orc, or Pirate)(?: you control)? can't be blocked\b/i },
+  { kind: 'manifest', regex: /\bmanifest\b(?:\s+dread(?:\s+twice)?)?/i },
   { kind: 'scry', regex: /\bscry\b\s*\d*/i },
+  { kind: 'scry', regex: /\blook at the top\b[^.]*\b(?:card|cards|library)\b[^.]*\blibrary\b/i },
+  { kind: 'scry', regex: /\breveal the top\b[^.]*\b(?:card|cards)\b[^.]*\blibrary\b/i },
   { kind: 'proliferate', regex: /\bproliferate\b/i },
   { kind: 'mill', regex: /\bmill\b[^.,;]*?(?:\d+|X|one|two|three|four|five|a)\s*card(s)?/i },
   { kind: 'mill', regex: /\bput\b[^.]*?\bthe\s+top\s+(?:\d+|X|one|two|three|four|five)\s+cards?\b[^.]*\b(graveyard|library)\b/i },
-  { kind: 'fight', regex: /\bfight\b/i },
+  { kind: 'fight', regex: /\bfights?\b/i },
   { kind: 'storm', regex: /\bstorm\b/i },
   { kind: 'annihilator', regex: /\bannihilator\s*(\d+)/i },
   { kind: 'equip', regex: /\bequip\s*\{[^}]+\}/i },
@@ -453,6 +473,44 @@ const EFFECT_PATTERNS = [
   // Static anthems ("creatures you control get +2/+2") have no time limit;
   // the until-end-of-turn pattern above is more specific and listed first.
   { kind: 'pump', regex: /(?:gets|gain(?:s)?|get)\s*([-−+]?\d+)\s*\/\s*([-−+]?\d+)/i },
+  // Temporary keyword grants ("Creatures you control gain deathtouch until end
+  // of turn", "It gains haste"). Static "have"/"has" grants stay unresolvable.
+  { kind: 'keyword_pump', regex: /\bgains?\s+(?:[a-z ]+?\s+)?(deathtouch|flying|first strike|double strike|haste|hexproof|indestructible|lifelink|menace|reach|trample|vigilance|ward)\b/i },
+  { kind: 'add_energy', regex: /\byou get\b[^.,;]*\{e\}/i },
+  { kind: 'gain_monarch', regex: /\byou become the monarch\b/i },
+  { kind: 'gain_control', regex: /\bgain(?:s)? control of\s+(?:up to one\s+)?target\s+(?:creature|permanent|artifact|enchantment)\b/i },
+  { kind: 'gain_rad', regex: /\b(?:get|gets|getting)\b[^.,;]*\brad counters?\b/i },
+  { kind: 'lose_rad', regex: /\bloses?\b[^.,;]*\brad counters?\b/i },
+  // The app has no counter/regenerate/prevent mechanics, so these are
+  // vacuously true — resolve silently instead of toasting "not implemented".
+  { kind: 'static_noop', regex: /\bcan't be (countered|regenerated)|can't be prevented/i },
+  // Plain attack/block restrictions ("This creature can't block", "can't be
+  // blocked") are enforced by the combat engines; conditional ones ("unless …")
+  // stay unresolvable.
+  { kind: 'static_restriction', regex: /\bcan't\s+(?:attack|block(?:ed)?|attack\s+or\s+block)\b(?!.*\b(unless|as long as|if)\b)/i },
+  // Shroud/hexproof reminders ("It can't be the target of spells or abilities")
+  // are covered by the app's hexproof-targeting guard.
+  { kind: 'static_noop', regex: /\bcan't be the target of\b/i },
+  // Menace reminder text — the menace keyword is already enforced by both
+  // combat engines ("two or more blockers").
+  { kind: 'static_noop', regex: /\bcan't be blocked except by two or more creatures\b/i },
+  // Skulk reminder text — the skulk keyword is now enforced in blocking.
+  { kind: 'static_noop', regex: /\bcan't be blocked by creatures with greater power\b/i },
+  // Menace/fear/shroud-style reminder texts describing block conditions that
+  // the app's combat model doesn't evaluate (artifact/color/type blockers).
+  { kind: 'static_noop', regex: /\bcan't be blocked except by (artifact creatures|creatures that share a color with|creatures with (?:greater|equal) power)/i },
+  // Attack tax (Ghostly Prison / Propaganda) — enforced by the combat engines.
+  { kind: 'static_noop', regex: /\bcreatures?\s+can't attack you unless their controller pays\b/i },
+  // Protection-from grants ("gains protection from each color") — the app has
+  // no per-color damage/block model to honor it mechanically, so it's resolved
+  // silently (a pump-like protection isn't modeled).
+  { kind: 'static_noop', regex: /\bgains? protection from\b/i },
+  // Evoke consequence ("it's sacrificed when it enters") — evoke costs aren't
+  // modeled, so the reminder is vacuously inert.
+  { kind: 'static_noop', regex: /\bit'?s sacrificed when it enters\b/i },
+  // Static keyword anthems ("creatures you control have haste", "equipped
+  // creature has deathtouch") are evaluated by the combat engines.
+  { kind: 'static_keyword', regex: /\b(?:creatures? you control|other [a-z ]*creatures? you control|equipped creature|enchanted creature|[a-z]+s? you control)\s+(?:have|has)\s+(?:deathtouch|flying|first strike|double strike|haste|hexproof|indestructible|lifelink|menace|reach|trample|vigilance|ward)\b/i },
 ]
 
 function pumpScope(sentence) {
@@ -467,15 +525,16 @@ function parseEffect(sentence) {
     const m = sentence.match(ep.regex)
     if (m) {
       const params = {}
-      // Counter placement detection
+      // Counter placement detection ("put a +1/+1 counter" / "put a -1/-1 counter")
       if (/(counter|counters)/i.test(sentence) && /\bput\b/i.test(sentence)) {
-        const c = sentence.match(/\bput\b[^.]*?((?:X\s+|two\s+|three\s+|four\s+|five\s+)?[-−]?\d\s*[/]\s*\d|a\s+[-−]?\d\s*[/]\s*\d)/i)
+        const c = sentence.match(/([-−+]?\d\s*[/]\s*[-−+]?\d)\s*(?:counter|counters)/i)
         if (c) {
           const normalized = c[1].replace(/[−]/g, '-').replace(/\s+/g, '').toLowerCase()
-          params.counterKind = normalized.includes('x') ? 'X' : normalized.startsWith('-') ? '-1/-1' : normalized.startsWith('+') ? '+1/+1' : '-1/-1'
+          params.counterKind = normalized.startsWith('-') ? '-1/-1' : '+1/+1'
           const n = sentence.match(/\bput\b[^.]*?\b(two|three|four|five|X)\b/i)
           if (n) params.amount = ({ two: 2, three: 3, four: 4, five: 5, x: 'X' })[n[1].toLowerCase()] ?? 1
           else params.amount = 1
+          params.scope = pumpScope(sentence)
         }
       }
       // Token creation
@@ -504,10 +563,20 @@ function parseEffect(sentence) {
       }
       // Draw / Life amount
       if (['draw_cards', 'lose_life', 'gain_life', 'scry'].includes(ep.kind)) {
-        const n = sentence.match(/\b(one|two|three|four|five|X)\b/i)
-        if (n) params.amount = ({ one: 1, two: 2, three: 3, four: 4, five: 5, x: 'X' })[n[1].toLowerCase()] ?? 1
+        const n = sentence.match(/\b(one|two|three|four|five|six|seven|eight|nine|ten|X)\b/i)
+        if (n) params.amount = ({ one: 1, two: 2, three: 3, four: 4, five: 5, six: 6, seven: 7, eight: 8, nine: 9, ten: 10, x: 'X' })[n[1].toLowerCase()] ?? 1
         else { const d = sentence.match(/\b(\d+)\b/); if (d) params.amount = parseInt(d[1]) }
         if (!params.amount) params.amount = 1
+      }
+      // Damage amount ("deals 3 damage", "deals X damage", "deals two damage")
+      if (ep.kind === 'deal_damage') {
+        const d = sentence.match(/\bdeals?\s+(\d+)\s+damage\b/i)
+        if (d) params.amount = parseInt(d[1])
+        else {
+          const w = sentence.match(/\bdeals?\s+(one|two|three|four|five|X)\s+damage\b/i)
+          if (w) params.amount = ({ one: 1, two: 2, three: 3, four: 4, five: 5, x: 'X' })[w[1].toLowerCase()] ?? 1
+        }
+        if (params.amount === undefined) params.amount = 1
       }
       // Destroy / Exile target
       if (['destroy', 'exile'].includes(ep.kind)) {
@@ -531,6 +600,66 @@ function parseEffect(sentence) {
         const amountMatch = sentence.match(/annihilator\s*(\d+)/i)
         if (amountMatch) params.amount = parseInt(amountMatch[1], 10)
       }
+      if (ep.kind === 'return_from_graveyard') {
+        if (/\bbattlefield\b/i.test(sentence)) params.zone = 'battlefield'
+        else if (/\bhand\b/i.test(sentence)) params.zone = 'hand'
+      }
+      if (ep.kind === 'keyword_pump') {
+        const k = sentence.match(/\b(deathtouch|flying|first strike|double strike|haste|hexproof|indestructible|lifelink|menace|reach|trample|vigilance|ward)\b/i)
+        if (k) params.keyword = k[1].toLowerCase()
+        params.scope = pumpScope(sentence)
+      }
+      if (ep.kind === 'manifest') {
+        // "manifest dread" mills one card then manifests the next; "twice" x2.
+        if (/\bdread\b/i.test(sentence)) params.dread = /\btwice\b/i.test(sentence) ? 2 : 1
+        else params.dread = 0
+      }
+      if (ep.kind === 'gain_control') {
+        params.temporary = /\buntil end of turn\b|\bfor as long as\b/i.test(sentence)
+      }
+      if (ep.kind === 'gain_rad' || ep.kind === 'lose_rad') {
+        if (/\beach (?:player|opponent)\b/i.test(sentence)) params.scope = 'each'
+        else if (/\byou(?: may)? get\b|you get/i.test(sentence)) params.scope = 'you'
+        else if (/\b(defending player|target player)\b/i.test(sentence)) params.scope = 'opponent'
+        else params.scope = 'opponent'
+        if (/\bequal to its power\b/i.test(sentence)) params.amount = 'power'
+        else {
+          const n = sentence.match(/\b(one|two|three|four|five|six)\s*rad/i)
+          if (n) params.amount = ({ one: 1, two: 2, three: 3, four: 4, five: 5, six: 6 })[n[1].toLowerCase()]
+          else params.amount = 1
+        }
+      }
+      if (ep.kind === 'mass_sacrifice') {
+        // "Sacrifice another enchantment: ..." is an activated-ability COST, not
+        // a mass-sacrifice effect — let the sentence fall through.
+        if (/\bsacrifice\b[^:]*:/i.test(sentence)) continue
+        if (/\beach opponent\b/i.test(sentence)) params.scope = 'opponent'
+        else if (/\beach (?:player|everyone)\b/i.test(sentence)) params.scope = 'all'
+        else params.scope = 'own'
+        if (/\btokens?\b/i.test(sentence)) params.kind = 'token'
+        else if (/\bpermanents?\b/i.test(sentence)) params.kind = 'permanent'
+        else if (/\bplaneswalker\b/i.test(sentence)) params.kind = 'creature_or_planeswalker'
+        else params.kind = 'creature'
+      }
+      if (ep.kind === 'add_energy') {
+        // "you get six {E}" / "you get {E}{E}" — the word number wins over the
+        // symbol count ("six {E}" is one symbol but six energy).
+        const n = sentence.match(/\b(one|two|three|four|five|six|seven|eight|nine|ten)\s*\{E\}/i)
+        if (n) params.amount = ({ one: 1, two: 2, three: 3, four: 4, five: 5, six: 6, seven: 7, eight: 8, nine: 9, ten: 10 })[n[1].toLowerCase()]
+        else params.amount = (sentence.match(/\{E\}/gi) ?? []).length || 1
+      }
+      if (ep.kind === 'remove_counters') {
+        // "remove a time counter" (1), "remove up to three counters" (3),
+        // "remove all counters" (all).
+        if (/\ball\b/i.test(sentence)) params.amount = 'all'
+        else {
+          const n = sentence.match(/\b(\d+|one|two|three|four|five)\s*(?:counter|counters)/i)
+          if (n) {
+            const v = n[1].toLowerCase()
+            params.amount = v === 'one' ? 1 : /^\d+$/.test(v) ? parseInt(v, 10) : ({ two: 2, three: 3, four: 4, five: 5 })[v] ?? 1
+          } else params.amount = 1
+        }
+      }
       return { kind: ep.kind, params }
     }
   }
@@ -538,13 +667,22 @@ function parseEffect(sentence) {
 }
 
 function parseTargets(sentence) {
-  if (/\btarget\s+(creature|player|opponent|artifact|enchantment|land|planeswalker|permanent|spell)/i.test(sentence)) {
+  // Qualifiers like "nonland" / "noncreature" / "nontoken" precede the type
+  // word ("target nonland permanent").
+  const qualifier = '(?:nonland\\s+|noncreature\\s+|nontoken\\s+)?'
+  if (new RegExp(`\\btarget\\s+${qualifier}(creature|player|opponent|artifact|enchantment|land|planeswalker|permanent|spell)`, 'i').test(sentence)) {
     const filters = ['creature', 'artifact', 'enchantment', 'land', 'planeswalker', 'permanent', 'spell', 'player', 'opponent']
     for (const f of filters) {
-      if (new RegExp(`target\\s+${f}`, 'i').test(sentence)) {
-        // Check for "target creature an opponent controls" or "target artifact or enchantment"
-        let extra = sentence.match(new RegExp(`target\\s+${f}([^.,;]*)`, 'i'))
-        let filter = extra ? (f + ' ' + extra[1].trim()).trim() : f
+      if (new RegExp(`target\\s+${qualifier}${f}`, 'i').test(sentence)) {
+        // Players aren't targetable in this app (targeting is card-based):
+        // a player target resolves as the source owner instead.
+        if (f === 'player' || f === 'opponent') {
+          return { targets: 0, targetFilter: null }
+        }
+        // Capture the qualifier ("nonland permanent") and the trailing filter
+        // ("you don't control") so the target rules survive to the UI.
+        const extra = sentence.match(new RegExp(`target\\s+(${qualifier})?(${f})([^.,;]*)`, 'i'))
+        const filter = [extra[1]?.trim(), f, extra[3]?.trim()].filter(Boolean).join(' ').trim()
         // Count targets: "target" vs "up to one target" vs "any number of targets"
         const isDistribute = /\bdistribute\b/i.test(sentence)
         const count = /\b(up to|any number of|each)\b/i.test(sentence) ? (isDistribute ? 0 : 1) : 1
@@ -568,6 +706,15 @@ function parseCost(sentence) {
   if (sacMatch && sentence.indexOf('sacrifice') < (sentence.length / 2)) costParts.push('Sacrifice')
   const lifeMatch = sentence.match(/\bpay\s+(\d+)\s+life\b/i)
   if (lifeMatch) costParts.push(`Pay ${lifeMatch[1]} life`)
+  // Energy costs: "Pay six {E}", "Pay {E}{E}{E}", "Pay one or more {E}".
+  const payClause = sentence.match(/\bpay\b[^.,;]*/i)
+  if (payClause && /\{E\}/i.test(payClause[0])) {
+    const energyWord = { one: 1, two: 2, three: 3, four: 4, five: 5, six: 6, seven: 7, eight: 8, nine: 9, ten: 10 }
+    const digit = payClause[0].match(/\b(\d+)\s*\{E\}/i)?.[1]
+    const word = payClause[0].match(/\b(one|two|three|four|five|six|seven|eight|nine|ten)\s*\{E\}/i)?.[1]
+    const count = digit ? parseInt(digit, 10) : word ? energyWord[word.toLowerCase()] : (payClause[0].match(/\{E\}/gi) ?? []).length
+    if (count > 0) costParts.push(`Pay ${count} {E}`)
+  }
   const discardMatch = sentence.match(/\bdiscard\b[^.,;]*/i)
   if (discardMatch && sentence.indexOf('discard') < (sentence.length / 2)) costParts.push('Discard')
   return costParts.length > 0 ? costParts.join(', ') : null
@@ -620,6 +767,26 @@ function parseAbilities(oracleText, typeLine) {
     const cleanSentence = sentence.replace(/\([^)]*\)/g, '').trim()
     if (!cleanSentence) continue
 
+    // Reassemble "…you may pay {cost}. If you do, <effect>" / "If the player
+    // doesn't, <effect>" into a single optional-pay ability.
+    const lastAbility = abilities[abilities.length - 1]
+    if (lastAbility && lastAbility.effect.kind === 'other' && /may pay/i.test(lastAbility.effect.params.description ?? '') && /^if (?:you do|the player doesn't)/i.test(cleanSentence)) {
+      const desc = lastAbility.effect.params.description
+      const manaCost = desc.match(/may pay\s+(\{[^}]+\})/i)?.[1]
+      const lifeCost = desc.match(/may pay\s+(\d+)\s+life/i)?.[1]
+      lastAbility.effect = {
+        kind: 'optional_pay',
+        params: {
+          cost: manaCost ? manaCost : lifeCost ? `Pay ${lifeCost} life` : '',
+          payer: /\bthat player\b/i.test(desc) ? 'opponent' : 'self',
+          then: parseEffect(cleanSentence),
+          thenIfNotPaid: /if the player doesn't/i.test(cleanSentence),
+        },
+      }
+      delete lastAbility.effect.params.description
+      continue
+    }
+
     const isStatic = /\bcan't\b.*\b(attack|block)\b/i.test(cleanSentence) ||
       /\b(has|have|g(et|ain)s?)\s+(\+?\+?\d|deathtouch|flying|first strike|trample|haste|lifelink)/i.test(cleanSentence) ||
       /\bcan't be\b/i.test(cleanSentence)
@@ -665,9 +832,21 @@ function parseAbilities(oracleText, typeLine) {
         const tgt = parseTargets(cleanSentence)
         // Extract condition from trigger
         const cond = cleanSentence.replace(/^(when(?:ever)?|at\s+the\s+beginning\s+of\s+)/i, '').replace(/,.*$/, '').trim()
+        // Multiple trigger events ("enters the battlefield or attacks"): the
+        // ability fires on every event kind the sentence joins with "or".
+        // Without the explicit join, a second match is a false positive (a
+        // landfall sentence also matches the loose "enters the battlefield"
+        // pattern), so keep single-event classification in that case.
+        const sentenceEvents = TRIGGER_PATTERNS
+          .filter((other) => other.patterns.some((p) => p.test(cleanSentence)))
+          .map((other) => other.event)
+        const triggerEvents = sentenceEvents.length > 1 && /\bor\b/i.test(cleanSentence)
+          ? sentenceEvents
+          : undefined
         abilities.push({
           abilityType: 'triggered',
           triggerEvent: tp.event,
+          triggerEvents: triggerEvents && triggerEvents.length > 1 ? triggerEvents : undefined,
           triggerCondition: cond || null,
           isOptional: optionalSentence(cleanSentence),
           cost: null,

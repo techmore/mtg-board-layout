@@ -1,12 +1,10 @@
-import { useState } from 'react'
+import { memo, useState } from 'react'
 import type { BoardCard } from '../../types/card'
 import { cardRuleSummary } from './cardHelpers'
-import { canPayManaCost } from '../../utils/misc'
-import { useGameStore } from '../../stores/gameStore'
 import { CARD_BACK_URL } from '../../constants'
 import { CachedImg } from '../shared/CachedImg'
 
-export function HoverZoomCard({
+export const HoverZoomCard = memo(function HoverZoomCard({
   card,
   count = 1,
   setOverlay,
@@ -15,6 +13,7 @@ export function HoverZoomCard({
   cardHeight,
   stackOffset,
   onClick,
+  affordable = null,
 }: {
   card: Pick<BoardCard, 'id' | 'scryfallId' | 'imageUri' | 'name' | 'manaCost' | 'manaValue' | 'entersTapped' | 'type' | 'typeLine'>
   count?: number
@@ -24,11 +23,11 @@ export function HoverZoomCard({
   cardHeight: number
   stackOffset: number
   onClick?: () => void
+  /** Mana affordability border, computed once in BoardHand from the pool. */
+  affordable?: boolean | null
 }) {
   const [imgError, setImgError] = useState(false)
   const stackHeight = cardHeight + Math.max(0, count - 1) * stackOffset
-  const manaPool = useGameStore((s) => s.manaPool)
-  const affordable = card.manaCost ? canPayManaCost(manaPool, card.manaCost) : null
 
   return (
     <div
@@ -164,4 +163,4 @@ export function HoverZoomCard({
       )}
     </div>
   )
-}
+})

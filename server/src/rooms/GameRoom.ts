@@ -4,12 +4,16 @@ import { GameState, PlayerState, CardState, TokenState } from './schema/GameStat
 import { ArraySchema } from '@colyseus/schema'
 import { registerGameRoomUtilityMessages, type GameRoomUtilityMessageContext } from './gameRoomMessages.js'
 import { resolveCombat } from './combat.js'
+import { canPayManaCost, spendManaForCost, type ManaColor, type ManaPool } from 'mtg-protocol/mana'
+import { canAttack, parsePower } from 'mtg-protocol/combat'
 import {
   OPENING_HAND_SIZE,
   VALID_MANA,
   type PrivateZones,
   cardToState,
   generateRoomIdSingle,
+  isAura,
+  isEquipment,
   isRecord,
   modeToMaxPlayers,
   modeToStartingLife,
@@ -27,10 +31,15 @@ import {
 
 const LOBBY_CHANNEL = '$game-rooms'
 
+/** Maps a mana color to its PlayerState Schema field (manaW, manaR, ...). */
+const MANA_FIELD = { W: 'manaW', U: 'manaU', B: 'manaB', R: 'manaR', G: 'manaG', C: 'manaC' } as const
+
 /** Authoritative room implementation. Private zones never enter the public Schema state. */
 export class GameRoom extends Room<{ state: GameState }> {
   private readonly privateZones = new Map<string, PrivateZones>()
   private readonly playerClients = new Map<string, Client>()
+  /** playerId -> reconnect auth token, issued on first join. */
+  private readonly authTokens = new Map<string, string>()
 
   async generateRoomId(): Promise<string> {
     const currentIds = await this.presence.smembers(LOBBY_CHANNEL)
@@ -85,15 +94,31 @@ export class GameRoom extends Room<{ state: GameState }> {
       if (!player || !cardId) return
       const card = this.findAnyCard(player, cardId)
       if (!card) return
+      // Casting is only possible from the hand or the command zone; playing from
+      // the library/graveyard/exile is not a legal cast and is rejected.
+      if (card.zone !== 'hand' && card.zone !== 'command') return
       if (isLandCard(card)) {
-        if (card.zone === 'battlefield') return
         if (card.zone === 'hand' && player.landPlaysThisTurn >= 1) {
           client.send('error', { type: 'error', message: 'You can only play one land per turn.' })
           return
         }
         player.landPlaysThisTurn++
+      } else {
+        // Server-authoritative mana check: a non-land cast must be affordable
+        // and the mana is deducted from the player's pool.
+        const baseCost = card.manaCost ?? ''
+        const fromCommand = card.zone === 'command'
+        const tax = fromCommand ? card.commanderTax : 0
+        const fullCost = tax > 0 ? `${baseCost}{${tax}}` : baseCost
+        if (fullCost && !canPayManaCost(this.playerManaPool(player), fullCost)) {
+          client.send('error', { type: 'error', message: `Not enough mana to cast ${card.name}.` })
+          return
+        }
+        if (fullCost) this.payManaCost(player, fullCost)
       }
       this.moveCardToZone(player, cardId, 'battlefield')
+      // Auras/equipment entering attach to the strongest same-owner creature.
+      this.autoAttachAttachable(player, cardId)
     })
 
     this.onMessage('overrideLandPlay', (client, message) => {
@@ -125,6 +150,10 @@ export class GameRoom extends Room<{ state: GameState }> {
       if (!player || !cardId || !zone) return
       const card = this.findAnyCard(player, cardId)
       if (!card) return
+      // The generic move handler must not read or move library cards: deck
+      // manipulation is reserved for draw/search effects (a client could
+      // otherwise tutor any card into hand or the battlefield).
+      if (card.zone === 'library') return
       // Lands moving to the battlefield still respect the one-land-per-turn
       // rule — no bypassing it through the generic move handler.
       if (zone === 'battlefield' && isLandCard(card) && card.zone === 'hand') {
@@ -156,13 +185,13 @@ export class GameRoom extends Room<{ state: GameState }> {
     this.onMessage('addMana', (client, message) => {
       const player = this.getPlayer(client)
       const color = stringField(message, 'color')?.toUpperCase()
-      if (player && color && VALID_MANA.has(color)) this.addMana(player, color as keyof Pick<PlayerState, 'manaW' | 'manaU' | 'manaB' | 'manaR' | 'manaG' | 'manaC'>, 1)
+      if (player && color && VALID_MANA.has(color)) this.addMana(player, color as ManaColor, 1)
     })
 
     this.onMessage('spendMana', (client, message) => {
       const player = this.getPlayer(client)
       const color = stringField(message, 'color')?.toUpperCase()
-      if (player && color && VALID_MANA.has(color)) this.spendMana(player, color as keyof Pick<PlayerState, 'manaW' | 'manaU' | 'manaB' | 'manaR' | 'manaG' | 'manaC'>, 1)
+      if (player && color && VALID_MANA.has(color)) this.spendMana(player, color as ManaColor, 1)
     })
 
     this.onMessage('clearManaPool', (client) => {
@@ -187,11 +216,13 @@ export class GameRoom extends Room<{ state: GameState }> {
       if (this.state.combatActive) return
       const ids: string[] = Array.isArray(message?.attackerIds) ? (message.attackerIds as unknown[]).filter((id): id is string => typeof id === 'string') : []
       const battlefield = new Set(player.battlefield.map((c) => c.id))
-      // Dedupe, and allow tapped creatures with vigilance to attack.
+      // Dedupe, and allow tapped creatures with vigilance to attack. Creatures
+      // with plain "can't attack" restrictions are ineligible.
       const valid = [...new Set(ids)].filter((id: string) => {
         if (!battlefield.has(id)) return false
         const card = player.battlefield.find((c) => c.id === id)
         if (!card) return false
+        if (card.type === 'creature' && !canAttack(card, player.battlefield)) return false
         return !card.tapped || /\bvigilance\b/i.test(card.oracleText)
       })
       if (valid.length === 0) return
@@ -211,7 +242,8 @@ export class GameRoom extends Room<{ state: GameState }> {
       if (attacker.teamId !== '' && player.teamId === attacker.teamId) return
       const ids: string[] = Array.isArray(message?.blockerIds) ? (message.blockerIds as unknown[]).filter((id): id is string => typeof id === 'string') : []
       const battlefield = new Set(player.battlefield.map((c) => c.id))
-      const valid = [...new Set(ids)].filter((id: string) => battlefield.has(id) && !player.battlefield.find((c) => c.id === id)?.tapped)
+      // Tapped creatures can block (only attackers need to be untapped).
+      const valid = [...new Set(ids)].filter((id: string) => battlefield.has(id))
       // Blockers are stored flat; resolveCombat assigns them round-robin to the
       // declared attackers in declaration order.
       this.state.blockers = new ArraySchema<string>(...valid)
@@ -289,6 +321,7 @@ export class GameRoom extends Room<{ state: GameState }> {
     const playerId = sanitizeText(input.playerId, client.sessionId, 120)
     const playerName = sanitizeText(input.playerName, 'Player', 24)
     const deckId = sanitizeText(input.deckId, '', 120)
+    const incomingToken = typeof input.authToken === 'string' ? input.authToken : ''
     // Deck card ids are client-generated and NOT unique across players (two
     // players with the same deck send identical ids). Re-key every card with
     // this player's identity so damage/death/zone lookups can never hit
@@ -301,6 +334,15 @@ export class GameRoom extends Room<{ state: GameState }> {
     // A game already in progress only accepts reconnects, not new players.
     if (!reconnecting && this.state.status === 'playing') {
       throw new Error('This game has already started.')
+    }
+
+    // Taking over a disconnected seat requires the auth token issued on the
+    // original join — the client-chosen playerId alone is not a credential.
+    if (reconnecting) {
+      const expectedToken = this.authTokens.get(playerId)
+      if (!expectedToken || incomingToken !== expectedToken) {
+        throw new Error('Reconnect rejected: missing or invalid auth token.')
+      }
     }
 
     let player: PlayerState
@@ -326,6 +368,9 @@ export class GameRoom extends Room<{ state: GameState }> {
         deckId,
       })
       this.state.players.set(client.sessionId, player)
+      const token = crypto.randomUUID()
+      this.authTokens.set(playerId, token)
+      client.send('authToken', { type: 'authToken', token })
     }
 
     player.name = playerName
@@ -388,6 +433,7 @@ export class GameRoom extends Room<{ state: GameState }> {
     void this.presence.srem(LOBBY_CHANNEL, this.roomId)
     this.privateZones.clear()
     this.playerClients.clear()
+    this.authTokens.clear()
   }
 
   private getPlayer(client: Client): PlayerState | undefined {
@@ -574,17 +620,36 @@ export class GameRoom extends Room<{ state: GameState }> {
     if (card) card.counters = Math.max(0, Math.min(999, card.counters + amount))
   }
 
-  private addMana(player: PlayerState, color: keyof Pick<PlayerState, 'manaW' | 'manaU' | 'manaB' | 'manaR' | 'manaG' | 'manaC'>, amount: number) {
-    player[color] = Math.min(999, player[color] + amount)
+  private addMana(player: PlayerState, color: ManaColor, amount: number) {
+    player[MANA_FIELD[color]] = Math.min(999, player[MANA_FIELD[color]] + amount)
   }
 
-  private spendMana(player: PlayerState, color: keyof Pick<PlayerState, 'manaW' | 'manaU' | 'manaB' | 'manaR' | 'manaG' | 'manaC'>, amount: number) {
-    player[color] = Math.max(0, player[color] - amount)
+  private spendMana(player: PlayerState, color: ManaColor, amount: number) {
+    player[MANA_FIELD[color]] = Math.max(0, player[MANA_FIELD[color]] - amount)
   }
 
   private clearMana(player: PlayerState) {
     player.manaW = 0; player.manaU = 0; player.manaB = 0
     player.manaR = 0; player.manaG = 0; player.manaC = 0
+  }
+
+  /** The player's mana pool as the shared ManaPool shape. */
+  private playerManaPool(player: PlayerState): ManaPool {
+    return {
+      W: player.manaW, U: player.manaU, B: player.manaB,
+      R: player.manaR, G: player.manaG, C: player.manaC,
+    }
+  }
+
+  /** Deduct a mana cost from the player's pool (server-authoritative). */
+  private payManaCost(player: PlayerState, cost: string) {
+    const next = spendManaForCost(this.playerManaPool(player), cost)
+    player.manaW = next.W
+    player.manaU = next.U
+    player.manaB = next.B
+    player.manaR = next.R
+    player.manaG = next.G
+    player.manaC = next.C
   }
 
   private checkForGameEnd(eliminated: PlayerState) {
@@ -619,6 +684,8 @@ export class GameRoom extends Room<{ state: GameState }> {
         teamId: p.teamId,
         damage: c.damage,
         tapped: c.tapped,
+        enchantsCardId: c.enchantsCardId,
+        cantBeBlockedThisTurn: c.cantBeBlockedThisTurn,
       })),
     )
     const attackerOwner = players.find((p) => p.battlefield.some((c) => c.id === attackerIds[0]))
@@ -638,6 +705,8 @@ export class GameRoom extends Room<{ state: GameState }> {
           teamId: p.teamId,
           damage: c.damage,
           tapped: c.tapped,
+          enchantsCardId: c.enchantsCardId,
+        cantBeBlockedThisTurn: c.cantBeBlockedThisTurn,
         })),
       })),
       attackerOwner?.id ?? '',
@@ -670,8 +739,11 @@ export class GameRoom extends Room<{ state: GameState }> {
       if (defender) {
         defender.lifeTotal = Math.max(0, defender.lifeTotal - hit.amount)
         // Commander damage: 21+ combat damage from a single commander loses.
+        // The attacker is on the battlefield (not in the command zone), so the
+        // commander flag must travel on the card itself.
         const attackerOwner = players.find((p) => p.battlefield.some((c) => c.id === hit.attackerId))
-        const isCommander = attackerOwner?.command.some((c) => c.id === hit.attackerId) === true
+        const attackerCard = attackerOwner?.battlefield.find((c) => c.id === hit.attackerId)
+        const isCommander = attackerCard?.isCommander === true
         if (isCommander && attackerOwner && attackerOwner.id !== defender.id) {
           const total = (defender.commanderDamage.get(hit.attackerId) ?? 0) + hit.amount
           defender.commanderDamage.set(hit.attackerId, total)
@@ -712,6 +784,19 @@ export class GameRoom extends Room<{ state: GameState }> {
     this.state.activePlayerId = next.id
     this.state.turn++
     this.emitEvent({ type: 'turnChanged', playerId: next.id, turnNumber: this.state.turn })
+  }
+
+  /** Aura/equipment entering the battlefield attach to the strongest friendly
+   *  creature (mirroring solo auto-attach). No target → stays unattached. */
+  private autoAttachAttachable(player: PlayerState, cardId: string) {
+    const attachable = player.battlefield.find((c) => c.id === cardId)
+    if (!attachable || !(isAura(attachable) || isEquipment(attachable))) return
+    if (attachable.enchantsCardId) return
+    const targets = [...player.battlefield]
+      .filter((c) => c.id !== cardId && c.type === 'creature')
+      .sort((a, b) => parsePower({ typeLine: b.typeLine, power: b.power }) - parsePower({ typeLine: a.typeLine, power: a.power }))
+    if (targets.length === 0) return
+    attachable.enchantsCardId = targets[0].id
   }
 
   private findToken(player: PlayerState, tokenId: string) {

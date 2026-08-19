@@ -19,6 +19,10 @@
       {
         "abilityType": "triggered",
         "triggerEvent": "counter_placed",
+        "triggerEvents": [
+          "counter_placed",
+          "card_drawn"
+        ],
         "triggerCondition": ") Whenever one or more -1/-1 counters are put on a creature",
         "isOptional": false,
         "cost": null,
@@ -27,7 +31,9 @@
         "effect": {
           "kind": "draw_cards",
           "params": {
-            "amount": 1
+            "counterKind": "-1/-1",
+            "amount": 1,
+            "scope": "own"
           }
         }
       },
@@ -74,7 +80,11 @@
         "targetFilter": "creature s",
         "effect": {
           "kind": "put_counter",
-          "params": {}
+          "params": {
+            "counterKind": "-1/-1",
+            "amount": 2,
+            "scope": "all"
+          }
         }
       },
       {
@@ -86,9 +96,12 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
+          "kind": "return_from_graveyard",
           "params": {
-            "description": "Whenever a creature an opponent controls with a -1/-1 counter on it dies, you may put that card onto the battlefield under your control"
+            "counterKind": "-1/-1",
+            "amount": 1,
+            "scope": "all",
+            "zone": "battlefield"
           }
         }
       }
@@ -128,7 +141,11 @@
         "targetFilter": null,
         "effect": {
           "kind": "put_counter",
-          "params": {}
+          "params": {
+            "counterKind": "-1/-1",
+            "amount": 1,
+            "scope": "all"
+          }
         }
       },
       {
@@ -153,9 +170,12 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
+          "kind": "create_token",
           "params": {
-            "description": "{5}, {T}, Sacrifice this artifact: Create X tapped 2/2 colorless Scarecrow artifact creature tokens, where X is the number of charge counters on this artifact"
+            "tokenPower": 2,
+            "tokenToughness": 2,
+            "tokenName": "artifact creature",
+            "amount": "X"
           }
         }
       }
@@ -203,7 +223,11 @@
         "targetFilter": null,
         "effect": {
           "kind": "put_counter",
-          "params": {}
+          "params": {
+            "counterKind": "-1/-1",
+            "amount": 1,
+            "scope": "own"
+          }
         }
       }
     ],
@@ -222,6 +246,21 @@
     "entryTapRule": null,
     "conditionalEntryText": null,
     "abilities": [
+      {
+        "abilityType": "spell",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "remove_counters",
+          "params": {
+            "amount": 1
+          }
+        }
+      },
       {
         "abilityType": "spell",
         "triggerEvent": null,
@@ -263,7 +302,9 @@
         "targetFilter": "creature cards from graveyards onto the battlefield under your control",
         "effect": {
           "kind": "return_from_graveyard",
-          "params": {}
+          "params": {
+            "zone": "battlefield"
+          }
         }
       }
     ],
@@ -294,12 +335,20 @@
         "targetFilter": "creature",
         "effect": {
           "kind": "put_counter",
-          "params": {}
+          "params": {
+            "counterKind": "-1/-1",
+            "amount": 1,
+            "scope": "all"
+          }
         }
       },
       {
         "abilityType": "triggered",
         "triggerEvent": "dies",
+        "triggerEvents": [
+          "dies",
+          "graveyard"
+        ],
         "triggerCondition": "a creature with a -1/-1 counter on it dies",
         "isOptional": true,
         "cost": null,
@@ -307,7 +356,12 @@
         "targetFilter": null,
         "effect": {
           "kind": "return_from_graveyard",
-          "params": {}
+          "params": {
+            "counterKind": "-1/-1",
+            "amount": 1,
+            "scope": "all",
+            "zone": "battlefield"
+          }
         }
       }
     ],
@@ -335,10 +389,8 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
-          "params": {
-            "description": "When this enchantment enters, you become the monarch"
-          }
+          "kind": "gain_monarch",
+          "params": {}
         }
       },
       {
@@ -351,7 +403,9 @@
         "targetFilter": "creature card from your graveyard to your hand",
         "effect": {
           "kind": "return_from_graveyard",
-          "params": {}
+          "params": {
+            "zone": "hand"
+          }
         }
       },
       {
@@ -412,19 +466,28 @@
         "targetFilter": null,
         "effect": {
           "kind": "put_counter",
-          "params": {}
+          "params": {
+            "counterKind": "-1/-1",
+            "amount": 1,
+            "scope": "all"
+          }
         }
       },
       {
         "abilityType": "triggered",
         "triggerEvent": "dies",
+        "triggerEvents": [
+          "dies",
+          "card_drawn",
+          "graveyard"
+        ],
         "triggerCondition": "this creature dies",
         "isOptional": false,
         "cost": null,
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "lose_life",
+          "kind": "draw_cards",
           "params": {
             "amount": 1
           }
@@ -461,7 +524,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "deal_damage",
-          "params": {}
+          "params": {
+            "amount": 1
+          }
         }
       },
       {
@@ -474,7 +539,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "deal_damage",
-          "params": {}
+          "params": {
+            "amount": 1
+          }
         }
       },
       {
@@ -512,6 +579,10 @@
       {
         "abilityType": "triggered",
         "triggerEvent": "dies",
+        "triggerEvents": [
+          "dies",
+          "graveyard"
+        ],
         "triggerCondition": "a creature you control with a counter on it dies",
         "isOptional": true,
         "cost": null,
@@ -519,7 +590,9 @@
         "targetFilter": "permanent card with mana value less than or equal to the number of counters on that creature from your graveyard to your hand",
         "effect": {
           "kind": "return_from_graveyard",
-          "params": {}
+          "params": {
+            "zone": "hand"
+          }
         }
       }
     ],
@@ -547,12 +620,15 @@
         "triggerCondition": "Ferrafor enters",
         "isOptional": false,
         "cost": null,
-        "targets": 1,
-        "targetFilter": "player controls",
+        "targets": 0,
+        "targetFilter": null,
         "effect": {
-          "kind": "other",
+          "kind": "create_token",
           "params": {
-            "description": "When Ferrafor enters, create a number of 1/1 green Saproling creature tokens equal to the number of counters among creatures target player controls"
+            "tokenPower": 1,
+            "tokenToughness": 1,
+            "tokenName": "Saproling creature",
+            "amount": 0
           }
         }
       },
@@ -565,10 +641,8 @@
         "targets": 1,
         "targetFilter": "creature",
         "effect": {
-          "kind": "other",
-          "params": {
-            "description": "{T}: Double the number of each kind of counter on target creature"
-          }
+          "kind": "double_counters",
+          "params": {}
         }
       }
     ],
@@ -597,8 +671,8 @@
         "triggerCondition": null,
         "isOptional": false,
         "cost": "{T}",
-        "targets": 1,
-        "targetFilter": "opponent 's life total with this creature's toughness",
+        "targets": 0,
+        "targetFilter": null,
         "effect": {
           "kind": "other",
           "params": {
@@ -727,7 +801,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "deal_damage",
-          "params": {}
+          "params": {
+            "amount": 1
+          }
         }
       },
       {
@@ -740,7 +816,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "return_from_graveyard",
-          "params": {}
+          "params": {
+            "zone": "battlefield"
+          }
         }
       }
     ],
@@ -882,7 +960,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "deal_damage",
-          "params": {}
+          "params": {
+            "amount": 1
+          }
         }
       },
       {
@@ -923,15 +1003,22 @@
       {
         "abilityType": "triggered",
         "triggerEvent": "etb",
+        "triggerEvents": [
+          "etb",
+          "attack"
+        ],
         "triggerCondition": "Deathtouch Whenever this creature enters or attacks",
         "isOptional": false,
         "cost": null,
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
+          "kind": "create_token",
           "params": {
-            "description": "Deathtouch Whenever this creature enters or attacks, create two 2/2 black Zombie creature tokens"
+            "tokenPower": 2,
+            "tokenToughness": 2,
+            "tokenName": "Zombie creature",
+            "amount": 2
           }
         }
       }
@@ -982,8 +1069,8 @@
         "triggerCondition": null,
         "isOptional": false,
         "cost": "−9",
-        "targets": 1,
-        "targetFilter": "player has fewer than nine poison counters",
+        "targets": 0,
+        "targetFilter": null,
         "effect": {
           "kind": "other",
           "params": {
@@ -1034,7 +1121,11 @@
         "targetFilter": "creature",
         "effect": {
           "kind": "put_counter",
-          "params": {}
+          "params": {
+            "counterKind": "-1/-1",
+            "amount": 1,
+            "scope": "all"
+          }
         }
       },
       {
@@ -1047,7 +1138,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "return_from_graveyard",
-          "params": {}
+          "params": {
+            "zone": "hand"
+          }
         }
       }
     ],
@@ -1078,7 +1171,11 @@
         "targetFilter": "creature",
         "effect": {
           "kind": "put_counter",
-          "params": {}
+          "params": {
+            "counterKind": "-1/-1",
+            "amount": 1,
+            "scope": "all"
+          }
         }
       },
       {
@@ -1106,7 +1203,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "return_from_graveyard",
-          "params": {}
+          "params": {
+            "zone": "battlefield"
+          }
         }
       }
     ],
@@ -1134,10 +1233,8 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
-          "params": {
-            "description": "Spells you control can't be countered"
-          }
+          "kind": "static_noop",
+          "params": {}
         }
       },
       {
@@ -1199,7 +1296,11 @@
         "targetFilter": null,
         "effect": {
           "kind": "put_counter",
-          "params": {}
+          "params": {
+            "counterKind": "-1/-1",
+            "amount": 1,
+            "scope": "others"
+          }
         }
       }
     ],
@@ -1235,7 +1336,9 @@
         "targetFilter": "creature card from an opponent's graveyard onto the battlefield under your control",
         "effect": {
           "kind": "return_from_graveyard",
-          "params": {}
+          "params": {
+            "zone": "battlefield"
+          }
         }
       },
       {
@@ -1247,9 +1350,10 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
+          "kind": "keyword_pump",
           "params": {
-            "description": "It gains haste"
+            "keyword": "haste",
+            "scope": "all"
           }
         }
       },
@@ -1276,7 +1380,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "return_from_graveyard",
-          "params": {}
+          "params": {
+            "zone": "battlefield"
+          }
         }
       }
     ],
@@ -1300,6 +1406,10 @@
       {
         "abilityType": "triggered",
         "triggerEvent": "attack",
+        "triggerEvents": [
+          "attack",
+          "counter_placed"
+        ],
         "triggerCondition": "this creature attacks or blocks",
         "isOptional": false,
         "cost": null,
@@ -1307,7 +1417,11 @@
         "targetFilter": null,
         "effect": {
           "kind": "put_counter",
-          "params": {}
+          "params": {
+            "counterKind": "-1/-1",
+            "amount": 1,
+            "scope": "all"
+          }
         }
       },
       {
@@ -1351,7 +1465,11 @@
         "targetFilter": null,
         "effect": {
           "kind": "put_counter",
-          "params": {}
+          "params": {
+            "counterKind": "-1/-1",
+            "amount": "X",
+            "scope": "all"
+          }
         }
       }
     ],
@@ -1411,7 +1529,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "return_from_graveyard",
-          "params": {}
+          "params": {
+            "zone": "battlefield"
+          }
         }
       }
     ],
@@ -1444,7 +1564,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "deal_damage",
-          "params": {}
+          "params": {
+            "amount": 1
+          }
         }
       },
       {
@@ -1457,7 +1579,11 @@
         "targetFilter": null,
         "effect": {
           "kind": "put_counter",
-          "params": {}
+          "params": {
+            "counterKind": "-1/-1",
+            "amount": 1,
+            "scope": "all"
+          }
         }
       }
     ],
@@ -1486,7 +1612,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "deal_damage",
-          "params": {}
+          "params": {
+            "amount": "X"
+          }
         }
       }
     ],
@@ -1512,6 +1640,10 @@
       {
         "abilityType": "triggered",
         "triggerEvent": "counter_placed",
+        "triggerEvents": [
+          "counter_placed",
+          "discard"
+        ],
         "triggerCondition": "Flying Whenever you cycle or discard another card",
         "isOptional": false,
         "cost": null,
@@ -1519,7 +1651,11 @@
         "targetFilter": null,
         "effect": {
           "kind": "put_counter",
-          "params": {}
+          "params": {
+            "counterKind": "-1/-1",
+            "amount": 1,
+            "scope": "opponent"
+          }
         }
       },
       {
@@ -1576,7 +1712,11 @@
         "targetFilter": "creature you control",
         "effect": {
           "kind": "put_counter",
-          "params": {}
+          "params": {
+            "counterKind": "-1/-1",
+            "amount": 3,
+            "scope": "own"
+          }
         }
       },
       {
@@ -1588,8 +1728,10 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "add_mana",
-          "params": {}
+          "kind": "remove_counters",
+          "params": {
+            "amount": 1
+          }
         }
       }
     ],
@@ -1623,7 +1765,11 @@
         "targetFilter": "creature",
         "effect": {
           "kind": "put_counter",
-          "params": {}
+          "params": {
+            "counterKind": "-1/-1",
+            "amount": 1,
+            "scope": "all"
+          }
         }
       },
       {
@@ -1639,6 +1785,7 @@
           "params": {
             "counterKind": "-1/-1",
             "amount": 1,
+            "scope": "all",
             "tokenPower": 1,
             "tokenToughness": 1,
             "tokenName": "Snake creature"
@@ -1678,7 +1825,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "deal_damage",
-          "params": {}
+          "params": {
+            "amount": 1
+          }
         }
       },
       {
@@ -1705,9 +1854,9 @@
         "targets": 1,
         "targetFilter": "permanent",
         "effect": {
-          "kind": "other",
+          "kind": "remove_counters",
           "params": {
-            "description": "• Remove up to three counters from target permanent"
+            "amount": 3
           }
         }
       }
@@ -1753,10 +1902,8 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
-          "params": {
-            "description": "Damage can't be prevented"
-          }
+          "kind": "static_noop",
+          "params": {}
         }
       },
       {
@@ -1769,7 +1916,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "deal_damage",
-          "params": {}
+          "params": {
+            "amount": 1
+          }
         }
       }
     ],
@@ -1844,7 +1993,11 @@
         "targetFilter": "creature",
         "effect": {
           "kind": "put_counter",
-          "params": {}
+          "params": {
+            "counterKind": "-1/-1",
+            "amount": 1,
+            "scope": "all"
+          }
         }
       }
     ],
@@ -2228,7 +2381,11 @@
         "targetFilter": null,
         "effect": {
           "kind": "put_counter",
-          "params": {}
+          "params": {
+            "counterKind": "-1/-1",
+            "amount": 1,
+            "scope": "own"
+          }
         }
       },
       {
@@ -2314,7 +2471,11 @@
         "targetFilter": "creature",
         "effect": {
           "kind": "put_counter",
-          "params": {}
+          "params": {
+            "counterKind": "-1/-1",
+            "amount": 1,
+            "scope": "all"
+          }
         }
       }
     ],
@@ -2343,7 +2504,9 @@
         "targetFilter": "creature s",
         "effect": {
           "kind": "deal_damage",
-          "params": {}
+          "params": {
+            "amount": "X"
+          }
         }
       }
     ],
@@ -2518,7 +2681,11 @@
         "targetFilter": "creature",
         "effect": {
           "kind": "put_counter",
-          "params": {}
+          "params": {
+            "counterKind": "-1/-1",
+            "amount": 3,
+            "scope": "all"
+          }
         }
       }
     ],
@@ -2550,7 +2717,11 @@
         "targetFilter": null,
         "effect": {
           "kind": "put_counter",
-          "params": {}
+          "params": {
+            "counterKind": "-1/-1",
+            "amount": 1,
+            "scope": "all"
+          }
         }
       }
     ],
@@ -2579,7 +2750,11 @@
         "targetFilter": "creature",
         "effect": {
           "kind": "put_counter",
-          "params": {}
+          "params": {
+            "counterKind": "-1/-1",
+            "amount": 2,
+            "scope": "all"
+          }
         }
       }
     ],
@@ -2707,7 +2882,11 @@
         "targetFilter": null,
         "effect": {
           "kind": "put_counter",
-          "params": {}
+          "params": {
+            "counterKind": "-1/-1",
+            "amount": 1,
+            "scope": "all"
+          }
         }
       }
     ],
@@ -2739,6 +2918,7 @@
           "params": {
             "counterKind": "-1/-1",
             "amount": 1,
+            "scope": "all",
             "tokenPower": 1,
             "tokenToughness": 1,
             "tokenName": "Warrior creature"
@@ -2816,10 +2996,8 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
-          "params": {
-            "description": "It can't be regenerated"
-          }
+          "kind": "static_noop",
+          "params": {}
         }
       }
     ],
@@ -2848,8 +3026,8 @@
         "triggerCondition": null,
         "isOptional": false,
         "cost": null,
-        "targets": 0,
-        "targetFilter": null,
+        "targets": 1,
+        "targetFilter": "nonland permanent an opponent controls",
         "effect": {
           "kind": "destroy",
           "params": {
@@ -2879,9 +3057,10 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
+          "kind": "keyword_pump",
           "params": {
-            "description": "III — Creatures you control gain deathtouch until end of turn"
+            "keyword": "deathtouch",
+            "scope": "own"
           }
         }
       }
@@ -2917,7 +3096,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "deal_damage",
-          "params": {}
+          "params": {
+            "amount": 1
+          }
         }
       },
       {
@@ -2929,10 +3110,8 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
-          "params": {
-            "description": ") Creatures your opponents control with counters on them can't attack or block"
-          }
+          "kind": "static_restriction",
+          "params": {}
         }
       }
     ],
@@ -2961,7 +3140,11 @@
         "targetFilter": "creature",
         "effect": {
           "kind": "put_counter",
-          "params": {}
+          "params": {
+            "counterKind": "-1/-1",
+            "amount": 1,
+            "scope": "all"
+          }
         }
       },
       {
@@ -3073,7 +3256,11 @@
         "targetFilter": "creature an opponent controls",
         "effect": {
           "kind": "put_counter",
-          "params": {}
+          "params": {
+            "counterKind": "-1/-1",
+            "amount": 2,
+            "scope": "all"
+          }
         }
       }
     ],
@@ -3135,9 +3322,9 @@
         "targets": 1,
         "targetFilter": "artifact or enchantment",
         "effect": {
-          "kind": "destroy",
+          "kind": "remove_counters",
           "params": {
-            "targetHint": "target artifact or"
+            "amount": 1
           }
         }
       }
@@ -3181,10 +3368,8 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
-          "params": {
-            "description": "It can't be regenerated"
-          }
+          "kind": "static_noop",
+          "params": {}
         }
       }
     ],
@@ -3267,7 +3452,9 @@
         "targetFilter": "creature or planeswalker",
         "effect": {
           "kind": "deal_damage",
-          "params": {}
+          "params": {
+            "amount": 3
+          }
         }
       },
       {
@@ -3396,6 +3583,21 @@
             "amount": 1
           }
         }
+      },
+      {
+        "abilityType": "triggered",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "scry",
+          "params": {
+            "amount": 1
+          }
+        }
       }
     ],
     "oracleText": "This land enters tapped.\n{T}: Add one mana of any color in your commander's color identity. When that mana is spent to cast a creature spell that shares a creature type with your commander, scry 1. (Look at the top card of your library. You may put that card on the bottom.)",
@@ -3422,10 +3624,8 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
-          "params": {
-            "description": "When this land enters, sacrifice it"
-          }
+          "kind": "sacrifice",
+          "params": {}
         }
       },
       {
@@ -3475,7 +3675,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "return_from_graveyard",
-          "params": {}
+          "params": {
+            "zone": "hand"
+          }
         }
       },
       {
@@ -3523,7 +3725,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "return_from_graveyard",
-          "params": {}
+          "params": {
+            "zone": "hand"
+          }
         }
       },
       {
@@ -3571,7 +3775,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "return_from_graveyard",
-          "params": {}
+          "params": {
+            "zone": "hand"
+          }
         }
       },
       {

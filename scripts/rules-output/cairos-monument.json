@@ -166,7 +166,11 @@
         "targetFilter": null,
         "effect": {
           "kind": "put_counter",
-          "params": {}
+          "params": {
+            "counterKind": "+1/+1",
+            "amount": 1,
+            "scope": "own"
+          }
         }
       }
     ],
@@ -250,6 +254,10 @@
       {
         "abilityType": "triggered",
         "triggerEvent": "etb",
+        "triggerEvents": [
+          "etb",
+          "life_gain"
+        ],
         "triggerCondition": "Flying Whenever another Angel or Cleric you control enters",
         "isOptional": false,
         "cost": null,
@@ -349,7 +357,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "deal_damage",
-          "params": {}
+          "params": {
+            "amount": 1
+          }
         }
       },
       {
@@ -446,7 +456,21 @@
     "manaProduction": null,
     "entryTapRule": null,
     "conditionalEntryText": null,
-    "abilities": [],
+    "abilities": [
+      {
+        "abilityType": "triggered",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "static_keyword",
+          "params": {}
+        }
+      }
+    ],
     "oracleText": "Flying, vigilance, indestructible\nOther permanents you control have indestructible.",
     "scryfallId": "74e5dcec-ef1d-4461-bb23-61d98ff082dd"
   },
@@ -556,6 +580,21 @@
     "entryTapRule": null,
     "conditionalEntryText": null,
     "abilities": [
+      {
+        "abilityType": "triggered",
+        "triggerEvent": "card_drawn",
+        "triggerCondition": "an opponent draws a card",
+        "isOptional": true,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "draw_cards",
+          "params": {
+            "amount": 2
+          }
+        }
+      },
       {
         "abilityType": "triggered",
         "triggerEvent": null,
@@ -825,10 +864,8 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
-          "params": {
-            "description": "They can't be regenerated"
-          }
+          "kind": "static_noop",
+          "params": {}
         }
       }
     ],
@@ -882,8 +919,8 @@
         "triggerCondition": null,
         "isOptional": false,
         "cost": null,
-        "targets": 1,
-        "targetFilter": "player controls",
+        "targets": 0,
+        "targetFilter": null,
         "effect": {
           "kind": "exile",
           "params": {
@@ -996,7 +1033,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "return_from_graveyard",
-          "params": {}
+          "params": {
+            "zone": "hand"
+          }
         }
       },
       {
@@ -1144,7 +1183,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "deal_damage",
-          "params": {}
+          "params": {
+            "amount": 1
+          }
         }
       }
     ],
@@ -1308,6 +1349,21 @@
         "abilityType": "triggered",
         "triggerEvent": "etb",
         "triggerCondition": "this land enters",
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "scry",
+          "params": {
+            "amount": 1
+          }
+        }
+      },
+      {
+        "abilityType": "triggered",
+        "triggerEvent": null,
+        "triggerCondition": null,
         "isOptional": false,
         "cost": null,
         "targets": 0,
@@ -1578,7 +1634,9 @@
         "targetFilter": "creature card from your graveyard to the battlefield",
         "effect": {
           "kind": "return_from_graveyard",
-          "params": {}
+          "params": {
+            "zone": "battlefield"
+          }
         }
       },
       {
@@ -1809,7 +1867,11 @@
         "targetFilter": null,
         "effect": {
           "kind": "put_counter",
-          "params": {}
+          "params": {
+            "counterKind": "+1/+1",
+            "amount": 1,
+            "scope": "own"
+          }
         }
       }
     ],
@@ -1914,7 +1976,11 @@
         "targetFilter": null,
         "effect": {
           "kind": "put_counter",
-          "params": {}
+          "params": {
+            "counterKind": "+1/+1",
+            "amount": 1,
+            "scope": "all"
+          }
         }
       }
     ],
@@ -2064,8 +2130,8 @@
         "triggerCondition": "Flying When this creature enters",
         "isOptional": false,
         "cost": null,
-        "targets": 1,
-        "targetFilter": "player 's graveyard",
+        "targets": 0,
+        "targetFilter": null,
         "effect": {
           "kind": "exile",
           "params": {
@@ -2099,8 +2165,8 @@
         "triggerCondition": "Flying When this creature enters",
         "isOptional": true,
         "cost": null,
-        "targets": 0,
-        "targetFilter": null,
+        "targets": 1,
+        "targetFilter": "nonland permanent an opponent controls until this creature leaves the battlefield",
         "effect": {
           "kind": "exile",
           "params": {
@@ -2148,6 +2214,10 @@
       {
         "abilityType": "triggered",
         "triggerEvent": "attack",
+        "triggerEvents": [
+          "attack",
+          "graveyard"
+        ],
         "triggerCondition": "Flying",
         "isOptional": true,
         "cost": null,
@@ -2155,7 +2225,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "return_from_graveyard",
-          "params": {}
+          "params": {
+            "zone": "battlefield"
+          }
         }
       }
     ],
@@ -2260,8 +2332,25 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "put_counter",
+          "kind": "static_keyword",
           "params": {}
+        }
+      },
+      {
+        "abilityType": "triggered",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "put_counter",
+          "params": {
+            "counterKind": "+1/+1",
+            "amount": 1,
+            "scope": "own"
+          }
         }
       }
     ],
@@ -2294,10 +2383,8 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
-          "params": {
-            "description": "Flying, protection from black Echo {3}{W}{W} (At the beginning of your upkeep, if this came under your control since the beginning of your last upkeep, sacrifice it unless you pay its echo cost"
-          }
+          "kind": "sacrifice",
+          "params": {}
         }
       },
       {
@@ -2310,7 +2397,9 @@
         "targetFilter": "creature card from your graveyard to the battlefield",
         "effect": {
           "kind": "return_from_graveyard",
-          "params": {}
+          "params": {
+            "zone": "battlefield"
+          }
         }
       }
     ],
@@ -2334,16 +2423,24 @@
     "abilities": [
       {
         "abilityType": "triggered",
-        "triggerEvent": null,
-        "triggerCondition": null,
-        "isOptional": false,
+        "triggerEvent": "etb",
+        "triggerCondition": "another creature you control with power 2 or less enters",
+        "isOptional": true,
         "cost": null,
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "draw_cards",
+          "kind": "optional_pay",
           "params": {
-            "amount": 1
+            "cost": "{1}",
+            "payer": "self",
+            "then": {
+              "kind": "draw_cards",
+              "params": {
+                "amount": 1
+              }
+            },
+            "thenIfNotPaid": false
           }
         }
       }
@@ -2407,9 +2504,9 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
+          "kind": "scry",
           "params": {
-            "description": "Look at the top ten cards of your library"
+            "amount": 10
           }
         }
       }
@@ -2442,9 +2539,12 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
+          "kind": "create_token",
           "params": {
-            "description": "Create three 1/1 white Soldier creature tokens"
+            "tokenPower": 1,
+            "tokenToughness": 1,
+            "tokenName": "Soldier creature",
+            "amount": 3
           }
         }
       },
@@ -2605,10 +2705,8 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
-          "params": {
-            "description": "This spell can't be countered"
-          }
+          "kind": "static_noop",
+          "params": {}
         }
       },
       {
@@ -2617,8 +2715,8 @@
         "triggerCondition": null,
         "isOptional": false,
         "cost": null,
-        "targets": 0,
-        "targetFilter": null,
+        "targets": 1,
+        "targetFilter": "noncreature spell",
         "effect": {
           "kind": "counter_target",
           "params": {}
@@ -2646,11 +2744,13 @@
         "triggerCondition": null,
         "isOptional": false,
         "cost": null,
-        "targets": 0,
-        "targetFilter": null,
+        "targets": 1,
+        "targetFilter": "nonland permanent you don't control to its owner's hand",
         "effect": {
           "kind": "return_from_graveyard",
-          "params": {}
+          "params": {
+            "zone": "hand"
+          }
         }
       }
     ],
@@ -2678,10 +2778,8 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
-          "params": {
-            "description": "This spell can't be countered"
-          }
+          "kind": "static_noop",
+          "params": {}
         }
       },
       {
@@ -2811,10 +2909,8 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
-          "params": {
-            "description": "Creatures can't attack you unless their controller pays {2} for each creature they control that's attacking you"
-          }
+          "kind": "static_noop",
+          "params": {}
         }
       }
     ],
@@ -2842,10 +2938,8 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
-          "params": {
-            "description": "Creatures can't attack you unless their controller pays {2} for each creature they control that's attacking you"
-          }
+          "kind": "static_noop",
+          "params": {}
         }
       }
     ],
@@ -2904,8 +2998,8 @@
     "abilities": [
       {
         "abilityType": "triggered",
-        "triggerEvent": null,
-        "triggerCondition": null,
+        "triggerEvent": "end_of_turn",
+        "triggerCondition": "each opponent's end step",
         "isOptional": true,
         "cost": null,
         "targets": 0,
@@ -2991,10 +3085,8 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
-          "params": {
-            "description": "Enchant creature Enchanted creature can't attack or block, and its activated abilities can't be activated"
-          }
+          "kind": "static_restriction",
+          "params": {}
         }
       },
       {
@@ -3154,7 +3246,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "deal_damage",
-          "params": {}
+          "params": {
+            "amount": 1
+          }
         }
       }
     ],

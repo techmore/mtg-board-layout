@@ -14,10 +14,14 @@ export class CardState extends Schema {
   @type('string') typeLine!: string
   @type('string') power!: string
   @type('string') toughness!: string
+  @type('string') manaCost!: string
   @type(['string']) subtypes!: ArraySchema<string>
   @type('boolean') isBasicLand!: boolean
   @type('number') commanderTax!: number
   @type('boolean') revealed!: boolean
+  @type('boolean') isCommander!: boolean
+  @type('string') enchantsCardId!: string
+  @type('boolean') cantBeBlockedThisTurn!: boolean
 
   constructor(data?: Omit<Partial<CardState>, 'subtypes'> & { subtypes?: string[] | ArraySchema<string> }) {
     super()
@@ -34,10 +38,14 @@ export class CardState extends Schema {
     this.typeLine = data?.typeLine ?? ''
     this.power = data?.power ?? ''
     this.toughness = data?.toughness ?? ''
+    this.manaCost = data?.manaCost ?? ''
     this.subtypes = new ArraySchema<string>(...(data?.subtypes ?? []))
     this.isBasicLand = data?.isBasicLand ?? false
     this.commanderTax = data?.commanderTax ?? 0
     this.revealed = data?.revealed ?? false
+    this.isCommander = data?.isCommander ?? false
+    this.enchantsCardId = data?.enchantsCardId ?? ''
+    this.cantBeBlockedThisTurn = data?.cantBeBlockedThisTurn ?? false
   }
 }
 

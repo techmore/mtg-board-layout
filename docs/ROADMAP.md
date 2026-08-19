@@ -154,11 +154,18 @@ Entry-tap logic deduped into the shared `mtg-protocol` package (`entryTap.ts`) �
 
 ## Next candidates (not yet started)
 
-- **A7 progress (2026-08-11):** storm, "first spell each turn", and **annihilator** (defender sacrifices weakest nonlands first) now implemented; attack triggers fire for both sides' combat. **Remaining:** the low-frequency "other" tail (e.g. mind-control-style gain control, "you get {E} counters" energy).
-- **B5 (done 2026-08-11):** hold-mana reserves the held instant's colors.
-- **MP reconnect auth** — playerId takeover is currently unauthenticated (security is out of scope, but this is the cheapest high-value hardening).
-- **Trigger-condition depth** — "whenever you cast your first spell each turn" style stateful conditions.
-- **More A7 effect kinds** — turn the top remaining "other" patterns (storm, annihilator, proliferate AI picks) into resolvable effects.
+- **A7 tail (2026-08-13):** ~251 "other" abilities remain (monarch, poison, counter manipulation, "can't be countered/regenerated"); all toast an honest "not implemented". Energy is now fully implemented (gain + spend + pool + UI).
+- **Full priority system** — partial (2026-08-14): players get instant-response windows when the AI casts spells AND when it declares attackers (combat tricks), with the AI turn gated on the response. Remaining: formal pass-priority rounds in every phase and multiplayer priority sync.
+- **Auras/equipment in multiplayer** — done 2026-08-13: `enchantsCardId` on the wire, server auto-attach on entry, attached pumps in server combat, MP ⚭ indicator. Player-chosen attach targeting and re-equipping in MP remain future polish.
+- **Server-side rate limiting** — done 2026-08-14: per-IP connection attempt limit (30/min) + graceful shutdown + `CORS_ORIGIN`/`PORT` env config in `server/src/index.ts`; documented in README.
+- ~~AI energy spend~~ — done 2026-08-13: the AI pays `{E}` costs it can afford and skips energy-gated abilities otherwise.
+
+## Done since the audit (2026-08-13)
+
+- **MP reconnect auth** — the server now issues a per-player auth token on first join; taking over a disconnected seat requires it (playerId alone is no longer a credential). Regression-tested including hijack rejection.
+- **Room-code entropy** — codes are now 5 letters (~11.9M combos).
+- **Legend rule SBA** — duplicate same-name legendaries are removed by state-based actions.
+- **Token ETB triggers** — tokens entering fire "another creature enters" triggers.
 
 ---
 

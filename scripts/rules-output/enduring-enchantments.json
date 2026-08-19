@@ -17,7 +17,25 @@
     "abilities": [
       {
         "abilityType": "triggered",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "static_keyword",
+          "params": {}
+        }
+      },
+      {
+        "abilityType": "triggered",
         "triggerEvent": "etb",
+        "triggerEvents": [
+          "etb",
+          "attack",
+          "graveyard"
+        ],
         "triggerCondition": "Anikthea enters or attacks",
         "isOptional": false,
         "cost": null,
@@ -113,6 +131,19 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
+          "kind": "static_keyword",
+          "params": {}
+        }
+      },
+      {
+        "abilityType": "triggered",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
           "kind": "create_token",
           "params": {
             "tokenPower": 2,
@@ -151,7 +182,11 @@
         "targetFilter": null,
         "effect": {
           "kind": "put_counter",
-          "params": {}
+          "params": {
+            "counterKind": "+1/+1",
+            "amount": 1,
+            "scope": "own"
+          }
         }
       }
     ],
@@ -658,7 +693,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "return_from_graveyard",
-          "params": {}
+          "params": {
+            "zone": "hand"
+          }
         }
       },
       {
@@ -788,7 +825,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "return_from_graveyard",
-          "params": {}
+          "params": {
+            "zone": "hand"
+          }
         }
       },
       {
@@ -872,7 +911,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "return_from_graveyard",
-          "params": {}
+          "params": {
+            "zone": "hand"
+          }
         }
       },
       {
@@ -1094,6 +1135,21 @@
         }
       },
       {
+        "abilityType": "triggered",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "scry",
+          "params": {
+            "amount": 1
+          }
+        }
+      },
+      {
         "abilityType": "activated",
         "triggerEvent": null,
         "triggerCondition": null,
@@ -1132,6 +1188,21 @@
         "abilityType": "triggered",
         "triggerEvent": "etb",
         "triggerCondition": "this land enters",
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "scry",
+          "params": {
+            "amount": 1
+          }
+        }
+      },
+      {
+        "abilityType": "triggered",
+        "triggerEvent": null,
+        "triggerCondition": null,
         "isOptional": false,
         "cost": null,
         "targets": 0,
@@ -1194,6 +1265,21 @@
         }
       },
       {
+        "abilityType": "triggered",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "scry",
+          "params": {
+            "amount": 1
+          }
+        }
+      },
+      {
         "abilityType": "activated",
         "triggerEvent": null,
         "triggerCondition": null,
@@ -1228,8 +1314,8 @@
     "abilities": [
       {
         "abilityType": "triggered",
-        "triggerEvent": null,
-        "triggerCondition": null,
+        "triggerEvent": "cast",
+        "triggerCondition": "Reach Whenever an opponent casts an instant or sorcery spell",
         "isOptional": false,
         "cost": null,
         "targets": 0,
@@ -1289,10 +1375,8 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
-          "params": {
-            "description": ") Pegasus creatures you control have lifelink"
-          }
+          "kind": "static_keyword",
+          "params": {}
         }
       },
       {
@@ -1342,7 +1426,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "return_from_graveyard",
-          "params": {}
+          "params": {
+            "zone": "battlefield"
+          }
         }
       },
       {
@@ -1355,7 +1441,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "return_from_graveyard",
-          "params": {}
+          "params": {
+            "zone": "battlefield"
+          }
         }
       }
     ],
@@ -1457,10 +1545,8 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
-          "params": {
-            "description": "Creature and enchantment spells you control can't be countered"
-          }
+          "kind": "static_noop",
+          "params": {}
         }
       },
       {
@@ -1517,6 +1603,10 @@
       {
         "abilityType": "triggered",
         "triggerEvent": "etb",
+        "triggerEvents": [
+          "etb",
+          "card_drawn"
+        ],
         "triggerCondition": "Constellation — Whenever this creature or another enchantment you control enters",
         "isOptional": false,
         "cost": null,
@@ -1558,24 +1648,17 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
+          "kind": "optional_pay",
           "params": {
-            "description": "Whenever another creature you control dies, you may pay 2 life"
-          }
-        }
-      },
-      {
-        "abilityType": "triggered",
-        "triggerEvent": null,
-        "triggerCondition": null,
-        "isOptional": false,
-        "cost": null,
-        "targets": 0,
-        "targetFilter": null,
-        "effect": {
-          "kind": "draw_cards",
-          "params": {
-            "amount": 1
+            "cost": "Pay 2 life",
+            "payer": "self",
+            "then": {
+              "kind": "draw_cards",
+              "params": {
+                "amount": 1
+              }
+            },
+            "thenIfNotPaid": false
           }
         }
       },
@@ -1781,9 +1864,9 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
+          "kind": "scry",
           "params": {
-            "description": "Constellation — Whenever an enchantment you control enters, look at the top three cards of your library"
+            "amount": 3
           }
         }
       }
@@ -1882,9 +1965,10 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
+          "kind": "keyword_pump",
           "params": {
-            "description": "Trample {1}{G}, Sacrifice another enchantment: This creature gains indestructible until end of turn"
+            "keyword": "trample",
+            "scope": "all"
           }
         }
       }
@@ -2017,7 +2101,11 @@
         "targetFilter": null,
         "effect": {
           "kind": "put_counter",
-          "params": {}
+          "params": {
+            "counterKind": "+1/+1",
+            "amount": 1,
+            "scope": "own"
+          }
         }
       }
     ],
@@ -2267,8 +2355,8 @@
         "triggerCondition": null,
         "isOptional": false,
         "cost": null,
-        "targets": 0,
-        "targetFilter": null,
+        "targets": 1,
+        "targetFilter": "nonland permanent an opponent controls",
         "effect": {
           "kind": "destroy",
           "params": {
@@ -2298,9 +2386,10 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
+          "kind": "keyword_pump",
           "params": {
-            "description": "III — Creatures you control gain deathtouch until end of turn"
+            "keyword": "deathtouch",
+            "scope": "own"
           }
         }
       }
@@ -2323,6 +2412,10 @@
       {
         "abilityType": "triggered",
         "triggerEvent": "etb",
+        "triggerEvents": [
+          "etb",
+          "counter_placed"
+        ],
         "triggerCondition": "Constellation — Whenever this enchantment or another enchantment you control enters",
         "isOptional": false,
         "cost": null,
@@ -2421,8 +2514,8 @@
         "triggerCondition": "Flash When this enchantment enters",
         "isOptional": false,
         "cost": null,
-        "targets": 0,
-        "targetFilter": null,
+        "targets": 1,
+        "targetFilter": "nonland permanent an opponent controls until this enchantment leaves the battlefield",
         "effect": {
           "kind": "exile",
           "params": {
@@ -2517,7 +2610,11 @@
         "targetFilter": null,
         "effect": {
           "kind": "put_counter",
-          "params": {}
+          "params": {
+            "counterKind": "+1/+1",
+            "amount": 1,
+            "scope": "own"
+          }
         }
       },
       {
@@ -2547,9 +2644,10 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
+          "kind": "keyword_pump",
           "params": {
-            "description": ") Whenever a Zombie token you control with power 6 or greater attacks, it gains lifelink until end of turn"
+            "keyword": "lifelink",
+            "scope": "own"
           }
         }
       }
@@ -2599,7 +2697,27 @@
         "targetFilter": null,
         "effect": {
           "kind": "put_counter",
-          "params": {}
+          "params": {
+            "counterKind": "+1/+1",
+            "amount": 1,
+            "scope": "own"
+          }
+        }
+      },
+      {
+        "abilityType": "triggered",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": true,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "keyword_pump",
+          "params": {
+            "keyword": "vigilance",
+            "scope": "all"
+          }
         }
       }
     ],
@@ -2678,7 +2796,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "return_from_graveyard",
-          "params": {}
+          "params": {
+            "zone": "battlefield"
+          }
         }
       }
     ],
@@ -2703,8 +2823,8 @@
         "triggerCondition": "this enchantment enters",
         "isOptional": false,
         "cost": null,
-        "targets": 0,
-        "targetFilter": null,
+        "targets": 1,
+        "targetFilter": "nonland permanent that player controls until this enchantment leaves the battlefield",
         "effect": {
           "kind": "exile",
           "params": {
@@ -2750,8 +2870,10 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "search_library",
-          "params": {}
+          "kind": "remove_counters",
+          "params": {
+            "amount": 1
+          }
         }
       }
     ],
@@ -2780,8 +2902,8 @@
         "triggerCondition": null,
         "isOptional": false,
         "cost": null,
-        "targets": 1,
-        "targetFilter": "opponent each draw two cards",
+        "targets": 0,
+        "targetFilter": null,
         "effect": {
           "kind": "draw_cards",
           "params": {
@@ -2817,7 +2939,11 @@
         "targetFilter": "creature s",
         "effect": {
           "kind": "put_counter",
-          "params": {}
+          "params": {
+            "counterKind": "+1/+1",
+            "amount": 2,
+            "scope": "all"
+          }
         }
       }
     ],
@@ -2906,10 +3032,8 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "scry",
-          "params": {
-            "amount": 2
-          }
+          "kind": "sacrifice",
+          "params": {}
         }
       }
     ],
@@ -2939,8 +3063,11 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "gain_life",
+          "kind": "create_token",
           "params": {
+            "tokenPower": 1,
+            "tokenToughness": 1,
+            "tokenName": "Soldier creature",
             "amount": 2
           }
         }
@@ -2954,10 +3081,8 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "scry",
-          "params": {
-            "amount": 2
-          }
+          "kind": "sacrifice",
+          "params": {}
         }
       }
     ],
@@ -2987,10 +3112,8 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
-          "params": {
-            "description": "Creatures with flying can't attack you or planeswalkers you control"
-          }
+          "kind": "static_restriction",
+          "params": {}
         }
       },
       {
@@ -3037,7 +3160,9 @@
         "targetFilter": "enchantment card from your graveyard to the battlefield",
         "effect": {
           "kind": "return_from_graveyard",
-          "params": {}
+          "params": {
+            "zone": "battlefield"
+          }
         }
       }
     ],
@@ -3098,7 +3223,9 @@
         "targetFilter": "creature or land card from your graveyard to your hand",
         "effect": {
           "kind": "return_from_graveyard",
-          "params": {}
+          "params": {
+            "zone": "hand"
+          }
         }
       }
     ],
@@ -3125,11 +3252,29 @@
         "triggerCondition": null,
         "isOptional": false,
         "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "mass_sacrifice",
+          "params": {
+            "scope": "opponent",
+            "kind": "creature_or_planeswalker"
+          }
+        }
+      },
+      {
+        "abilityType": "triggered",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": null,
         "targets": 1,
         "targetFilter": "creature or planeswalker card from a graveyard onto the battlefield under your control",
         "effect": {
           "kind": "return_from_graveyard",
-          "params": {}
+          "params": {
+            "zone": "battlefield"
+          }
         }
       }
     ],
@@ -3160,7 +3305,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "return_from_graveyard",
-          "params": {}
+          "params": {
+            "zone": "hand"
+          }
         }
       },
       {
@@ -3173,7 +3320,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "return_from_graveyard",
-          "params": {}
+          "params": {
+            "zone": "battlefield"
+          }
         }
       }
     ],
@@ -3413,9 +3562,9 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
+          "kind": "scry",
           "params": {
-            "description": "Look at the top four cards of your library"
+            "amount": 4
           }
         }
       },
@@ -3444,7 +3593,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "return_from_graveyard",
-          "params": {}
+          "params": {
+            "zone": "battlefield"
+          }
         }
       }
     ],

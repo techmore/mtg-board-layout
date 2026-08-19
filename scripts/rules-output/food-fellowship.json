@@ -89,7 +89,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "return_from_graveyard",
-          "params": {}
+          "params": {
+            "zone": "hand"
+          }
         }
       }
     ],
@@ -119,8 +121,8 @@
         "triggerCondition": "Partner with Pippin",
         "isOptional": true,
         "cost": null,
-        "targets": 1,
-        "targetFilter": "player may put Pippin into their hand from their library",
+        "targets": 0,
+        "targetFilter": null,
         "effect": {
           "kind": "other",
           "params": {
@@ -173,8 +175,8 @@
         "triggerCondition": "Partner with Merry",
         "isOptional": true,
         "cost": null,
-        "targets": 1,
-        "targetFilter": "player may put Merry into their hand from their library",
+        "targets": 0,
+        "targetFilter": null,
         "effect": {
           "kind": "other",
           "params": {
@@ -276,8 +278,10 @@
         "effect": {
           "kind": "create_token",
           "params": {
-            "tokenName": "a",
-            "amount": 1
+            "counterKind": "+1/+1",
+            "amount": 1,
+            "scope": "own",
+            "tokenName": "a"
           }
         }
       }
@@ -309,10 +313,8 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
-          "params": {
-            "description": ") Creatures with power less than this creature's power can't block it"
-          }
+          "kind": "static_restriction",
+          "params": {}
         }
       }
     ],
@@ -346,9 +348,10 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
+          "kind": "keyword_pump",
           "params": {
-            "description": "{2}, Sacrifice a Food: This creature gains indestructible until end of turn"
+            "keyword": "indestructible",
+            "scope": "all"
           }
         }
       }
@@ -663,7 +666,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "deal_damage",
-          "params": {}
+          "params": {
+            "amount": 1
+          }
         }
       }
     ],
@@ -1015,7 +1020,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "deal_damage",
-          "params": {}
+          "params": {
+            "amount": 1
+          }
         }
       }
     ],
@@ -1106,6 +1113,21 @@
             "amount": 1
           }
         }
+      },
+      {
+        "abilityType": "triggered",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "scry",
+          "params": {
+            "amount": 1
+          }
+        }
       }
     ],
     "oracleText": "This land enters tapped.\n{T}: Add one mana of any color in your commander's color identity. When that mana is spent to cast a creature spell that shares a creature type with your commander, scry 1. (Look at the top card of your library. You may put that card on the bottom.)",
@@ -1150,10 +1172,8 @@
         "targets": 1,
         "targetFilter": "creature can't be blocked this turn",
         "effect": {
-          "kind": "other",
-          "params": {
-            "description": "{4}, {T}: Target creature can't be blocked this turn"
-          }
+          "kind": "cant_be_blocked",
+          "params": {}
         }
       }
     ],
@@ -1738,9 +1758,12 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
+          "kind": "create_token",
           "params": {
-            "description": "When this creature enters, create X 1/1 white Halfling creature tokens and X Food tokens"
+            "tokenPower": 1,
+            "tokenToughness": 1,
+            "tokenName": "Halfling creature",
+            "amount": "X"
           }
         }
       },
@@ -1927,7 +1950,9 @@
       "Halfling",
       "Horror"
     ],
-    "keywords": [],
+    "keywords": [
+      "skulk"
+    ],
     "manaProduction": null,
     "entryTapRule": null,
     "conditionalEntryText": null,
@@ -1941,10 +1966,8 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
-          "params": {
-            "description": "Skulk (This creature can't be blocked by creatures with greater power"
-          }
+          "kind": "cant_be_blocked",
+          "params": {}
         }
       },
       {
@@ -1989,8 +2012,8 @@
         "triggerCondition": null,
         "isOptional": false,
         "cost": null,
-        "targets": 1,
-        "targetFilter": "player controls get +2/+2 until end of turn",
+        "targets": 0,
+        "targetFilter": null,
         "effect": {
           "kind": "pump",
           "params": {
@@ -2030,9 +2053,10 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
+          "kind": "keyword_pump",
           "params": {
-            "description": "Flying Whenever Gwaihir attacks, target attacking creature gains flying until end of turn"
+            "keyword": "flying",
+            "scope": "all"
           }
         }
       },
@@ -2084,9 +2108,10 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
+          "kind": "keyword_pump",
           "params": {
-            "description": "Flying Whenever two or more creatures you control attack a player, target attacking creature without flying gains flying until end of turn"
+            "keyword": "flying",
+            "scope": "own"
           }
         }
       }
@@ -2173,16 +2198,24 @@
     "abilities": [
       {
         "abilityType": "triggered",
-        "triggerEvent": null,
-        "triggerCondition": null,
-        "isOptional": false,
+        "triggerEvent": "etb",
+        "triggerCondition": "another creature you control with power 2 or less enters",
+        "isOptional": true,
         "cost": null,
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "draw_cards",
+          "kind": "optional_pay",
           "params": {
-            "amount": 1
+            "cost": "{1}",
+            "payer": "self",
+            "then": {
+              "kind": "draw_cards",
+              "params": {
+                "amount": 1
+              }
+            },
+            "thenIfNotPaid": false
           }
         }
       }
@@ -2303,9 +2336,10 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
+          "kind": "create_token",
           "params": {
-            "description": "When this creature enters, create two Food tokens"
+            "tokenName": "Food",
+            "amount": 2
           }
         }
       },
@@ -2376,6 +2410,21 @@
         "effect": {
           "kind": "put_counter",
           "params": {}
+        }
+      },
+      {
+        "abilityType": "triggered",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "remove_counters",
+          "params": {
+            "amount": 1
+          }
         }
       },
       {
@@ -2511,7 +2560,11 @@
         "targetFilter": null,
         "effect": {
           "kind": "put_counter",
-          "params": {}
+          "params": {
+            "counterKind": "+1/+1",
+            "amount": 1,
+            "scope": "all"
+          }
         }
       },
       {
@@ -2520,8 +2573,8 @@
         "triggerCondition": "this creature leaves the battlefield",
         "isOptional": false,
         "cost": null,
-        "targets": 1,
-        "targetFilter": "opponent loses life equal to its power",
+        "targets": 0,
+        "targetFilter": null,
         "effect": {
           "kind": "lose_life",
           "params": {
@@ -2624,9 +2677,10 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
+          "kind": "mass_sacrifice",
           "params": {
-            "description": "Vigilance When this creature enters, you may sacrifice a token"
+            "scope": "own",
+            "kind": "token"
           }
         }
       },
@@ -2782,15 +2836,20 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
+          "kind": "create_token",
           "params": {
-            "description": "Trample, ward {2} When Treebeard enters, create two Food tokens"
+            "tokenName": "Food",
+            "amount": 2
           }
         }
       },
       {
         "abilityType": "triggered",
         "triggerEvent": "counter_placed",
+        "triggerEvents": [
+          "counter_placed",
+          "life_gain"
+        ],
         "triggerCondition": "you gain life",
         "isOptional": false,
         "cost": null,
@@ -2798,7 +2857,11 @@
         "targetFilter": null,
         "effect": {
           "kind": "put_counter",
-          "params": {}
+          "params": {
+            "counterKind": "+1/+1",
+            "amount": 1,
+            "scope": "all"
+          }
         }
       }
     ],
@@ -2829,8 +2892,8 @@
         "triggerCondition": "Trample When this creature enters",
         "isOptional": false,
         "cost": null,
-        "targets": 0,
-        "targetFilter": null,
+        "targets": 1,
+        "targetFilter": "noncreature permanent",
         "effect": {
           "kind": "destroy",
           "params": {
@@ -2848,7 +2911,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "return_from_graveyard",
-          "params": {}
+          "params": {
+            "zone": "battlefield"
+          }
         }
       }
     ],
@@ -3114,7 +3179,9 @@
         "targetFilter": "permanent card from your graveyard to your hand",
         "effect": {
           "kind": "return_from_graveyard",
-          "params": {}
+          "params": {
+            "zone": "hand"
+          }
         }
       },
       {
@@ -3502,7 +3569,9 @@
         "targetFilter": "artifact card from your graveyard to your hand",
         "effect": {
           "kind": "return_from_graveyard",
-          "params": {}
+          "params": {
+            "zone": "hand"
+          }
         }
       },
       {
@@ -3588,8 +3657,8 @@
         "triggerCondition": null,
         "isOptional": false,
         "cost": null,
-        "targets": 0,
-        "targetFilter": null,
+        "targets": 1,
+        "targetFilter": "nonland permanent",
         "effect": {
           "kind": "exile",
           "params": {
@@ -3634,8 +3703,8 @@
         "triggerCondition": null,
         "isOptional": false,
         "cost": null,
-        "targets": 1,
-        "targetFilter": "player 's graveyard",
+        "targets": 0,
+        "targetFilter": null,
         "effect": {
           "kind": "exile",
           "params": {
@@ -3829,6 +3898,19 @@
     "conditionalEntryText": null,
     "abilities": [
       {
+        "abilityType": "triggered",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "static_keyword",
+          "params": {}
+        }
+      },
+      {
         "abilityType": "activated",
         "triggerEvent": null,
         "triggerCondition": null,
@@ -3837,9 +3919,10 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
+          "kind": "create_token",
           "params": {
-            "description": "Sacrifice this enchantment: Create three tapped X/X green Treefolk creature tokens, where X is the amount of life you gained this turn"
+            "tokenName": "Treefolk creature",
+            "amount": "X"
           }
         }
       },
@@ -3996,7 +4079,11 @@
         "targetFilter": "creature",
         "effect": {
           "kind": "put_counter",
-          "params": {}
+          "params": {
+            "counterKind": "+1/+1",
+            "amount": 1,
+            "scope": "all"
+          }
         }
       },
       {
@@ -4086,8 +4173,8 @@
         "triggerCondition": "you gain life",
         "isOptional": false,
         "cost": null,
-        "targets": 1,
-        "targetFilter": "opponent loses that much life",
+        "targets": 0,
+        "targetFilter": null,
         "effect": {
           "kind": "lose_life",
           "params": {

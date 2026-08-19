@@ -1,4 +1,5 @@
 import type { CardRuleEntry } from '../types/card'
+import { getStaticKeywords } from 'mtg-protocol/combat'
 
 let rulesCache: Record<string, CardRuleEntry> | null = null
 
@@ -25,13 +26,22 @@ export function getCardRule(
   )
 }
 
-export function getCardKeywords(card: { name: string }): Set<string> {
+export function getCardKeywords(card: { id?: string; name: string; typeLine?: string; keywordBoosts?: string[]; owner?: 'player' | 'opponent' }, cards?: { id: string; typeLine: string; oracleText?: string; owner?: 'player' | 'opponent'; enchantsCardId?: string }[]): Set<string> {
   const rule = getCardRule(card.name, rulesCache)
-  return new Set(rule?.keywords ?? [])
+  const set = new Set(rule?.keywords ?? [])
+  for (const keyword of card.keywordBoosts ?? []) set.add(keyword)
+  if (cards) {
+    const statics = getStaticKeywords(
+      { id: card.id ?? '', typeLine: card.typeLine ?? '', ownerId: card.owner ?? 'player', type: 'creature' },
+      cards.map((c) => ({ id: c.id, name: '', typeLine: c.typeLine, oracleText: c.oracleText ?? '', ownerId: c.owner ?? 'player', type: 'creature', enchantsCardId: c.enchantsCardId })),
+    )
+    for (const keyword of statics) set.add(keyword)
+  }
+  return set
 }
 
-export function hasKeyword(card: { name: string }, keyword: string): boolean {
-  return getCardKeywords(card).has(keyword)
+export function hasKeyword(card: { id?: string; name: string; typeLine?: string; keywordBoosts?: string[]; owner?: 'player' | 'opponent' }, keyword: string, cards?: { id: string; typeLine: string; oracleText?: string; owner?: 'player' | 'opponent'; enchantsCardId?: string }[]): boolean {
+  return getCardKeywords(card, cards).has(keyword)
 }
 
 /**

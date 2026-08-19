@@ -81,6 +81,7 @@ export function cardFromState(value: unknown): CardData | null {
     isBasicLand: typeof card.isBasicLand === 'boolean' ? card.isBasicLand || features.isBasicLand : features.isBasicLand,
     commanderTax: typeof card.commanderTax === 'number' ? card.commanderTax : 0,
     revealed: card.revealed !== false,
+    enchantsCardId: typeof card.enchantsCardId === 'string' && card.enchantsCardId ? card.enchantsCardId : undefined,
   }
 }
 

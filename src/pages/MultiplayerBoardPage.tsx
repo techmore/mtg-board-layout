@@ -2,7 +2,7 @@ import { useEffect, useMemo, useRef, useState } from 'react'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 import type { CardData, ChatMessageEvent, CoinFlippedEvent, DiceRolledEvent, GameEndedEvent, RoomJoinOptions, RoomPlayerInfo } from 'mtg-protocol'
 import { deckToRoomCards } from '../multiplayer/roomCards'
-import { createRoom, useRoomSession } from '../multiplayer/useRoom'
+import { adopt, connect, createRoom, leave, sendAction, useRoomConnecting, useRoomError, useRoomLastEvent, useRoomPrivateState, useRoomServerUrl, useRoomState } from '../multiplayer/useRoom'
 import { getServerUrlFromSearchParams } from '../multiplayer/serverUrl'
 import { useDeckStore } from '../stores/deckStore'
 import { useToastStore } from '../stores/toastStore'
@@ -19,7 +19,12 @@ export default function MultiplayerBoardPage() {
   const [searchParams] = useSearchParams()
   const roomId = searchParams.get('roomId') ?? ''
   const decks = useDeckStore((state) => state.decks)
-  const { state, privateState, lastEvent, error, isConnecting, connect, sendAction, leave, adopt, serverUrl } = useRoomSession()
+  const state = useRoomState()
+  const privateState = useRoomPrivateState()
+  const lastEvent = useRoomLastEvent()
+  const error = useRoomError()
+  const isConnecting = useRoomConnecting()
+  const serverUrl = useRoomServerUrl()
   const [chatInput, setChatInput] = useState('')
   const [messages, setMessages] = useState<ChatEntry[]>([])
   const [gameWinnerId, setGameWinnerId] = useState<string | null>(null)
@@ -27,9 +32,6 @@ export default function MultiplayerBoardPage() {
   const [combatSelection, setCombatSelection] = useState<string[]>([])
   const [zoomCard, setZoomCard] = useState<CardData | null>(null)
   const [lastRoll, setLastRoll] = useState<string | null>(null)
-  const myTimeRef = useRef(0)
-  const oppTimeRef = useRef(0)
-  const [, setTimerTick] = useState(0)
   const activeIsMe = state !== null && state.activePlayerId === state.myPlayerId
   const handleRematch = async () => {
     try {
@@ -68,10 +70,11 @@ export default function MultiplayerBoardPage() {
 
   useEffect(() => {
     if (roomId && state?.roomId !== roomId) void connect(roomId, joinOptions, requestedServerUrl).catch(() => undefined)
-  }, [connect, joinOptions, requestedServerUrl, roomId, state?.roomId])
+  }, [joinOptions, requestedServerUrl, roomId, state?.roomId])
 
   useEffect(() => {
     setMessages([])
+    setLastRoll(null)
   }, [roomId])
 
   useEffect(() => {
@@ -98,29 +101,8 @@ export default function MultiplayerBoardPage() {
     }
   }, [lastEvent, state?.players])
 
-  // Per-player turn timers (accumulated while each player is active). Stop
-  // accruing once the game has finished so totals freeze.
-  const finishedRef = useRef(false)
-  useEffect(() => {
-    finishedRef.current = state?.status === 'finished'
-  }, [state?.status])
-
-  useEffect(() => {
-    const id = window.setInterval(() => {
-      if (finishedRef.current) return
-      if (activeIsMe) myTimeRef.current += 1000
-      else oppTimeRef.current += 1000
-      setTimerTick((t) => t + 1)
-    }, 1000)
-    return () => window.clearInterval(id)
-  }, [activeIsMe])
-
-  useEffect(() => {
-    setMessages([])
-    setLastRoll(null)
-    myTimeRef.current = 0
-    oppTimeRef.current = 0
-  }, [roomId])
+  // Per-player turn timers live in <TurnTimers /> so the 1s tick does not
+  // re-render the whole board.
 
   if (isConnecting || !state) return <main style={pageStyle}><div>Connecting to multiplayer board…{error ? ` ${error}` : ''}</div></main>
 
@@ -207,9 +189,13 @@ export default function MultiplayerBoardPage() {
           >
             {state.combatActive ? '⚔ Combat' : 'Main'}
           </span>
-          <span style={{ ...mutedStyle, fontVariantNumeric: 'tabular-nums' }} title="Turn timers (total per player)">
-            ⏱ You {formatTime(myTimeRef.current)} · {opponents.length > 1 ? `Opponents ${formatTime(oppTimeRef.current)}` : `${opponents[0]?.name ?? 'Opponent'} ${formatTime(oppTimeRef.current)}`}
-          </span>
+          <TurnTimers
+            active={activeIsMe}
+            opponentCount={opponents.length}
+            opponentName={opponents[0]?.name ?? 'Opponent'}
+            finished={state.status === 'finished'}
+            roomId={roomId}
+          />
           <button onClick={() => { leave(); window.location.assign('/') }} style={smallButtonStyle}>Leave</button>
         </div>
       </header>
@@ -530,6 +516,7 @@ function CardRow({ cards, empty, onCard, onZoom, combatStatus, selectedIds }: {
           <span style={cardNameStyle}>
             {card.name}{card.counters !== 0 ? ` ${formatCounterCount(card.counters)}` : ''}
             {card.damage ? ` ✕${card.damage}` : ''}
+            {card.enchantsCardId ? ' ⚭' : ''}
             {status === 'attack' ? ' ⚔' : status === 'block' ? ' 🛡' : ''}
           </span>
         </button>
@@ -567,6 +554,38 @@ function formatTime(ms: number): string {
   const minutes = Math.floor(totalSeconds / 60)
   const seconds = totalSeconds % 60
   return `${minutes}:${seconds.toString().padStart(2, '0')}`
+}
+
+/** Per-player accumulated turn timers. Owns its 1s interval so the rest of the
+ *  multiplayer board does not re-render every second. */
+function TurnTimers({ active, opponentCount, opponentName, finished, roomId }: {
+  active: boolean
+  opponentCount: number
+  opponentName: string
+  finished: boolean
+  roomId: string
+}) {
+  const myTimeRef = useRef(0)
+  const oppTimeRef = useRef(0)
+  const [, setTick] = useState(0)
+  useEffect(() => {
+    myTimeRef.current = 0
+    oppTimeRef.current = 0
+  }, [roomId])
+  useEffect(() => {
+    const id = window.setInterval(() => {
+      if (finished) return
+      if (active) myTimeRef.current += 1000
+      else oppTimeRef.current += 1000
+      setTick((t) => t + 1)
+    }, 1000)
+    return () => window.clearInterval(id)
+  }, [active, finished])
+  return (
+    <span style={{ ...mutedStyle, fontVariantNumeric: 'tabular-nums' }} title="Turn timers (total per player)">
+      ⏱ You {formatTime(myTimeRef.current)} · {opponentCount > 1 ? `Opponents ${formatTime(oppTimeRef.current)}` : `${opponentName} ${formatTime(oppTimeRef.current)}`}
+    </span>
+  )
 }
 
 const pageStyle: React.CSSProperties = { minHeight: '100%', boxSizing: 'border-box', padding: 18, background: '#0d1117', color: '#e6edf3', overflow: 'auto' }

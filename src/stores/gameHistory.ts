@@ -1,7 +1,16 @@
 import type { GameState, GameSnapshot } from './gameStore'
-import { beginUndoTransaction, endUndoTransaction, pushUndoSnapshot, takeSnapshot } from './gameRules'
+import { beginUndoTransaction, endUndoTransaction, isAITurnActive, pushUndoSnapshot, takeSnapshot } from './gameRules'
 
 function snapshotsEqual(left: GameSnapshot, right: GameSnapshot) {
+  // Fast path: the fields most undoable actions touch. If any differ, the
+  // action changed state. Only when these all match do we pay for the exact
+  // comparison (rare no-op actions).
+  if (left.lifeTotal !== right.lifeTotal || left.opponentLifeTotal !== right.opponentLifeTotal) return false
+  if (left.turn !== right.turn || left.activePlayer !== right.activePlayer || left.currentPhase !== right.currentPhase) return false
+  if (left.landPlaysThisTurn !== right.landPlaysThisTurn || left.opponentLandPlaysThisTurn !== right.opponentLandPlaysThisTurn) return false
+  if (left.playerSpellsCastThisTurn !== right.playerSpellsCastThisTurn || left.opponentSpellsCastThisTurn !== right.opponentSpellsCastThisTurn) return false
+  if (left.cards.length !== right.cards.length) return false
+  if ((left.gameOver?.winner ?? null) !== (right.gameOver?.winner ?? null)) return false
   return JSON.stringify(left) === JSON.stringify(right)
 }
 
@@ -33,7 +42,11 @@ export function runUndoableAction<T>(
     if (isOuterAction) {
       endUndoTransaction()
       const after = takeSnapshot(get())
-      if (completed && before && !snapshotsEqual(before, after)) {
+      // The AI's turn runs asynchronously; capturing it in the player's undo
+      // stack lets Ctrl+Z restore the opponent turn with no AI timers running
+      // (a soft-lock). The AI turn is not undoable.
+      const inAITurn = isAITurnActive()
+      if (completed && before && !inAITurn && !snapshotsEqual(before, after)) {
         set((state) => pushUndoSnapshot(state, before))
       }
     }

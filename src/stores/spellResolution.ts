@@ -73,6 +73,14 @@ export function resolveAIAutoAbilities(set: SetFn, get: () => GameState, card: B
 
 /** Auto-resolve a single activated ability the AI used (tap abilities, loyalty, draw, etc.). */
 export function resolveAIActivatedAbility(set: SetFn, get: () => GameState, card: BoardCard, ability: CardAbilityDef) {
+  // Pay {E} costs the AI can afford; skip the ability otherwise.
+  const cost = ability.cost ?? ''
+  const energyMatch = cost.match(/\bpay\s+(\d+)\s*\{E\}/i)
+  if (energyMatch) {
+    const needed = parseInt(energyMatch[1], 10)
+    if (get().opponentEnergyCounters < needed) return
+    set({ opponentEnergyCounters: get().opponentEnergyCounters - needed })
+  }
   autoResolveInstance(set, get, card, ability)
 }
 

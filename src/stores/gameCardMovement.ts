@@ -27,6 +27,7 @@ export function createCardMovement(set: SetFn, get: () => GameState): Pick<GameS
           damage: zone === 'battlefield' ? current.damage ?? 0 : 0,
           powerBoost: zone === 'battlefield' ? current.powerBoost ?? 0 : 0,
           toughnessBoost: zone === 'battlefield' ? current.toughnessBoost ?? 0 : 0,
+          keywordBoosts: zone === 'battlefield' ? current.keywordBoosts : undefined,
           counters: current.type === 'planeswalker' && zone === 'battlefield' && current.counters === 0 ? 5 : current.counters,
         }
         if (preparation?.blockReason === 'land') {
@@ -188,15 +189,19 @@ export function createCardMovement(set: SetFn, get: () => GameState): Pick<GameS
         return { ...pushUndo(state), ...next }
       }),
 
-    addCounter: (cardId) => {
+    addCounter: (cardId, kind = '+1/+1') => {
       const card = get().cards.find((c) => c.id === cardId)
       set((state) => ({
         ...pushUndo(state),
         cards: state.cards.map((c) =>
-          c.id === cardId ? { ...c, counters: c.counters + 1 } : c
+          c.id === cardId
+            ? kind === '-1/-1'
+              ? { ...c, minusCounters: (c.minusCounters ?? 0) + 1 }
+              : { ...c, counters: c.counters + 1 }
+            : c
         ),
       }))
-      if (card) get().emitGameEvent({ type: 'counter_placed', cardId, cardName: card.name, kind: '+1/+1' })
+      if (card) get().emitGameEvent({ type: 'counter_placed', cardId, cardName: card.name, kind })
     },
 
     removeCounter: (cardId) => {
@@ -204,7 +209,11 @@ export function createCardMovement(set: SetFn, get: () => GameState): Pick<GameS
       set((state) => ({
         ...pushUndo(state),
         cards: state.cards.map((c) =>
-          c.id === cardId ? { ...c, counters: c.counters - 1 } : c
+          c.id === cardId
+            ? (c.minusCounters ?? 0) > 0
+              ? { ...c, minusCounters: (c.minusCounters ?? 0) - 1 }
+              : { ...c, counters: c.counters - 1 }
+            : c
         ),
       }))
       if (card && card.zone === 'battlefield' && (card.type === 'creature' || card.type === 'planeswalker')) {

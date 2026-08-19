@@ -22,9 +22,17 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
+          "kind": "optional_pay",
           "params": {
-            "description": ") Whenever you cast an Eldrazi spell, you may pay {C}{C}"
+            "cost": "{C}",
+            "payer": "self",
+            "then": {
+              "kind": "other",
+              "params": {
+                "description": "If you do, copy all spells you control, then copy all other activated and triggered abilities you control"
+              }
+            },
+            "thenIfNotPaid": false
           }
         }
       },
@@ -66,6 +74,10 @@
       {
         "abilityType": "triggered",
         "triggerEvent": "dies",
+        "triggerEvents": [
+          "dies",
+          "graveyard"
+        ],
         "triggerCondition": "Azlask or another colorless creature you control dies",
         "isOptional": false,
         "cost": null,
@@ -121,7 +133,9 @@
         "targetFilter": "creature card from your graveyard to the battlefield",
         "effect": {
           "kind": "return_from_graveyard",
-          "params": {}
+          "params": {
+            "zone": "battlefield"
+          }
         }
       },
       {
@@ -404,10 +418,8 @@
         "targets": 1,
         "targetFilter": "creature you control gains protection from each color until end of turn",
         "effect": {
-          "kind": "other",
-          "params": {
-            "description": "Target creature you control gains protection from each color until end of turn"
-          }
+          "kind": "static_noop",
+          "params": {}
         }
       }
     ],
@@ -464,6 +476,10 @@
       {
         "abilityType": "triggered",
         "triggerEvent": "etb",
+        "triggerEvents": [
+          "etb",
+          "sacrifice"
+        ],
         "triggerCondition": ") Flying",
         "isOptional": false,
         "cost": null,
@@ -473,6 +489,23 @@
           "kind": "other",
           "params": {
             "description": ") Flying, vigilance When this creature enters, sacrifice any number of creatures each with base power or toughness 1 or less"
+          }
+        }
+      },
+      {
+        "abilityType": "triggered",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "create_token",
+          "params": {
+            "tokenPower": 4,
+            "tokenToughness": 4,
+            "tokenName": "Angel creature"
           }
         }
       }
@@ -506,7 +539,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "deal_damage",
-          "params": {}
+          "params": {
+            "amount": 1
+          }
         }
       }
     ],
@@ -539,9 +574,9 @@
         "targets": 1,
         "targetFilter": "creature that player controls until end of turn",
         "effect": {
-          "kind": "other",
+          "kind": "gain_control",
           "params": {
-            "description": ") When you cast this spell, for each opponent, gain control of up to one target creature that player controls until end of turn"
+            "temporary": true
           }
         }
       },
@@ -617,10 +652,8 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
-          "params": {
-            "description": "Creatures with mana value of that quality can't block this turn"
-          }
+          "kind": "static_restriction",
+          "params": {}
         }
       }
     ],
@@ -653,9 +686,9 @@
         "targets": 1,
         "targetFilter": "permanent or opponent",
         "effect": {
-          "kind": "other",
+          "kind": "remove_counters",
           "params": {
-            "description": ") When you cast this spell, remove all counters from up to one target permanent or opponent"
+            "amount": "all"
           }
         }
       }
@@ -703,8 +736,8 @@
         "triggerCondition": null,
         "isOptional": false,
         "cost": null,
-        "targets": 0,
-        "targetFilter": null,
+        "targets": 1,
+        "targetFilter": "nonland permanent",
         "effect": {
           "kind": "exile",
           "params": {
@@ -763,7 +796,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "return_from_graveyard",
-          "params": {}
+          "params": {
+            "zone": "hand"
+          }
         }
       },
       {
@@ -1004,10 +1039,24 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
+          "kind": "mass_sacrifice",
           "params": {
-            "description": "At the beginning of your upkeep, sacrifice a creature"
+            "scope": "own",
+            "kind": "creature"
           }
+        }
+      },
+      {
+        "abilityType": "triggered",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "sacrifice",
+          "params": {}
         }
       }
     ],
@@ -1153,9 +1202,12 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
+          "kind": "create_token",
           "params": {
-            "description": ") When this creature enters, create two 1/1 colorless Eldrazi Scion creature tokens"
+            "tokenPower": 1,
+            "tokenToughness": 1,
+            "tokenName": "Scion creature",
+            "amount": 2
           }
         }
       },
@@ -1181,10 +1233,8 @@
         "targets": 1,
         "targetFilter": "creature",
         "effect": {
-          "kind": "other",
-          "params": {
-            "description": "\" Sacrifice an Eldrazi Scion: Tap target creature"
-          }
+          "kind": "tap_target",
+          "params": {}
         }
       }
     ],
@@ -1283,8 +1333,10 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "add_mana",
-          "params": {}
+          "kind": "remove_counters",
+          "params": {
+            "amount": 1
+          }
         }
       }
     ],
@@ -1346,7 +1398,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "deal_damage",
-          "params": {}
+          "params": {
+            "amount": 1
+          }
         }
       }
     ],
@@ -1408,7 +1462,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "deal_damage",
-          "params": {}
+          "params": {
+            "amount": 1
+          }
         }
       }
     ],
@@ -1470,7 +1526,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "deal_damage",
-          "params": {}
+          "params": {
+            "amount": 1
+          }
         }
       }
     ],
@@ -1532,7 +1590,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "deal_damage",
-          "params": {}
+          "params": {
+            "amount": 1
+          }
         }
       }
     ],
@@ -1559,8 +1619,8 @@
         "triggerCondition": "you cast this spell",
         "isOptional": true,
         "cost": null,
-        "targets": 1,
-        "targetFilter": "opponent exiles the top four cards of their library",
+        "targets": 0,
+        "targetFilter": null,
         "effect": {
           "kind": "exile",
           "params": {
@@ -1627,7 +1687,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "deal_damage",
-          "params": {}
+          "params": {
+            "amount": 1
+          }
         }
       }
     ],
@@ -1689,7 +1751,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "deal_damage",
-          "params": {}
+          "params": {
+            "amount": 1
+          }
         }
       }
     ],
@@ -1751,7 +1815,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "deal_damage",
-          "params": {}
+          "params": {
+            "amount": 1
+          }
         }
       }
     ],
@@ -1813,7 +1879,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "deal_damage",
-          "params": {}
+          "params": {
+            "amount": 1
+          }
         }
       }
     ],
@@ -1875,7 +1943,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "deal_damage",
-          "params": {}
+          "params": {
+            "amount": 1
+          }
         }
       }
     ],
@@ -1937,7 +2007,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "deal_damage",
-          "params": {}
+          "params": {
+            "amount": 1
+          }
         }
       }
     ],
@@ -2014,6 +2086,21 @@
         }
       },
       {
+        "abilityType": "triggered",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "scry",
+          "params": {
+            "amount": 1
+          }
+        }
+      },
+      {
         "abilityType": "activated",
         "triggerEvent": null,
         "triggerCondition": null,
@@ -2052,6 +2139,21 @@
         "abilityType": "triggered",
         "triggerEvent": "etb",
         "triggerCondition": "this land enters",
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "scry",
+          "params": {
+            "amount": 1
+          }
+        }
+      },
+      {
+        "abilityType": "triggered",
+        "triggerEvent": null,
+        "triggerCondition": null,
         "isOptional": false,
         "cost": null,
         "targets": 0,
@@ -2137,12 +2239,18 @@
         "targetFilter": null,
         "effect": {
           "kind": "deal_damage",
-          "params": {}
+          "params": {
+            "amount": 2
+          }
         }
       },
       {
         "abilityType": "triggered",
         "triggerEvent": "cast",
+        "triggerEvents": [
+          "cast",
+          "graveyard"
+        ],
         "triggerCondition": "you cast an Eldrazi creature spell with mana value 7 or greater",
         "isOptional": true,
         "cost": null,
@@ -2163,7 +2271,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "deal_damage",
-          "params": {}
+          "params": {
+            "amount": 5
+          }
         }
       }
     ],
@@ -2211,7 +2321,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "return_from_graveyard",
-          "params": {}
+          "params": {
+            "zone": "hand"
+          }
         }
       }
     ],
@@ -2258,7 +2370,11 @@
         "targetFilter": null,
         "effect": {
           "kind": "put_counter",
-          "params": {}
+          "params": {
+            "counterKind": "+1/+1",
+            "amount": 1,
+            "scope": "all"
+          }
         }
       }
     ],
@@ -2343,7 +2459,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "deal_damage",
-          "params": {}
+          "params": {
+            "amount": 1
+          }
         }
       },
       {
@@ -2355,10 +2473,8 @@
         "targets": 1,
         "targetFilter": "creature can't attack or block this turn",
         "effect": {
-          "kind": "other",
-          "params": {
-            "description": "{C}, {T}: Target creature can't attack or block this turn"
-          }
+          "kind": "static_restriction",
+          "params": {}
         }
       },
       {
@@ -2456,7 +2572,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "deal_damage",
-          "params": {}
+          "params": {
+            "amount": 1
+          }
         }
       },
       {
@@ -2468,10 +2586,8 @@
         "targets": 1,
         "targetFilter": "creature can't be blocked this turn",
         "effect": {
-          "kind": "other",
-          "params": {
-            "description": "{3}{C}: Target creature can't be blocked this turn"
-          }
+          "kind": "cant_be_blocked",
+          "params": {}
         }
       }
     ],
@@ -2508,27 +2624,20 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
+          "kind": "optional_pay",
           "params": {
-            "description": ") Flash When you cast this spell, you may pay {C}"
-          }
-        }
-      },
-      {
-        "abilityType": "triggered",
-        "triggerEvent": null,
-        "triggerCondition": null,
-        "isOptional": false,
-        "cost": null,
-        "targets": 0,
-        "targetFilter": null,
-        "effect": {
-          "kind": "create_token",
-          "params": {
-            "tokenPower": 1,
-            "tokenToughness": 1,
-            "tokenName": "Scion creature",
-            "amount": 1
+            "cost": "{C}",
+            "payer": "self",
+            "then": {
+              "kind": "create_token",
+              "params": {
+                "tokenPower": 1,
+                "tokenToughness": 1,
+                "tokenName": "Scion creature",
+                "amount": 1
+              }
+            },
+            "thenIfNotPaid": false
           }
         }
       },
@@ -2595,6 +2704,21 @@
     "conditionalEntryText": null,
     "abilities": [
       {
+        "abilityType": "triggered",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": true,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "scry",
+          "params": {
+            "amount": 1
+          }
+        }
+      },
+      {
         "abilityType": "activated",
         "triggerEvent": null,
         "triggerCondition": null,
@@ -2624,7 +2748,24 @@
     "manaProduction": null,
     "entryTapRule": null,
     "conditionalEntryText": null,
-    "abilities": [],
+    "abilities": [
+      {
+        "abilityType": "spell",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "mass_sacrifice",
+          "params": {
+            "scope": "all",
+            "kind": "permanent"
+          }
+        }
+      }
+    ],
     "oracleText": "Each player sacrifices all permanents they control that are one or more colors.",
     "scryfallId": "4210c54e-89fd-4971-ab6a-ca8f4e7fe97a"
   },
@@ -2737,10 +2878,8 @@
         "targets": 1,
         "targetFilter": "permanent s",
         "effect": {
-          "kind": "other",
-          "params": {
-            "description": ") When you cast this spell, tap up to four target permanents"
-          }
+          "kind": "tap_target",
+          "params": {}
         }
       }
     ],
@@ -2974,9 +3113,9 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
+          "kind": "scry",
           "params": {
-            "description": "At the beginning of your upkeep, look at the top card of your library"
+            "amount": 1
           }
         }
       }
@@ -3066,7 +3205,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "deal_damage",
-          "params": {}
+          "params": {
+            "amount": 1
+          }
         }
       }
     ],
@@ -3113,7 +3254,9 @@
         "targetFilter": "creature an opponent controls to its owner's hand",
         "effect": {
           "kind": "return_from_graveyard",
-          "params": {}
+          "params": {
+            "zone": "hand"
+          }
         }
       }
     ],
@@ -3179,7 +3322,11 @@
         "targetFilter": null,
         "effect": {
           "kind": "put_counter",
-          "params": {}
+          "params": {
+            "counterKind": "+1/+1",
+            "amount": 1,
+            "scope": "own"
+          }
         }
       }
     ],
@@ -3241,7 +3388,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "deal_damage",
-          "params": {}
+          "params": {
+            "amount": 1
+          }
         }
       }
     ],
@@ -3336,9 +3485,12 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
+          "kind": "create_token",
           "params": {
-            "description": "{6}, {T}, Sacrifice this land: Create three 1/1 colorless Eldrazi Scion creature tokens"
+            "tokenPower": 1,
+            "tokenToughness": 1,
+            "tokenName": "Scion creature",
+            "amount": 3
           }
         }
       },
@@ -3959,7 +4111,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "deal_damage",
-          "params": {}
+          "params": {
+            "amount": 1
+          }
         }
       }
     ],
@@ -4021,7 +4175,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "deal_damage",
-          "params": {}
+          "params": {
+            "amount": 1
+          }
         }
       }
     ],
@@ -4163,7 +4319,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "deal_damage",
-          "params": {}
+          "params": {
+            "amount": 1
+          }
         }
       }
     ],
@@ -4267,7 +4425,23 @@
     "manaProduction": null,
     "entryTapRule": null,
     "conditionalEntryText": null,
-    "abilities": [],
+    "abilities": [
+      {
+        "abilityType": "spell",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "scry",
+          "params": {
+            "amount": 5
+          }
+        }
+      }
+    ],
     "oracleText": "Look at the top five cards of your library. You may reveal a colorless card from among them and put it into your hand. Then put the rest on the bottom of your library in any order.",
     "scryfallId": "726039a0-6c0d-48ef-9b42-99de5d4e41d2"
   },
@@ -4321,6 +4495,10 @@
       {
         "abilityType": "triggered",
         "triggerEvent": "etb",
+        "triggerEvents": [
+          "etb",
+          "card_drawn"
+        ],
         "triggerCondition": "this enchantment enters",
         "isOptional": false,
         "cost": null,
@@ -4342,10 +4520,8 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
-          "params": {
-            "description": "Creatures you control have trample"
-          }
+          "kind": "static_keyword",
+          "params": {}
         }
       },
       {
@@ -4358,12 +4534,18 @@
         "targetFilter": null,
         "effect": {
           "kind": "deal_damage",
-          "params": {}
+          "params": {
+            "amount": 1
+          }
         }
       },
       {
         "abilityType": "triggered",
-        "triggerEvent": "card_drawn",
+        "triggerEvent": "etb",
+        "triggerEvents": [
+          "etb",
+          "card_drawn"
+        ],
         "triggerCondition": ") Whenever a creature you control with power 4 or greater enters",
         "isOptional": false,
         "cost": null,
@@ -4398,8 +4580,8 @@
         "triggerCondition": null,
         "isOptional": false,
         "cost": null,
-        "targets": 1,
-        "targetFilter": "player 's graveyard",
+        "targets": 0,
+        "targetFilter": null,
         "effect": {
           "kind": "exile",
           "params": {
@@ -4445,6 +4627,23 @@
     "entryTapRule": null,
     "conditionalEntryText": null,
     "abilities": [
+      {
+        "abilityType": "spell",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "create_token",
+          "params": {
+            "tokenPower": 0,
+            "tokenToughness": 1,
+            "tokenName": "Spawn creature"
+          }
+        }
+      },
       {
         "abilityType": "activated",
         "triggerEvent": null,
@@ -4501,6 +4700,21 @@
         "abilityType": "triggered",
         "triggerEvent": "cast",
         "triggerCondition": "that mana is spent to cast a creature spell that shares a creature type with your commander",
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "scry",
+          "params": {
+            "amount": 1
+          }
+        }
+      },
+      {
+        "abilityType": "triggered",
+        "triggerEvent": null,
+        "triggerCondition": null,
         "isOptional": false,
         "cost": null,
         "targets": 0,

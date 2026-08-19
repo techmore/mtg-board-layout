@@ -21,6 +21,24 @@ export function createStateBasedActions(set: SetFn, get: () => GameState): Pick<
     checkStateBasedActions: () => {
       const state = get()
       const dead = state.cards.filter((card) => isDead(card, state.cards))
+
+      // Legend rule (CR 704.5j): a player can't control two permanents with
+      // the same legendary name — keep one, the rest are put into the grave.
+      const legendaries = new Map<string, BoardCard[]>()
+      for (const card of state.cards) {
+        if (card.zone !== 'battlefield') continue
+        if (!/\blegendary\b/i.test(card.typeLine ?? '')) continue
+        const key = `${card.owner ?? 'player'}:${card.name.toLowerCase()}`
+        const list = legendaries.get(key) ?? []
+        list.push(card)
+        legendaries.set(key, list)
+      }
+      for (const group of legendaries.values()) {
+        for (const duplicate of group.slice(1)) {
+          if (!dead.some((c) => c.id === duplicate.id)) dead.push(duplicate)
+        }
+      }
+
       if (dead.length === 0) return
 
       const deadIds = new Set(dead.map((card) => card.id))

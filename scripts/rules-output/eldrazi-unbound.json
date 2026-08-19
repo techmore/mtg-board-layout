@@ -58,6 +58,21 @@
             "amount": 2
           }
         }
+      },
+      {
+        "abilityType": "triggered",
+        "triggerEvent": "sacrifice",
+        "triggerCondition": ") Whenever an opponent sacrifices a nontoken permanent",
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "return_from_graveyard",
+          "params": {
+            "zone": "battlefield"
+          }
+        }
       }
     ],
     "oracleText": "Annihilator 2 (Whenever this creature attacks, defending player sacrifices two permanents of their choice.)\nWhenever an opponent sacrifices a nontoken permanent, put that card onto the battlefield under your control.",
@@ -87,7 +102,9 @@
         "targetFilter": "creature card from your graveyard to the battlefield",
         "effect": {
           "kind": "return_from_graveyard",
-          "params": {}
+          "params": {
+            "zone": "battlefield"
+          }
         }
       },
       {
@@ -133,7 +150,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "deal_damage",
-          "params": {}
+          "params": {
+            "amount": 1
+          }
         }
       },
       {
@@ -145,10 +164,8 @@
         "targets": 1,
         "targetFilter": "creature can't attack or block this turn",
         "effect": {
-          "kind": "other",
-          "params": {
-            "description": "{C}, {T}: Target creature can't attack or block this turn"
-          }
+          "kind": "static_restriction",
+          "params": {}
         }
       },
       {
@@ -223,8 +240,8 @@
         "triggerCondition": "you cast this spell",
         "isOptional": true,
         "cost": null,
-        "targets": 1,
-        "targetFilter": "opponent exiles the top four cards of their library",
+        "targets": 0,
+        "targetFilter": null,
         "effect": {
           "kind": "exile",
           "params": {
@@ -457,7 +474,11 @@
         "targetFilter": null,
         "effect": {
           "kind": "put_counter",
-          "params": {}
+          "params": {
+            "counterKind": "+1/+1",
+            "amount": 1,
+            "scope": "all"
+          }
         }
       },
       {
@@ -469,9 +490,9 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
+          "kind": "manifest",
           "params": {
-            "description": "When Omarthis dies, manifest a number of cards from the top of your library equal to the number of counters on it"
+            "dread": 0
           }
         }
       }
@@ -506,7 +527,7 @@
         "effect": {
           "kind": "draw_cards",
           "params": {
-            "amount": 1
+            "amount": 7
           }
         }
       },
@@ -643,7 +664,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "return_from_graveyard",
-          "params": {}
+          "params": {
+            "zone": "battlefield"
+          }
         }
       }
     ],
@@ -676,9 +699,9 @@
         "targets": 1,
         "targetFilter": "creature until end of turn",
         "effect": {
-          "kind": "other",
+          "kind": "gain_control",
           "params": {
-            "description": "When you cast this spell, gain control of target creature until end of turn"
+            "temporary": true
           }
         }
       },
@@ -737,10 +760,8 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
-          "params": {
-            "description": "This spell can't be countered"
-          }
+          "kind": "static_noop",
+          "params": {}
         }
       },
       {
@@ -764,12 +785,12 @@
         "triggerCondition": null,
         "isOptional": false,
         "cost": null,
-        "targets": 1,
-        "targetFilter": "player draws four cards",
+        "targets": 0,
+        "targetFilter": null,
         "effect": {
-          "kind": "other",
+          "kind": "draw_cards",
           "params": {
-            "description": "Target player draws four cards"
+            "amount": 4
           }
         }
       },
@@ -816,9 +837,10 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
+          "kind": "keyword_pump",
           "params": {
-            "description": "Whenever you cast a colorless spell, until end of turn, this creature gains trample and gets +X/+X, where X is that spell's mana value"
+            "keyword": "trample",
+            "scope": "all"
           }
         }
       }
@@ -847,9 +869,24 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
+          "kind": "manifest",
           "params": {
-            "description": "Whenever you cast a colorless creature spell, manifest the top card of your library"
+            "dread": 0
+          }
+        }
+      },
+      {
+        "abilityType": "triggered",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "return_from_graveyard",
+          "params": {
+            "zone": "battlefield"
           }
         }
       },
@@ -902,7 +939,24 @@
     "manaProduction": null,
     "entryTapRule": null,
     "conditionalEntryText": null,
-    "abilities": [],
+    "abilities": [
+      {
+        "abilityType": "spell",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "mass_sacrifice",
+          "params": {
+            "scope": "all",
+            "kind": "permanent"
+          }
+        }
+      }
+    ],
     "oracleText": "Each player sacrifices all permanents they control that are one or more colors.",
     "scryfallId": "4210c54e-89fd-4971-ab6a-ca8f4e7fe97a"
   },
@@ -946,9 +1000,24 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
+          "kind": "scry",
           "params": {
-            "description": ") When this creature dies, reveal the top card of your library"
+            "amount": 1
+          }
+        }
+      },
+      {
+        "abilityType": "triggered",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": true,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "return_from_graveyard",
+          "params": {
+            "zone": "battlefield"
           }
         }
       }
@@ -1061,8 +1130,8 @@
         "triggerCondition": "Imprint — When this creature enters",
         "isOptional": true,
         "cost": null,
-        "targets": 0,
-        "targetFilter": null,
+        "targets": 1,
+        "targetFilter": "nontoken creature",
         "effect": {
           "kind": "exile",
           "params": {
@@ -1215,7 +1284,11 @@
         "targetFilter": null,
         "effect": {
           "kind": "put_counter",
-          "params": {}
+          "params": {
+            "counterKind": "+1/+1",
+            "amount": 1,
+            "scope": "all"
+          }
         }
       }
     ],
@@ -1246,9 +1319,9 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "draw_cards",
+          "kind": "remove_counters",
           "params": {
-            "amount": 2
+            "amount": 1
           }
         }
       },
@@ -1300,7 +1373,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "deal_damage",
-          "params": {}
+          "params": {
+            "amount": 1
+          }
         }
       },
       {
@@ -1347,6 +1422,21 @@
         "effect": {
           "kind": "put_counter",
           "params": {}
+        }
+      },
+      {
+        "abilityType": "triggered",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "scry",
+          "params": {
+            "amount": 1
+          }
         }
       },
       {
@@ -1418,7 +1508,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "return_from_graveyard",
-          "params": {}
+          "params": {
+            "zone": "hand"
+          }
         }
       }
     ],
@@ -1479,9 +1571,12 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
+          "kind": "create_token",
           "params": {
-            "description": "When this creature becomes the target of a spell, sacrifice it and create a number of 1/1 colorless Construct artifact creature tokens equal to its power"
+            "tokenPower": 1,
+            "tokenToughness": 1,
+            "tokenName": "artifact creature",
+            "amount": 0
           }
         }
       }
@@ -1501,6 +1596,21 @@
     "entryTapRule": null,
     "conditionalEntryText": null,
     "abilities": [
+      {
+        "abilityType": "triggered",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": true,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "scry",
+          "params": {
+            "amount": 1
+          }
+        }
+      },
       {
         "abilityType": "activated",
         "triggerEvent": null,
@@ -1573,9 +1683,12 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
+          "kind": "create_token",
           "params": {
-            "description": "When this creature dies, create three 3/3 colorless Phyrexian Golem artifact creature tokens"
+            "tokenPower": 3,
+            "tokenToughness": 3,
+            "tokenName": "artifact creature",
+            "amount": 3
           }
         }
       },
@@ -1604,9 +1717,10 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
+          "kind": "keyword_pump",
           "params": {
-            "description": "They gain haste"
+            "keyword": "haste",
+            "scope": "all"
           }
         }
       }
@@ -1678,6 +1792,22 @@
     "entryTapRule": null,
     "conditionalEntryText": null,
     "abilities": [
+      {
+        "abilityType": "triggered",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "keyword_pump",
+          "params": {
+            "keyword": "trample",
+            "scope": "own"
+          }
+        }
+      },
       {
         "abilityType": "triggered",
         "triggerEvent": null,
@@ -1786,9 +1916,9 @@
         "targets": 1,
         "targetFilter": "creature",
         "effect": {
-          "kind": "destroy",
+          "kind": "remove_counters",
           "params": {
-            "targetHint": "target creature"
+            "amount": 1
           }
         }
       }
@@ -1993,9 +2123,9 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
+          "kind": "draw_cards",
           "params": {
-            "description": "{2}, {T}: Each player draws a card, then discards a card"
+            "amount": 2
           }
         }
       }
@@ -2042,10 +2172,8 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
-          "params": {
-            "description": "{2}{C}, {T}, Sacrifice this land: Copy target instant or sorcery spell you control"
-          }
+          "kind": "sacrifice",
+          "params": {}
         }
       },
       {
@@ -2108,7 +2236,11 @@
         "targetFilter": null,
         "effect": {
           "kind": "put_counter",
-          "params": {}
+          "params": {
+            "counterKind": "+1/+1",
+            "amount": 1,
+            "scope": "all"
+          }
         }
       }
     ],
@@ -2317,7 +2449,11 @@
         "targetFilter": null,
         "effect": {
           "kind": "put_counter",
-          "params": {}
+          "params": {
+            "counterKind": "+1/+1",
+            "amount": 1,
+            "scope": "all"
+          }
         }
       },
       {
@@ -2443,7 +2579,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "deal_damage",
-          "params": {}
+          "params": {
+            "amount": 1
+          }
         }
       }
     ],
@@ -2475,10 +2613,8 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
-          "params": {
-            "description": "Equipped creature has haste and shroud"
-          }
+          "kind": "static_keyword",
+          "params": {}
         }
       },
       {
@@ -2490,10 +2626,8 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
-          "params": {
-            "description": "(It can't be the target of spells or abilities"
-          }
+          "kind": "static_noop",
+          "params": {}
         }
       },
       {
@@ -2535,8 +2669,8 @@
         "triggerCondition": "this creature enters",
         "isOptional": false,
         "cost": null,
-        "targets": 0,
-        "targetFilter": null,
+        "targets": 1,
+        "targetFilter": "nonland permanent an opponent controls",
         "effect": {
           "kind": "destroy",
           "params": {
@@ -2738,10 +2872,8 @@
         "targets": 1,
         "targetFilter": "creature can't be blocked this turn",
         "effect": {
-          "kind": "other",
-          "params": {
-            "description": "{4}, {T}: Target creature can't be blocked this turn"
-          }
+          "kind": "cant_be_blocked",
+          "params": {}
         }
       }
     ],
@@ -2949,9 +3081,10 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
+          "kind": "keyword_pump",
           "params": {
-            "description": "Defender {T}: Creatures you control gain haste until end of turn"
+            "keyword": "haste",
+            "scope": "own"
           }
         }
       }
@@ -3018,8 +3151,23 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "deal_damage",
+          "kind": "static_keyword",
           "params": {}
+        }
+      },
+      {
+        "abilityType": "triggered",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "deal_damage",
+          "params": {
+            "amount": 1
+          }
         }
       },
       {
@@ -3193,7 +3341,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "return_from_graveyard",
-          "params": {}
+          "params": {
+            "zone": "battlefield"
+          }
         }
       },
       {
@@ -3206,7 +3356,9 @@
         "targetFilter": "land card from your graveyard to the battlefield tapped",
         "effect": {
           "kind": "return_from_graveyard",
-          "params": {}
+          "params": {
+            "zone": "battlefield"
+          }
         }
       }
     ],
@@ -3238,10 +3390,8 @@
         "targets": 1,
         "targetFilter": "creature can't be blocked this turn",
         "effect": {
-          "kind": "other",
-          "params": {
-            "description": "Defender {3}, {T}: Target creature can't be blocked this turn"
-          }
+          "kind": "cant_be_blocked",
+          "params": {}
         }
       }
     ],
@@ -3388,7 +3538,11 @@
         "targetFilter": null,
         "effect": {
           "kind": "put_counter",
-          "params": {}
+          "params": {
+            "counterKind": "+1/+1",
+            "amount": 1,
+            "scope": "all"
+          }
         }
       }
     ],
@@ -3422,7 +3576,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "return_from_graveyard",
-          "params": {}
+          "params": {
+            "zone": "hand"
+          }
         }
       },
       {
@@ -3494,8 +3650,10 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "add_mana",
-          "params": {}
+          "kind": "remove_counters",
+          "params": {
+            "amount": 1
+          }
         }
       }
     ],

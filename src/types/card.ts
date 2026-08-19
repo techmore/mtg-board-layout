@@ -102,11 +102,15 @@ export interface BoardCard {
   zone: Zone
   tapped: boolean
   counters: number
+  /** −1/−1 counters (they subtract from power and toughness). */
+  minusCounters?: number
   damage?: number
   /** True while damage marked by a deathtouch source (any amount is lethal). */
   deathtouchDamage?: boolean
   powerBoost?: number
   toughnessBoost?: number
+  /** Temporary keywords granted "until end of turn" (gain deathtouch, haste, ...). */
+  keywordBoosts?: string[]
   enchantsCardId?: string
   enchantsCardName?: string
   tokenCount?: number
@@ -116,6 +120,13 @@ export interface BoardCard {
   isCommander?: boolean
   enteredAtTurn?: number
   owner?: 'player' | 'opponent'
+  /** Temporary control change ("gain control until end of turn"). */
+  originalOwner?: 'player' | 'opponent'
+  controlUntilTurnEnd?: boolean
+  /** Manifested face-down (treated as a 2/2 creature). */
+  facedown?: boolean
+  /** "Can't be blocked this turn" (Rogue's Passage, etc.). */
+  cantBeBlockedThisTurn?: boolean
 }
 
 export interface Token {
@@ -126,6 +137,8 @@ export interface Token {
   tapped: boolean
   power?: number
   toughness?: number
+  type?: 'creature' | 'other'
+  owner?: 'player' | 'opponent'
 }
 
 export interface Deck {
@@ -205,6 +218,9 @@ export interface CardEffect {
 export interface CardAbilityDef {
   abilityType: CardAbilityType
   triggerEvent: TriggerEvent | null
+  /** Extra trigger events when one ability fires on multiple events
+   *  ("Whenever ~ enters the battlefield or attacks, ..."). */
+  triggerEvents?: TriggerEvent[]
   triggerCondition: string | null
   isOptional: boolean
   cost: string | null

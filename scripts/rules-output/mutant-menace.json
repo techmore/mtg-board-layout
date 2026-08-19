@@ -247,9 +247,28 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
+          "kind": "mass_sacrifice",
           "params": {
-            "description": "Whenever you attack, you may sacrifice another creature"
+            "scope": "own",
+            "kind": "creature"
+          }
+        }
+      },
+      {
+        "abilityType": "triggered",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": true,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "create_token",
+          "params": {
+            "tokenPower": 1,
+            "tokenToughness": 1,
+            "tokenName": "Soldier creature",
+            "amount": 2
           }
         }
       },
@@ -274,11 +293,13 @@
         "triggerCondition": null,
         "isOptional": true,
         "cost": null,
-        "targets": 1,
-        "targetFilter": "opponent",
+        "targets": 0,
+        "targetFilter": null,
         "effect": {
           "kind": "deal_damage",
-          "params": {}
+          "params": {
+            "amount": 1
+          }
         }
       }
     ],
@@ -311,9 +332,10 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
+          "kind": "keyword_pump",
           "params": {
-            "description": ") Whenever a creature you control attacks, if it enlisted a creature this combat, the creature that attacked gains double strike until end of turn"
+            "keyword": "double strike",
+            "scope": "own"
           }
         }
       },
@@ -355,7 +377,11 @@
     "abilities": [
       {
         "abilityType": "triggered",
-        "triggerEvent": "counter_placed",
+        "triggerEvent": "etb",
+        "triggerEvents": [
+          "etb",
+          "counter_placed"
+        ],
         "triggerCondition": "First Contact — Whenever Overseer of Vault 76 or another creature you control with power 3 or less enters",
         "isOptional": false,
         "cost": null,
@@ -368,6 +394,21 @@
       },
       {
         "abilityType": "triggered",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": true,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "remove_counters",
+          "params": {
+            "amount": 1
+          }
+        }
+      },
+      {
+        "abilityType": "triggered",
         "triggerEvent": "counter_placed",
         "triggerCondition": "you do",
         "isOptional": false,
@@ -376,7 +417,11 @@
         "targetFilter": null,
         "effect": {
           "kind": "put_counter",
-          "params": {}
+          "params": {
+            "counterKind": "+1/+1",
+            "amount": 1,
+            "scope": "own"
+          }
         }
       }
     ],
@@ -408,9 +453,9 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
+          "kind": "create_token",
           "params": {
-            "description": "When this creature enters, create that many tokens that are copies of it"
+            "tokenName": "that many"
           }
         }
       },
@@ -424,7 +469,11 @@
         "targetFilter": null,
         "effect": {
           "kind": "put_counter",
-          "params": {}
+          "params": {
+            "counterKind": "+1/+1",
+            "amount": 1,
+            "scope": "own"
+          }
         }
       }
     ],
@@ -449,6 +498,10 @@
       {
         "abilityType": "triggered",
         "triggerEvent": "combat_damage",
+        "triggerEvents": [
+          "combat_damage",
+          "counter_placed"
+        ],
         "triggerCondition": "The Nuka-Cola Challenge — Whenever one or more creatures you control deal combat damage to a player",
         "isOptional": false,
         "cost": null,
@@ -501,8 +554,8 @@
         "triggerCondition": null,
         "isOptional": false,
         "cost": "{T}",
-        "targets": 1,
-        "targetFilter": "opponent gains control of Yes Man",
+        "targets": 0,
+        "targetFilter": null,
         "effect": {
           "kind": "other",
           "params": {
@@ -566,9 +619,9 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
+          "kind": "create_token",
           "params": {
-            "description": "When this creature enters, create that many tokens that are copies of it"
+            "tokenName": "that many"
           }
         }
       },
@@ -581,9 +634,10 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
+          "kind": "mass_sacrifice",
           "params": {
-            "description": ") When this creature enters, each player sacrifices a creature of their choice"
+            "scope": "all",
+            "kind": "creature"
           }
         }
       }
@@ -611,6 +665,10 @@
       {
         "abilityType": "triggered",
         "triggerEvent": "etb",
+        "triggerEvents": [
+          "etb",
+          "graveyard"
+        ],
         "triggerCondition": "Flash When this creature enters",
         "isOptional": true,
         "cost": null,
@@ -651,9 +709,9 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
+          "kind": "create_token",
           "params": {
-            "description": "When this creature enters, create that many tokens that are copies of it"
+            "tokenName": "that many"
           }
         }
       },
@@ -767,9 +825,9 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
+          "kind": "create_token",
           "params": {
-            "description": "When this creature enters, create that many tokens that are copies of it"
+            "tokenName": "that many"
           }
         }
       },
@@ -811,6 +869,10 @@
       {
         "abilityType": "triggered",
         "triggerEvent": "etb",
+        "triggerEvents": [
+          "etb",
+          "attack"
+        ],
         "triggerCondition": "this creature enters or attacks",
         "isOptional": false,
         "cost": null,
@@ -847,7 +909,11 @@
         "targetFilter": null,
         "effect": {
           "kind": "put_counter",
-          "params": {}
+          "params": {
+            "counterKind": "+1/+1",
+            "amount": 1,
+            "scope": "own"
+          }
         }
       }
     ],
@@ -880,9 +946,10 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
+          "kind": "mass_sacrifice",
           "params": {
-            "description": "Lifelink Exploit (When this creature enters, you may sacrifice a creature"
+            "scope": "own",
+            "kind": "creature"
           }
         }
       },
@@ -896,7 +963,11 @@
         "targetFilter": null,
         "effect": {
           "kind": "put_counter",
-          "params": {}
+          "params": {
+            "counterKind": "+1/+1",
+            "amount": 1,
+            "scope": "own"
+          }
         }
       }
     ],
@@ -923,6 +994,10 @@
       {
         "abilityType": "triggered",
         "triggerEvent": "attack",
+        "triggerEvents": [
+          "attack",
+          "graveyard"
+        ],
         "triggerCondition": "Vigilance Whenever Desdemona attacks",
         "isOptional": false,
         "cost": null,
@@ -979,7 +1054,11 @@
         "targetFilter": null,
         "effect": {
           "kind": "put_counter",
-          "params": {}
+          "params": {
+            "counterKind": "+1/+1",
+            "amount": 1,
+            "scope": "own"
+          }
         }
       },
       {
@@ -991,9 +1070,10 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
+          "kind": "keyword_pump",
           "params": {
-            "description": ") Blind Betrayal — Sacrifice another creature: Elder Arthur Maxson gains indestructible until end of turn"
+            "keyword": "indestructible",
+            "scope": "all"
           }
         }
       }
@@ -1044,9 +1124,9 @@
         "targets": 1,
         "targetFilter": "creature for as long as you control Kellogg",
         "effect": {
-          "kind": "other",
+          "kind": "gain_control",
           "params": {
-            "description": "Sacrifice five Treasures: Gain control of target creature for as long as you control Kellogg"
+            "temporary": true
           }
         }
       }
@@ -1064,7 +1144,9 @@
       "Human",
       "Advisor"
     ],
-    "keywords": [],
+    "keywords": [
+      "skulk"
+    ],
     "manaProduction": null,
     "entryTapRule": null,
     "conditionalEntryText": null,
@@ -1093,10 +1175,8 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
-          "params": {
-            "description": "(It can't be blocked by creatures with greater power"
-          }
+          "kind": "static_noop",
+          "params": {}
         }
       },
       {
@@ -1136,6 +1216,10 @@
       {
         "abilityType": "triggered",
         "triggerEvent": "attack",
+        "triggerEvents": [
+          "attack",
+          "card_drawn"
+        ],
         "triggerCondition": "Battalion — Whenever Paladin Elizabeth Taggerdy and at least two other creatures attack",
         "isOptional": true,
         "cost": null,
@@ -1243,9 +1327,12 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
+          "kind": "create_token",
           "params": {
-            "description": "When this creature enters, create three 1/1 white Soldier creature tokens"
+            "tokenPower": 1,
+            "tokenToughness": 1,
+            "tokenName": "Soldier creature",
+            "amount": 3
           }
         }
       }
@@ -1270,8 +1357,8 @@
     "abilities": [
       {
         "abilityType": "triggered",
-        "triggerEvent": null,
-        "triggerCondition": null,
+        "triggerEvent": "end_of_turn",
+        "triggerCondition": "each opponent's end step",
         "isOptional": false,
         "cost": null,
         "targets": 0,
@@ -1288,8 +1375,8 @@
       },
       {
         "abilityType": "triggered",
-        "triggerEvent": null,
-        "triggerCondition": null,
+        "triggerEvent": "end_of_turn",
+        "triggerCondition": "each opponent's end step",
         "isOptional": true,
         "cost": null,
         "targets": 0,
@@ -1327,9 +1414,9 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
+          "kind": "create_token",
           "params": {
-            "description": "When this creature enters, create that many tokens that are copies of it"
+            "tokenName": "that many"
           }
         }
       },
@@ -1380,10 +1467,8 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
-          "params": {
-            "description": "Menace (This creature can't be blocked except by two or more creatures"
-          }
+          "kind": "cant_be_blocked",
+          "params": {}
         }
       },
       {
@@ -1459,9 +1544,9 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
+          "kind": "create_token",
           "params": {
-            "description": "When this creature enters, create that many tokens that are copies of it"
+            "tokenName": "that many"
           }
         }
       },
@@ -1474,10 +1559,8 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
-          "params": {
-            "description": ") Menace (This creature can't be blocked except by two or more creatures"
-          }
+          "kind": "cant_be_blocked",
+          "params": {}
         }
       }
     ],
@@ -1505,6 +1588,10 @@
       {
         "abilityType": "triggered",
         "triggerEvent": "attack",
+        "triggerEvents": [
+          "attack",
+          "counter_placed"
+        ],
         "triggerCondition": "Reach",
         "isOptional": false,
         "cost": null,
@@ -1525,7 +1612,9 @@
         "targetFilter": "creature unless that creature's controller has Craig Boone deal that much damage to them",
         "effect": {
           "kind": "deal_damage",
-          "params": {}
+          "params": {
+            "amount": 1
+          }
         }
       }
     ],
@@ -1556,9 +1645,10 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
+          "kind": "mass_sacrifice",
           "params": {
-            "description": "Decimate — When Legate Lanius enters, each opponent sacrifices a tenth of the creatures they control of their choice, rounded up"
+            "scope": "opponent",
+            "kind": "creature"
           }
         }
       },
@@ -1572,7 +1662,11 @@
         "targetFilter": null,
         "effect": {
           "kind": "put_counter",
-          "params": {}
+          "params": {
+            "counterKind": "+1/+1",
+            "amount": 1,
+            "scope": "all"
+          }
         }
       }
     ],
@@ -1603,9 +1697,12 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
+          "kind": "create_token",
           "params": {
-            "description": "When this creature enters, create two 1/1 white Human Soldier creature tokens"
+            "tokenPower": 1,
+            "tokenToughness": 1,
+            "tokenName": "Soldier creature",
+            "amount": 2
           }
         }
       },
@@ -1681,6 +1778,11 @@
       {
         "abilityType": "triggered",
         "triggerEvent": "dies",
+        "triggerEvents": [
+          "dies",
+          "card_drawn",
+          "graveyard"
+        ],
         "triggerCondition": "one or more other creatures die",
         "isOptional": false,
         "cost": null,
@@ -1781,6 +1883,19 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
+          "kind": "static_keyword",
+          "params": {}
+        }
+      },
+      {
+        "abilityType": "triggered",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
           "kind": "exile",
           "params": {
             "targetHint": "target card from"
@@ -1871,12 +1986,15 @@
         "triggerCondition": null,
         "isOptional": false,
         "cost": null,
-        "targets": 1,
-        "targetFilter": "player sacrifices an attacking creature of their choice",
+        "targets": 0,
+        "targetFilter": null,
         "effect": {
-          "kind": "other",
+          "kind": "create_token",
           "params": {
-            "description": "Target player sacrifices an attacking creature of their choice"
+            "tokenPower": 1,
+            "tokenToughness": 1,
+            "tokenName": "Soldier creature",
+            "amount": "X"
           }
         }
       }
@@ -1895,7 +2013,26 @@
     "manaProduction": null,
     "entryTapRule": null,
     "conditionalEntryText": null,
-    "abilities": [],
+    "abilities": [
+      {
+        "abilityType": "spell",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "create_token",
+          "params": {
+            "tokenPower": 1,
+            "tokenToughness": 1,
+            "tokenName": "Warrior creature",
+            "amount": "X"
+          }
+        }
+      }
+    ],
     "oracleText": "Create X 1/1 white Warrior creature tokens.",
     "scryfallId": "bca35012-ecfa-475f-b405-d3143ce99eef"
   },
@@ -1951,7 +2088,11 @@
         "targetFilter": null,
         "effect": {
           "kind": "put_counter",
-          "params": {}
+          "params": {
+            "counterKind": "+1/+1",
+            "amount": 1,
+            "scope": "all"
+          }
         }
       }
     ],
@@ -1976,8 +2117,8 @@
         "triggerCondition": null,
         "isOptional": false,
         "cost": null,
-        "targets": 0,
-        "targetFilter": null,
+        "targets": 1,
+        "targetFilter": "nonland permanent",
         "effect": {
           "kind": "exile",
           "params": {
@@ -2035,6 +2176,22 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
+          "kind": "mass_sacrifice",
+          "params": {
+            "scope": "own",
+            "kind": "creature"
+          }
+        }
+      },
+      {
+        "abilityType": "spell",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
           "kind": "create_token",
           "params": {
             "tokenName": "Treasure",
@@ -2082,9 +2239,10 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
+          "kind": "keyword_pump",
           "params": {
-            "description": "It gains haste until end of turn"
+            "keyword": "haste",
+            "scope": "all"
           }
         }
       },
@@ -2155,6 +2313,24 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
+          "kind": "create_token",
+          "params": {
+            "tokenPower": 1,
+            "tokenToughness": 1,
+            "tokenName": "Soldier creature",
+            "amount": "X"
+          }
+        }
+      },
+      {
+        "abilityType": "spell",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
           "kind": "destroy",
           "params": {}
         }
@@ -2207,6 +2383,24 @@
     "conditionalEntryText": null,
     "abilities": [
       {
+        "abilityType": "spell",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "create_token",
+          "params": {
+            "tokenPower": 1,
+            "tokenToughness": 1,
+            "tokenName": "Soldier creature",
+            "amount": 2
+          }
+        }
+      },
+      {
         "abilityType": "static",
         "triggerEvent": null,
         "triggerCondition": null,
@@ -2249,7 +2443,9 @@
         "targetFilter": "creature card with mana value 3 or less from your graveyard to the battlefield with a finality counter on it",
         "effect": {
           "kind": "return_from_graveyard",
-          "params": {}
+          "params": {
+            "zone": "battlefield"
+          }
         }
       },
       {
@@ -2262,7 +2458,11 @@
         "targetFilter": "creature you control",
         "effect": {
           "kind": "put_counter",
-          "params": {}
+          "params": {
+            "counterKind": "+1/+1",
+            "amount": 2,
+            "scope": "own"
+          }
         }
       }
     ],
@@ -2306,7 +2506,11 @@
         "targetFilter": null,
         "effect": {
           "kind": "put_counter",
-          "params": {}
+          "params": {
+            "counterKind": "+1/+1",
+            "amount": 1,
+            "scope": "own"
+          }
         }
       }
     ],
@@ -2383,6 +2587,21 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
+          "kind": "draw_cards",
+          "params": {
+            "amount": 1
+          }
+        }
+      },
+      {
+        "abilityType": "triggered",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
           "kind": "destroy",
           "params": {}
         }
@@ -2430,7 +2649,9 @@
         "targetFilter": "creature cards from your graveyard to the battlefield",
         "effect": {
           "kind": "return_from_graveyard",
-          "params": {}
+          "params": {
+            "zone": "battlefield"
+          }
         }
       }
     ],
@@ -2725,9 +2946,12 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
+          "kind": "create_token",
           "params": {
-            "description": "{4}, {T}: Create X 1/1 white Soldier creature tokens, where X is the number of Bobbleheads you control"
+            "tokenPower": 1,
+            "tokenToughness": 1,
+            "tokenName": "Soldier creature",
+            "amount": "X"
           }
         }
       }
@@ -2871,13 +3095,27 @@
         "triggerCondition": null,
         "isOptional": true,
         "cost": null,
-        "targets": 1,
-        "targetFilter": "player loses all rad counters",
+        "targets": 0,
+        "targetFilter": null,
         "effect": {
-          "kind": "other",
+          "kind": "lose_rad",
           "params": {
-            "description": "\") • RadAway — Target player loses all rad counters"
+            "scope": "opponent",
+            "amount": 1
           }
+        }
+      },
+      {
+        "abilityType": "triggered",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": true,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "sacrifice",
+          "params": {}
         }
       }
     ],
@@ -3004,7 +3242,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "deal_damage",
-          "params": {}
+          "params": {
+            "amount": 1
+          }
         }
       }
     ],
@@ -3066,7 +3306,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "deal_damage",
-          "params": {}
+          "params": {
+            "amount": 1
+          }
         }
       }
     ],
@@ -3128,7 +3370,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "deal_damage",
-          "params": {}
+          "params": {
+            "amount": 1
+          }
         }
       }
     ],
@@ -3187,6 +3431,21 @@
     "entryTapRule": null,
     "conditionalEntryText": null,
     "abilities": [
+      {
+        "abilityType": "triggered",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "remove_counters",
+          "params": {
+            "amount": 1
+          }
+        }
+      },
       {
         "abilityType": "activated",
         "triggerEvent": null,
@@ -3484,6 +3743,21 @@
         }
       },
       {
+        "abilityType": "triggered",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "scry",
+          "params": {
+            "amount": 1
+          }
+        }
+      },
+      {
         "abilityType": "activated",
         "triggerEvent": null,
         "triggerCondition": null,
@@ -3534,6 +3808,21 @@
         }
       },
       {
+        "abilityType": "triggered",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "scry",
+          "params": {
+            "amount": 1
+          }
+        }
+      },
+      {
         "abilityType": "activated",
         "triggerEvent": null,
         "triggerCondition": null,
@@ -3572,6 +3861,21 @@
         "abilityType": "triggered",
         "triggerEvent": "etb",
         "triggerCondition": "this land enters",
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "scry",
+          "params": {
+            "amount": 1
+          }
+        }
+      },
+      {
+        "abilityType": "triggered",
+        "triggerEvent": null,
+        "triggerCondition": null,
         "isOptional": false,
         "cost": null,
         "targets": 0,
@@ -3652,10 +3956,8 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
-          "params": {
-            "description": "{W}, {T}: You may play the exiled card without paying its mana cost if you attacked with three or more creatures this turn"
-          }
+          "kind": "cast_from_graveyard",
+          "params": {}
         }
       }
     ],
@@ -3777,9 +4079,12 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
+          "kind": "create_token",
           "params": {
-            "description": "{3}{W}, {T}, Sacrifice this land: Create two 1/1 white Soldier creature tokens"
+            "tokenPower": 1,
+            "tokenToughness": 1,
+            "tokenName": "Soldier creature",
+            "amount": 2
           }
         }
       }
@@ -3909,6 +4214,21 @@
         "abilityType": "triggered",
         "triggerEvent": "cast",
         "triggerCondition": "that mana is spent to cast a creature spell that shares a creature type with your commander",
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "scry",
+          "params": {
+            "amount": 1
+          }
+        }
+      },
+      {
+        "abilityType": "triggered",
+        "triggerEvent": null,
+        "triggerCondition": null,
         "isOptional": false,
         "cost": null,
         "targets": 0,

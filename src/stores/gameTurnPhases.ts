@@ -1,7 +1,23 @@
+import type { BoardCard } from '../types/card'
 import type { GameState } from './gameStore'
 import { emptyManaPool, moveCastSpellsToGraveyard, prepareCardPlay, pushUndo } from './gameRules'
 
 type SetFn = (partial: GameState | Partial<GameState> | ((state: GameState) => Partial<GameState>)) => void
+
+/** "Until end of turn" pumps/keywords expire at the turn handoff, not at the
+ *  start of the next own turn (CR: effects last until the cleanup step of the
+ *  turn they were created in). Cleared for both sides, including temporary
+ *  control changes. */
+function clearTurnBoosts(cards: BoardCard[]): BoardCard[] {
+  return cards.map((card) => {
+    let updated = card
+    if (card.controlUntilTurnEnd && card.originalOwner) {
+      updated = { ...card, owner: card.originalOwner, originalOwner: undefined, controlUntilTurnEnd: undefined }
+    }
+    if (updated.zone !== 'battlefield') return updated
+    return { ...updated, powerBoost: 0, toughnessBoost: 0, keywordBoosts: undefined, cantBeBlockedThisTurn: undefined }
+  })
+}
 
 export function createTurnPhases(set: SetFn, get: () => GameState): Pick<GameState, 'advanceTurn' | 'advancePhase' | 'announceEndTurn' | 'cancelTurnPrompt' | 'overrideLandPlay' | 'resolveConditionalEntry' | 'discardForTurn' | 'clearDrawNotice' | 'clearTurnAnnouncement'> {
   return {
@@ -10,7 +26,7 @@ export function createTurnPhases(set: SetFn, get: () => GameState): Pick<GameSta
       const isPlayer = state.activePlayer === 'player'
 
       if (isPlayer) {
-        const handSize = state.cards.filter((c) => c.zone === 'hand').length
+        const handSize = state.cards.filter((c) => (c.owner ?? 'player') === 'player' && c.zone === 'hand').length
         const undo = pushUndo(state)
         // Hand-size rule applies regardless of how the turn ends (button or
         // phase advance): discard to 7 before handing off.
@@ -21,11 +37,14 @@ export function createTurnPhases(set: SetFn, get: () => GameState): Pick<GameSta
           })
           return
         }
+        // The monarch draws a card at the beginning of the end step.
+        if (state.monarch === 'player') get().drawCards(1)
         set((prev) => ({
           ...pushUndo(prev),
           manaPool: emptyManaPool(),
           potentialMana: [],
           landPlaysThisTurn: 0,
+          cards: clearTurnBoosts(prev.cards),
           activePlayer: 'opponent',
           currentPhase: 'beginning',
           turnAnnouncement: { id: Date.now(), text: "OPPONENT'S TURN" },
@@ -38,6 +57,7 @@ export function createTurnPhases(set: SetFn, get: () => GameState): Pick<GameSta
           opponentManaPool: emptyManaPool(),
           opponentPotentialMana: [],
           opponentLandPlaysThisTurn: 0,
+          cards: clearTurnBoosts(prev.cards),
           activePlayer: 'player',
           currentPhase: 'beginning',
           turn: prev.turn + 1,
@@ -62,10 +82,28 @@ export function createTurnPhases(set: SetFn, get: () => GameState): Pick<GameSta
           set((prev) => ({
             cards: prev.cards.map((c) =>
               (c.owner ?? 'player') === 'player' && c.zone === 'battlefield'
-                ? { ...c, tapped: false, damage: 0, powerBoost: 0, toughnessBoost: 0 }
+                ? { ...c, tapped: false, damage: 0, powerBoost: 0, toughnessBoost: 0, deathtouchDamage: false, keywordBoosts: undefined }
                 : c,
             ),
           }))
+          // Rad counters: at the beginning of your upkeep, mill radCounters and
+          // lose that many.
+          if (get().radCounters > 0) {
+            const rad = get().radCounters
+            set((prev) => {
+              let remaining = rad
+              return {
+                cards: prev.cards.map((c) => {
+                  if (remaining > 0 && (c.owner ?? 'player') === 'player' && c.zone === 'library') {
+                    remaining--
+                    return { ...c, zone: 'graveyard' as const, revealed: true }
+                  }
+                  return c
+                }),
+                radCounters: 0,
+              }
+            })
+          }
           if (state.turn > 1) {
             // Draw-step triggers ("at the beginning of your draw step") fire
             // before the regular draw.
@@ -92,7 +130,7 @@ export function createTurnPhases(set: SetFn, get: () => GameState): Pick<GameSta
     },
 
     announceEndTurn: () => {
-      const hadExtra = get().cards.filter((c) => c.zone === 'hand').length > 7
+      const hadExtra = get().cards.filter((c) => (c.owner ?? 'player') === 'player' && c.zone === 'hand').length > 7
       set((state) => {
         const undo = pushUndo(state)
         const cards = moveCastSpellsToGraveyard(state.cards)
@@ -138,7 +176,10 @@ export function createTurnPhases(set: SetFn, get: () => GameState): Pick<GameSta
         }
       })
       const card = get().cards.find((c) => c.id === cardId)
-      if (card?.zone === 'battlefield') get().emitGameEvent({ type: 'etb', cardId, cardName: card.name })
+      if (card?.zone === 'battlefield') {
+        get().emitGameEvent({ type: 'etb', cardId, cardName: card.name })
+        if (card.type === 'land') get().emitGameEvent({ type: 'landfall', cardId, cardName: card.name })
+      }
     },
 
     resolveConditionalEntry: (cardId, tapped) => {
@@ -165,7 +206,10 @@ export function createTurnPhases(set: SetFn, get: () => GameState): Pick<GameSta
         }
       })
       const card = get().cards.find((c) => c.id === cardId)
-      if (card?.zone === 'battlefield') get().emitGameEvent({ type: 'etb', cardId, cardName: card.name })
+      if (card?.zone === 'battlefield') {
+        get().emitGameEvent({ type: 'etb', cardId, cardName: card.name })
+        if (card.type === 'land') get().emitGameEvent({ type: 'landfall', cardId, cardName: card.name })
+      }
     },
 
     discardForTurn: (cardId) => {
@@ -182,13 +226,13 @@ export function createTurnPhases(set: SetFn, get: () => GameState): Pick<GameSta
         )
         const resolvedCards = moveCastSpellsToGraveyard(cards)
         const undo = pushUndo(state)
-        if (resolvedCards.filter((candidate) => candidate.zone === 'hand').length > 7) {
+        if (resolvedCards.filter((candidate) => (candidate.owner ?? 'player') === 'player' && candidate.zone === 'hand').length > 7) {
           return { ...undo, cards: resolvedCards, turnPrompt: { id: Date.now(), action: state.turnPrompt.action, reason: 'discard' } }
         }
         return action === 'advance'
           ? {
               ...undo,
-              cards: resolvedCards,
+              cards: clearTurnBoosts(resolvedCards),
               manaPool: emptyManaPool(),
               potentialMana: [],
               landPlaysThisTurn: 0,

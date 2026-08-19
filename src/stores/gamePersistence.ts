@@ -15,7 +15,7 @@ export const STORAGE_KEY = 'mtg-board-state'
 
 export type PersistedGameState = Pick<
   GameState,
-  'activeDeckId' | 'lifeTotal' | 'cards' | 'cardScale' | 'manaPool' | 'potentialMana' | 'manaLog' | 'effectHistory' | 'tokens' | 'backgroundImage' | 'backgrounds' | 'rollHistory' | 'overlay' | 'showOpponent' | 'opponentName' | 'aiFixedDeck' | 'opponentLifeTotal' | 'turnPlayerMs' | 'turnOpponentMs' | 'turn' | 'currentPhase' | 'landPlaysThisTurn' | 'playerSpellsCastThisTurn' | 'opponentSpellsCastThisTurn' | 'turnAnnouncement' | 'triggerStack' | 'commanderDamage'
+  'activeDeckId' | 'lifeTotal' | 'cards' | 'cardScale' | 'manaPool' | 'potentialMana' | 'manaLog' | 'effectHistory' | 'tokens' | 'backgroundImage' | 'backgrounds' | 'rollHistory' | 'overlay' | 'showOpponent' | 'opponentName' | 'aiFixedDeck' | 'opponentLifeTotal' | 'energyCounters' | 'opponentEnergyCounters' | 'radCounters' | 'opponentRadCounters' | 'turnPlayerMs' | 'turnOpponentMs' | 'turn' | 'currentPhase' | 'landPlaysThisTurn' | 'playerSpellsCastThisTurn' | 'opponentSpellsCastThisTurn' | 'turnAnnouncement' | 'triggerStack' | 'commanderDamage'
 >
 
 export const defaultGameState: PersistedGameState & { undoStack: GameSnapshot[]; redoStack: GameSnapshot[] } = {
@@ -36,6 +36,10 @@ export const defaultGameState: PersistedGameState & { undoStack: GameSnapshot[];
   opponentName: null,
   aiFixedDeck: true,
   commanderDamage: {},
+  energyCounters: 0,
+  opponentEnergyCounters: 0,
+  radCounters: 0,
+  opponentRadCounters: 0,
   turnPlayerMs: 0,
   turnOpponentMs: 0,
   opponentLifeTotal: 40,
@@ -111,6 +115,10 @@ export function loadPersistedGameState(): PersistedGameState {
       turnPlayerMs: Number.isFinite(parsed.turnPlayerMs) ? Math.max(0, parsed.turnPlayerMs!) : defaultGameState.turnPlayerMs,
       turnOpponentMs: Number.isFinite(parsed.turnOpponentMs) ? Math.max(0, parsed.turnOpponentMs!) : defaultGameState.turnOpponentMs,
       opponentLifeTotal: Number.isFinite(parsed.opponentLifeTotal) ? parsed.opponentLifeTotal! : defaultGameState.opponentLifeTotal,
+      energyCounters: Number.isFinite(parsed.energyCounters) ? Math.max(0, parsed.energyCounters!) : defaultGameState.energyCounters,
+      opponentEnergyCounters: Number.isFinite(parsed.opponentEnergyCounters) ? Math.max(0, parsed.opponentEnergyCounters!) : defaultGameState.opponentEnergyCounters,
+      radCounters: Number.isFinite(parsed.radCounters) ? Math.max(0, parsed.radCounters!) : defaultGameState.radCounters,
+      opponentRadCounters: Number.isFinite(parsed.opponentRadCounters) ? Math.max(0, parsed.opponentRadCounters!) : defaultGameState.opponentRadCounters,
       turn: Number.isFinite(parsed.turn) ? Math.max(1, parsed.turn!) : defaultGameState.turn,
       currentPhase: PHASES.includes(parsed.currentPhase as any) ? parsed.currentPhase as Phase : defaultGameState.currentPhase,
       landPlaysThisTurn: Number.isFinite(parsed.landPlaysThisTurn) ? Math.max(0, Math.floor(parsed.landPlaysThisTurn!)) : defaultGameState.landPlaysThisTurn,
@@ -130,11 +138,20 @@ export function loadPersistedGameState(): PersistedGameState {
   }
 }
 
+let lastSavedBackgrounds: BackgroundOption[] | null = null
+
 export function persistGameState(state: GameState) {
   try {
     if (typeof localStorage === 'undefined') return
     const useIndexedDb = typeof indexedDB !== 'undefined'
-    if (useIndexedDb) void saveBackgroundsToStorage(state.backgrounds)
+    if (useIndexedDb) {
+      // Backgrounds only change identity when set() touches them; skip the
+      // (potentially multi-MB) IndexedDB write on unrelated state changes.
+      if (state.backgrounds !== lastSavedBackgrounds) {
+        lastSavedBackgrounds = state.backgrounds
+        void saveBackgroundsToStorage(state.backgrounds)
+      }
+    }
     const storedBackgrounds = useIndexedDb
       ? state.backgrounds.map((background) => ({ ...background, dataUrl: indexedDbReference(background.id) }))
       : state.backgrounds
@@ -159,6 +176,10 @@ export function persistGameState(state: GameState) {
       turnPlayerMs: state.turnPlayerMs,
       turnOpponentMs: state.turnOpponentMs,
       opponentLifeTotal: state.opponentLifeTotal,
+      energyCounters: state.energyCounters,
+      opponentEnergyCounters: state.opponentEnergyCounters,
+      radCounters: state.radCounters,
+      opponentRadCounters: state.opponentRadCounters,
       turn: state.turn,
       currentPhase: state.currentPhase,
       landPlaysThisTurn: state.landPlaysThisTurn,

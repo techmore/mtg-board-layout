@@ -1,5 +1,5 @@
 import type { Room } from '@colyseus/sdk'
-import { createContext, createElement, useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react'
+import { useSyncExternalStore } from 'react'
 import { createClient } from './client'
 import { getStoredServerUrl, normalizeServerUrl } from './serverUrl'
 import { createSnapshot, normalizePrivateState } from './roomState'
@@ -25,8 +25,15 @@ interface RoomSessionValue {
   leave: () => void
 }
 
+/**
+ * The room session is a module-level singleton rather than a React context so
+ * the multiplayer connection survives route transitions (lobby -> game room ->
+ * board) without a provider wrapper. It also keeps the Colyseus SDK out of the
+ * main bundle: useRoom is only imported by the lazy multiplayer pages.
+ */
+
 const PLAYER_ID_KEY = 'mtg-board-player-id'
-const RoomSessionContext = createContext<RoomSessionValue | null>(null)
+const PLAYER_AUTH_KEY = 'mtg-board-player-auth'
 
 function getStablePlayerId(): string {
   if (typeof window === 'undefined') return 'server-player'
@@ -41,96 +48,179 @@ function getStablePlayerId(): string {
   }
 }
 
-function withPlayerId(options: RoomJoinOptions): RoomJoinOptions {
-  return { ...options, playerId: options.playerId ?? getStablePlayerId() }
+/** The reconnect auth token issued by the server on first join. */
+function getStoredAuthToken(): string | undefined {
+  if (typeof window === 'undefined') return undefined
+  try {
+    return window.sessionStorage.getItem(PLAYER_AUTH_KEY) ?? undefined
+  } catch {
+    return undefined
+  }
 }
 
-export function RoomSessionProvider({ children }: { children: React.ReactNode }) {
-  const [room, setRoom] = useState<Room | null>(null)
-  const [state, setState] = useState<GameRoomState | null>(null)
-  const [privateState, setPrivateState] = useState<PrivateState>({ hand: [], libraryCount: 0 })
-  const [lastEvent, setLastEvent] = useState<ServerEvent | null>(null)
-  const [error, setError] = useState<string | null>(null)
-  const [isConnecting, setIsConnecting] = useState(false)
-  const [serverUrl, setServerUrl] = useState(getStoredServerUrl)
-  const roomRef = useRef<Room | null>(null)
-  const roomServerUrlRef = useRef(serverUrl)
-  const connectingRef = useRef<Promise<void> | null>(null)
+function withPlayerId(options: RoomJoinOptions): RoomJoinOptions {
+  const authToken = getStoredAuthToken()
+  return {
+    ...options,
+    playerId: options.playerId ?? getStablePlayerId(),
+    ...(authToken ? { authToken } : {}),
+  }
+}
 
-  const attachRoom = useCallback((joined: Room, connectedServerUrl: string) => {
-    roomRef.current = joined
-    roomServerUrlRef.current = connectedServerUrl
-    setRoom(joined)
-    setServerUrl(connectedServerUrl)
-    setState(createSnapshot(joined))
-    setError(null)
-    joined.onStateChange(() => setState(createSnapshot(joined)))
-    const eventTypes = ['gameStarted', 'gameEnded', 'error', 'chatMessage', 'turnChanged', 'diceRolled', 'coinFlipped', 'privateState', 'turnAnnouncement']
-    for (const eventType of eventTypes) {
-      joined.onMessage(eventType, (event: unknown) => {
-        if (eventType === 'privateState' && event && typeof event === 'object') {
-          setPrivateState(normalizePrivateState(event))
-          return
+let sessionState: RoomSessionValue = {
+  room: null,
+  state: null,
+  privateState: { hand: [], libraryCount: 0 },
+  lastEvent: null,
+  error: null,
+  isConnecting: false,
+  serverUrl: getStoredServerUrl(),
+  connect: () => Promise.resolve(),
+  adopt: () => {},
+  sendAction: () => {},
+  leave: () => {},
+}
+
+const listeners = new Set<() => void>()
+function setSession(partial: Partial<RoomSessionValue>) {
+  sessionState = { ...sessionState, ...partial }
+  for (const listener of listeners) listener()
+}
+function subscribe(listener: () => void): () => void {
+  listeners.add(listener)
+  return () => listeners.delete(listener)
+}
+function getSession(): RoomSessionValue {
+  return sessionState
+}
+
+let roomRef: Room | null = null
+let roomServerUrlRef = sessionState.serverUrl
+let connectingRef: Promise<void> | null = null
+let snapshotTimer: ReturnType<typeof setTimeout> | null = null
+
+function attachRoom(joined: Room, connectedServerUrl: string) {
+  roomRef = joined
+  roomServerUrlRef = connectedServerUrl
+  setSession({
+    room: joined,
+    serverUrl: connectedServerUrl,
+    state: createSnapshot(joined),
+    error: null,
+  })
+  // Coalesce burst patches (e.g. a combat resolution mutates many cards in a
+  // row) into a single snapshot instead of cloning every player's zones per
+  // patch.
+  joined.onStateChange(() => {
+    if (snapshotTimer) clearTimeout(snapshotTimer)
+    snapshotTimer = setTimeout(() => {
+      snapshotTimer = null
+      if (roomRef === joined) setSession({ state: createSnapshot(joined) })
+    }, 50)
+  })
+  const eventTypes = ['gameStarted', 'gameEnded', 'error', 'chatMessage', 'turnChanged', 'diceRolled', 'coinFlipped', 'privateState', 'turnAnnouncement', 'authToken']
+  for (const eventType of eventTypes) {
+    joined.onMessage(eventType, (event: unknown) => {
+      if (eventType === 'privateState' && event && typeof event === 'object') {
+        setSession({ privateState: normalizePrivateState(event) })
+        return
+      }
+      // Persist the reconnect token issued for this player.
+      if (eventType === 'authToken' && event && typeof event === 'object') {
+        const token = (event as { token?: unknown }).token
+        if (typeof token === 'string') {
+          try { window.sessionStorage.setItem(PLAYER_AUTH_KEY, token) } catch { /* non-fatal */ }
         }
-        setLastEvent(event as ServerEvent)
-      })
-    }
-    joined.send('requestPrivateState', { type: 'requestPrivateState' })
-  }, [])
+        return
+      }
+      setSession({ lastEvent: event as ServerEvent })
+    })
+  }
+  joined.send('requestPrivateState', { type: 'requestPrivateState' })
+}
 
-  const adopt = useCallback((joined: Room, connectedServerUrl = roomServerUrlRef.current) => {
-    if (roomRef.current && roomRef.current !== joined) roomRef.current.leave()
-    attachRoom(joined, normalizeServerUrl(connectedServerUrl))
-  }, [attachRoom])
+export function adopt(joined: Room, connectedServerUrl = roomServerUrlRef) {
+  if (roomRef && roomRef !== joined) roomRef.leave()
+  attachRoom(joined, normalizeServerUrl(connectedServerUrl))
+}
 
-  const connect = useCallback(async (roomId: string, options: RoomJoinOptions, requestedServerUrl = getStoredServerUrl()) => {
-    if (!roomId) throw new Error('A room code is required.')
-    const connectedServerUrl = normalizeServerUrl(requestedServerUrl)
-    if (roomRef.current?.roomId === roomId && roomServerUrlRef.current === connectedServerUrl) return
-    if (connectingRef.current) return connectingRef.current
-    if (roomRef.current) roomRef.current.leave()
-    setIsConnecting(true)
-    setError(null)
-    const promise = joinRoom(roomId, withPlayerId(options), connectedServerUrl)
-      .then((joined) => attachRoom(joined, connectedServerUrl))
-      .catch((cause: unknown) => {
-        const message = cause instanceof Error ? cause.message : 'Could not connect to the game room.'
-        setError(message)
-        throw cause
-      })
-      .finally(() => {
-        connectingRef.current = null
-        setIsConnecting(false)
-      })
-    connectingRef.current = promise
-    return promise
-  }, [attachRoom])
+export async function connect(roomId: string, options: RoomJoinOptions, requestedServerUrl = getStoredServerUrl()): Promise<void> {
+  if (!roomId) throw new Error('A room code is required.')
+  const connectedServerUrl = normalizeServerUrl(requestedServerUrl)
+  if (roomRef?.roomId === roomId && roomServerUrlRef === connectedServerUrl) return
+  if (connectingRef) return connectingRef
+  if (roomRef) roomRef.leave()
+  setSession({ isConnecting: true, error: null })
+  const promise = joinRoom(roomId, withPlayerId(options), connectedServerUrl)
+    .then((joined) => attachRoom(joined, connectedServerUrl))
+    .catch((cause: unknown) => {
+      const message = cause instanceof Error ? cause.message : 'Could not connect to the game room.'
+      setSession({ error: message })
+      throw cause
+    })
+    .finally(() => {
+      connectingRef = null
+      setSession({ isConnecting: false })
+    })
+  connectingRef = promise
+  return promise
+}
 
-  const sendAction = useCallback((action: PlayerAction) => {
-    roomRef.current?.send(action.type, action)
-  }, [])
+export function sendAction(action: PlayerAction) {
+  roomRef?.send(action.type, action)
+}
 
-  const leave = useCallback(() => {
-    roomRef.current?.leave()
-    roomRef.current = null
-    setRoom(null)
-    setState(null)
-    setPrivateState({ hand: [], libraryCount: 0 })
-    setLastEvent(null)
-  }, [])
-
-  useEffect(() => () => {
-    void roomRef.current?.leave()
-  }, [])
-
-  const value = useMemo(() => ({ room, state, privateState, lastEvent, error, isConnecting, serverUrl, connect, adopt, sendAction, leave }), [room, state, privateState, lastEvent, error, isConnecting, serverUrl, connect, adopt, sendAction, leave])
-  return createElement(RoomSessionContext.Provider, { value }, children)
+export function leave() {
+  roomRef?.leave()
+  roomRef = null
+  if (snapshotTimer) {
+    clearTimeout(snapshotTimer)
+    snapshotTimer = null
+  }
+  setSession({
+    room: null,
+    state: null,
+    privateState: { hand: [], libraryCount: 0 },
+    lastEvent: null,
+  })
 }
 
 export function useRoomSession(): RoomSessionValue {
-  const value = useContext(RoomSessionContext)
-  if (!value) throw new Error('useRoomSession must be used inside RoomSessionProvider')
-  return value
+  return useSyncExternalStore(subscribe, getSession)
+}
+
+/**
+ * Slice subscriptions: components re-render only when the subscribed slice
+ * changes. A chat message or dice roll updates `lastEvent` without re-rendering
+ * the whole board (the state object reference is unchanged).
+ */
+export function useRoomState(): GameRoomState | null {
+  return useSyncExternalStore(subscribe, () => sessionState.state)
+}
+
+export function useRoomPrivateState(): PrivateState {
+  return useSyncExternalStore(subscribe, () => sessionState.privateState)
+}
+
+export function useRoomLastEvent(): ServerEvent | null {
+  return useSyncExternalStore(subscribe, () => sessionState.lastEvent)
+}
+
+/** Primitive slices stay stable across unrelated session changes. */
+export function useRoomError(): string | null {
+  return useSyncExternalStore(subscribe, () => sessionState.error)
+}
+
+export function useRoomConnecting(): boolean {
+  return useSyncExternalStore(subscribe, () => sessionState.isConnecting)
+}
+
+export function useRoomServerUrl(): string {
+  return useSyncExternalStore(subscribe, () => sessionState.serverUrl)
+}
+
+export function useRoomInstance(): Room | null {
+  return useSyncExternalStore(subscribe, () => sessionState.room)
 }
 
 export function createRoom(options: RoomCreateOptions, serverUrl = getStoredServerUrl()): Promise<Room> {

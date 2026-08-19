@@ -11,7 +11,11 @@ export function shuffle<T>(arr: T[]): T[] {
   return a
 }
 
-import type { BoardCard, ManaColor, ManaPool } from '../types/card'
+import type { BoardCard, ManaPool } from '../types/card'
+import { canPayManaCost, emptyManaPool, parseManaCost, spendManaForCost } from 'mtg-protocol/mana'
+
+export { canPayManaCost, parseManaCost, spendManaForCost, emptyManaPool }
+export type { ManaPool }
 
 export function classifyType(typeLine: string): BoardCard['type'] {
   const tl = typeLine.toLowerCase()
@@ -38,67 +42,10 @@ export function getCreatureToughness(typeLine: string | undefined): number {
   return parseInt(typeLine?.match(/\/(\d+)/)?.[1] ?? '0', 10)
 }
 
-export function getCardPower(card: { typeLine: string | undefined; powerBoost?: number }): number {
-  return getCreaturePower(card.typeLine) + (card.powerBoost ?? 0)
+export function getCardPower(card: { typeLine: string | undefined; powerBoost?: number; counters?: number; minusCounters?: number }): number {
+  return getCreaturePower(card.typeLine) + (card.powerBoost ?? 0) + (card.counters ?? 0) - (card.minusCounters ?? 0)
 }
 
-export function getCardToughness(card: { typeLine: string | undefined; toughnessBoost?: number; counters?: number }): number {
-  return getCreatureToughness(card.typeLine) + (card.toughnessBoost ?? 0) + (card.counters ?? 0)
-}
-
-export function parseManaCost(cost: string) {
-  const symbols = cost.match(/\{[^}]+\}/g) ?? []
-  const colored: Record<string, number> = { W: 0, U: 0, B: 0, R: 0, G: 0, C: 0 }
-  let generic = 0
-  for (const symbol of symbols) {
-    const inner = symbol.slice(1, -1)
-    if (['W', 'U', 'B', 'R', 'G', 'C'].includes(inner)) {
-      colored[inner]++
-    } else if (/^\d+$/.test(inner)) {
-      generic += parseInt(inner, 10)
-    } else if (/^X$/i.test(inner)) {
-      // {X} spells still cost at least one generic mana here; charging nothing
-      // would let X-spells resolve for free. (Hybrid symbols like {2/B} are
-      // counted as generic too — they can always be paid with generic mana.)
-      generic += 1
-    } else if (/^[0-9]+\/[WUBRGC]$/i.test(inner)) {
-      generic += parseInt(inner.split('/')[0], 10)
-    } else if (/^[WUBRGC]\/[WUBRGC]$/i.test(inner)) {
-      colored[inner.split('/')[0] as ManaColor]++
-    }
-  }
-  return {
-    colored: (Object.entries(colored) as [ManaColor, number][]).filter(([, count]) => count > 0).map(([color, count]) => ({ color, count })),
-    generic,
-  }
-}
-
-export function spendManaForCost(pool: ManaPool, cost: string): ManaPool {
-  if (!cost) return pool
-  const { colored, generic } = parseManaCost(cost)
-  const next = { ...pool }
-  for (const { color, count } of colored) {
-    next[color] = Math.max(0, next[color] - count)
-  }
-  let remaining = generic
-  const order: ManaColor[] = ['W', 'U', 'B', 'R', 'G', 'C']
-  for (const color of order) {
-    if (remaining <= 0) break
-    const spend = Math.min(remaining, next[color])
-    next[color] -= spend
-    remaining -= spend
-  }
-  return next
-}
-
-export function canPayManaCost(pool: ManaPool, cost: string): boolean {
-  if (!cost) return true
-  const { colored, generic } = parseManaCost(cost)
-  const remaining = { ...pool }
-  for (const { color, count } of colored) {
-    if (remaining[color] < count) return false
-    remaining[color] -= count
-  }
-  const availableGeneric = Object.values(remaining).reduce((total, amount) => total + amount, 0)
-  return availableGeneric >= generic
+export function getCardToughness(card: { typeLine: string | undefined; toughnessBoost?: number; counters?: number; minusCounters?: number }): number {
+  return getCreatureToughness(card.typeLine) + (card.toughnessBoost ?? 0) + (card.counters ?? 0) - (card.minusCounters ?? 0)
 }

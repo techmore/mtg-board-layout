@@ -6,7 +6,12 @@
  * and keywords affect resolution (flying/reach blocking, first strike/double
  * strike damage order, trample overflow, lifelink, deathtouch, indestructible,
  * vigilance attack legality).
+ *
+ * Keyword and P/T parsing comes from the shared `mtg-protocol/combat` module so
+ * the server resolves them identically to the client's rules cache.
  */
+
+import { canBlock, computeStaticPump, getStaticKeywords, parseKeywords, parsePower, parseToughness } from 'mtg-protocol/combat'
 
 export interface Combatant {
   id: string
@@ -18,38 +23,11 @@ export interface Combatant {
   teamId: string
   damage: number
   tapped: boolean
+  enchantsCardId?: string
+  cantBeBlockedThisTurn?: boolean
 }
 
-/** P/T from the explicit field first; the type line is a fallback for
- * clients that never sent it. Accepts a bare type line for compatibility
- * with older call sites. */
-export function parsePower(combatant: Pick<Combatant, 'typeLine' | 'power'> | string): number {
-  const source = typeof combatant === 'string' ? { typeLine: combatant } : combatant
-  if (source.power) {
-    const n = parseInt(source.power, 10)
-    if (!Number.isNaN(n)) return n
-  }
-  return parseInt(source.typeLine.match(/(\d+)\//)?.[1] ?? '0', 10)
-}
-
-export function parseToughness(combatant: Pick<Combatant, 'typeLine' | 'toughness'> | string): number {
-  const source = typeof combatant === 'string' ? { typeLine: combatant } : combatant
-  if (source.toughness) {
-    const n = parseInt(source.toughness, 10)
-    if (!Number.isNaN(n)) return n
-  }
-  return parseInt(source.typeLine.match(/\/(\d+)/)?.[1] ?? '0', 10)
-}
-
-/** Keywords are read from the oracle text's first line ("Flying, trample ..."). */
-export function parseKeywords(oracleText: string): Set<string> {
-  const keywords = new Set<string>()
-  const firstLine = oracleText.split('\n')[0] ?? ''
-  for (const keyword of ['flying', 'trample', 'first strike', 'double strike', 'lifelink', 'deathtouch', 'indestructible', 'reach', 'vigilance', 'haste', 'menace']) {
-    if (new RegExp(`\\b${keyword}\\b`, 'i').test(firstLine)) keywords.add(keyword)
-  }
-  return keywords
-}
+export { parseKeywords, parsePower, parseToughness }
 
 export interface CombatResolution {
   /** damage to add to each involved card (attacker or blocker) */
@@ -84,6 +62,25 @@ export function resolveCombat(
   const findCard = (cardId: string): Combatant | undefined =>
     allPlayers.flatMap((p) => p.battlefield).find((c) => c.id === cardId)
 
+  // Static anthem pumps ("creatures you control get +1/+1") modify every
+  // combatant's effective P/T, matching the client's combat math.
+  const allBattlefield = allPlayers.flatMap((p) => p.battlefield)
+  const pumpSources = allBattlefield.map((c) => ({
+    id: c.id, name: '', typeLine: c.typeLine, oracleText: c.oracleText, ownerId: c.ownerId, type: 'creature',
+    enchantsCardId: c.enchantsCardId,
+  }))
+  const pumpCard = (c: Combatant) => ({ id: c.id, typeLine: c.typeLine, ownerId: c.ownerId, type: 'creature' as const })
+  const effectivePower = (c: Combatant) => parsePower(c) + computeStaticPump(pumpSources, pumpCard(c)).power
+  const effectiveToughness = (c: Combatant) => parseToughness(c) + computeStaticPump(pumpSources, pumpCard(c)).toughness
+
+  // Keywords from the card's own text plus static anthems ("creatures you
+  // control have haste").
+  const keywordsFor = (c: Combatant): Set<string> => {
+    const set = parseKeywords(c.oracleText)
+    for (const keyword of getStaticKeywords({ ...pumpCard(c), oracleText: c.oracleText }, pumpSources)) set.add(keyword)
+    return set
+  }
+
   // Round-robin blocker assignment in declaration order.
   const assigned: string[][] = attackerIds.map(() => [])
   blockerIds.forEach((blockerId, index) => {
@@ -100,19 +97,27 @@ export function resolveCombat(
   // enforce here for robustness: an illegal blocker assignment is ignored.)
   const validBlockers = new Map<string, string[]>()
   for (const attacker of attackers) {
-    const aKeywords = parseKeywords(attacker.oracleText)
+    const aKeywords = keywordsFor(attacker)
     const valid = (assigned[attackerIds.indexOf(attacker.id)] ?? []).filter((blockerId) => {
       const blocker = findCard(blockerId)
-      if (!blocker || blocker.tapped) return false
+      if (!blocker) return false
+      if ((attacker as unknown as { cantBeBlockedThisTurn?: boolean }).cantBeBlockedThisTurn) return false
+      if (!canBlock(blocker, allBattlefield)) return false
+      // Skulk: can't be blocked by creatures with greater power.
+      if (aKeywords.has('skulk') && parsePower(blocker) > parsePower(attacker)) return false
       if (aKeywords.has('flying')) {
-        const bKeywords = parseKeywords(blocker.oracleText)
+        const bKeywords = keywordsFor(blocker)
         return bKeywords.has('flying') || bKeywords.has('reach')
       }
       return true
     })
-    // Menace needs two or more blockers; a single illegal assignment makes
-    // the attacker unblocked.
-    if (aKeywords.has('menace') && valid.length < 2) {
+    // Menace requires two or more blockers, as does a custom "can't be blocked
+    // except by N or more creatures"; a single illegal assignment makes the
+    // attacker unblocked.
+    const exceptMatch = attacker.oracleText.match(/can't be blocked except by (\w+) or more creatures/i)
+    const exceptCount = exceptMatch ? ({ two: 2, three: 3, four: 4, five: 5, six: 6 })[exceptMatch[1].toLowerCase()] ?? 2 : 0
+    const minBlockers = Math.max(aKeywords.has('menace') ? 2 : 0, exceptCount)
+    if (minBlockers > 0 && valid.length < minBlockers) {
       validBlockers.set(attacker.id, [])
     } else {
       validBlockers.set(attacker.id, valid)
@@ -127,12 +132,12 @@ export function resolveCombat(
 
   const fast = (card: Combatant | undefined) => {
     if (!card) return false
-    const k = parseKeywords(card.oracleText)
+    const k = keywordsFor(card)
     return k.has('first strike') || k.has('double strike')
   }
   const dealsInRegularStep = (card: Combatant | undefined) => {
     if (!card) return false
-    const k = parseKeywords(card.oracleText)
+    const k = keywordsFor(card)
     return !(k.has('first strike') && !k.has('double strike'))
   }
 
@@ -142,36 +147,50 @@ export function resolveCombat(
   const anyFast = blockedAttackers.some((a) => fast(a)) ||
     blockedAttackers.some((a) => fast(findCard((validBlockers.get(a.id) ?? [])[0])))
 
-  // Damage pass helper: attacker deals to its first blocker (and vice versa).
+  // Damage pass helper: the attacker allocates damage across all its blockers
+  // (lethal first, spilling to the next), and every blocker hits back.
   const dealPair = (attacker: Combatant, attackerDeals: boolean, blockerDeals: boolean) => {
-    const blockers = validBlockers.get(attacker.id) ?? []
-    const blocker = findCard(blockers[0])
-    if (!blocker) return
-    const aPower = parsePower(attacker)
-    const bToughness = parseToughness(blocker)
-    const bPower = parsePower(blocker)
-    const aKeywords = parseKeywords(attacker.oracleText)
+    const blockers = (validBlockers.get(attacker.id) ?? [])
+      .map((id) => findCard(id))
+      .filter((c): c is Combatant => Boolean(c))
+    if (blockers.length === 0) return
+    const aPower = effectivePower(attacker)
+    const aKeywords = keywordsFor(attacker)
 
     if (attackerDeals && aPower > 0) {
-      addDamage(blocker.id, aPower)
-      if (aKeywords.has('deathtouch')) deathtouchHit.add(blocker.id)
+      let remaining = aPower
+      for (const blocker of blockers) {
+        if (remaining <= 0) break
+        // Lethal accounts for damage already marked so trample spills more.
+        const need = aKeywords.has('deathtouch')
+          ? 1
+          : Math.max(0, effectiveToughness(blocker) - blocker.damage)
+        const dealt = Math.min(remaining, need)
+        if (dealt > 0) {
+          addDamage(blocker.id, dealt)
+          if (aKeywords.has('deathtouch')) deathtouchHit.add(blocker.id)
+        }
+        remaining -= dealt
+      }
       if (aKeywords.has('lifelink')) result.lifeGain.push({ ownerId: attacker.ownerId, amount: aPower })
-      // Trample: excess spills to the defending player(s).
-      if (aKeywords.has('trample')) {
-        const excess = aPower - bToughness
-        if (excess > 0) {
-          for (const player of allPlayers) {
-            if (!isOpponent(player)) continue
-            result.playerDamage.push({ attackerId: attacker.id, defenderId: player.id, amount: excess })
-          }
+      // Trample: damage left over after all blockers spills to the defending
+      // player(s).
+      if (aKeywords.has('trample') && remaining > 0) {
+        for (const player of allPlayers) {
+          if (!isOpponent(player)) continue
+          result.playerDamage.push({ attackerId: attacker.id, defenderId: player.id, amount: remaining })
         }
       }
     }
-    if (blockerDeals && bPower > 0) {
-      addDamage(attacker.id, bPower)
-      const bKeywords = parseKeywords(blocker.oracleText)
-      if (bKeywords.has('deathtouch')) deathtouchHit.add(attacker.id)
-      if (bKeywords.has('lifelink')) result.lifeGain.push({ ownerId: blocker.ownerId, amount: bPower })
+    if (blockerDeals) {
+      for (const blocker of blockers) {
+        const bPower = effectivePower(blocker)
+        if (bPower <= 0) continue
+        addDamage(attacker.id, bPower)
+        const bKeywords = keywordsFor(blocker)
+        if (bKeywords.has('deathtouch')) deathtouchHit.add(attacker.id)
+        if (bKeywords.has('lifelink')) result.lifeGain.push({ ownerId: blocker.ownerId, amount: bPower })
+      }
     }
   }
 
@@ -179,10 +198,11 @@ export function resolveCombat(
   // blockers with first strike hit before regular attackers.
   if (anyFast) {
     for (const attacker of blockedAttackers) {
-      const blockers = validBlockers.get(attacker.id) ?? []
-      const blocker = findCard(blockers[0])
+      const blockers = (validBlockers.get(attacker.id) ?? [])
+        .map((id) => findCard(id))
+        .filter((c): c is Combatant => Boolean(c))
       const attackerFast = fast(attacker)
-      const blockerFast = blocker ? fast(blocker) : false
+      const blockerFast = blockers.some((b) => fast(b))
       if (!attackerFast && !blockerFast) continue
       dealPair(attacker, attackerFast, blockerFast)
     }
@@ -190,48 +210,70 @@ export function resolveCombat(
     // before the regular step (indestructible survives).
     const midDead = new Set<string>()
     for (const attacker of blockedAttackers) {
-      const blocker = findCard((validBlockers.get(attacker.id) ?? [])[0])
-      if (!blocker) continue
-      const bKeywords = parseKeywords(blocker.oracleText)
-      const aKeywords = parseKeywords(attacker.oracleText)
-      const bDamage = damageTo.get(blocker.id) ?? 0
+      const blockers = (validBlockers.get(attacker.id) ?? [])
+        .map((id) => findCard(id))
+        .filter((c): c is Combatant => Boolean(c))
+      const aKeywords = keywordsFor(attacker)
       const aDamage = damageTo.get(attacker.id) ?? 0
-      if (!bKeywords.has('indestructible') && (bDamage >= parseToughness(blocker) || (deathtouchHit.has(blocker.id) && bDamage >= 1))) midDead.add(blocker.id)
-      if (!aKeywords.has('indestructible') && (aDamage >= parseToughness(attacker) || (deathtouchHit.has(attacker.id) && aDamage >= 1))) midDead.add(attacker.id)
+      if (!aKeywords.has('indestructible') && (aDamage >= effectiveToughness(attacker) || (deathtouchHit.has(attacker.id) && aDamage >= 1))) midDead.add(attacker.id)
+      for (const blocker of blockers) {
+        const bKeywords = keywordsFor(blocker)
+        const bDamage = damageTo.get(blocker.id) ?? 0
+        if (!bKeywords.has('indestructible') && (bDamage >= effectiveToughness(blocker) || (deathtouchHit.has(blocker.id) && bDamage >= 1))) midDead.add(blocker.id)
+      }
     }
     // Regular step: survivors deal (non-first-strikers + double strikers again).
     for (const attacker of blockedAttackers) {
-      const blocker = findCard((validBlockers.get(attacker.id) ?? [])[0])
       if (midDead.has(attacker.id)) continue
       if (!dealsInRegularStep(attacker)) continue
-      if (blocker && midDead.has(blocker.id)) continue
-      dealPair(attacker, dealsInRegularStep(attacker), blocker ? dealsInRegularStep(blocker) : false)
+      const blockers = (validBlockers.get(attacker.id) ?? [])
+        .map((id) => findCard(id))
+        .filter((c): c is Combatant => Boolean(c))
+      const liveBlockers = blockers.filter((b) => !midDead.has(b.id))
+      if (liveBlockers.length > 0) {
+        // Normal blocked exchange with the surviving blockers.
+        dealPair(attacker, dealsInRegularStep(attacker), liveBlockers.some((b) => dealsInRegularStep(b)))
+      } else if (keywordsFor(attacker).has('trample')) {
+        // All blockers died in the first-strike step: a trampler may assign all
+        // its damage to the player (CR 510.1c); other attackers stay blocked
+        // and deal no combat damage.
+        const power = effectivePower(attacker)
+        if (power > 0) {
+          for (const player of allPlayers) {
+            if (!isOpponent(player)) continue
+            result.playerDamage.push({ attackerId: attacker.id, defenderId: player.id, amount: power })
+          }
+          if (keywordsFor(attacker).has('lifelink')) result.lifeGain.push({ ownerId: attacker.ownerId, amount: power })
+        }
+      }
     }
   } else {
     for (const attacker of blockedAttackers) {
-      const blocker = findCard((validBlockers.get(attacker.id) ?? [])[0])
-      dealPair(attacker, true, Boolean(blocker))
+      const blockers = (validBlockers.get(attacker.id) ?? [])
+        .map((id) => findCard(id))
+        .filter((c): c is Combatant => Boolean(c))
+      dealPair(attacker, true, blockers.length > 0)
     }
   }
 
   // Unblocked attackers deal to every opposing player.
   for (const attacker of unblocked) {
-    const power = parsePower(attacker)
+    const power = effectivePower(attacker)
     if (power === 0) continue
     for (const player of allPlayers) {
       if (!isOpponent(player)) continue
       result.playerDamage.push({ attackerId: attacker.id, defenderId: player.id, amount: power })
     }
-    const aKeywords = parseKeywords(attacker.oracleText)
+    const aKeywords = keywordsFor(attacker)
     if (aKeywords.has('lifelink')) result.lifeGain.push({ ownerId: attacker.ownerId, amount: power })
   }
 
   // Deaths: accumulated damage >= toughness (or a deathtouch hit), unless
   // indestructible. Note this uses the PREVIOUS damage too (accumulated).
   for (const attacker of attackers) {
-    const k = parseKeywords(attacker.oracleText)
+    const k = keywordsFor(attacker)
     const total = attacker.damage + (damageTo.get(attacker.id) ?? 0)
-    if (!k.has('indestructible') && (total >= parseToughness(attacker) || (deathtouchHit.has(attacker.id) && total >= 1))) {
+    if (!k.has('indestructible') && (total >= effectiveToughness(attacker) || (deathtouchHit.has(attacker.id) && total >= 1))) {
       result.deadIds.push(attacker.id)
     }
   }
@@ -240,9 +282,9 @@ export function resolveCombat(
     for (const blockerId of blockers) {
       const blocker = findCard(blockerId)
       if (!blocker) continue
-      const k = parseKeywords(blocker.oracleText)
+      const k = keywordsFor(blocker)
       const total = blocker.damage + (damageTo.get(blocker.id) ?? 0)
-      if (!k.has('indestructible') && (total >= parseToughness(blocker) || (deathtouchHit.has(blocker.id) && total >= 1))) {
+      if (!k.has('indestructible') && (total >= effectiveToughness(blocker) || (deathtouchHit.has(blocker.id) && total >= 1))) {
         result.deadIds.push(blockerId)
       }
     }

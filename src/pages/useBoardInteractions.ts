@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect, useMemo } from 'react'
+import { useState, useRef, useEffect, useMemo, useCallback } from 'react'
 import { useGameStore } from '../stores/gameStore'
 import { useDeckStore } from '../stores/deckStore'
 import { getCardLayout } from '../layout/cardSizing'
@@ -137,12 +137,12 @@ export function useBoardInteractions() {
     void loadCardRules('blight-curse')
   }, [])
 
-  const handleRightClick = (e: React.MouseEvent, cardId: string) => {
+  const handleRightClick = useCallback((e: React.MouseEvent, cardId: string) => {
     e.preventDefault()
     setContextMenu({ cardId, x: e.clientX, y: e.clientY })
-  }
+  }, [setContextMenu])
 
-  const handleDeckChange = async (deckId: string) => {
+  const handleDeckChange = useCallback(async (deckId: string) => {
     const deck = decks.find((candidate) => candidate.id === deckId)
     if (!deck) return
     let cards = deck.cards
@@ -160,21 +160,21 @@ export function useBoardInteractions() {
     }
     loadDeck(deck.commanderNames, cards, deck.id)
     useGameStore.getState().drawCards(7)
-  }
+  }, [decks, importDeck, setImporting, loadDeck])
 
-  const onDragOver = (e: React.DragEvent) => {
+  const onDragOver = useCallback((e: React.DragEvent) => {
     e.preventDefault()
     e.dataTransfer.dropEffect = 'move'
-  }
+  }, [])
 
-  const onDropOnBattlefield = (e: React.DragEvent) => {
+  const onDropOnBattlefield = useCallback((e: React.DragEvent) => {
     e.preventDefault()
     const cardId = dragCardId.current || e.dataTransfer.getData('text/plain')
     if (cardId) {
       moveCard(cardId, 'battlefield')
       dragCardId.current = null
     }
-  }
+  }, [moveCard])
 
   return {
     cards, cardScale, broadcasting, backgroundImage,

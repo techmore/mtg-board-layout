@@ -18,6 +18,21 @@
     "abilities": [
       {
         "abilityType": "triggered",
+        "triggerEvent": "cast",
+        "triggerCondition": "an opponent casts a spell",
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "other",
+          "params": {
+            "description": "Whenever an opponent casts a spell, amass Orcs 1"
+          }
+        }
+      },
+      {
+        "abilityType": "triggered",
         "triggerEvent": "combat_damage",
         "triggerCondition": "an Army you control deals combat damage to a player",
         "isOptional": false,
@@ -26,7 +41,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "deal_damage",
-          "params": {}
+          "params": {
+            "amount": 1
+          }
         }
       },
       {
@@ -668,6 +685,21 @@
             "amount": 1
           }
         }
+      },
+      {
+        "abilityType": "triggered",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "scry",
+          "params": {
+            "amount": 1
+          }
+        }
       }
     ],
     "oracleText": "This land enters tapped.\n{T}: Add one mana of any color in your commander's color identity. When that mana is spent to cast a creature spell that shares a creature type with your commander, scry 1. (Look at the top card of your library. You may put that card on the bottom.)",
@@ -712,10 +744,8 @@
         "targets": 1,
         "targetFilter": "creature can't be blocked this turn",
         "effect": {
-          "kind": "other",
-          "params": {
-            "description": "{4}, {T}: Target creature can't be blocked this turn"
-          }
+          "kind": "cant_be_blocked",
+          "params": {}
         }
       }
     ],
@@ -850,7 +880,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "deal_damage",
-          "params": {}
+          "params": {
+            "amount": 1
+          }
         }
       }
     ],
@@ -980,10 +1012,8 @@
         "targets": 1,
         "targetFilter": "creature can't be blocked by creatures that player controls this turn",
         "effect": {
-          "kind": "other",
-          "params": {
-            "description": "Target creature can't be blocked by creatures that player controls this turn"
-          }
+          "kind": "cant_be_blocked",
+          "params": {}
         }
       }
     ],
@@ -1045,7 +1075,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "deal_damage",
-          "params": {}
+          "params": {
+            "amount": 1
+          }
         }
       }
     ],
@@ -1077,7 +1109,9 @@
         "targetFilter": "creature",
         "effect": {
           "kind": "deal_damage",
-          "params": {}
+          "params": {
+            "amount": 2
+          }
         }
       },
       {
@@ -1125,9 +1159,10 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
+          "kind": "keyword_pump",
           "params": {
-            "description": "It gains haste until end of turn"
+            "keyword": "haste",
+            "scope": "all"
           }
         }
       }
@@ -1160,7 +1195,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "deal_damage",
-          "params": {}
+          "params": {
+            "amount": 2
+          }
         }
       }
     ],
@@ -1191,9 +1228,10 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
+          "kind": "mass_sacrifice",
           "params": {
-            "description": "When this creature enters, each player sacrifices a creature of their choice"
+            "scope": "all",
+            "kind": "creature"
           }
         }
       }
@@ -1244,7 +1282,11 @@
         "targetFilter": null,
         "effect": {
           "kind": "put_counter",
-          "params": {}
+          "params": {
+            "counterKind": "+1/+1",
+            "amount": 1,
+            "scope": "own"
+          }
         }
       },
       {
@@ -1295,10 +1337,8 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
-          "params": {
-            "description": "Trample Other Orcs and Goblins you control have trample"
-          }
+          "kind": "static_keyword",
+          "params": {}
         }
       },
       {
@@ -1363,10 +1403,8 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
-          "params": {
-            "description": "Haste As long as this card is in your graveyard and you control a Mountain, creatures you control have haste"
-          }
+          "kind": "static_keyword",
+          "params": {}
         }
       }
     ],
@@ -1397,10 +1435,8 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
-          "params": {
-            "description": "{2}{U}: Target Goblin, Orc, or Pirate can't be blocked this turn"
-          }
+          "kind": "cant_be_blocked",
+          "params": {}
         }
       },
       {
@@ -1413,7 +1449,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "deal_damage",
-          "params": {}
+          "params": {
+            "amount": 1
+          }
         }
       },
       {
@@ -1426,7 +1464,11 @@
         "targetFilter": null,
         "effect": {
           "kind": "put_counter",
-          "params": {}
+          "params": {
+            "counterKind": "+1/+1",
+            "amount": 3,
+            "scope": "own"
+          }
         }
       },
       {
@@ -1491,7 +1533,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "deal_damage",
-          "params": {}
+          "params": {
+            "amount": 1
+          }
         }
       }
     ],
@@ -1516,6 +1560,10 @@
       {
         "abilityType": "triggered",
         "triggerEvent": "etb",
+        "triggerEvents": [
+          "etb",
+          "dies"
+        ],
         "triggerCondition": "this creature enters",
         "isOptional": false,
         "cost": null,
@@ -1610,7 +1658,11 @@
         "targetFilter": null,
         "effect": {
           "kind": "put_counter",
-          "params": {}
+          "params": {
+            "counterKind": "+1/+1",
+            "amount": "X",
+            "scope": "own"
+          }
         }
       },
       {
@@ -1629,6 +1681,19 @@
             "tokenName": "Army creature",
             "amount": 1
           }
+        }
+      },
+      {
+        "abilityType": "triggered",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "static_keyword",
+          "params": {}
         }
       }
     ],
@@ -1673,7 +1738,11 @@
         "targetFilter": null,
         "effect": {
           "kind": "put_counter",
-          "params": {}
+          "params": {
+            "counterKind": "+1/+1",
+            "amount": 2,
+            "scope": "all"
+          }
         }
       },
       {
@@ -1700,9 +1769,9 @@
         "targets": 1,
         "targetFilter": "creature card with mana value X exiled with Shelob onto the battlefield tapped under your control",
         "effect": {
-          "kind": "other",
+          "kind": "return_from_graveyard",
           "params": {
-            "description": "{X}{1}{B}: Put target creature card with mana value X exiled with Shelob onto the battlefield tapped under your control"
+            "zone": "battlefield"
           }
         }
       }
@@ -1735,25 +1804,26 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
-          "params": {
-            "description": "Menace (This creature can't be blocked except by two or more creatures"
-          }
+          "kind": "cant_be_blocked",
+          "params": {}
         }
       },
       {
         "abilityType": "triggered",
         "triggerEvent": "etb",
+        "triggerEvents": [
+          "etb",
+          "cast",
+          "graveyard"
+        ],
         "triggerCondition": ") When this creature enters",
         "isOptional": true,
         "cost": null,
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
-          "params": {
-            "description": ") When this creature enters, you may cast target instant or sorcery card with mana value 3 or less from your graveyard without paying its mana cost"
-          }
+          "kind": "cast_from_graveyard",
+          "params": {}
         }
       },
       {
@@ -1796,23 +1866,16 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
+          "kind": "optional_pay",
           "params": {
-            "description": "When Monstrosity of the Lake enters, you may pay {5}"
+            "cost": "{5}",
+            "payer": "self",
+            "then": {
+              "kind": "put_counter",
+              "params": {}
+            },
+            "thenIfNotPaid": false
           }
-        }
-      },
-      {
-        "abilityType": "triggered",
-        "triggerEvent": null,
-        "triggerCondition": null,
-        "isOptional": false,
-        "cost": null,
-        "targets": 0,
-        "targetFilter": null,
-        "effect": {
-          "kind": "put_counter",
-          "params": {}
         }
       },
       {
@@ -1855,9 +1918,12 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
+          "kind": "create_token",
           "params": {
-            "description": "When this creature enters, create three 1/1 red Goblin creature tokens"
+            "tokenPower": 1,
+            "tokenToughness": 1,
+            "tokenName": "Goblin creature",
+            "amount": 3
           }
         }
       },
@@ -1871,7 +1937,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "deal_damage",
-          "params": {}
+          "params": {
+            "amount": 2
+          }
         }
       }
     ],
@@ -1899,8 +1967,8 @@
         "triggerCondition": "The Mouth of Sauron enters",
         "isOptional": false,
         "cost": null,
-        "targets": 1,
-        "targetFilter": "player mills three cards",
+        "targets": 0,
+        "targetFilter": null,
         "effect": {
           "kind": "other",
           "params": {
@@ -1918,7 +1986,11 @@
         "targetFilter": null,
         "effect": {
           "kind": "put_counter",
-          "params": {}
+          "params": {
+            "counterKind": "+1/+1",
+            "amount": "X",
+            "scope": "own"
+          }
         }
       },
       {
@@ -1977,6 +2049,10 @@
       {
         "abilityType": "triggered",
         "triggerEvent": "etb",
+        "triggerEvents": [
+          "etb",
+          "attack"
+        ],
         "triggerCondition": "this creature enters or attacks",
         "isOptional": false,
         "cost": null,
@@ -1984,7 +2060,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "deal_damage",
-          "params": {}
+          "params": {
+            "amount": 3
+          }
         }
       }
     ],
@@ -2010,6 +2088,10 @@
       {
         "abilityType": "triggered",
         "triggerEvent": "attack",
+        "triggerEvents": [
+          "attack",
+          "counter_placed"
+        ],
         "triggerCondition": "Flying Dethrone (Whenever this creature attacks the player with the most life or tied for most life",
         "isOptional": false,
         "cost": null,
@@ -2017,7 +2099,11 @@
         "targetFilter": null,
         "effect": {
           "kind": "put_counter",
-          "params": {}
+          "params": {
+            "counterKind": "+1/+1",
+            "amount": 1,
+            "scope": "all"
+          }
         }
       },
       {
@@ -2062,10 +2148,8 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
-          "params": {
-            "description": "This creature can't be blocked except by three or more creatures"
-          }
+          "kind": "cant_be_blocked",
+          "params": {}
         }
       },
       {
@@ -2111,9 +2195,10 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
+          "kind": "mass_sacrifice",
           "params": {
-            "description": "Flying When this creature enters, each opponent sacrifices a creature of their choice"
+            "scope": "opponent",
+            "kind": "creature"
           }
         }
       },
@@ -2174,8 +2259,8 @@
         "triggerCondition": "Flying When this creature enters",
         "isOptional": true,
         "cost": null,
-        "targets": 1,
-        "targetFilter": "opponent this turn",
+        "targets": 0,
+        "targetFilter": null,
         "effect": {
           "kind": "draw_cards",
           "params": {
@@ -2297,6 +2382,22 @@
             "amount": 3
           }
         }
+      },
+      {
+        "abilityType": "triggered",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "create_token",
+          "params": {
+            "tokenName": "Treasure",
+            "amount": 2
+          }
+        }
       }
     ],
     "oracleText": "Trample, haste\nWhen The Balrog of Moria dies, you may exile it. When you do, for each opponent, exile up to one target creature that player controls.\nCycling {3}{R} ({3}{R}, Discard this card: Draw a card.)\nWhen you cycle this card, create two Treasure tokens.",
@@ -2352,6 +2453,21 @@
     "entryTapRule": null,
     "conditionalEntryText": null,
     "abilities": [
+      {
+        "abilityType": "spell",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "scry",
+          "params": {
+            "amount": 1
+          }
+        }
+      },
       {
         "abilityType": "spell",
         "triggerEvent": null,
@@ -2526,6 +2642,21 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
+          "kind": "scry",
+          "params": {
+            "amount": 4
+          }
+        }
+      },
+      {
+        "abilityType": "spell",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
           "kind": "exile",
           "params": {}
         }
@@ -2591,7 +2722,23 @@
     "manaProduction": null,
     "entryTapRule": null,
     "conditionalEntryText": null,
-    "abilities": [],
+    "abilities": [
+      {
+        "abilityType": "spell",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "scry",
+          "params": {
+            "amount": 5
+          }
+        }
+      }
+    ],
     "oracleText": "Reveal the top five cards of your library. An opponent separates those cards into two piles. Put one pile into your hand and the other into your graveyard.",
     "scryfallId": "04588d2f-9e90-4f83-b85e-67e4bc222a62"
   },
@@ -2617,7 +2764,9 @@
         "targetFilter": "creature card from a graveyard onto the battlefield under your control",
         "effect": {
           "kind": "return_from_graveyard",
-          "params": {}
+          "params": {
+            "zone": "battlefield"
+          }
         }
       },
       {
@@ -2722,7 +2871,11 @@
         "targetFilter": null,
         "effect": {
           "kind": "put_counter",
-          "params": {}
+          "params": {
+            "counterKind": "+1/+1",
+            "amount": "X",
+            "scope": "own"
+          }
         }
       },
       {
@@ -2795,7 +2948,11 @@
         "targetFilter": null,
         "effect": {
           "kind": "put_counter",
-          "params": {}
+          "params": {
+            "counterKind": "+1/+1",
+            "amount": 2,
+            "scope": "own"
+          }
         }
       },
       {
@@ -2838,12 +2995,12 @@
         "triggerCondition": null,
         "isOptional": false,
         "cost": null,
-        "targets": 1,
-        "targetFilter": "player draws two cards",
+        "targets": 0,
+        "targetFilter": null,
         "effect": {
-          "kind": "other",
+          "kind": "draw_cards",
           "params": {
-            "description": "Target player draws two cards"
+            "amount": 2
           }
         }
       },
@@ -2961,7 +3118,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "return_from_graveyard",
-          "params": {}
+          "params": {
+            "zone": "battlefield"
+          }
         }
       }
     ],
@@ -2979,7 +3138,24 @@
     "manaProduction": null,
     "entryTapRule": null,
     "conditionalEntryText": null,
-    "abilities": [],
+    "abilities": [
+      {
+        "abilityType": "spell",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "mass_sacrifice",
+          "params": {
+            "scope": "all",
+            "kind": "creature"
+          }
+        }
+      }
+    ],
     "oracleText": "Each player exiles all creature cards from their graveyard, then sacrifices all creatures they control, then puts all cards they exiled this way onto the battlefield.",
     "scryfallId": "4ac29c46-f8ee-42ba-a98c-d785ba65485e"
   },
@@ -3116,7 +3292,9 @@
         "targetFilter": "creature card from a graveyard onto the battlefield under your control",
         "effect": {
           "kind": "return_from_graveyard",
-          "params": {}
+          "params": {
+            "zone": "battlefield"
+          }
         }
       },
       {
@@ -3129,7 +3307,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "deal_damage",
-          "params": {}
+          "params": {
+            "amount": 1
+          }
         }
       }
     ],
@@ -3170,10 +3350,8 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
-          "params": {
-            "description": "They can't be regenerated"
-          }
+          "kind": "static_noop",
+          "params": {}
         }
       },
       {
@@ -3249,7 +3427,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "deal_damage",
-          "params": {}
+          "params": {
+            "amount": 13
+          }
         }
       }
     ],
@@ -3552,7 +3732,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "deal_damage",
-          "params": {}
+          "params": {
+            "amount": 2
+          }
         }
       }
     ],
@@ -3708,9 +3890,9 @@
         "targets": 1,
         "targetFilter": "creature that player controls until end of turn",
         "effect": {
-          "kind": "other",
+          "kind": "gain_control",
           "params": {
-            "description": "IV — For each opponent, gain control of up to one target creature that player controls until end of turn"
+            "temporary": true
           }
         }
       },
@@ -3723,9 +3905,10 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
+          "kind": "keyword_pump",
           "params": {
-            "description": "They gain haste until end of turn"
+            "keyword": "haste",
+            "scope": "all"
           }
         }
       }

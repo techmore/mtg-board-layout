@@ -1,7 +1,11 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { useGameStore } from './gameStore'
-import { primeCardRules, computeStaticPump } from './cardRulesLoader'
+import { primeCardRules, computeStaticPump, hasKeyword } from './cardRulesLoader'
 import { resolveAISpellAbilities, resolveAIAutoAbilities, resolveAITriggerInstances } from './spellResolution'
+import { resolvePendingAISpell } from './gameOpponentAI'
+import { getCardPower, getCardToughness } from '../utils/misc'
+import { pickAttackers } from './opponentAI'
+import { setAITurnActive } from './gameRules'
 import type { BoardCard, CardAbilityDef, CardRuleEntry, DeckCard, ManaPool } from '../types/card'
 
 const emptyManaPool = (): ManaPool => ({ W: 0, U: 0, B: 0, R: 0, G: 0, C: 0 })
@@ -55,6 +59,7 @@ function card(overrides: Partial<BoardCard> = {}): BoardCard {
 }
 
 function resetStore() {
+  setAITurnActive(false)
   useGameStore.setState({
     cards: [],
     manaPool: emptyManaPool(),
@@ -255,6 +260,7 @@ describe('game over', () => {
 describe('commander damage', () => {
   it('accumulates unblocked combat damage from an opponent commander', () => {
     useGameStore.setState({
+      activePlayer: 'opponent',
       cards: [card({ id: 'cmd', name: 'Atarka', typeLine: '6/6', type: 'creature', zone: 'battlefield', tapped: true, owner: 'opponent', isCommander: true })],
       combatState: { active: true, attackers: ['cmd'], blockers: {} },
     })
@@ -268,6 +274,7 @@ describe('commander damage', () => {
 
   it('does not accumulate damage from non-commander creatures', () => {
     useGameStore.setState({
+      activePlayer: 'opponent',
       cards: [card({ id: 'beater', name: 'Beater', typeLine: '6/6', type: 'creature', zone: 'battlefield', tapped: true, owner: 'opponent' })],
       combatState: { active: true, attackers: ['beater'], blockers: {} },
     })
@@ -279,6 +286,7 @@ describe('commander damage', () => {
 
   it('loses the game at 21 commander damage even above zero life', () => {
     useGameStore.setState({
+      activePlayer: 'opponent',
       commanderDamage: { cmd: 15 },
       cards: [card({ id: 'cmd', name: 'Atarka', typeLine: '6/6', type: 'creature', zone: 'battlefield', tapped: true, owner: 'opponent', isCommander: true })],
       lifeTotal: 30,
@@ -1118,7 +1126,7 @@ describe('spell resolution', () => {
     expect(useGameStore.getState().cards.find((c) => c.id === 'sent')?.tapped).toBe(false)
   })
 
-  it('tapped creatures cannot block', () => {
+  it('tapped creatures can block', () => {
     useGameStore.setState({
       cards: [
         card({ id: 'attacker', name: 'Attacker', typeLine: '3/3', type: 'creature', zone: 'battlefield', tapped: true }),
@@ -1127,10 +1135,11 @@ describe('spell resolution', () => {
       combatState: { active: true, attackers: ['attacker'], blockers: { attacker: ['tapped-blocker'] } },
     })
     useGameStore.getState().resolveCombat()
+    // The tapped blocker blocks: it takes the attack and the player is unharmed.
     const blocker = useGameStore.getState().cards.find((c) => c.id === 'tapped-blocker')
     expect(blocker?.zone).toBe('battlefield')
-    expect(blocker?.damage ?? 0).toBe(0)
-    expect(useGameStore.getState().opponentLifeTotal).toBe(37)
+    expect(blocker?.damage ?? 0).toBe(3)
+    expect(useGameStore.getState().opponentLifeTotal).toBe(40)
   })
 })
 
@@ -1944,5 +1953,791 @@ describe('annihilator', () => {
     // The annihilator trigger is queued on the stack for the player to resolve.
     const triggers = useGameStore.getState().triggerStack
     expect(triggers.some((t) => t.ability.effect.kind === 'annihilator')).toBe(true)
+  })
+})
+
+describe('deep audit regression fixes (2026-08)', () => {
+  function crusherRule(): CardRuleEntry {
+    return {
+      cardName: "Ulamog's Crusher", manaCost: '{8}', manaValue: 8, typeLine: 'Creature', cardType: 'creature',
+      subtypes: [], keywords: [], manaProduction: null, entryTapRule: 'never', conditionalEntryText: null,
+      oracleText: 'Annihilator 2 (Whenever this creature attacks, defending player sacrifices two permanents.)',
+      scryfallId: 'u1',
+      abilities: [{ abilityType: 'triggered', triggerEvent: 'attack' as const, triggerCondition: null, isOptional: false, cost: null, targets: 0, targetFilter: null, effect: { kind: 'annihilator', params: { amount: 2 } } }],
+    }
+  }
+
+  it('does not force the player to discard because of the opponent\'s hand', () => {
+    // Player holds a legal 7; the AI also holds 7. Combined they exceed 7, but
+    // the hand-size rule applies per player.
+    const playerHand = Array.from({ length: 7 }, (_, i) =>
+      card({ id: `p${i}`, name: `P${i}`, typeLine: 'Creature', type: 'creature', zone: 'hand' }),
+    )
+    const opponentHand = Array.from({ length: 7 }, (_, i) =>
+      card({ id: `o${i}`, name: `O${i}`, typeLine: 'Creature', type: 'creature', zone: 'hand', owner: 'opponent' }),
+    )
+    useGameStore.setState({ cards: [...playerHand, ...opponentHand], activePlayer: 'player' })
+
+    useGameStore.getState().advanceTurn()
+
+    expect(useGameStore.getState().turnPrompt?.reason).not.toBe('discard')
+  })
+
+  it('the AI attack flow resolves attack triggers exactly once', () => {
+    primeCardRules({ "Ulamog's Crusher": crusherRule() })
+    const attacker = card({ id: 'att', name: "Ulamog's Crusher", typeLine: 'Creature 5/5', owner: 'opponent', zone: 'battlefield' })
+    const victims = ['v1', 'v2', 'v3', 'v4', 'v5'].map((id) =>
+      card({ id, name: `V${id}`, typeLine: 'Creature 1/1', owner: 'player', zone: 'battlefield' }),
+    )
+    useGameStore.setState({ activePlayer: 'opponent', cards: [attacker, ...victims] })
+
+    // The AI resolves its attack triggers directly at declaration...
+    resolveAIAutoAbilities(
+      (partial) => useGameStore.setState(partial as never),
+      () => useGameStore.getState(),
+      useGameStore.getState().cards.find((c) => c.id === 'att')!,
+      'attack',
+    )
+    expect(useGameStore.getState().cards.filter((c) => c.zone === 'graveyard')).toHaveLength(2)
+
+    // ...and combat resolution must not fire them a second time.
+    useGameStore.setState({ combatState: { active: true, attackers: ['att'], blockers: {} } })
+    useGameStore.getState().resolveCombat()
+    expect(useGameStore.getState().cards.filter((c) => c.zone === 'graveyard')).toHaveLength(2)
+    expect(useGameStore.getState().triggerStack).toHaveLength(0)
+  })
+
+  it('clicking a land in hand respects enters-tapped and fires landfall', () => {
+    const tapland = card({
+      id: 'tapland', name: 'Smoldering Marsh', type: 'land', typeLine: 'Land — Swamp Mountain',
+      zone: 'hand', entersTapped: true, entryTapRule: 'always',
+    })
+    useGameStore.setState({ cards: [tapland] })
+
+    useGameStore.getState().castSpell('tapland')
+
+    const entered = useGameStore.getState().cards.find((c) => c.id === 'tapland')
+    expect(entered?.zone).toBe('battlefield')
+    expect(entered?.tapped).toBe(true)
+    expect(useGameStore.getState().landPlaysThisTurn).toBe(1)
+  })
+
+  it('a conditional enters-tapped land prompts the player before entering', () => {
+    const conditional = card({
+      id: 'cond', name: 'Canyon Slough', type: 'land', typeLine: 'Land — Swamp Mountain',
+      zone: 'hand', entersTapped: true, entryTapRule: 'conditional',
+    })
+    useGameStore.setState({ cards: [conditional] })
+
+    useGameStore.getState().castSpell('cond')
+
+    expect(useGameStore.getState().turnPrompt?.reason).toBe('etb')
+    expect(useGameStore.getState().cards.find((c) => c.id === 'cond')?.zone).toBe('hand')
+  })
+
+  it('the player\'s first cast reports a count of 1 for first-spell triggers', () => {
+    const rule: CardRuleEntry = {
+      cardName: 'First Caster', manaCost: '', manaValue: 0, typeLine: 'Creature', cardType: 'creature',
+      subtypes: [], keywords: [], manaProduction: null, entryTapRule: null, conditionalEntryText: null,
+      oracleText: 'Whenever you cast your first spell each turn, draw a card.', scryfallId: 'f',
+      abilities: [{ abilityType: 'triggered', triggerEvent: 'cast' as const, triggerCondition: 'you cast your first spell each turn', isOptional: false, cost: null, targets: 0, targetFilter: null, effect: { kind: 'draw_cards', params: { amount: 1 } } }],
+    }
+    primeCardRules({ 'First Caster': rule })
+    const caster = card({ id: 'caster', name: 'First Caster', typeLine: 'Creature', type: 'creature', zone: 'battlefield' })
+    const spell = card({ id: 'spell', name: 'Bolt', type: 'instant', typeLine: 'Instant', zone: 'hand', manaCost: '{1}{R}', manaValue: 2 })
+    useGameStore.setState({ cards: [caster, spell], manaPool: { ...emptyManaPool(), R: 3 } })
+
+    useGameStore.getState().castSpell('spell')
+
+    const triggers = useGameStore.getState().triggerStack
+    expect(triggers.filter((t) => t.ability.effect.kind === 'draw_cards')).toHaveLength(1)
+  })
+
+  it('+1/+1 counters add to power and -1/-1 counters subtract', () => {
+    expect(getCardPower(card({ typeLine: '2/2', counters: 3 }))).toBe(5)
+    expect(getCardToughness(card({ typeLine: '2/2', counters: 3 }))).toBe(5)
+    expect(getCardPower(card({ typeLine: '2/2', minusCounters: 2 }))).toBe(0)
+    expect(getCardToughness(card({ typeLine: '2/2', minusCounters: 2 }))).toBe(0)
+  })
+
+  it('placing a -1/-1 counter lowers power and toughness', () => {
+    const bear = card({ id: 'bear', name: 'Bear', typeLine: '2/2', type: 'creature', zone: 'battlefield' })
+    useGameStore.setState({ cards: [bear] })
+
+    useGameStore.getState().addCounter('bear', '-1/-1')
+
+    const after = useGameStore.getState().cards.find((c) => c.id === 'bear')
+    expect(after?.minusCounters).toBe(1)
+    expect(getCardPower(after!)).toBe(1)
+    expect(getCardToughness(after!)).toBe(1)
+  })
+
+  it('combat_damage triggers only fire for the source\'s own damage', () => {
+    const rule: CardRuleEntry = {
+      cardName: 'Pinger', manaCost: '{2}{G}', manaValue: 3, typeLine: 'Creature', cardType: 'creature',
+      subtypes: [], keywords: [], manaProduction: null, entryTapRule: null, conditionalEntryText: null,
+      oracleText: 'Whenever Pinger deals combat damage to a player, draw a card.', scryfallId: 'p',
+      abilities: [{ abilityType: 'triggered', triggerEvent: 'combat_damage' as const, triggerCondition: 'Pinger deals combat damage to a player', isOptional: false, cost: null, targets: 0, targetFilter: null, effect: { kind: 'draw_cards', params: { amount: 1 } } }],
+    }
+    primeCardRules({ 'Pinger': rule })
+    const pinger = card({ id: 'pinger', name: 'Pinger', typeLine: 'Creature 1/1', type: 'creature', zone: 'battlefield' })
+    const enemy = card({ id: 'enemy', name: 'Enemy', typeLine: 'Creature 2/2', type: 'creature', zone: 'battlefield', owner: 'opponent' })
+    const library = card({ id: 'lib', name: 'Lib', type: 'creature', zone: 'library' })
+    useGameStore.setState({ cards: [pinger, enemy, library] })
+
+    // The opponent's creature deals combat damage — Pinger's trigger must NOT fire.
+    useGameStore.getState().emitGameEvent({ type: 'combat_damage', sourceCardId: 'enemy', sourceCardName: 'Enemy', amount: 2 })
+    expect(useGameStore.getState().triggerStack).toHaveLength(0)
+
+    // Pinger itself deals combat damage — its trigger fires.
+    useGameStore.getState().emitGameEvent({ type: 'combat_damage', sourceCardId: 'pinger', sourceCardName: 'Pinger', amount: 1 })
+    expect(useGameStore.getState().triggerStack.filter((t) => t.sourceCardId === 'pinger')).toHaveLength(1)
+  })
+
+  it('undo after the opponent\'s turn does not soft-lock onto the opponent turn', () => {
+    vi.useFakeTimers()
+    try {
+      const cards = [
+        deckCard('Atarka, World Render', 'Legendary Creature — Dragon'),
+        ...Array.from({ length: 8 }, () => deckCard('Mountain', 'Land')),
+        deckCard('Dragon Whelp', 'Creature — Dragon'),
+      ]
+      useGameStore.getState().loadOpponentDeck(['Atarka, World Render'], cards, 'Draconic Destruction')
+
+      vi.advanceTimersByTime(10500)
+      expect(useGameStore.getState().activePlayer).toBe('player')
+
+      // The AI turn is not in the player's undo stack: undo cannot restore the
+      // dead 'opponent' state that would leave the game stuck.
+      useGameStore.getState().undo()
+
+      const state = useGameStore.getState()
+      expect(state.activePlayer).toBe('player')
+      expect(state.gameOver).toBeNull()
+    } finally {
+      vi.clearAllTimers()
+      vi.useRealTimers()
+    }
+  })
+
+  it('keyword_pump grants temporary keywords that clear at the next beginning phase', () => {
+    const rule: CardRuleEntry = {
+      cardName: 'Anthem of Strength', manaCost: '{1}{G}{G}', manaValue: 3, typeLine: 'Enchantment', cardType: 'enchantment',
+      subtypes: [], keywords: [], manaProduction: null, entryTapRule: null, conditionalEntryText: null,
+      oracleText: 'Creatures you control gain deathtouch until end of turn.', scryfallId: 'a',
+      abilities: [{ abilityType: 'triggered', triggerEvent: 'etb' as const, triggerCondition: null, isOptional: false, cost: null, targets: 0, targetFilter: null, effect: { kind: 'keyword_pump', params: { keyword: 'deathtouch', scope: 'own' } } }],
+    }
+    primeCardRules({ 'Anthem of Strength': rule })
+    const anthem = card({ id: 'anthem', name: 'Anthem of Strength', typeLine: 'Enchantment', type: 'enchantment', zone: 'battlefield' })
+    const bear = card({ id: 'bear', name: 'Bear', typeLine: '2/2', type: 'creature', zone: 'battlefield' })
+    const enemy = card({ id: 'enemy', name: 'Enemy', typeLine: '2/2', type: 'creature', zone: 'battlefield', owner: 'opponent' })
+    useGameStore.setState({ cards: [anthem, bear, enemy], currentPhase: 'beginning' })
+    const trigger = { id: 't1', sourceCardId: 'anthem', sourceCardName: 'Anthem of Strength', event: 'etb' as const, context: {}, ability: rule.abilities[0] }
+    useGameStore.setState({ triggerStack: [trigger] })
+
+    useGameStore.getState().resolveTrigger('t1')
+
+    // Own creatures gained deathtouch; the opponent's creature did not.
+    expect(hasKeyword(useGameStore.getState().cards.find((c) => c.id === 'bear')!, 'deathtouch')).toBe(true)
+    expect(hasKeyword(useGameStore.getState().cards.find((c) => c.id === 'enemy')!, 'deathtouch')).toBe(false)
+
+    // The boost clears at the next beginning phase.
+    useGameStore.getState().advancePhase()
+    expect(hasKeyword(useGameStore.getState().cards.find((c) => c.id === 'bear')!, 'deathtouch')).toBe(false)
+  })
+
+  it('"until end of turn" pumps clear at the turn handoff, not the next own turn', () => {
+    vi.useFakeTimers()
+    try {
+      const bear = card({ id: 'bear', name: 'Bear', typeLine: '2/2', type: 'creature', zone: 'battlefield', powerBoost: 2, toughnessBoost: 2, keywordBoosts: ['haste'] })
+      useGameStore.setState({ cards: [bear], activePlayer: 'player', currentPhase: 'ending' })
+
+      useGameStore.getState().advanceTurn()
+
+      const after = useGameStore.getState().cards.find((c) => c.id === 'bear')!
+      expect(after.powerBoost).toBe(0)
+      expect(after.toughnessBoost).toBe(0)
+      expect(after.keywordBoosts).toBeUndefined()
+    } finally {
+      vi.clearAllTimers()
+      vi.useRealTimers()
+    }
+  })
+
+  it('a bounce spell returns the targeted permanent to its owner\'s hand', () => {
+    const rule: CardRuleEntry = {
+      cardName: 'Cyclonic Rift', manaCost: '{1}{U}', manaValue: 2, typeLine: 'Instant', cardType: 'instant', subtypes: [],
+      keywords: [], manaProduction: null, entryTapRule: null, conditionalEntryText: null,
+      oracleText: "Return target nonland permanent you don't control to its owner's hand.", scryfallId: 'c',
+      abilities: [{ abilityType: 'spell' as const, triggerEvent: null, triggerCondition: null, isOptional: false, cost: null, targets: 1, targetFilter: "nonland permanent you don't control", effect: { kind: 'return_from_graveyard', params: { zone: 'hand' } } }],
+    }
+    primeCardRules({ 'Cyclonic Rift': rule })
+    const spell = card({ id: 'rift', name: 'Cyclonic Rift', type: 'instant', typeLine: 'Instant', zone: 'hand', manaCost: '{1}{U}', manaValue: 2 })
+    const victim = card({ id: 'v', name: 'Victim', typeLine: 'Creature 2/2', type: 'creature', zone: 'battlefield' })
+    useGameStore.setState({ cards: [spell, victim], manaPool: { ...emptyManaPool(), U: 2 } })
+
+    useGameStore.getState().castSpell('rift')
+    const trigger = useGameStore.getState().triggerStack.find((x) => x.ability.effect.kind === 'return_from_graveyard')
+    expect(trigger).toBeDefined()
+
+    useGameStore.getState().resolveTrigger(trigger!.id)
+    useGameStore.getState().selectTarget(trigger!.id, 'v')
+    expect(useGameStore.getState().cards.find((c) => c.id === 'v')?.zone).toBe('hand')
+  })
+
+  it('trample accounts for damage already marked on the blocker', () => {
+    primeCardRules({ 'Wurm': ruleFor('Wurm', ['trample']) })
+    const wurm = card({ id: 'wurm', name: 'Wurm', typeLine: '5/5', type: 'creature', zone: 'battlefield' })
+    const blocker = card({ id: 'blk', name: 'Blocker', typeLine: '2/4', type: 'creature', zone: 'battlefield', owner: 'opponent', damage: 2 })
+    useGameStore.setState({
+      cards: [wurm, blocker],
+      opponentLifeTotal: 40,
+      combatState: { active: true, attackers: ['wurm'], blockers: { wurm: ['blk'] } },
+    })
+
+    useGameStore.getState().resolveCombat()
+
+    // The blocker needs only 2 more damage (2 already marked): 2 assigned,
+    // the remaining 3 spill over to the player.
+    expect(useGameStore.getState().opponentLifeTotal).toBe(37)
+  })
+
+  it('the legend rule removes duplicate legendary permanents (SBA)', () => {
+    const first = card({ id: 'l1', name: 'Atarka, World Render', typeLine: 'Legendary Creature — Dragon 6/4', type: 'creature', zone: 'battlefield' })
+    const second = card({ id: 'l2', name: 'Atarka, World Render', typeLine: 'Legendary Creature — Dragon 6/4', type: 'creature', zone: 'battlefield' })
+    useGameStore.setState({ cards: [first, second] })
+
+    useGameStore.getState().checkStateBasedActions()
+
+    const after = useGameStore.getState().cards
+    expect(after.filter((c) => c.zone === 'battlefield')).toHaveLength(1)
+    expect(after.filter((c) => c.zone === 'graveyard')).toHaveLength(1)
+  })
+
+  it('tokens entering the battlefield fire "another creature enters" triggers', () => {
+    const rule: CardRuleEntry = {
+      cardName: 'Soul Warden', manaCost: '{W}', manaValue: 1, typeLine: 'Creature — Human Cleric', cardType: 'creature',
+      subtypes: [], keywords: [], manaProduction: null, entryTapRule: null, conditionalEntryText: null,
+      oracleText: 'Whenever another creature enters the battlefield, you gain 1 life.', scryfallId: 's',
+      abilities: [{ abilityType: 'triggered', triggerEvent: 'etb' as const, triggerCondition: 'another creature enters the battlefield', isOptional: false, cost: null, targets: 0, targetFilter: null, effect: { kind: 'gain_life', params: { amount: 1 } } }],
+    }
+    primeCardRules({ 'Soul Warden': rule })
+    const warden = card({ id: 'warden', name: 'Soul Warden', typeLine: 'Creature 1/1', type: 'creature', zone: 'battlefield' })
+    useGameStore.setState({ cards: [warden], lifeTotal: 40 })
+    const maker = {
+      id: 'maker', sourceCardId: 'src', sourceCardName: 'Token Source', event: 'etb' as const, context: {},
+      ability: { abilityType: 'triggered' as const, triggerEvent: 'etb' as const, triggerCondition: null, isOptional: false, cost: null, targets: 0, targetFilter: null, effect: { kind: 'create_token', params: { tokenName: 'Goat', amount: 1 } } },
+    }
+    useGameStore.setState({ triggerStack: [maker] })
+
+    useGameStore.getState().resolveTrigger('maker')
+
+    // The token entered; Soul Warden's life-gain trigger is on the stack.
+    expect(useGameStore.getState().tokens).toHaveLength(1)
+    expect(useGameStore.getState().triggerStack.some((t) => t.ability.effect.kind === 'gain_life')).toBe(true)
+  })
+
+  it('energy gain triggers add to the source owner\'s pool', () => {
+    const rule: CardRuleEntry = {
+      cardName: 'Amped Raptor', manaCost: '{2}{R}', manaValue: 3, typeLine: 'Creature — Dinosaur', cardType: 'creature',
+      subtypes: [], keywords: [], manaProduction: null, entryTapRule: null, conditionalEntryText: null,
+      oracleText: 'When this creature enters, you get {E}{E}.', scryfallId: 'a',
+      abilities: [{ abilityType: 'triggered', triggerEvent: 'etb' as const, triggerCondition: null, isOptional: false, cost: null, targets: 0, targetFilter: null, effect: { kind: 'add_energy', params: { amount: 2 } } }],
+    }
+    primeCardRules({ 'Amped Raptor': rule, 'AI Raptor': { ...rule, cardName: 'AI Raptor' } })
+    const raptor = card({ id: 'raptor', name: 'Amped Raptor', type: 'creature', typeLine: 'Creature 2/2', zone: 'battlefield' })
+    const aiRaptor = card({ id: 'airaptor', name: 'AI Raptor', type: 'creature', typeLine: 'Creature 2/2', zone: 'battlefield', owner: 'opponent' })
+    useGameStore.setState({ cards: [raptor, aiRaptor] })
+
+    useGameStore.setState({ triggerStack: [{ id: 't1', sourceCardId: 'raptor', sourceCardName: 'Amped Raptor', event: 'etb' as const, context: {}, ability: rule.abilities[0] }] })
+    useGameStore.getState().resolveTrigger('t1')
+    expect(useGameStore.getState().energyCounters).toBe(2)
+
+    useGameStore.setState({ triggerStack: [{ id: 't2', sourceCardId: 'airaptor', sourceCardName: 'AI Raptor', event: 'etb' as const, context: {}, ability: rule.abilities[0] }] })
+    useGameStore.getState().resolveTrigger('t2')
+    expect(useGameStore.getState().opponentEnergyCounters).toBe(2)
+  })
+
+  it('energy can be spent and resets on a new deck', () => {
+    useGameStore.setState({ energyCounters: 5 })
+    useGameStore.getState().gainEnergy(3)
+    expect(useGameStore.getState().energyCounters).toBe(8)
+    expect(useGameStore.getState().spendEnergy(2)).toBe(true)
+    expect(useGameStore.getState().energyCounters).toBe(6)
+    expect(useGameStore.getState().spendEnergy(99)).toBe(false)
+    expect(useGameStore.getState().energyCounters).toBe(6)
+
+    useGameStore.getState().loadDeck(['Cmd'], [deckCard('Cmd', 'Creature')], 'd')
+    expect(useGameStore.getState().energyCounters).toBe(0)
+    expect(useGameStore.getState().opponentEnergyCounters).toBe(0)
+  })
+
+  it('double and remove counter effects resolve (counter manipulation)', () => {
+    // Double counters on a target.
+    const doubleTrigger = {
+      id: 't1', sourceCardId: 'src', sourceCardName: 'Ferrafor', event: 'etb' as const, context: {},
+      ability: { abilityType: 'activated' as const, triggerEvent: null, triggerCondition: null, isOptional: false, cost: '{T}', targets: 1, targetFilter: 'creature', effect: { kind: 'double_counters', params: {} } },
+    }
+    const bear = card({ id: 'bear', name: 'Bear', typeLine: '2/2', type: 'creature', zone: 'battlefield', counters: 2, minusCounters: 1 })
+    useGameStore.setState({ cards: [bear] })
+    useGameStore.setState({ triggerStack: [doubleTrigger] })
+    useGameStore.getState().selectTarget('t1', 'bear')
+    const doubled = useGameStore.getState().cards.find((c) => c.id === 'bear')!
+    expect(doubled.counters).toBe(4)
+    expect(doubled.minusCounters).toBe(2)
+
+    // Remove up to three counters (minus counters go first).
+    const removeTrigger = {
+      id: 't2', sourceCardId: 'src', sourceCardName: 'Glissa', event: 'etb' as const, context: {},
+      ability: { abilityType: 'activated' as const, triggerEvent: null, triggerCondition: null, isOptional: false, cost: null, targets: 1, targetFilter: 'permanent', effect: { kind: 'remove_counters', params: { amount: 3 } } },
+    }
+    useGameStore.setState({ triggerStack: [removeTrigger] })
+    useGameStore.getState().selectTarget('t2', 'bear')
+    const removed = useGameStore.getState().cards.find((c) => c.id === 'bear')!
+    expect(removed.minusCounters).toBe(0)
+    expect(removed.counters).toBe(3)
+  })
+
+  it('resolves a deferred AI spell when the player passes the response window', () => {
+    const rule: CardRuleEntry = {
+      cardName: 'AI Bolt', manaCost: '{R}', manaValue: 1, typeLine: 'Sorcery', cardType: 'sorcery',
+      subtypes: [], keywords: [], manaProduction: null, entryTapRule: null, conditionalEntryText: null,
+      oracleText: 'Deals 2 damage to any target.', scryfallId: 'b',
+      abilities: [{ abilityType: 'spell' as const, triggerEvent: null, triggerCondition: null, isOptional: false, cost: null, targets: 0, targetFilter: null, effect: { kind: 'deal_damage', params: { amount: 2 } } }],
+    }
+    primeCardRules({ 'AI Bolt': rule })
+    const aiBolt = card({ id: 'aibolt', name: 'AI Bolt', type: 'sorcery', typeLine: 'Sorcery', zone: 'battlefield', owner: 'opponent', manaCost: '{R}', manaValue: 1 })
+    const victim = card({ id: 'victim', name: 'Victim', typeLine: '2/2', type: 'creature', zone: 'battlefield' })
+    useGameStore.setState({ cards: [aiBolt, victim] })
+    // Simulate the AI cast with a deferred resolution + response prompt.
+    useGameStore.setState({
+      aiResponsePending: 'aibolt',
+      turnPrompt: { action: 'respond', reason: 'respond', cardId: 'aibolt', cardName: 'AI Bolt', resolveAt: Date.now() + 7000 },
+    })
+
+    // The player passes: the spell resolves (2 damage) and moves to the graveyard.
+    resolvePendingAISpell(
+      (partial) => useGameStore.setState(partial as never),
+      () => useGameStore.getState(),
+    )
+    const state = useGameStore.getState()
+    expect(state.turnPrompt).toBeNull()
+    expect(state.aiResponsePending).toBeNull()
+    // 2 damage killed the 2/2 victim (SBA clears damage on death).
+    expect(state.cards.find((c) => c.id === 'victim')?.zone).toBe('graveyard')
+    expect(state.cards.find((c) => c.id === 'aibolt')?.zone).toBe('graveyard')
+  })
+
+  it('opens a response window when the AI attacks and the player holds instants', () => {
+    vi.useFakeTimers()
+    try {
+      const aiBeater = card({ id: 'beater', name: 'Beater', typeLine: 'Creature 2/2', type: 'creature', zone: 'battlefield', owner: 'opponent', enteredAtTurn: 0 })
+      const playerInstant = card({ id: 'pinstant', name: 'PInstant', type: 'instant', typeLine: 'Instant', zone: 'hand', manaCost: '{W}', manaValue: 1 })
+      const aiLands = Array.from({ length: 10 }, (_, i) => card({ id: `land${i}`, name: 'Mountain', type: 'land', typeLine: 'Basic Land — Mountain', zone: 'library', owner: 'opponent', manaProduction: { colors: ['R'], amount: 1 } }))
+      useGameStore.setState({ activePlayer: 'opponent', turn: 1, cards: [aiBeater, playerInstant, ...aiLands], combatState: { active: false, attackers: [], blockers: {} } })
+
+      useGameStore.getState().runOpponentTurn()
+      // Advance through draw/land/cast to the attack step (~2s in).
+      vi.advanceTimersByTime(2500)
+      const state = useGameStore.getState()
+      expect(state.turnPrompt?.reason).toBe('respond')
+      expect(state.turnPrompt?.context).toBe('attack')
+
+      // Passing closes the window.
+      useGameStore.getState().cancelTurnPrompt()
+      vi.advanceTimersByTime(400)
+      expect(useGameStore.getState().turnPrompt).toBeNull()
+    } finally {
+      vi.clearAllTimers()
+      vi.useRealTimers()
+    }
+  })
+
+  it('resolves AI spells immediately when the player has no instants to respond with', () => {
+    vi.useFakeTimers()
+    try {
+      const cards = [
+        deckCard('Atarka, World Render', 'Legendary Creature — Dragon'),
+        ...Array.from({ length: 8 }, () => deckCard('Mountain', 'Land')),
+        deckCard('Dragon Whelp', 'Creature — Dragon'),
+      ]
+      useGameStore.getState().loadOpponentDeck(['Atarka, World Render'], cards, 'Draconic Destruction')
+
+      vi.advanceTimersByTime(1500)
+      const state = useGameStore.getState()
+      expect(state.turnPrompt?.reason).not.toBe('respond')
+      expect(state.aiResponsePending).toBeNull()
+    } finally {
+      vi.clearAllTimers()
+      vi.useRealTimers()
+    }
+  })
+
+  it('monarch: gain, end-step draw, and combat transfer', () => {
+    const rule: CardRuleEntry = {
+      cardName: 'Grave Venerations', manaCost: '{2}{B}{B}', manaValue: 4, typeLine: 'Enchantment', cardType: 'enchantment',
+      subtypes: [], keywords: [], manaProduction: null, entryTapRule: null, conditionalEntryText: null,
+      oracleText: 'When this enchantment enters, you become the monarch.', scryfallId: 'g',
+      abilities: [{ abilityType: 'triggered', triggerEvent: 'etb' as const, triggerCondition: null, isOptional: false, cost: null, targets: 0, targetFilter: null, effect: { kind: 'gain_monarch', params: {} } }],
+    }
+    primeCardRules({ 'Grave Venerations': rule })
+    const enchantment = card({ id: 'enc', name: 'Grave Venerations', type: 'enchantment', typeLine: 'Enchantment', zone: 'battlefield' })
+    const library = card({ id: 'lib', name: 'Lib', typeLine: 'Creature 1/1', type: 'creature', zone: 'library' })
+    useGameStore.setState({ cards: [enchantment, library], activePlayer: 'player', currentPhase: 'ending' })
+    useGameStore.setState({ triggerStack: [{ id: 't1', sourceCardId: 'enc', sourceCardName: 'Grave Venerations', event: 'etb' as const, context: {}, ability: rule.abilities[0] }] })
+    useGameStore.getState().resolveTrigger('t1')
+    expect(useGameStore.getState().monarch).toBe('player')
+
+    // The player is the monarch: ending the turn draws them a card.
+    const handBefore = useGameStore.getState().cards.filter((c) => c.zone === 'hand').length
+    useGameStore.getState().advanceTurn()
+    expect(useGameStore.getState().cards.filter((c) => c.zone === 'hand').length).toBe(handBefore + 1)
+
+    // Combat damage to the monarch transfers the crown to the attacker.
+    useGameStore.setState({ monarch: 'player' })
+    const aiAttacker = card({ id: 'att', name: 'AI Attacker', typeLine: '2/2', type: 'creature', zone: 'battlefield', owner: 'opponent' })
+    useGameStore.setState({ activePlayer: 'opponent', cards: [...useGameStore.getState().cards, aiAttacker], combatState: { active: true, attackers: ['att'], blockers: {} } })
+    useGameStore.getState().resolveCombat()
+    expect(useGameStore.getState().monarch).toBe('opponent')
+  })
+
+  it('plain "can\'t attack or block" restrictions are enforced in combat', () => {
+    // A creature that can't block cannot be assigned as a blocker.
+    const attacker = card({ id: 'att', name: 'Attacker', typeLine: '2/2', type: 'creature', zone: 'battlefield' })
+    const noBlock = card({ id: 'nb', name: 'No Block', typeLine: '2/2', type: 'creature', zone: 'battlefield', owner: 'opponent', oracleText: 'This creature can\'t block.' })
+    useGameStore.setState({
+      cards: [attacker, noBlock],
+      opponentLifeTotal: 40,
+      combatState: { active: true, attackers: ['att'], blockers: { att: ['nb'] } },
+    })
+
+    useGameStore.getState().resolveCombat()
+
+    // The can't-block creature is an illegal blocker: the attacker is unblocked
+    // and the creature stays untouched on the battlefield.
+    expect(useGameStore.getState().opponentLifeTotal).toBe(38)
+    expect(useGameStore.getState().cards.find((c) => c.id === 'nb')?.zone).toBe('battlefield')
+  })
+
+  it('mass sacrifice resolves for each affected side (weakest creature each)', () => {
+    const rule: CardRuleEntry = {
+      cardName: 'Merciless Executioner', manaCost: '{2}{B}', manaValue: 3, typeLine: 'Creature — Human Warrior', cardType: 'creature',
+      subtypes: [], keywords: [], manaProduction: null, entryTapRule: null, conditionalEntryText: null,
+      oracleText: 'When this creature enters, each player sacrifices a creature.', scryfallId: 'm',
+      abilities: [{ abilityType: 'triggered', triggerEvent: 'etb' as const, triggerCondition: null, isOptional: false, cost: null, targets: 0, targetFilter: null, effect: { kind: 'mass_sacrifice', params: { scope: 'all', kind: 'creature' } } }],
+    }
+    primeCardRules({ 'Merciless Executioner': rule })
+    const exe = card({ id: 'exe', name: 'Merciless Executioner', typeLine: 'Creature 2/2', type: 'creature', zone: 'battlefield' })
+    const myWeak = card({ id: 'myweak', name: 'My Weak', typeLine: 'Creature 1/1', type: 'creature', zone: 'battlefield' })
+    const myStrong = card({ id: 'mystrong', name: 'My Strong', typeLine: 'Creature 5/5', type: 'creature', zone: 'battlefield' })
+    const aiWeak = card({ id: 'aiweak', name: 'AI Weak', typeLine: 'Creature 1/1', type: 'creature', zone: 'battlefield', owner: 'opponent' })
+    const aiStrong = card({ id: 'aistrong', name: 'AI Strong', typeLine: 'Creature 5/5', type: 'creature', zone: 'battlefield', owner: 'opponent' })
+    useGameStore.setState({ cards: [exe, myWeak, myStrong, aiWeak, aiStrong] })
+    useGameStore.setState({ triggerStack: [{ id: 't1', sourceCardId: 'exe', sourceCardName: 'Merciless Executioner', event: 'etb' as const, context: {}, ability: rule.abilities[0] }] })
+
+    useGameStore.getState().resolveTrigger('t1')
+
+    const cards = useGameStore.getState().cards
+    expect(cards.find((c) => c.id === 'myweak')?.zone).toBe('graveyard')
+    expect(cards.find((c) => c.id === 'aiweak')?.zone).toBe('graveyard')
+    expect(cards.find((c) => c.id === 'mystrong')?.zone).toBe('battlefield')
+    expect(cards.find((c) => c.id === 'aistrong')?.zone).toBe('battlefield')
+  })
+
+  it('"look at the top N cards" abilities resolve as scry', () => {
+    const rule: CardRuleEntry = {
+      cardName: 'Dovin, Grand Arbiter', manaCost: '{2}{W}{U}', manaValue: 4, typeLine: 'Planeswalker — Dovin', cardType: 'planeswalker',
+      subtypes: [], keywords: [], manaProduction: null, entryTapRule: null, conditionalEntryText: null,
+      oracleText: 'Look at the top ten cards of your library.', scryfallId: 'd',
+      abilities: [{ abilityType: 'activated', triggerEvent: null, triggerCondition: null, isOptional: false, cost: '-7', targets: 0, targetFilter: null, effect: { kind: 'scry', params: { amount: 10 } } }],
+    }
+    primeCardRules({ 'Dovin, Grand Arbiter': rule })
+    const dovin = card({ id: 'dovin', name: 'Dovin, Grand Arbiter', typeLine: 'Planeswalker — Dovin 7', type: 'planeswalker', zone: 'battlefield', counters: 7 })
+    const lib = Array.from({ length: 15 }, (_, i) => card({ id: `l${i}`, name: `Lib ${i}`, typeLine: 'Creature 1/1', type: 'creature', zone: 'library' }))
+    useGameStore.setState({ cards: [dovin, ...lib] })
+    useGameStore.setState({ triggerStack: [{ id: 't1', sourceCardId: 'dovin', sourceCardName: 'Dovin, Grand Arbiter', event: 'cast' as const, context: {}, ability: rule.abilities[0] }] })
+
+    useGameStore.getState().resolveTrigger('t1')
+    // The trigger enters scry mode (empty selection) for the player to reorder.
+    expect(useGameStore.getState().triggerStack[0]?.selectedTargets).toEqual([])
+    useGameStore.getState().confirmScry('t1')
+    expect(useGameStore.getState().triggerStack).toHaveLength(0)
+  })
+
+  it('rad counters: gain, upkeep mill, and reset', () => {
+    const rule: CardRuleEntry = {
+      cardName: 'The Wise Mothman', manaCost: '{1}{G}{U}', manaValue: 3, typeLine: 'Legendary Creature — Mutant', cardType: 'creature',
+      subtypes: [], keywords: [], manaProduction: null, entryTapRule: null, conditionalEntryText: null,
+      oracleText: 'Whenever The Wise Mothman enters or attacks, each player gets a rad counter.', scryfallId: 'm',
+      abilities: [{ abilityType: 'triggered', triggerEvent: 'etb' as const, triggerCondition: null, isOptional: false, cost: null, targets: 0, targetFilter: null, effect: { kind: 'gain_rad', params: { scope: 'each', amount: 1 } } }],
+    }
+    primeCardRules({ 'The Wise Mothman': rule })
+    const mothman = card({ id: 'moth', name: 'The Wise Mothman', typeLine: 'Creature 2/2', type: 'creature', zone: 'battlefield' })
+    const aiLibrary = Array.from({ length: 5 }, (_, i) => card({ id: `ail${i}`, name: `AI Lib ${i}`, typeLine: 'Creature 1/1', type: 'creature', zone: 'library', owner: 'opponent' }))
+    useGameStore.setState({ cards: [mothman, ...aiLibrary], turn: 1, activePlayer: 'player' })
+    useGameStore.setState({ triggerStack: [{ id: 't1', sourceCardId: 'moth', sourceCardName: 'The Wise Mothman', event: 'etb' as const, context: {}, ability: rule.abilities[0] }] })
+
+    useGameStore.getState().resolveTrigger('t1')
+    expect(useGameStore.getState().radCounters).toBe(1)
+    expect(useGameStore.getState().opponentRadCounters).toBe(1)
+
+    // The AI's upkeep: it mills 1 and loses its rad counter.
+    useGameStore.getState().runOpponentTurn()
+    expect(useGameStore.getState().opponentRadCounters).toBe(0)
+    expect(useGameStore.getState().cards.filter((c) => c.zone === 'graveyard' && (c.owner ?? 'player') === 'opponent')).toHaveLength(1)
+  })
+
+  it('gain control until end of turn flips and restores the owner', () => {
+    vi.useFakeTimers()
+    try {
+      const rule: CardRuleEntry = {
+        cardName: 'Flayer of Loyalties', manaCost: '{4}{R}', manaValue: 5, typeLine: 'Sorcery', cardType: 'sorcery',
+        subtypes: [], keywords: [], manaProduction: null, entryTapRule: null, conditionalEntryText: null,
+        oracleText: 'Gain control of target creature until end of turn.', scryfallId: 'f',
+        abilities: [{ abilityType: 'spell' as const, triggerEvent: null, triggerCondition: null, isOptional: false, cost: null, targets: 1, targetFilter: 'creature', effect: { kind: 'gain_control', params: { temporary: true } } }],
+      }
+      primeCardRules({ 'Flayer of Loyalties': rule })
+      const flayer = card({ id: 'flayer', name: 'Flayer of Loyalties', type: 'sorcery', typeLine: 'Sorcery', zone: 'hand', manaCost: '{4}{R}', manaValue: 5 })
+      const victim = card({ id: 'victim', name: 'Victim', typeLine: 'Creature 3/3', type: 'creature', zone: 'battlefield', owner: 'opponent' })
+      useGameStore.setState({ cards: [flayer, victim], manaPool: { ...emptyManaPool(), R: 5 } })
+
+      useGameStore.getState().castSpell('flayer')
+      const trigger = useGameStore.getState().triggerStack.find((x) => x.ability.effect.kind === 'gain_control')!
+      useGameStore.getState().resolveTrigger(trigger.id)
+      useGameStore.getState().selectTarget(trigger.id, 'victim')
+      expect(useGameStore.getState().cards.find((c) => c.id === 'victim')?.owner).toBe('player')
+
+      // At the turn handoff, temporary control returns.
+      useGameStore.setState({ currentPhase: 'ending' })
+      useGameStore.getState().advanceTurn()
+      expect(useGameStore.getState().cards.find((c) => c.id === 'victim')?.owner).toBe('opponent')
+    } finally {
+      vi.clearAllTimers()
+      vi.useRealTimers()
+    }
+  })
+
+  it('static keyword anthems grant keywords to controlled creatures', () => {
+    const rule: CardRuleEntry = {
+      cardName: 'Maelstrom Wanderer', manaCost: '{5}{G}{U}{R}', manaValue: 8, typeLine: 'Legendary Creature — Elemental', cardType: 'creature',
+      subtypes: [], keywords: [], manaProduction: null, entryTapRule: null, conditionalEntryText: null,
+      oracleText: 'Creatures you control have haste.', scryfallId: 'm',
+      abilities: [{ abilityType: 'static', triggerEvent: null, triggerCondition: null, isOptional: false, cost: null, targets: 0, targetFilter: null, effect: { kind: 'static_keyword', params: {} } }],
+    }
+    primeCardRules({ 'Maelstrom Wanderer': rule })
+    const wanderer = card({ id: 'w', name: 'Maelstrom Wanderer', type: 'creature', typeLine: 'Creature 7/5', zone: 'battlefield', oracleText: 'Creatures you control have haste.' })
+    const bear = card({ id: 'bear', name: 'Bear', typeLine: 'Creature 2/2', type: 'creature', zone: 'battlefield', enteredAtTurn: 1 })
+    const enemyBear = card({ id: 'eb', name: 'Enemy', typeLine: 'Creature 2/2', type: 'creature', zone: 'battlefield', owner: 'opponent' })
+    useGameStore.setState({ cards: [wanderer, bear, enemyBear], turn: 1 })
+
+    expect(hasKeyword(bear, 'haste', useGameStore.getState().cards)).toBe(true)
+    expect(hasKeyword(enemyBear, 'haste', useGameStore.getState().cards)).toBe(false)
+    // Without the battlefield context, no static anthem applies.
+    expect(hasKeyword(bear, 'haste')).toBe(false)
+  })
+
+  it('manifest dread mills one card then manifests the next as a face-down 2/2', () => {
+    const rule: CardRuleEntry = {
+      cardName: 'Temur War Shaman', manaCost: '{2}{G}{U}', manaValue: 4, typeLine: 'Creature — Human Shaman', cardType: 'creature',
+      subtypes: [], keywords: [], manaProduction: null, entryTapRule: null, conditionalEntryText: null,
+      oracleText: 'When this creature enters, manifest the top card of your library.', scryfallId: 't',
+      abilities: [{ abilityType: 'triggered', triggerEvent: 'etb' as const, triggerCondition: null, isOptional: false, cost: null, targets: 0, targetFilter: null, effect: { kind: 'manifest', params: { dread: 0 } } }],
+    }
+    primeCardRules({ 'Temur War Shaman': rule })
+    const shaman = card({ id: 'shaman', name: 'Temur War Shaman', typeLine: 'Creature 4/5', type: 'creature', zone: 'battlefield' })
+    const top = card({ id: 'l0', name: 'Top', typeLine: 'Creature 1/1', type: 'creature', zone: 'library' })
+    useGameStore.setState({ cards: [shaman, top], turn: 1 })
+    useGameStore.setState({ triggerStack: [{ id: 't1', sourceCardId: 'shaman', sourceCardName: 'Temur War Shaman', event: 'etb' as const, context: {}, ability: rule.abilities[0] }] })
+
+    useGameStore.getState().resolveTrigger('t1')
+
+    const manifested = useGameStore.getState().cards.find((c) => c.id === 'l0')!
+    expect(manifested.zone).toBe('battlefield')
+    expect(manifested.facedown).toBe(true)
+    expect(getCardPower(manifested)).toBe(2)
+    expect(getCardToughness(manifested)).toBe(2)
+  })
+
+  it('tap-target and fight effects resolve', () => {
+    const tapRule: CardRuleEntry = {
+      cardName: 'Tapper', manaCost: '{2}', manaValue: 2, typeLine: 'Creature', cardType: 'creature',
+      subtypes: [], keywords: [], manaProduction: null, entryTapRule: null, conditionalEntryText: null,
+      oracleText: 'Tap target creature.', scryfallId: 't',
+      abilities: [{ abilityType: 'activated', triggerEvent: null, triggerCondition: null, isOptional: false, cost: '{T}', targets: 1, targetFilter: 'creature', effect: { kind: 'tap_target', params: {} } }],
+    }
+    primeCardRules({ 'Tapper': tapRule })
+    const tapper = card({ id: 'tapper', name: 'Tapper', typeLine: 'Creature 1/1', type: 'creature', zone: 'battlefield' })
+    const victim = card({ id: 'victim', name: 'Victim', typeLine: 'Creature 1/1', type: 'creature', zone: 'battlefield' })
+    useGameStore.setState({ cards: [tapper, victim] })
+    useGameStore.setState({ triggerStack: [{ id: 't1', sourceCardId: 'tapper', sourceCardName: 'Tapper', event: 'etb' as const, context: {}, ability: tapRule.abilities[0] }] })
+    useGameStore.getState().selectTarget('t1', 'victim')
+    expect(useGameStore.getState().cards.find((c) => c.id === 'victim')?.tapped).toBe(true)
+
+    // Fight: both creatures deal damage equal to their power to each other.
+    const fightRule: CardRuleEntry = { ...tapRule, cardName: 'Fighter', abilities: [{ abilityType: 'activated', triggerEvent: null, triggerCondition: null, isOptional: false, cost: '{2}{R}', targets: 1, targetFilter: 'creature', effect: { kind: 'fight', params: {} } }] }
+    primeCardRules({ 'Fighter': fightRule })
+    const fighter = card({ id: 'fighter', name: 'Fighter', typeLine: 'Creature 3/3', type: 'creature', zone: 'battlefield' })
+    const foe = card({ id: 'foe', name: 'Foe', typeLine: 'Creature 2/2', type: 'creature', zone: 'battlefield' })
+    useGameStore.setState({ cards: [fighter, foe], triggerStack: [] })
+    useGameStore.setState({ triggerStack: [{ id: 't2', sourceCardId: 'fighter', sourceCardName: 'Fighter', event: 'etb' as const, context: {}, ability: fightRule.abilities[0] }] })
+    useGameStore.getState().selectTarget('t2', 'foe')
+    // The 2/2 foe takes 3 and dies; the 3/3 fighter takes 2 and survives.
+    expect(useGameStore.getState().cards.find((c) => c.id === 'foe')?.zone).toBe('graveyard')
+    expect(useGameStore.getState().cards.find((c) => c.id === 'fighter')?.damage).toBe(2)
+  })
+
+  it('optional-pay triggers resolve the follow-on when the player pays', () => {
+    const rule: CardRuleEntry = {
+      cardName: 'Mentor of the Meek', manaCost: '{2}{W}', manaValue: 3, typeLine: 'Creature — Human Soldier', cardType: 'creature',
+      subtypes: [], keywords: [], manaProduction: null, entryTapRule: null, conditionalEntryText: null,
+      oracleText: 'Whenever another creature you control with power 2 or less enters, you may pay {1}. If you do, draw a card.', scryfallId: 'm',
+      abilities: [{ abilityType: 'triggered', triggerEvent: 'etb' as const, triggerCondition: null, isOptional: false, cost: null, targets: 0, targetFilter: null, effect: { kind: 'optional_pay', params: { cost: '{1}', payer: 'self', then: { kind: 'draw_cards', params: { amount: 1 } }, thenIfNotPaid: false } } }],
+    }
+    primeCardRules({ 'Mentor of the Meek': rule })
+    const mentor = card({ id: 'mentor', name: 'Mentor of the Meek', typeLine: 'Creature 2/2', type: 'creature', zone: 'battlefield' })
+    const library = card({ id: 'lib', name: 'Lib', typeLine: 'Creature 1/1', type: 'creature', zone: 'library' })
+    useGameStore.setState({ cards: [mentor, library], manaPool: { ...emptyManaPool(), W: 1 } })
+    useGameStore.setState({ triggerStack: [{ id: 't1', sourceCardId: 'mentor', sourceCardName: 'Mentor of the Meek', event: 'etb' as const, context: {}, ability: rule.abilities[0] }] })
+
+    useGameStore.getState().resolveTrigger('t1')
+
+    // Paid {1}: drew a card.
+    const state = useGameStore.getState()
+    expect(state.manaPool.W).toBe(0)
+    expect(state.cards.find((c) => c.id === 'lib')?.zone).toBe('hand')
+  })
+
+  it('cast-from-graveyard free-casts the chosen card', () => {
+    const rule: CardRuleEntry = {
+      cardName: 'Impulsivity', manaCost: '{1}{R}', manaValue: 2, typeLine: 'Enchantment', cardType: 'enchantment',
+      subtypes: [], keywords: [], manaProduction: null, entryTapRule: null, conditionalEntryText: null,
+      oracleText: 'When this creature enters, you may cast target instant or sorcery card from a graveyard without paying its mana cost.', scryfallId: 'i',
+      abilities: [{ abilityType: 'triggered', triggerEvent: 'etb' as const, triggerCondition: null, isOptional: false, cost: null, targets: 1, targetFilter: 'instant or sorcery card from a graveyard', effect: { kind: 'cast_from_graveyard', params: {} } }],
+    }
+    primeCardRules({
+      'Impulsivity': rule,
+      'Grave Bolt': { cardName: 'Grave Bolt', manaCost: '{R}', manaValue: 1, typeLine: 'Instant', cardType: 'instant', subtypes: [], keywords: [], manaProduction: null, entryTapRule: null, conditionalEntryText: null, oracleText: 'Deals 2 damage to any target.', scryfallId: 'g', abilities: [{ abilityType: 'spell', triggerEvent: null, triggerCondition: null, isOptional: false, cost: null, targets: 0, targetFilter: null, effect: { kind: 'deal_damage', params: { amount: 2 } } }] },
+    })
+    const impulsivity = card({ id: 'imp', name: 'Impulsivity', typeLine: 'Enchantment', type: 'enchantment', zone: 'battlefield' })
+    const graveBolt = card({ id: 'bolt', name: 'Grave Bolt', type: 'instant', typeLine: 'Instant', zone: 'graveyard', manaCost: '{R}', manaValue: 1 })
+    useGameStore.setState({ cards: [impulsivity, graveBolt] })
+    useGameStore.setState({ triggerStack: [{ id: 't1', sourceCardId: 'imp', sourceCardName: 'Impulsivity', event: 'etb' as const, context: {}, ability: rule.abilities[0] }] })
+    useGameStore.getState().resolveTrigger('t1')
+    useGameStore.getState().selectTarget('t1', 'bolt')
+
+    // The card was free-cast to the battlefield and its ability enqueued.
+    expect(useGameStore.getState().cards.find((c) => c.id === 'bolt')?.zone).toBe('battlefield')
+    expect(useGameStore.getState().triggerStack.some((t) => t.ability.effect.kind === 'deal_damage')).toBe(true)
+  })
+
+  it('skulk blocks only equal-or-lower power blockers', () => {
+    primeCardRules({ 'Skulker': ruleFor('Skulker', ['skulk']) })
+    const skulker = card({ id: 'sk', name: 'Skulker', typeLine: 'Creature 2/2', type: 'creature', zone: 'battlefield' })
+    const bigBlocker = card({ id: 'big', name: 'Big', typeLine: 'Creature 3/3', type: 'creature', zone: 'battlefield', owner: 'opponent' })
+    useGameStore.setState({
+      cards: [skulker, bigBlocker],
+      opponentLifeTotal: 40,
+      combatState: { active: true, attackers: ['sk'], blockers: { sk: ['big'] } },
+    })
+
+    useGameStore.getState().resolveCombat()
+
+    // The 3/3 is an illegal blocker for the skulk attacker: it swings through.
+    expect(useGameStore.getState().opponentLifeTotal).toBe(38)
+  })
+
+  it('attack tax: the attacker must pay or the attackers are removed', () => {
+    const attacker = card({ id: 'att', name: 'Attacker', typeLine: '2/2', type: 'creature', zone: 'battlefield' })
+    const prison = card({ id: 'prison', name: 'Ghostly Prison', typeLine: 'Enchantment', type: 'enchantment', zone: 'battlefield', owner: 'opponent', oracleText: "Creatures can't attack you unless their controller pays {2} for each creature they control that's attacking you." })
+    useGameStore.setState({
+      cards: [attacker, prison],
+      opponentLifeTotal: 40,
+      manaPool: { ...emptyManaPool(), W: 0 },
+      combatState: { active: true, attackers: ['att'], blockers: {} },
+    })
+
+    // No mana to pay the {2} tax: the attacker is removed and deals nothing.
+    useGameStore.getState().resolveCombat()
+    expect(useGameStore.getState().opponentLifeTotal).toBe(40)
+
+    // With the mana, the player pays and the attack resolves.
+    useGameStore.setState({ manaPool: { ...emptyManaPool(), W: 2 }, opponentLifeTotal: 40, combatState: { active: true, attackers: ['att'], blockers: {} } })
+    useGameStore.getState().resolveCombat()
+    expect(useGameStore.getState().opponentLifeTotal).toBe(38)
+    expect(useGameStore.getState().manaPool.W).toBe(0)
+  })
+
+  it('Kefnet-style hand gate blocks attacking with too few cards in hand', () => {
+    const kefnet = card({ id: 'k', name: 'Kefnet', typeLine: 'Creature 5/5', type: 'creature', zone: 'battlefield', oracleText: 'Kefnet can\'t attack or block unless you have seven or more cards in hand.' })
+    const hands = Array.from({ length: 3 }, (_, i) => card({ id: `h${i}`, name: `H${i}`, typeLine: 'Creature 1/1', type: 'creature', zone: 'hand' }))
+    useGameStore.setState({ cards: [kefnet, ...hands] })
+    useGameStore.getState().toggleAttacker('k')
+    expect(useGameStore.getState().combatState.attackers).not.toContain('k')
+  })
+
+  it('must-attack compulsion makes the AI swing with everything', () => {
+    const compeller = card({ id: 'c', name: 'Bident of Thassa', typeLine: 'Enchantment', type: 'enchantment', zone: 'battlefield', oracleText: 'Creatures your opponents control attack this turn if able.' })
+    const aiBeater = card({ id: 'b', name: 'Beater', typeLine: 'Creature 2/2', type: 'creature', zone: 'battlefield', owner: 'opponent', enteredAtTurn: 0 })
+    const aiBeater2 = card({ id: 'b2', name: 'Beater2', typeLine: 'Creature 3/3', type: 'creature', zone: 'battlefield', owner: 'opponent', enteredAtTurn: 0 })
+    const result = pickAttackers([aiBeater, aiBeater2], 1, [compeller])
+    expect(result).toContain('b')
+    expect(result).toContain('b2')
+  })
+
+  it('clears deathtouchDamage from the player\'s creatures at the beginning phase', () => {
+    const bear = card({ id: 'bear', name: 'Bear', typeLine: '2/2', type: 'creature', zone: 'battlefield', damage: 1, deathtouchDamage: true })
+    useGameStore.setState({ cards: [bear], currentPhase: 'beginning' })
+
+    useGameStore.getState().advancePhase()
+
+    const after = useGameStore.getState().cards.find((c) => c.id === 'bear')
+    expect(after?.deathtouchDamage).toBe(false)
+  })
+
+  it('undo restores gameOver along with life', () => {
+    useGameStore.getState().setLife(0)
+    expect(useGameStore.getState().gameOver).toEqual({ winner: 'opponent' })
+
+    useGameStore.getState().undo()
+
+    const state = useGameStore.getState()
+    expect(state.lifeTotal).toBe(40)
+    expect(state.gameOver).toBeNull()
+  })
+
+  it('a tapped creature can block', () => {
+    const attacker = card({ id: 'att', name: 'Attacker', typeLine: '2/2', type: 'creature', zone: 'battlefield' })
+    const blocker = card({ id: 'blk', name: 'Blocker', typeLine: '2/2', type: 'creature', zone: 'battlefield', owner: 'opponent', tapped: true })
+    useGameStore.setState({
+      cards: [attacker, blocker],
+      opponentLifeTotal: 40,
+      combatState: { active: true, attackers: ['att'], blockers: { att: ['blk'] } },
+    })
+
+    useGameStore.getState().resolveCombat()
+
+    // Blocked: no damage reaches the player, and both creatures trade lethal
+    // damage (they die, so zone is the signal — damage resets on death).
+    expect(useGameStore.getState().opponentLifeTotal).toBe(40)
+    expect(useGameStore.getState().cards.find((c) => c.id === 'att')?.zone).toBe('graveyard')
+    expect(useGameStore.getState().cards.find((c) => c.id === 'blk')?.zone).toBe('graveyard')
+  })
+
+  it('a double-striker whose blocker died in the first-strike step deals no player damage', () => {
+    primeCardRules({ 'Fury': ruleFor('Fury', ['double strike']) })
+    const fury = card({ id: 'fury', name: 'Fury', typeLine: '3/3', type: 'creature', zone: 'battlefield' })
+    const blocker = card({ id: 'blk', name: 'Blocker', typeLine: '1/1', type: 'creature', zone: 'battlefield', owner: 'opponent' })
+    useGameStore.setState({
+      cards: [fury, blocker],
+      opponentLifeTotal: 40,
+      combatState: { active: true, attackers: ['fury'], blockers: { fury: ['blk'] } },
+    })
+
+    useGameStore.getState().resolveCombat()
+
+    // First strike kills the blocker; the blocked creature stays blocked and
+    // deals no combat damage in the regular step.
+    expect(useGameStore.getState().cards.find((c) => c.id === 'blk')?.zone).toBe('graveyard')
+    expect(useGameStore.getState().opponentLifeTotal).toBe(40)
   })
 })

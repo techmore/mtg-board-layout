@@ -46,18 +46,6 @@ export default function BoardPage() {
 
   const boardAreaRef = useRef<HTMLDivElement>(null)
   const [resizing, setResizing] = useState(false)
-  const [blockSecondsLeft, setBlockSecondsLeft] = useState<number | null>(null)
-
-  useEffect(() => {
-    if (!combatState.resolveAt) { setBlockSecondsLeft(null); return }
-    const tick = () => {
-      const left = Math.ceil((combatState.resolveAt! - Date.now()) / 1000)
-      setBlockSecondsLeft(left > 0 ? left : 0)
-    }
-    tick()
-    const id = window.setInterval(tick, 500)
-    return () => window.clearInterval(id)
-  }, [combatState.resolveAt])
 
   useEffect(() => {
     if (!resizing) return
@@ -272,6 +260,53 @@ export default function BoardPage() {
             </div>
           )}
           <TurnTimerPill />
+          {turnPrompt?.reason === 'respond' && (
+            <div
+              role="status"
+              style={{
+                position: 'absolute',
+                top: 46,
+                left: '50%',
+                transform: 'translateX(-50%)',
+                zIndex: 25,
+                padding: '6px 14px',
+                borderRadius: 999,
+                background: 'rgba(210,153,34,0.95)',
+                color: '#0d1117',
+                fontSize: '0.74rem',
+                fontWeight: 800,
+                letterSpacing: '0.3px',
+                whiteSpace: 'nowrap',
+                boxShadow: '0 3px 12px rgba(0,0,0,0.45)',
+                display: 'flex',
+                alignItems: 'center',
+                gap: 10,
+              }}
+            >
+              <span>
+                {turnPrompt.context === 'attack'
+                  ? '⚔ OPPONENT declares an attack — play an instant from your hand to respond, or pass'
+                  : `⚡ OPPONENT casts ${turnPrompt.cardName ?? 'a spell'} — play an instant from your hand to respond, or pass`}
+              </span>
+              <ResponseCountdown resolveAt={turnPrompt.resolveAt} />
+              <button
+                type="button"
+                onClick={cancelTurnPrompt}
+                style={{
+                  border: '1px solid rgba(13,17,23,0.4)',
+                  background: 'rgba(13,17,23,0.15)',
+                  color: '#0d1117',
+                  borderRadius: 999,
+                  padding: '2px 12px',
+                  fontWeight: 800,
+                  fontSize: '0.7rem',
+                  cursor: 'pointer',
+                }}
+              >
+                Pass
+              </button>
+            </div>
+          )}
           {combatState.active && activePlayer === 'opponent' && combatState.attackers.length > 0 && (
             <div
               role="status"
@@ -294,9 +329,7 @@ export default function BoardPage() {
               }}
             >
               ⚔ DEFEND — right-click your creatures to block ({combatState.attackers.length} attacking)
-              {blockSecondsLeft !== null && blockSecondsLeft > 0 && (
-                <span style={{ opacity: 0.85, marginLeft: 6 }}>· {blockSecondsLeft}s</span>
-              )}
+              <CombatCountdown resolveAt={combatState.resolveAt} />
             </div>
           )}
           {combatState.active && activePlayer === 'player' && (
@@ -461,4 +494,39 @@ export default function BoardPage() {
       )}
     </div>
   )
+}
+
+/** Combat-resolve countdown. Self-contained so its 500ms tick only re-renders
+ *  this badge, not the whole board. */
+function CombatCountdown({ resolveAt }: { resolveAt?: number }) {
+  const [secondsLeft, setSecondsLeft] = useState<number | null>(null)
+  useEffect(() => {
+    if (!resolveAt) { setSecondsLeft(null); return }
+    const tick = () => {
+      const left = Math.ceil((resolveAt - Date.now()) / 1000)
+      setSecondsLeft(left > 0 ? left : 0)
+    }
+    tick()
+    const id = window.setInterval(tick, 500)
+    return () => window.clearInterval(id)
+  }, [resolveAt])
+  if (secondsLeft === null || secondsLeft <= 0) return null
+  return <span style={{ opacity: 0.85, marginLeft: 6 }}>· {secondsLeft}s</span>
+}
+
+/** Countdown for the player's instant-response window. */
+function ResponseCountdown({ resolveAt }: { resolveAt?: number }) {
+  const [secondsLeft, setSecondsLeft] = useState<number | null>(null)
+  useEffect(() => {
+    if (!resolveAt) { setSecondsLeft(null); return }
+    const tick = () => {
+      const left = Math.ceil((resolveAt - Date.now()) / 1000)
+      setSecondsLeft(left > 0 ? left : 0)
+    }
+    tick()
+    const id = window.setInterval(tick, 500)
+    return () => window.clearInterval(id)
+  }, [resolveAt])
+  if (secondsLeft === null) return null
+  return <span style={{ opacity: 0.85 }}>· {Math.max(0, secondsLeft)}s</span>
 }

@@ -4,9 +4,9 @@ import { BoardCardComponent } from './BoardCardComponent'
 export function BattlefieldSection(
   label: string,
   cards: BoardCard[],
+  onZoom: (cardId: string) => void,
+  onContextMenu: (e: React.MouseEvent, cardId: string) => void,
   toggleTap: (id: string) => void,
-  handleRightClick: (e: React.MouseEvent, cardId: string) => void,
-  setOverlay: (o: { type: 'zoom' | null; cardId?: string }) => void,
   reorderBattlefield?: (cardId: string, direction: 'closer' | 'farther') => void,
   cardWidth = 180,
   cardHeight = 252,
@@ -33,9 +33,9 @@ export function BattlefieldSection(
           <BoardCardComponent
             key={card.id}
             card={card}
-            onClick={() => setOverlay({ type: 'zoom', cardId: card.id })}
-            onContextMenu={(e) => handleRightClick(e, card.id)}
-            toggleTap={() => toggleTap(card.id)}
+            onZoom={onZoom}
+            onContextMenu={onContextMenu}
+            onToggleTap={toggleTap}
             reorderBattlefield={reorderBattlefield}
             cardWidth={cardWidth}
             cardHeight={cardHeight}

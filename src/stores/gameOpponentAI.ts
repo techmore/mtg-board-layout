@@ -2,7 +2,7 @@ import type { BoardCard, ManaPool, Zone } from '../types/card'
 import type { ActivePlayer } from './gameStore'
 import type { GameState } from './gameStore'
 import { shuffle, classifyType, parseManaCost, getCardPower, canPayManaCost } from '../utils/misc'
-import { pushUndo, attachAuras, moveCastSpellsToGraveyard } from './gameRules'
+import { pushUndo, attachAuras, moveCastSpellsToGraveyard, setAITurnActive } from './gameRules'
 import { getCardTypeFeatures } from '../data/cardFeatures'
 import { getCachedCardRules, getCardRule, hasKeyword } from './cardRulesLoader'
 import { localCardImage } from '../data/localCardImages'
@@ -13,10 +13,58 @@ import { resolveAISpellAbilities, resolveAIAutoAbilities, resolveAITriggerInstan
 type SetFn = (partial: GameState | Partial<GameState> | ((state: GameState) => Partial<GameState>)) => void
 
 /**
+ * Resolve a spell the AI cast whose resolution was deferred so the player could
+ * respond with an instant (scoped priority). Applies the spell's abilities, its
+ * ETB, and moves instants/sorceries to the graveyard.
+ */
+export function resolvePendingAISpell(set: SetFn, get: () => GameState) {
+  const pendingId = get().aiResponsePending
+  set((prev) => ({
+    ...prev,
+    aiResponsePending: null,
+    turnPrompt: prev.turnPrompt?.reason === 'respond' ? null : prev.turnPrompt,
+  }))
+  if (!pendingId) return
+  const card = get().cards.find((c) => c.id === pendingId)
+  if (!card) return
+  resolveAISpellAbilities(set, get, card)
+  set({ cards: attachAuras(moveCastSpellsToGraveyard(get().cards)) })
+  if (card.type !== 'instant' && card.type !== 'sorcery') {
+    resolveAIAutoAbilities(set, get, card, 'etb')
+  }
+}
+
+/** Pause the AI's async turn chain while the player's response window is open. */
+function proceedWhenReady(get: () => GameState, then: () => void) {
+  const prompt = get().turnPrompt
+  if (prompt?.reason === 'respond' && prompt.resolveAt && Date.now() < prompt.resolveAt) {
+    setTimeout(() => proceedWhenReady(get, then), 250)
+    return
+  }
+  then()
+}
+
+/** Poll until the response window closes (player passed) or its deadline passes,
+ *  then run the deferred resolution. */
+function waitForPlayerResponse(get: () => GameState, resolveAt: number, onDone: () => void) {
+  setTimeout(() => {
+    const prompt = get().turnPrompt
+    if (prompt?.reason === 'respond' && Date.now() < resolveAt) {
+      waitForPlayerResponse(get, resolveAt, onDone)
+      return
+    }
+    onDone()
+  }, 250)
+}
+
+/**
  * Cast the first affordable instant in the AI's hand (combat trick / response).
  * Returns true when something was cast.
  */
 export function aiCastInstant(set: SetFn, get: () => GameState): boolean {
+  // Don't let the AI respond to the player's response-instant while the
+  // player's own response window is open (unbounded recursion).
+  if (get().turnPrompt?.reason === 'respond') return false
   const cards = get().cards
   const hand = cards.filter((c) => (c.owner ?? 'player') === 'opponent' && c.zone === 'hand' && c.type === 'instant')
   for (const trick of hand) {
@@ -213,13 +261,34 @@ export function createOpponentAI(set: SetFn, get: () => GameState): Pick<GameSta
   return {
     runOpponentTurn: () => {
       if (get().gameOver) return
+      // The AI turn is async and not undoable: mark it so the wrapped
+      // resolveCombat/advanceTurn snapshots are not captured in the player's
+      // undo stack (undoing them would soft-lock the game on the opponent turn).
+      setAITurnActive(true)
       set((prev) => {
         const cards = prev.cards.map((c) =>
           (c.owner ?? 'player') === 'opponent' && c.zone === 'battlefield'
-            ? { ...c, tapped: false, damage: 0, deathtouchDamage: false, powerBoost: 0, toughnessBoost: 0 } : c
+            ? { ...c, tapped: false, damage: 0, deathtouchDamage: false, powerBoost: 0, toughnessBoost: 0, keywordBoosts: undefined } : c
         )
         return { cards, opponentManaPool: emptyManaPool(), opponentPotentialMana: [], opponentLandPlaysThisTurn: 0 }
       })
+      // Rad counters: at the beginning of the AI's upkeep it mills and loses them.
+      if (get().opponentRadCounters > 0) {
+        const rad = get().opponentRadCounters
+        set((prev) => {
+          let remaining = rad
+          return {
+            cards: prev.cards.map((c) => {
+              if (remaining > 0 && (c.owner ?? 'player') === 'opponent' && c.zone === 'library') {
+                remaining--
+                return { ...c, zone: 'graveyard' as const, revealed: true }
+              }
+              return c
+            }),
+            opponentRadCounters: 0,
+          }
+        })
+      }
       // The AI's upkeep step fires its own upkeep triggers ("your upkeep").
       get().emitGameEvent({ type: 'upkeep', owner: 'opponent' })
 
@@ -302,81 +371,122 @@ export function createOpponentAI(set: SetFn, get: () => GameState): Pick<GameSta
                 }
               })
               get().emitGameEvent({ type: 'cast', cardId: toCast.id, cardName: toCast.name, count: (get().opponentSpellsCastThisTurn ?? 0) })
-              resolveAISpellAbilities(set, get, toCast)
-              set({ cards: attachAuras(moveCastSpellsToGraveyard(get().cards)) })
-              if (toCast.type !== 'instant' && toCast.type !== 'sorcery') {
-                resolveAIAutoAbilities(set, get, toCast, 'etb')
+              // Give the player a window to respond with an instant (scoped
+              // priority) — but only when they actually have one to play.
+              // Otherwise resolve immediately.
+              const playerHasInstants = get().cards.some((c) => (c.owner ?? 'player') === 'player' && c.zone === 'hand' && c.type === 'instant')
+              set({ aiResponsePending: toCast.id })
+              if (playerHasInstants) {
+                const responseDeadline = Date.now() + 7000
+                set({
+                  turnPrompt: { action: 'respond', reason: 'respond', cardId: toCast.id, cardName: toCast.name, resolveAt: responseDeadline, context: 'cast' },
+                })
+                waitForPlayerResponse(get, responseDeadline, () => resolvePendingAISpell(set, get))
+              } else {
+                resolvePendingAISpell(set, get)
               }
             }
 
             setTimeout(() => {
-              if (get().gameOver) return
-              // Use the AI's permanents: planeswalker loyalty and utility taps.
-              aiActivatePlaneswalkers(set, get)
-              aiActivateUtilityAbilities(set, get)
-              set({ cards: attachAuras(get().cards) })
+              // Wait for the player's response window before continuing the turn.
+              proceedWhenReady(get, () => {
+                if (get().gameOver) return
+                // Use the AI's permanents: planeswalker loyalty and utility taps.
+                aiActivatePlaneswalkers(set, get)
+                aiActivateUtilityAbilities(set, get)
+                set({ cards: attachAuras(get().cards) })
+              })
             }, 600)
 
             setTimeout(() => {
-              if (get().gameOver) return
-              const s4 = get()
-              const oppBattlefield2 = s4.cards.filter((c) => (c.owner ?? 'player') === 'opponent' && c.zone === 'battlefield')
-              const playerDefenders = s4.cards.filter((c) => (c.owner ?? 'player') === 'player' && c.zone === 'battlefield')
-              const attackerIds = pickAttackers(oppBattlefield2, s4.turn, playerDefenders, s4.lifeTotal, s4.commanderDamage)
+              proceedWhenReady(get, () => {
+                if (get().gameOver) return
+                const s4 = get()
+                const oppBattlefield2 = s4.cards.filter((c) => (c.owner ?? 'player') === 'opponent' && c.zone === 'battlefield')
+                const playerDefenders = s4.cards.filter((c) => (c.owner ?? 'player') === 'player' && c.zone === 'battlefield')
+                const attackerIds = pickAttackers(oppBattlefield2, s4.turn, playerDefenders, s4.lifeTotal, s4.commanderDamage)
 
-              // Combat trick: cast the first affordable instant before attacking.
-              aiCastInstant(set, get)
+                // Combat trick: cast the first affordable instant before attacking.
+                aiCastInstant(set, get)
 
-              set({
-                combatState: { active: true, attackers: attackerIds, blockers: {} },
-                currentPhase: 'combat',
-                turnAnnouncement: { id: Date.now(), text: attackerIds.length > 0
-                  ? `OPPONENT attacks with ${attackerIds.length} creature(s) — right-click your creatures to block`
-                  : 'OPPONENT has no attackers' },
-              })
+                set({
+                  combatState: { active: true, attackers: attackerIds, blockers: {} },
+                  currentPhase: 'combat',
+                  turnAnnouncement: { id: Date.now(), text: attackerIds.length > 0
+                    ? `OPPONENT attacks with ${attackerIds.length} creature(s) — right-click your creatures to block`
+                    : 'OPPONENT has no attackers' },
+                })
 
-              // Fire the AI's attack triggers ("whenever this attacks, ...").
-              for (const id of attackerIds) {
-                const attacker = get().cards.find((c) => c.id === id)
-                if (attacker) resolveAIAutoAbilities(set, get, attacker, 'attack')
-              }
+                // Fire the AI's attack triggers ("whenever this attacks, ...").
+                for (const id of attackerIds) {
+                  const attacker = get().cards.find((c) => c.id === id)
+                  if (attacker) resolveAIAutoAbilities(set, get, attacker, 'attack')
+                }
 
-              // Give the player a full blocking window only when they actually
-              // have something that could block; otherwise resolve quickly.
-              const playerCanBlock = get().cards.some(
-                (c) => (c.owner ?? 'player') === 'player' && c.zone === 'battlefield' && c.type === 'creature' && !c.tapped && getCardPower(c) > 0,
-              )
-              const resolveDelay = attackerIds.length > 0 && playerCanBlock ? 8000 : 1500
-              set({
-                combatState: { ...get().combatState, resolveAt: Date.now() + resolveDelay },
-              })
-              setTimeout(() => {
-                const s5 = get()
-                if (s5.activePlayer !== 'opponent' || s5.gameOver) return
-                get().resolveCombat()
-                resolveAITriggerInstances(set, get)
-                set({ currentPhase: 'postcombat_main' })
-
-                // End-of-turn cleanup: discard down to a 7-card hand.
-                const oppHand = s5.cards.filter((c) => (c.owner ?? 'player') === 'opponent' && c.zone === 'hand')
-                if (oppHand.length > 7) {
-                  const excess = oppHand.length - 7
-                  const discardIds = new Set(oppHand.slice(0, excess).map((c) => c.id))
+                // Response window: the player may cast a combat trick before
+                // blocking. Combat resolution (step C) already waits for the
+                // prompt to close or its deadline.
+                const playerHasInstants = get().cards.some((c) => (c.owner ?? 'player') === 'player' && c.zone === 'hand' && c.type === 'instant')
+                if (playerHasInstants && attackerIds.length > 0) {
+                  const attackDeadline = Date.now() + 7000
                   set({
-                    cards: get().cards.map((c) =>
-                      discardIds.has(c.id) ? { ...c, zone: 'graveyard' as const, revealed: true } : c,
-                    ),
-                    currentPhase: 'ending',
+                    turnPrompt: { action: 'respond', reason: 'respond', cardId: attackerIds[0], cardName: 'attack', resolveAt: attackDeadline, context: 'attack' },
+                  })
+                  waitForPlayerResponse(get, attackDeadline, () => {
+                    const prompt = get().turnPrompt
+                    if (prompt?.reason === 'respond' && prompt.context === 'attack') {
+                      set({ turnPrompt: null })
+                    }
                   })
                 }
 
-                // End-of-turn triggers fire before the turn hands back.
-                get().emitGameEvent({ type: 'end_of_turn', owner: 'opponent' })
+                // Give the player a full blocking window only when they actually
+                // have something that could block; otherwise resolve quickly.
+                const playerCanBlock = get().cards.some(
+                  (c) => (c.owner ?? 'player') === 'player' && c.zone === 'battlefield' && c.type === 'creature' && !c.tapped && getCardPower(c) > 0,
+                )
+                const resolveDelay = attackerIds.length > 0 && playerCanBlock ? 8000 : 1500
+                set({
+                  combatState: { ...get().combatState, resolveAt: Date.now() + resolveDelay },
+                })
+                setTimeout(() => {
+                  proceedWhenReady(get, () => {
+                    if (get().gameOver) return
+                    const s5 = get()
+                    if (s5.activePlayer !== 'opponent' || s5.gameOver) return
+                    get().resolveCombat()
+                    resolveAITriggerInstances(set, get)
+                    set({ currentPhase: 'postcombat_main' })
 
-                get().advanceTurn()
-              }, resolveDelay)
+                    // End-of-turn cleanup: discard down to a 7-card hand.
+                    const oppHand = s5.cards.filter((c) => (c.owner ?? 'player') === 'opponent' && c.zone === 'hand')
+                    if (oppHand.length > 7) {
+                      const excess = oppHand.length - 7
+                      const discardIds = new Set(oppHand.slice(0, excess).map((c) => c.id))
+                      set({
+                        cards: get().cards.map((c) =>
+                          discardIds.has(c.id) ? { ...c, zone: 'graveyard' as const, revealed: true } : c,
+                        ),
+                        currentPhase: 'ending',
+                      })
+                    }
+
+                    // End-of-turn triggers fire before the turn hands back.
+                    get().emitGameEvent({ type: 'end_of_turn', owner: 'opponent' })
+
+                    // The monarch draws a card at the beginning of the end step.
+                    if (get().monarch === 'opponent') {
+                      const aiLibrary = get().cards.find((c) => (c.owner ?? 'player') === 'opponent' && c.zone === 'library')
+                      if (aiLibrary) set({ cards: get().cards.map((c) => c.id === aiLibrary.id ? { ...c, zone: 'hand' as const } : c) })
+                    }
+
+                    get().advanceTurn()
+                    setAITurnActive(false)
+                  })
+                }, resolveDelay)
+              })
             }, 600)
-          }, 600)
+            }, 600)
         }, 400)
       }, 400)
     },
@@ -429,7 +539,13 @@ export function createOpponentAI(set: SetFn, get: () => GameState): Pick<GameSta
           currentPhase: 'beginning',
           // A previous game's end state must not leak into the new one.
           gameOver: null,
+          monarch: null,
+          aiResponsePending: null,
           opponentLifeTotal: 40,
+          energyCounters: 0,
+          opponentEnergyCounters: 0,
+          radCounters: 0,
+          opponentRadCounters: 0,
           opponentManaPool: emptyManaPool(),
           opponentPotentialMana: [],
           opponentLandPlaysThisTurn: 0,

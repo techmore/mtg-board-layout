@@ -17,8 +17,9 @@ const LETTERS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
 export type Message = Record<string, unknown>
 
 export function generateRoomIdSingle(): string {
+  // 5 letters = ~11.9M combinations — too many to brute-force room join codes.
   let result = ''
-  for (let i = 0; i < 4; i++) result += LETTERS.charAt(Math.floor(Math.random() * LETTERS.length))
+  for (let i = 0; i < 5; i++) result += LETTERS.charAt(Math.floor(Math.random() * LETTERS.length))
   return result
 }
 
@@ -88,6 +89,14 @@ export function isLandCard(card: { type: string; typeLine: string }): boolean {
   return card.type === 'land' || /\bLand\b/.test(card.typeLine)
 }
 
+export function isAura(card: { type: string; typeLine: string }): boolean {
+  return card.type === 'enchantment' && /\baura\b/i.test(card.typeLine)
+}
+
+export function isEquipment(card: { type: string; typeLine: string }): boolean {
+  return card.type === 'artifact' && /\bequipment\b/i.test(card.typeLine)
+}
+
 export function modeToStartingLife(mode: GameMode): number {
   return mode === '1v1' ? 20 : mode === '2v2' ? 30 : 40
 }
@@ -117,6 +126,10 @@ export function stateToCard(card: CardState, zone: Zone = card.zone as Zone): Ca
     isBasicLand: card.isBasicLand,
     commanderTax: card.commanderTax,
     revealed: card.revealed,
+    isCommander: card.isCommander,
+    manaCost: card.manaCost,
+    enchantsCardId: card.enchantsCardId,
+    cantBeBlockedThisTurn: card.cantBeBlockedThisTurn,
   }
 }
 

@@ -3,7 +3,7 @@ import { useNavigate, useParams, useSearchParams } from 'react-router-dom'
 import { modeToLabel } from 'mtg-protocol'
 import type { RoomPlayerInfo, RoomJoinOptions, ServerEvent } from 'mtg-protocol'
 import { deckToRoomCards } from '../multiplayer/roomCards'
-import { useRoomSession } from '../multiplayer/useRoom'
+import { connect, leave, sendAction, useRoomConnecting, useRoomError, useRoomLastEvent, useRoomServerUrl, useRoomState } from '../multiplayer/useRoom'
 import { useDeckStore } from '../stores/deckStore'
 import { useToastStore } from '../stores/toastStore'
 import { getServerUrlFromSearchParams } from '../multiplayer/serverUrl'
@@ -13,7 +13,11 @@ export default function GamePage() {
   const [searchParams] = useSearchParams()
   const navigate = useNavigate()
   const decks = useDeckStore((state) => state.decks)
-  const { state, error, isConnecting, connect, lastEvent, sendAction, leave, serverUrl } = useRoomSession()
+  const state = useRoomState()
+  const lastEvent = useRoomLastEvent()
+  const error = useRoomError()
+  const isConnecting = useRoomConnecting()
+  const serverUrl = useRoomServerUrl()
   const initialName = searchParams.get('name') ?? ''
   const initialDeck = searchParams.get('deck') ?? ''
   const [copied, setCopied] = useState(false)
@@ -28,7 +32,7 @@ export default function GamePage() {
 
   useEffect(() => {
     if (roomId) void connect(roomId, joinOptions, requestedServerUrl).catch(() => undefined)
-  }, [connect, joinOptions, requestedServerUrl, roomId])
+  }, [joinOptions, requestedServerUrl, roomId])
 
   useEffect(() => {
     if ((lastEvent as ServerEvent | null)?.type === 'gameStarted') navigate(`/board?roomId=${roomId}`)

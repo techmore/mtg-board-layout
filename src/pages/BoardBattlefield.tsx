@@ -1,6 +1,8 @@
+import { useCallback } from 'react'
 import { BattlefieldSection } from '../components/Board/BattlefieldSection'
 import { BattlefieldOrderControls } from '../components/Board/BattlefieldOrderControls'
 import { TokenBadge } from '../components/Board/TokenBadge'
+import { CachedImg } from '../components/shared/CachedImg'
 import { CARD_BACK_URL } from '../constants'
 import { counterBadgeStyle, formatCounterCount, cardRuleSummary } from '../components/Board/cardHelpers'
 import type { BoardCard } from '../types/card'
@@ -41,6 +43,7 @@ export function BoardBattlefield({
   cardLayout,
 }: Props) {
   const { boardCard } = cardLayout
+  const onZoom = useCallback((cardId: string) => setOverlay({ type: 'zoom', cardId }), [setOverlay])
 
   return (
     <div
@@ -72,12 +75,12 @@ export function BoardBattlefield({
           boxSizing: 'border-box',
         }}
       >
-        {BattlefieldSection('Creatures', creatureCards, toggleTap, handleRightClick, setOverlay, reorderBattlefield, boardCard.width, boardCard.height, '1 / span 2', 1)}
-        {BattlefieldSection('Artifacts', artifactCards, toggleTap, handleRightClick, setOverlay, undefined, boardCard.width, boardCard.height, '3', 1)}
-        {BattlefieldSection('Planeswalkers', planeswalkerCards, toggleTap, handleRightClick, setOverlay, undefined, boardCard.width, boardCard.height, '1', 2)}
-        {BattlefieldSection('Battles', battleCards, toggleTap, handleRightClick, setOverlay, undefined, boardCard.width, boardCard.height, '2', 2)}
-        {BattlefieldSection('Enchantments', enchantmentCards, toggleTap, handleRightClick, setOverlay, undefined, boardCard.width, boardCard.height, '3', 2)}
-        {BattlefieldSection('Other', otherPermanents, toggleTap, handleRightClick, setOverlay, undefined, boardCard.width, boardCard.height, '1', 3)}
+        {BattlefieldSection('Creatures', creatureCards, onZoom, handleRightClick, toggleTap, reorderBattlefield, boardCard.width, boardCard.height, '1 / span 2', 1)}
+        {BattlefieldSection('Artifacts', artifactCards, onZoom, handleRightClick, toggleTap, undefined, boardCard.width, boardCard.height, '3', 1)}
+        {BattlefieldSection('Planeswalkers', planeswalkerCards, onZoom, handleRightClick, toggleTap, undefined, boardCard.width, boardCard.height, '1', 2)}
+        {BattlefieldSection('Battles', battleCards, onZoom, handleRightClick, toggleTap, undefined, boardCard.width, boardCard.height, '2', 2)}
+        {BattlefieldSection('Enchantments', enchantmentCards, onZoom, handleRightClick, toggleTap, undefined, boardCard.width, boardCard.height, '3', 2)}
+        {BattlefieldSection('Other', otherPermanents, onZoom, handleRightClick, toggleTap, undefined, boardCard.width, boardCard.height, '1', 3)}
 
         {creatureCards.length === 0 && planeswalkerCards.length === 0 && battleCards.length === 0 &&
          artifactCards.length === 0 && enchantmentCards.length === 0 && otherPermanents.length === 0 &&
@@ -141,7 +144,8 @@ export function BoardBattlefield({
                   onClick={() => setOverlay({ type: 'zoom', cardId: card.id })}
                   onContextMenu={(e) => handleRightClick(e, card.id)}
                 >
-                  <img
+                  <CachedImg
+                    scryfallId={card.scryfallId}
                     src={card.imageUri || CARD_BACK_URL}
                     alt={card.name}
                     style={{

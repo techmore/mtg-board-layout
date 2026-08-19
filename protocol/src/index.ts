@@ -29,12 +29,18 @@ export interface CardData {
   damage?: number
   power?: string
   toughness?: string
+  manaCost?: string
   type: string
   typeLine: string
   subtypes: string[]
   isBasicLand: boolean
   commanderTax: number
   revealed: boolean
+  isCommander?: boolean
+  /** Card id of the creature this aura/equipment is attached to. */
+  enchantsCardId?: string
+  /** "Can't be blocked this turn". */
+  cantBeBlockedThisTurn?: boolean
 }
 
 // ─── Token data ─────────────────────────────────────────────
@@ -366,6 +372,7 @@ export interface RoomCreateOptions {
   playerName: string
   deckId: string
   playerId?: string
+  authToken?: string
   cards?: CardData[]
 }
 
@@ -373,6 +380,8 @@ export interface RoomJoinOptions {
   playerName: string
   deckId: string
   playerId?: string
+  /** Server-issued reconnect token; required to take over a disconnected seat. */
+  authToken?: string
   cards?: CardData[]
 }
 

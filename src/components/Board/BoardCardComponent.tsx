@@ -1,38 +1,44 @@
-import { useState } from 'react'
+import { memo, useCallback, useState } from 'react'
 import type { BoardCard } from '../../types/card'
 import { BattlefieldOrderControls } from './BattlefieldOrderControls'
 import { cardRuleSummary, counterBadgeStyle, formatCounterCount } from './cardHelpers'
 import { TokenBadge } from './TokenBadge'
 import { useGameStore } from '../../stores/gameStore'
-import { canPayManaCost } from '../../utils/misc'
 import { CARD_BACK_URL } from '../../constants'
 import { CachedImg } from '../shared/CachedImg'
 
-export function BoardCardComponent({
+export const BoardCardComponent = memo(function BoardCardComponent({
   card,
-  onClick,
+  onZoom,
   onContextMenu,
-  toggleTap,
+  onToggleTap,
   reorderBattlefield,
   cardWidth,
   cardHeight,
+  affordable = null,
 }: {
   card: BoardCard
-  onClick: () => void
-  onContextMenu: (e: React.MouseEvent) => void
-  toggleTap: () => void
+  /** Stable actions (store selectors); the component binds this card's id. */
+  onZoom: (cardId: string) => void
+  onContextMenu: (e: React.MouseEvent, cardId: string) => void
+  onToggleTap: (cardId: string) => void
   reorderBattlefield?: (cardId: string, direction: 'closer' | 'farther') => void
   cardWidth: number
   cardHeight: number
+  /** Mana affordability shown as a border color on hand cards; battlefield
+   *  cards never pass it (they don't have a mana cost to pay). */
+  affordable?: boolean | null
 }) {
   // Tapped cards are wider after rotation. Reserve that footprint so the
   // rotated image cannot spill into a neighboring card or grid slot.
   const [imgError, setImgError] = useState(false)
   const [hover, setHover] = useState(false)
   const visualWidth = card.tapped ? cardHeight : cardWidth
-  const manaPool = useGameStore((s) => s.manaPool)
-  const affordable = card.zone === 'hand' && card.manaCost ? canPayManaCost(manaPool, card.manaCost) : null
   const turn = useGameStore((s) => s.turn)
+
+  const handleClick = useCallback(() => onZoom(card.id), [card.id, onZoom])
+  const handleContextMenu = useCallback((e: React.MouseEvent) => onContextMenu(e, card.id), [card.id, onContextMenu])
+  const handleToggleTap = useCallback(() => onToggleTap(card.id), [card.id, onToggleTap])
 
   return (
     <div
@@ -51,9 +57,9 @@ export function BoardCardComponent({
           e.stopPropagation()
           return
         }
-        onClick()
+        handleClick()
       }}
-      onContextMenu={onContextMenu}
+      onContextMenu={handleContextMenu}
     >
       <div
         style={{
@@ -232,7 +238,7 @@ export function BoardCardComponent({
         <button
           type="button"
           aria-label={card.tapped ? `Untap ${card.name}` : `Tap ${card.name}`}
-          onClick={(e) => { e.stopPropagation(); toggleTap() }}
+          onClick={(e) => { e.stopPropagation(); handleToggleTap() }}
           style={{
             position: 'absolute',
             bottom: 4,
@@ -269,4 +275,4 @@ export function BoardCardComponent({
       </div>
     </div>
   )
-}
+})

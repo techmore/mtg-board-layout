@@ -52,6 +52,22 @@
             "amount": 1
           }
         }
+      },
+      {
+        "abilityType": "triggered",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "create_token",
+          "params": {
+            "tokenName": "two",
+            "amount": 2
+          }
+        }
       }
     ],
     "oracleText": "{T}, Pay 2 life, Tap X untapped tokens you control: Add X mana in any combination of colors.\nAt the beginning of your end step, create a token that's a copy of target token you control. If that token is a Squirrel, instead create two tokens that are copies of it.",
@@ -81,10 +97,8 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
-          "params": {
-            "description": "Forestwalk (This creature can't be blocked as long as defending player controls a Forest"
-          }
+          "kind": "cant_be_blocked",
+          "params": {}
         }
       },
       {
@@ -373,6 +387,10 @@
       {
         "abilityType": "triggered",
         "triggerEvent": "combat_damage",
+        "triggerEvents": [
+          "combat_damage",
+          "card_drawn"
+        ],
         "triggerCondition": "\" Whenever one or more Squirrels you control deal combat damage to a player",
         "isOptional": false,
         "cost": null,
@@ -380,7 +398,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "deal_damage",
-          "params": {}
+          "params": {
+            "amount": 1
+          }
         }
       }
     ],
@@ -463,9 +483,12 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
+          "kind": "create_token",
           "params": {
-            "description": "When this creature enters, create a number of 1/1 black Rat creature tokens equal to the number of opponents you have"
+            "tokenPower": 1,
+            "tokenToughness": 1,
+            "tokenName": "Rat creature",
+            "amount": 0
           }
         }
       },
@@ -532,9 +555,10 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
+          "kind": "keyword_pump",
           "params": {
-            "description": "{3}{B}, Sacrifice X Foods: Creatures you control get +X/+0 and gain menace until end of turn"
+            "keyword": "menace",
+            "scope": "own"
           }
         }
       }
@@ -600,7 +624,11 @@
         "targetFilter": null,
         "effect": {
           "kind": "put_counter",
-          "params": {}
+          "params": {
+            "counterKind": "+1/+1",
+            "amount": 1,
+            "scope": "all"
+          }
         }
       }
     ],
@@ -619,6 +647,24 @@
     "entryTapRule": null,
     "conditionalEntryText": null,
     "abilities": [
+      {
+        "abilityType": "spell",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "create_token",
+          "params": {
+            "tokenPower": 1,
+            "tokenToughness": 1,
+            "tokenName": "Squirrel creature",
+            "amount": 2
+          }
+        }
+      },
       {
         "abilityType": "spell",
         "triggerEvent": null,
@@ -660,6 +706,11 @@
       {
         "abilityType": "triggered",
         "triggerEvent": "etb",
+        "triggerEvents": [
+          "etb",
+          "attack",
+          "graveyard"
+        ],
         "triggerCondition": "Menace Whenever this creature enters or attacks",
         "isOptional": false,
         "cost": null,
@@ -816,10 +867,8 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
-          "params": {
-            "description": "Rats you control have deathtouch"
-          }
+          "kind": "static_keyword",
+          "params": {}
         }
       }
     ],
@@ -860,10 +909,8 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
-          "params": {
-            "description": "They can't be regenerated"
-          }
+          "kind": "static_noop",
+          "params": {}
         }
       },
       {
@@ -974,7 +1021,11 @@
         "targetFilter": null,
         "effect": {
           "kind": "put_counter",
-          "params": {}
+          "params": {
+            "counterKind": "+1/+1",
+            "amount": 1,
+            "scope": "own"
+          }
         }
       }
     ],
@@ -1003,7 +1054,11 @@
         "targetFilter": "creature",
         "effect": {
           "kind": "put_counter",
-          "params": {}
+          "params": {
+            "counterKind": "+1/+1",
+            "amount": 2,
+            "scope": "all"
+          }
         }
       },
       {
@@ -1019,36 +1074,6 @@
           "params": {
             "tokenName": "a",
             "amount": 1
-          }
-        }
-      },
-      {
-        "abilityType": "spell",
-        "triggerEvent": null,
-        "triggerCondition": null,
-        "isOptional": false,
-        "cost": null,
-        "targets": 1,
-        "targetFilter": "player creates a 1/1 green Squirrel creature token",
-        "effect": {
-          "kind": "other",
-          "params": {
-            "description": "• Target player creates a 1/1 green Squirrel creature token"
-          }
-        }
-      },
-      {
-        "abilityType": "spell",
-        "triggerEvent": null,
-        "triggerCondition": null,
-        "isOptional": false,
-        "cost": null,
-        "targets": 1,
-        "targetFilter": "opponent sacrifices a nontoken artifact of their choice",
-        "effect": {
-          "kind": "other",
-          "params": {
-            "description": "• Target opponent sacrifices a nontoken artifact of their choice"
           }
         }
       }
@@ -1110,7 +1135,11 @@
         "targetFilter": "creature you control",
         "effect": {
           "kind": "put_counter",
-          "params": {}
+          "params": {
+            "counterKind": "+1/+1",
+            "amount": 1,
+            "scope": "own"
+          }
         }
       }
     ],
@@ -1174,8 +1203,8 @@
     "abilities": [
       {
         "abilityType": "triggered",
-        "triggerEvent": null,
-        "triggerCondition": null,
+        "triggerEvent": "cast",
+        "triggerCondition": "Reach Whenever an opponent casts an instant or sorcery spell",
         "isOptional": false,
         "cost": null,
         "targets": 0,
@@ -1218,9 +1247,9 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
+          "kind": "remove_counters",
           "params": {
-            "description": "At the beginning of your upkeep, remove a time counter from it"
+            "amount": 1
           }
         }
       },
@@ -1233,10 +1262,8 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
-          "params": {
-            "description": "When the last is removed, sacrifice it"
-          }
+          "kind": "sacrifice",
+          "params": {}
         }
       },
       {
@@ -1248,9 +1275,11 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
+          "kind": "create_token",
           "params": {
-            "description": ") When this creature enters, create four 1/1 green Squirrel creature tokens"
+            "tokenPower": 1,
+            "tokenToughness": 1,
+            "tokenName": "Squirrel creature"
           }
         }
       },
@@ -1300,10 +1329,8 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
-          "params": {
-            "description": "This spell can't be countered"
-          }
+          "kind": "static_noop",
+          "params": {}
         }
       },
       {
@@ -1316,7 +1343,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "deal_damage",
-          "params": {}
+          "params": {
+            "amount": 1
+          }
         }
       }
     ],
@@ -1481,6 +1510,21 @@
         }
       },
       {
+        "abilityType": "triggered",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "scry",
+          "params": {
+            "amount": 1
+          }
+        }
+      },
+      {
         "abilityType": "activated",
         "triggerEvent": null,
         "triggerCondition": null,
@@ -1606,8 +1650,8 @@
         "triggerCondition": null,
         "isOptional": false,
         "cost": null,
-        "targets": 0,
-        "targetFilter": null,
+        "targets": 1,
+        "targetFilter": "nonland permanent that player controls",
         "effect": {
           "kind": "destroy",
           "params": {
@@ -1797,7 +1841,11 @@
         "targetFilter": null,
         "effect": {
           "kind": "put_counter",
-          "params": {}
+          "params": {
+            "counterKind": "+1/+1",
+            "amount": 1,
+            "scope": "all"
+          }
         }
       }
     ],
@@ -1947,7 +1995,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "deal_damage",
-          "params": {}
+          "params": {
+            "amount": 1
+          }
         }
       }
     ],
@@ -2198,9 +2248,10 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
+          "kind": "mass_sacrifice",
           "params": {
-            "description": "At the beginning of your upkeep, you may sacrifice a token"
+            "scope": "own",
+            "kind": "token"
           }
         }
       },
@@ -2274,8 +2325,8 @@
         "triggerCondition": null,
         "isOptional": false,
         "cost": null,
-        "targets": 0,
-        "targetFilter": null,
+        "targets": 1,
+        "targetFilter": "nonland permanent and all other permanents with the same name as that permanent",
         "effect": {
           "kind": "destroy",
           "params": {
@@ -2331,10 +2382,8 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
-          "params": {
-            "description": "\" Pay 10 life: Untap all lands you control"
-          }
+          "kind": "untap_lands",
+          "params": {}
         }
       }
     ],
@@ -2458,6 +2507,11 @@
       {
         "abilityType": "triggered",
         "triggerEvent": "dies",
+        "triggerEvents": [
+          "dies",
+          "card_drawn",
+          "graveyard"
+        ],
         "triggerCondition": "one or more other creatures die",
         "isOptional": false,
         "cost": null,
@@ -2606,15 +2660,20 @@
       {
         "abilityType": "triggered",
         "triggerEvent": "etb",
+        "triggerEvents": [
+          "etb",
+          "sacrifice"
+        ],
         "triggerCondition": "this creature enters",
         "isOptional": false,
         "cost": null,
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
+          "kind": "mass_sacrifice",
           "params": {
-            "description": "When this creature enters, each player sacrifices a creature or planeswalker of their choice"
+            "scope": "all",
+            "kind": "creature_or_planeswalker"
           }
         }
       }
@@ -2659,7 +2718,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "return_from_graveyard",
-          "params": {}
+          "params": {
+            "zone": "hand"
+          }
         }
       },
       {
@@ -2858,6 +2919,10 @@
       {
         "abilityType": "triggered",
         "triggerEvent": "counter_placed",
+        "triggerEvents": [
+          "counter_placed",
+          "sacrifice"
+        ],
         "triggerCondition": "you sacrifice an artifact or creature",
         "isOptional": false,
         "cost": null,
@@ -2865,7 +2930,11 @@
         "targetFilter": null,
         "effect": {
           "kind": "put_counter",
-          "params": {}
+          "params": {
+            "counterKind": "+1/+1",
+            "amount": 1,
+            "scope": "all"
+          }
         }
       },
       {
@@ -2912,9 +2981,10 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
+          "kind": "mass_sacrifice",
           "params": {
-            "description": "Reach When this creature enters, you may sacrifice another creature"
+            "scope": "own",
+            "kind": "creature"
           }
         }
       },
@@ -2924,8 +2994,8 @@
         "triggerCondition": null,
         "isOptional": false,
         "cost": null,
-        "targets": 0,
-        "targetFilter": null,
+        "targets": 1,
+        "targetFilter": "nonland permanent",
         "effect": {
           "kind": "destroy",
           "params": {
@@ -2987,8 +3057,8 @@
         "triggerCondition": null,
         "isOptional": false,
         "cost": null,
-        "targets": 0,
-        "targetFilter": null,
+        "targets": 1,
+        "targetFilter": "nonland permanent an opponent controls",
         "effect": {
           "kind": "destroy",
           "params": {
@@ -3018,9 +3088,10 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
+          "kind": "keyword_pump",
           "params": {
-            "description": "III — Creatures you control gain deathtouch until end of turn"
+            "keyword": "deathtouch",
+            "scope": "own"
           }
         }
       }
@@ -3056,7 +3127,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "return_from_graveyard",
-          "params": {}
+          "params": {
+            "zone": "hand"
+          }
         }
       },
       {
@@ -3187,9 +3260,12 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
+          "kind": "create_token",
           "params": {
-            "description": "When this creature dies, create X tapped 1/1 green Squirrel creature tokens, where X is this creature's power"
+            "tokenPower": 1,
+            "tokenToughness": 1,
+            "tokenName": "Squirrel creature",
+            "amount": "X"
           }
         }
       }
@@ -3219,6 +3295,22 @@
     "entryTapRule": null,
     "conditionalEntryText": null,
     "abilities": [
+      {
+        "abilityType": "spell",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "mass_sacrifice",
+          "params": {
+            "scope": "own",
+            "kind": "creature"
+          }
+        }
+      },
       {
         "abilityType": "spell",
         "triggerEvent": null,
@@ -3395,8 +3487,8 @@
         "triggerCondition": null,
         "isOptional": false,
         "cost": "{G}, Sacrifice",
-        "targets": 0,
-        "targetFilter": null,
+        "targets": 1,
+        "targetFilter": "noncreature artifact or noncreature enchantment",
         "effect": {
           "kind": "exile",
           "params": {
@@ -3501,6 +3593,10 @@
       {
         "abilityType": "triggered",
         "triggerEvent": "etb",
+        "triggerEvents": [
+          "etb",
+          "counter_placed"
+        ],
         "triggerCondition": "Trample When this creature enters",
         "isOptional": false,
         "cost": null,
@@ -3508,12 +3604,20 @@
         "targetFilter": null,
         "effect": {
           "kind": "put_counter",
-          "params": {}
+          "params": {
+            "counterKind": "+1/+1",
+            "amount": 1,
+            "scope": "own"
+          }
         }
       },
       {
         "abilityType": "triggered",
         "triggerEvent": "etb",
+        "triggerEvents": [
+          "etb",
+          "counter_placed"
+        ],
         "triggerCondition": "another Squirrel or Food you control enters",
         "isOptional": false,
         "cost": null,
@@ -3521,7 +3625,11 @@
         "targetFilter": null,
         "effect": {
           "kind": "put_counter",
-          "params": {}
+          "params": {
+            "counterKind": "+1/+1",
+            "amount": 1,
+            "scope": "own"
+          }
         }
       }
     ],
@@ -3561,8 +3669,8 @@
         "triggerCondition": null,
         "isOptional": true,
         "cost": null,
-        "targets": 0,
-        "targetFilter": null,
+        "targets": 1,
+        "targetFilter": "nonland permanent instead",
         "effect": {
           "kind": "exile",
           "params": {
@@ -3646,10 +3754,8 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
-          "params": {
-            "description": "It can't be regenerated"
-          }
+          "kind": "static_noop",
+          "params": {}
         }
       }
     ],
@@ -3746,7 +3852,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "deal_damage",
-          "params": {}
+          "params": {
+            "amount": 1
+          }
         }
       }
     ],
@@ -3896,6 +4004,21 @@
             "amount": 1
           }
         }
+      },
+      {
+        "abilityType": "triggered",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "scry",
+          "params": {
+            "amount": 1
+          }
+        }
       }
     ],
     "oracleText": "This land enters tapped.\n{T}: Add one mana of any color in your commander's color identity. When that mana is spent to cast a creature spell that shares a creature type with your commander, scry 1. (Look at the top card of your library. You may put that card on the bottom.)",
@@ -4002,8 +4125,8 @@
         "triggerCondition": "this land enters",
         "isOptional": false,
         "cost": null,
-        "targets": 1,
-        "targetFilter": "player 's graveyard",
+        "targets": 0,
+        "targetFilter": null,
         "effect": {
           "kind": "exile",
           "params": {

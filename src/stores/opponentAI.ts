@@ -1,5 +1,6 @@
 import type { BoardCard, ManaColor } from '../types/card'
 import { canPayManaCost, getCardPower, getCardToughness } from '../utils/misc'
+import { canAttack, canBlock } from 'mtg-protocol/combat'
 import { hasKeyword, computeStaticPump } from './cardRulesLoader'
 
 export function pickLand(hand: BoardCard[]): BoardCard | null {
@@ -27,19 +28,26 @@ export function pickCommanderCast(commandCards: BoardCard[], manaPool: Record<Ma
 export function pickAttackers(battlefield: BoardCard[], currentTurn: number, defenders: BoardCard[] = [], playerLife?: number, commanderDamage: Record<string, number> = {}): string[] {
   const candidates = battlefield
     .filter((c) => c.type === 'creature' && !c.tapped)
-    .filter((c) => c.enteredAtTurn === currentTurn ? hasKeyword(c, 'haste') : true)
+    .filter((c) => c.enteredAtTurn === currentTurn ? hasKeyword(c, 'haste', battlefield) : true)
+    .filter((c) => canAttack(c, battlefield))
   if (candidates.length === 0) return []
 
   const threats = defenders.filter(
     (c) => c.type === 'creature' && !c.tapped && c.enteredAtTurn !== currentTurn && getCardPower(c) > 0,
   )
 
+  // Must-attack compulsion ("creatures your opponents control attack this turn
+  // if able"): the AI swings with everything it can.
+  if (defenders.some((c) => /\battack(?:s|ed)? (?:each combat|this turn) if able\b/i.test(c.oracleText ?? ''))) {
+    return candidates.map((c) => c.id)
+  }
+
   // Free swing when the opponent can't block.
   if (threats.length === 0) return candidates.map((c) => c.id)
 
   // Fliers that no defender can block always attack.
   const flyers = candidates.filter((c) =>
-    hasKeyword(c, 'flying') && !threats.some((d) => hasKeyword(d, 'flying') || hasKeyword(d, 'reach')),
+    hasKeyword(c, 'flying', battlefield) && !threats.some((d) => hasKeyword(d, 'flying', defenders) || hasKeyword(d, 'reach', defenders)),
   )
   const ground = candidates.filter((c) => !flyers.includes(c))
 
@@ -75,7 +83,7 @@ export function pickBlockers(
 ): Record<string, string[]> {
   const blockers: Record<string, string[]> = {}
   const available = opponentBattlefield.filter(
-    (c) => c.type === 'creature' && !c.tapped && c.enteredAtTurn !== currentTurn,
+    (c) => c.type === 'creature' && c.enteredAtTurn !== currentTurn && canBlock(c, allCards),
   )
   const used = new Set<string>()
 
@@ -90,15 +98,16 @@ export function pickBlockers(
     if (!attacker) continue
     const attPower = getCardPower(attacker) + computeStaticPump(allCards, attacker).power
     if (attPower === 0) continue
-    const attackerFlying = hasKeyword(attacker, 'flying')
-    const attackerDeathtouch = hasKeyword(attacker, 'deathtouch')
+    const attackerFlying = hasKeyword(attacker, 'flying', allCards)
+    const attackerDeathtouch = hasKeyword(attacker, 'deathtouch', allCards)
     // A commander that reaches 21 commander damage with this swing is lethal
     // regardless of the AI's life total — block it at any cost.
     const commanderLethal = attacker.isCommander && (commanderDamage[attacker.id] ?? 0) + attPower >= 21
 
     const candidates = available
       .filter((b) => !used.has(b.id))
-      .filter((b) => !attackerFlying || hasKeyword(b, 'flying') || hasKeyword(b, 'reach'))
+      .filter((b) => !attackerFlying || hasKeyword(b, 'flying', allCards) || hasKeyword(b, 'reach', allCards))
+      .filter((b) => !hasKeyword(attacker, 'skulk', allCards) || getCardPower(b) <= getCardPower(attacker))
       .sort((a, b) => {
         const aTough = getCardToughness(a) + computeStaticPump(allCards, a).toughness
         const bTough = getCardToughness(b) + computeStaticPump(allCards, b).toughness

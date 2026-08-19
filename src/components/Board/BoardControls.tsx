@@ -43,6 +43,7 @@ export function BoardControls({
   const cardScale = useGameStore((s) => s.cardScale)
   const setCardScale = useGameStore((s) => s.setCardScale)
   const manaPool = useGameStore((s) => s.manaPool)
+  const energyCounters = useGameStore((s) => s.energyCounters)
   const potentialMana = useGameStore((s) => s.potentialMana)
   const addMana = useGameStore((s) => s.addMana)
   const spendMana = useGameStore((s) => s.spendMana)
@@ -52,6 +53,7 @@ export function BoardControls({
   const effectHistory = useGameStore((s) => s.effectHistory)
   const landPlaysThisTurn = useGameStore((s) => s.landPlaysThisTurn)
   const lifeTotal = useGameStore((s) => s.lifeTotal)
+  const monarch = useGameStore((s) => s.monarch)
   const setLife = useGameStore((s) => s.setLife)
   const showOpponent = useGameStore((s) => s.showOpponent)
   const toggleOpponent = useGameStore((s) => s.toggleOpponent)
@@ -135,6 +137,15 @@ export function BoardControls({
         manaLogOpen={manaLogOpen}
         compact
       />
+      {energyCounters > 0 && (
+        <span
+          aria-label={`${energyCounters} energy counters`}
+          title={`${energyCounters} energy counters ({E})`}
+          style={{ fontSize: '0.8rem', fontWeight: 700, color: '#d29922', whiteSpace: 'nowrap' }}
+        >
+          ⚡{energyCounters}
+        </span>
+      )}
       <div style={dividerStyle} />
       <BoardBtn onClick={() => useGameStore.getState().drawCards(7)}>Draw 7</BoardBtn>
       <BoardBtn onClick={() => useGameStore.getState().drawCards(1)}>Draw 1</BoardBtn>
@@ -263,6 +274,9 @@ export function BoardControls({
         >
           {lifeTotal}
         </span>
+        {monarch === 'player' && (
+          <span title="You are the monarch" style={{ color: '#d29922', fontSize: '0.85rem' }}>👑</span>
+        )}
         <Button
           size="sm"
           variant="ghost"

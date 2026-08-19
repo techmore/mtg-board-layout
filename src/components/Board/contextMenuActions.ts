@@ -32,6 +32,20 @@ export function executeActivated(ab: CardAbilityDef, cardId: string, cardName: s
     }
   }
 
+  // Energy cost: "Pay N {E}" (also "Pay {E}{E}").
+  const energyCost = cost.match(/\bpay\s+(\d+)\s*\{E\}/i)?.[1]
+    ?? (() => {
+      const payClause = cost.match(/\bpay\b[^,;]*/i)?.[0] ?? ''
+      return /{E}/i.test(payClause) ? String((payClause.match(/\{E\}/gi) ?? []).length) : undefined
+    })()
+  if (energyCost) {
+    const ok = get().spendEnergy(parseInt(energyCost, 10))
+    if (!ok) {
+      window.alert(`Not enough energy (${energyCost} {E})`)
+      return
+    }
+  }
+
   if (cost.includes('{T}')) {
     const card = get().cards.find((c) => c.id === cardId)
     if (card && !card.tapped) get().toggleTap(cardId)

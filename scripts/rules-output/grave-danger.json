@@ -19,15 +19,20 @@
       {
         "abilityType": "triggered",
         "triggerEvent": "etb",
+        "triggerEvents": [
+          "etb",
+          "attack"
+        ],
         "triggerCondition": "Flying Whenever The Wise Mothman enters or attacks",
         "isOptional": false,
         "cost": null,
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
+          "kind": "gain_rad",
           "params": {
-            "description": "Flying Whenever The Wise Mothman enters or attacks, each player gets a rad counter"
+            "scope": "each",
+            "amount": 1
           }
         }
       },
@@ -41,7 +46,11 @@
         "targetFilter": "creature s",
         "effect": {
           "kind": "put_counter",
-          "params": {}
+          "params": {
+            "counterKind": "+1/+1",
+            "amount": "X",
+            "scope": "all"
+          }
         }
       }
     ],
@@ -266,12 +275,13 @@
         "triggerCondition": "The Master enters",
         "isOptional": false,
         "cost": null,
-        "targets": 1,
-        "targetFilter": "player gets two rad counters",
+        "targets": 0,
+        "targetFilter": null,
         "effect": {
-          "kind": "other",
+          "kind": "gain_rad",
           "params": {
-            "description": "When The Master enters, target player gets two rad counters"
+            "scope": "opponent",
+            "amount": 2
           }
         }
       },
@@ -284,9 +294,9 @@
         "targets": 1,
         "targetFilter": "creature card in a graveyard that was milled this turn onto the battlefield under your control",
         "effect": {
-          "kind": "other",
+          "kind": "return_from_graveyard",
           "params": {
-            "description": "{T}: Put target creature card in a graveyard that was milled this turn onto the battlefield under your control"
+            "zone": "battlefield"
           }
         }
       }
@@ -315,6 +325,11 @@
       {
         "abilityType": "triggered",
         "triggerEvent": "dies",
+        "triggerEvents": [
+          "dies",
+          "card_drawn",
+          "graveyard"
+        ],
         "triggerCondition": "a Zombie or Mutant you control dies",
         "isOptional": false,
         "cost": null,
@@ -337,7 +352,11 @@
         "targetFilter": "creature you control",
         "effect": {
           "kind": "put_counter",
-          "params": {}
+          "params": {
+            "counterKind": "+1/+1",
+            "amount": 1,
+            "scope": "own"
+          }
         }
       },
       {
@@ -349,9 +368,10 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
+          "kind": "keyword_pump",
           "params": {
-            "description": "It gains flying until end of turn"
+            "keyword": "flying",
+            "scope": "all"
           }
         }
       }
@@ -382,18 +402,23 @@
         "triggerCondition": "Vigilance When this creature enters",
         "isOptional": false,
         "cost": null,
-        "targets": 1,
-        "targetFilter": "player gets two rad counters",
+        "targets": 0,
+        "targetFilter": null,
         "effect": {
-          "kind": "other",
+          "kind": "gain_rad",
           "params": {
-            "description": "Vigilance When this creature enters, target player gets two rad counters"
+            "scope": "opponent",
+            "amount": 2
           }
         }
       },
       {
         "abilityType": "triggered",
         "triggerEvent": "counter_placed",
+        "triggerEvents": [
+          "counter_placed",
+          "card_drawn"
+        ],
         "triggerCondition": "one or more nonland cards are milled",
         "isOptional": false,
         "cost": null,
@@ -401,7 +426,11 @@
         "targetFilter": null,
         "effect": {
           "kind": "put_counter",
-          "params": {}
+          "params": {
+            "counterKind": "+1/+1",
+            "amount": 1,
+            "scope": "all"
+          }
         }
       }
     ],
@@ -433,7 +462,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "deal_damage",
-          "params": {}
+          "params": {
+            "amount": 1
+          }
         }
       },
       {
@@ -477,7 +508,11 @@
         "targetFilter": "creature you control",
         "effect": {
           "kind": "put_counter",
-          "params": {}
+          "params": {
+            "counterKind": "+1/+1",
+            "amount": 1,
+            "scope": "own"
+          }
         }
       }
     ],
@@ -511,7 +546,11 @@
         "targetFilter": null,
         "effect": {
           "kind": "put_counter",
-          "params": {}
+          "params": {
+            "counterKind": "+1/+1",
+            "amount": 1,
+            "scope": "own"
+          }
         }
       },
       {
@@ -523,9 +562,10 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
+          "kind": "gain_rad",
           "params": {
-            "description": "When this creature dies, each opponent gets a number of rad counters equal to its power"
+            "scope": "each",
+            "amount": "power"
           }
         }
       }
@@ -561,7 +601,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "return_from_graveyard",
-          "params": {}
+          "params": {
+            "zone": "battlefield"
+          }
         }
       }
     ],
@@ -595,9 +637,27 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
+          "kind": "gain_rad",
           "params": {
-            "description": "Flying, menace Whenever this creature attacks, each player gets two rad counters"
+            "scope": "each",
+            "amount": 2
+          }
+        }
+      },
+      {
+        "abilityType": "triggered",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": true,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "create_token",
+          "params": {
+            "tokenPower": 2,
+            "tokenToughness": 2,
+            "tokenName": "Mutant creature"
           }
         }
       }
@@ -633,7 +693,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "return_from_graveyard",
-          "params": {}
+          "params": {
+            "zone": "battlefield"
+          }
         }
       },
       {
@@ -647,6 +709,22 @@
         "effect": {
           "kind": "add_mana",
           "params": {}
+        }
+      },
+      {
+        "abilityType": "triggered",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "gain_rad",
+          "params": {
+            "scope": "you",
+            "amount": 2
+          }
         }
       }
     ],
@@ -679,10 +757,8 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
-          "params": {
-            "description": "At the beginning of your upkeep, double the number of +1/+1 counters on Lily Bowen if its power is 16 or less"
-          }
+          "kind": "double_counters",
+          "params": {}
         }
       },
       {
@@ -694,9 +770,9 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "gain_life",
+          "kind": "remove_counters",
           "params": {
-            "amount": 1
+            "amount": "all"
           }
         }
       }
@@ -768,7 +844,11 @@
         "targetFilter": null,
         "effect": {
           "kind": "put_counter",
-          "params": {}
+          "params": {
+            "counterKind": "+1/+1",
+            "amount": 3,
+            "scope": "all"
+          }
         }
       },
       {
@@ -815,9 +895,10 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
+          "kind": "gain_rad",
           "params": {
-            "description": "Landfall — Whenever a land you control enters, you may get two rad counters"
+            "scope": "you",
+            "amount": 2
           }
         }
       },
@@ -830,9 +911,9 @@
         "targets": 1,
         "targetFilter": "land card in a graveyard that was milled this turn onto the battlefield under your control tapped",
         "effect": {
-          "kind": "other",
+          "kind": "return_from_graveyard",
           "params": {
-            "description": "{T}: Put target land card in a graveyard that was milled this turn onto the battlefield under your control tapped"
+            "zone": "battlefield"
           }
         }
       }
@@ -858,6 +939,10 @@
       {
         "abilityType": "triggered",
         "triggerEvent": "etb",
+        "triggerEvents": [
+          "etb",
+          "counter_placed"
+        ],
         "triggerCondition": "Evolve (Whenever a creature you control enters",
         "isOptional": false,
         "cost": null,
@@ -865,7 +950,11 @@
         "targetFilter": null,
         "effect": {
           "kind": "put_counter",
-          "params": {}
+          "params": {
+            "counterKind": "+1/+1",
+            "amount": 1,
+            "scope": "own"
+          }
         }
       },
       {
@@ -909,6 +998,10 @@
       {
         "abilityType": "triggered",
         "triggerEvent": "etb",
+        "triggerEvents": [
+          "etb",
+          "attack"
+        ],
         "triggerCondition": "Agent Frank Horrigan enters or attacks",
         "isOptional": false,
         "cost": null,
@@ -979,7 +1072,11 @@
         "targetFilter": null,
         "effect": {
           "kind": "put_counter",
-          "params": {}
+          "params": {
+            "counterKind": "+1/+1",
+            "amount": 4,
+            "scope": "all"
+          }
         }
       }
     ],
@@ -1014,7 +1111,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "deal_damage",
-          "params": {}
+          "params": {
+            "amount": 1
+          }
         }
       },
       {
@@ -1027,7 +1126,11 @@
         "targetFilter": null,
         "effect": {
           "kind": "put_counter",
-          "params": {}
+          "params": {
+            "counterKind": "+1/+1",
+            "amount": 1,
+            "scope": "all"
+          }
         }
       }
     ],
@@ -1105,7 +1208,11 @@
         "targetFilter": null,
         "effect": {
           "kind": "put_counter",
-          "params": {}
+          "params": {
+            "counterKind": "+1/+1",
+            "amount": 1,
+            "scope": "all"
+          }
         }
       }
     ],
@@ -1139,7 +1246,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "deal_damage",
-          "params": {}
+          "params": {
+            "amount": 1
+          }
         }
       },
       {
@@ -1175,7 +1284,23 @@
     "manaProduction": null,
     "entryTapRule": null,
     "conditionalEntryText": null,
-    "abilities": [],
+    "abilities": [
+      {
+        "abilityType": "triggered",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "remove_counters",
+          "params": {
+            "amount": 1
+          }
+        }
+      }
+    ],
     "oracleText": "Flying\nThis creature enters with five +1/+1 counters on it.\nIf damage would be dealt to this creature while it has a +1/+1 counter on it, prevent that damage, remove that many +1/+1 counters from it, then give each player a rad counter for each +1/+1 counter removed this way.",
     "scryfallId": "2d90b839-0808-435d-bcf3-aa7af414c44b"
   },
@@ -1205,10 +1330,8 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
-          "params": {
-            "description": "Flying This creature can't block"
-          }
+          "kind": "static_restriction",
+          "params": {}
         }
       },
       {
@@ -1221,7 +1344,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "deal_damage",
-          "params": {}
+          "params": {
+            "amount": 1
+          }
         }
       },
       {
@@ -1234,7 +1359,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "return_from_graveyard",
-          "params": {}
+          "params": {
+            "zone": "hand"
+          }
         }
       }
     ],
@@ -1268,7 +1395,11 @@
         "targetFilter": "creature that entered this turn",
         "effect": {
           "kind": "put_counter",
-          "params": {}
+          "params": {
+            "counterKind": "+1/+1",
+            "amount": 1,
+            "scope": "all"
+          }
         }
       }
     ],
@@ -1302,7 +1433,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "deal_damage",
-          "params": {}
+          "params": {
+            "amount": 1
+          }
         }
       },
       {
@@ -1367,12 +1500,13 @@
         "triggerCondition": ") When this creature enters",
         "isOptional": false,
         "cost": null,
-        "targets": 1,
-        "targetFilter": "player gets four rad counters",
+        "targets": 0,
+        "targetFilter": null,
         "effect": {
-          "kind": "other",
+          "kind": "gain_rad",
           "params": {
-            "description": ") When this creature enters, target player gets four rad counters"
+            "scope": "opponent",
+            "amount": 4
           }
         }
       },
@@ -1385,10 +1519,8 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
-          "params": {
-            "description": "This creature can't be blocked as long as defending player has a rad counter"
-          }
+          "kind": "cant_be_blocked",
+          "params": {}
         }
       }
     ],
@@ -1456,10 +1588,8 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
-          "params": {
-            "description": "Menace (This creature can't be blocked except by two or more creatures"
-          }
+          "kind": "cant_be_blocked",
+          "params": {}
         }
       },
       {
@@ -1472,7 +1602,11 @@
         "targetFilter": "creature",
         "effect": {
           "kind": "put_counter",
-          "params": {}
+          "params": {
+            "counterKind": "+1/+1",
+            "amount": 1,
+            "scope": "all"
+          }
         }
       }
     ],
@@ -1503,7 +1637,11 @@
         "targetFilter": null,
         "effect": {
           "kind": "put_counter",
-          "params": {}
+          "params": {
+            "counterKind": "+1/+1",
+            "amount": 1,
+            "scope": "own"
+          }
         }
       }
     ],
@@ -1559,8 +1697,8 @@
         "triggerCondition": null,
         "isOptional": false,
         "cost": null,
-        "targets": 0,
-        "targetFilter": null,
+        "targets": 1,
+        "targetFilter": "nonland permanent",
         "effect": {
           "kind": "destroy",
           "params": {
@@ -1600,6 +1738,22 @@
     "entryTapRule": null,
     "conditionalEntryText": null,
     "abilities": [
+      {
+        "abilityType": "spell",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "keyword_pump",
+          "params": {
+            "keyword": "hexproof",
+            "scope": "own"
+          }
+        }
+      },
       {
         "abilityType": "spell",
         "triggerEvent": null,
@@ -1701,6 +1855,22 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
+          "kind": "keyword_pump",
+          "params": {
+            "keyword": "indestructible",
+            "scope": "all"
+          }
+        }
+      },
+      {
+        "abilityType": "spell",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
           "kind": "destroy",
           "params": {}
         }
@@ -1745,10 +1915,8 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
-          "params": {
-            "description": "It can't be regenerated"
-          }
+          "kind": "static_noop",
+          "params": {}
         }
       }
     ],
@@ -1766,7 +1934,24 @@
     "manaProduction": null,
     "entryTapRule": null,
     "conditionalEntryText": null,
-    "abilities": [],
+    "abilities": [
+      {
+        "abilityType": "spell",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "gain_rad",
+          "params": {
+            "scope": "each",
+            "amount": 1
+          }
+        }
+      }
+    ],
     "oracleText": "Each creature gets twice -X/-X until end of turn. Each player gets X rad counters.",
     "scryfallId": "e717e4b0-a8c1-4411-b18a-1d17e7225503"
   },
@@ -2000,9 +2185,9 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
+          "kind": "draw_cards",
           "params": {
-            "description": "• Brotherhood — At the beginning of your upkeep, each opponent draws a card"
+            "amount": 1
           }
         }
       },
@@ -2030,9 +2215,10 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
+          "kind": "gain_rad",
           "params": {
-            "description": "• Enclave — Whenever a player attacks you with one or more creatures, that player gets twice that many rad counters"
+            "scope": "opponent",
+            "amount": 1
           }
         }
       }
@@ -2063,8 +2249,46 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
+          "kind": "gain_rad",
+          "params": {
+            "scope": "each",
+            "amount": 3
+          }
+        }
+      },
+      {
+        "abilityType": "triggered",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "create_token",
+          "params": {
+            "tokenPower": 2,
+            "tokenToughness": 2,
+            "tokenName": "Mutant creature",
+            "amount": "X"
+          }
+        }
+      },
+      {
+        "abilityType": "triggered",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
           "kind": "put_counter",
-          "params": {}
+          "params": {
+            "counterKind": "+1/+1",
+            "amount": 2,
+            "scope": "own"
+          }
         }
       }
     ],
@@ -2095,7 +2319,11 @@
         "targetFilter": "creature you control",
         "effect": {
           "kind": "put_counter",
-          "params": {}
+          "params": {
+            "counterKind": "+1/+1",
+            "amount": 1,
+            "scope": "own"
+          }
         }
       },
       {
@@ -2202,7 +2430,11 @@
         "targetFilter": null,
         "effect": {
           "kind": "put_counter",
-          "params": {}
+          "params": {
+            "counterKind": "+1/+1",
+            "amount": 1,
+            "scope": "own"
+          }
         }
       }
     ],
@@ -2224,6 +2456,11 @@
       {
         "abilityType": "triggered",
         "triggerEvent": "etb",
+        "triggerEvents": [
+          "etb",
+          "card_drawn",
+          "graveyard"
+        ],
         "triggerCondition": "a nontoken creature you control enters",
         "isOptional": false,
         "cost": null,
@@ -2262,7 +2499,11 @@
         "targetFilter": null,
         "effect": {
           "kind": "put_counter",
-          "params": {}
+          "params": {
+            "counterKind": "+1/+1",
+            "amount": 1,
+            "scope": "own"
+          }
         }
       }
     ],
@@ -2295,7 +2536,11 @@
         "targetFilter": null,
         "effect": {
           "kind": "put_counter",
-          "params": {}
+          "params": {
+            "counterKind": "+1/+1",
+            "amount": 1,
+            "scope": "all"
+          }
         }
       },
       {
@@ -2359,10 +2604,8 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
-          "params": {
-            "description": "(It can't be blocked except by artifact creatures and/or creatures that share a color with it"
-          }
+          "kind": "static_noop",
+          "params": {}
         }
       },
       {
@@ -2374,9 +2617,10 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
+          "kind": "gain_rad",
           "params": {
-            "description": ") Whenever equipped creature attacks, until the end of defending player's next turn, that player gets two rad counters whenever they cast a spell"
+            "scope": "opponent",
+            "amount": 2
           }
         }
       },
@@ -2443,7 +2687,11 @@
         "targetFilter": null,
         "effect": {
           "kind": "put_counter",
-          "params": {}
+          "params": {
+            "counterKind": "+1/+1",
+            "amount": 1,
+            "scope": "all"
+          }
         }
       },
       {
@@ -2510,7 +2758,11 @@
         "targetFilter": "creature",
         "effect": {
           "kind": "put_counter",
-          "params": {}
+          "params": {
+            "counterKind": "+1/+1",
+            "amount": "X",
+            "scope": "own"
+          }
         }
       }
     ],
@@ -2539,7 +2791,11 @@
         "targetFilter": "creature",
         "effect": {
           "kind": "put_counter",
-          "params": {}
+          "params": {
+            "counterKind": "-1/-1",
+            "amount": 1,
+            "scope": "all"
+          }
         }
       },
       {
@@ -2614,7 +2870,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "deal_damage",
-          "params": {}
+          "params": {
+            "amount": 1
+          }
         }
       }
     ],
@@ -2676,7 +2934,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "deal_damage",
-          "params": {}
+          "params": {
+            "amount": 1
+          }
         }
       }
     ],
@@ -2738,7 +2998,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "deal_damage",
-          "params": {}
+          "params": {
+            "amount": 1
+          }
         }
       }
     ],
@@ -2762,6 +3024,22 @@
     "entryTapRule": "conditional",
     "conditionalEntryText": "You may have this land enter tapped",
     "abilities": [
+      {
+        "abilityType": "triggered",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "gain_rad",
+          "params": {
+            "scope": "you",
+            "amount": 2
+          }
+        }
+      },
       {
         "abilityType": "activated",
         "triggerEvent": null,
@@ -3182,6 +3460,21 @@
         }
       },
       {
+        "abilityType": "triggered",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "scry",
+          "params": {
+            "amount": 1
+          }
+        }
+      },
+      {
         "abilityType": "activated",
         "triggerEvent": null,
         "triggerCondition": null,
@@ -3232,6 +3525,21 @@
         }
       },
       {
+        "abilityType": "triggered",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "scry",
+          "params": {
+            "amount": 1
+          }
+        }
+      },
+      {
         "abilityType": "activated",
         "triggerEvent": null,
         "triggerCondition": null,
@@ -3270,6 +3578,21 @@
         "abilityType": "triggered",
         "triggerEvent": "etb",
         "triggerCondition": "this land enters",
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "scry",
+          "params": {
+            "amount": 1
+          }
+        }
+      },
+      {
+        "abilityType": "triggered",
+        "triggerEvent": null,
+        "triggerCondition": null,
         "isOptional": false,
         "cost": null,
         "targets": 0,
@@ -3541,6 +3864,21 @@
             "amount": 1
           }
         }
+      },
+      {
+        "abilityType": "triggered",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "scry",
+          "params": {
+            "amount": 1
+          }
+        }
       }
     ],
     "oracleText": "This land enters tapped.\n{T}: Add one mana of any color in your commander's color identity. When that mana is spent to cast a creature spell that shares a creature type with your commander, scry 1. (Look at the top card of your library. You may put that card on the bottom.)",
@@ -3751,7 +4089,9 @@
         "targetFilter": "creature cards from your graveyard to your hand",
         "effect": {
           "kind": "return_from_graveyard",
-          "params": {}
+          "params": {
+            "zone": "hand"
+          }
         }
       }
     ],

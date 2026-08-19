@@ -22,10 +22,12 @@ export function deckToRoomCards(deck: Deck): CardData[] {
       counters: 0,
       power: source.power,
       toughness: source.toughness,
+      manaCost: source.manaCost,
       type: classifyType(source.typeLine),
       ...getCardTypeFeatures(source.typeLine, source.name),
       commanderTax: 0,
       revealed: true,
+      isCommander: true,
     })
   }
 
@@ -43,6 +45,7 @@ export function deckToRoomCards(deck: Deck): CardData[] {
         counters: 0,
         power: card.power,
         toughness: card.toughness,
+        manaCost: card.manaCost,
         type: classifyType(card.typeLine),
         ...getCardTypeFeatures(card.typeLine, card.name),
         commanderTax: 0,

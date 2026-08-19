@@ -31,8 +31,8 @@ export interface TurnAnnouncement {
   text: string
 }
 
-type TurnAction = 'end' | 'advance'
-type TurnPromptReason = 'discard' | 'land' | 'etb'
+type TurnAction = 'end' | 'advance' | 'respond'
+type TurnPromptReason = 'discard' | 'land' | 'etb' | 'respond'
 
 export const PHASES = ['beginning', 'precombat_main', 'combat', 'postcombat_main', 'ending'] as const
 export type Phase = typeof PHASES[number]
@@ -41,6 +41,11 @@ export interface TurnPrompt {
   action: TurnAction
   reason: TurnPromptReason
   cardId?: string
+  cardName?: string
+  /** Response-window deadline (ms epoch) for the 'respond' reason. */
+  resolveAt?: number
+  /** What the response window is responding to. */
+  context?: 'cast' | 'attack'
 }
 
 export interface CombatState {
@@ -54,7 +59,7 @@ export type ActivePlayer = 'player' | 'opponent'
 
 export type GameSnapshot = Pick<
   GameState,
-  'cards' | 'manaPool' | 'potentialMana' | 'manaLog' | 'effectHistory' | 'tokens' | 'lifeTotal' | 'opponentLifeTotal' | 'turn' | 'landPlaysThisTurn' | 'drawNotice' | 'turnAnnouncement' | 'turnPrompt' | 'combatState' | 'currentPhase' | 'activePlayer' | 'opponentManaPool' | 'opponentPotentialMana' | 'opponentLandPlaysThisTurn' | 'commanderDamage' | 'playerSpellsCastThisTurn' | 'opponentSpellsCastThisTurn'
+  'cards' | 'manaPool' | 'potentialMana' | 'manaLog' | 'effectHistory' | 'tokens' | 'lifeTotal' | 'opponentLifeTotal' | 'turn' | 'landPlaysThisTurn' | 'drawNotice' | 'turnAnnouncement' | 'turnPrompt' | 'combatState' | 'currentPhase' | 'activePlayer' | 'opponentManaPool' | 'opponentPotentialMana' | 'opponentLandPlaysThisTurn' | 'commanderDamage' | 'playerSpellsCastThisTurn' | 'opponentSpellsCastThisTurn' | 'triggerStack' | 'wardPrompt' | 'auraPrompt' | 'gameOver' | 'energyCounters' | 'opponentEnergyCounters' | 'radCounters' | 'opponentRadCounters' | 'aiResponsePending' | 'monarch'
 >
 
 export interface GameState {
@@ -75,6 +80,12 @@ export interface GameState {
   opponentName: string | null
   aiFixedDeck: boolean
   opponentLifeTotal: number
+  /** Energy counters (player) and the AI's pool ({E}). */
+  energyCounters: number
+  opponentEnergyCounters: number
+  /** Rad counters — at upkeep the holder mills that many and loses them. */
+  radCounters: number
+  opponentRadCounters: number
   turnPlayerMs: number
   turnOpponentMs: number
   activePlayer: ActivePlayer
@@ -98,6 +109,10 @@ export interface GameState {
   combatState: CombatState
   currentPhase: Phase
   gameOver: { winner: 'player' | 'opponent' } | null
+  /** The monarch (draws at end step; combat damage transfers it). */
+  monarch: 'player' | 'opponent' | null
+  /** AI spell card id whose resolution is deferred while the player responds. */
+  aiResponsePending: string | null
   /** Combat damage each commander has dealt to the opposing player, keyed by commander card id. */
   commanderDamage: Record<string, number>
 
@@ -135,6 +150,10 @@ export interface GameState {
   spendMana: (color: ManaColor, usage?: ManaUsageKind, label?: string) => void
   spendManaCost: (costSymbols: string, label?: string) => boolean
   clearManaPool: () => void
+  gainEnergy: (amount: number, owner?: 'player' | 'opponent') => void
+  spendEnergy: (amount: number, owner?: 'player' | 'opponent') => boolean
+  gainRad: (amount: number, owner?: 'player' | 'opponent') => void
+  loseRad: (amount: number, owner?: 'player' | 'opponent') => void
 
   loadDeck: (commanderNames: string[], deckCards: DeckCard[], deckId?: string) => void
   reshuffle: () => void
@@ -144,7 +163,7 @@ export interface GameState {
   moveCard: (cardId: string, zone: Zone) => void
   reorderBattlefield: (cardId: string, direction: 'closer' | 'farther') => void
   toggleTap: (cardId: string) => void
-  addCounter: (cardId: string) => void
+  addCounter: (cardId: string, kind?: '+1/+1' | '-1/-1') => void
   removeCounter: (cardId: string) => void
   addDamage: (cardId: string, amount: number) => void
   removeCard: (cardId: string) => void
@@ -196,11 +215,17 @@ export const useGameStore = create<GameState>((set, get) => {
     combatState: { active: false, attackers: [], blockers: {} },
     currentPhase: 'beginning' as Phase,
     opponentLifeTotal: 40,
+    energyCounters: 0,
+    opponentEnergyCounters: 0,
+    radCounters: 0,
+    opponentRadCounters: 0,
     activePlayer: 'player' as ActivePlayer,
     opponentManaPool: { W: 0, U: 0, B: 0, R: 0, G: 0, C: 0 } as ManaPool,
     opponentPotentialMana: [] as PotentialManaSource[],
     opponentLandPlaysThisTurn: 0,
     gameOver: null,
+    monarch: null,
+    aiResponsePending: null,
     commanderDamage: {},
     aiFixedDeck: true,
 
@@ -215,6 +240,27 @@ export const useGameStore = create<GameState>((set, get) => {
     ...createUndoActions(set),
 
     // Simple setters kept inline
+    gainEnergy: (amount, owner = 'player') =>
+      set((state) => owner === 'opponent'
+        ? { opponentEnergyCounters: state.opponentEnergyCounters + Math.max(0, amount) }
+        : { energyCounters: state.energyCounters + Math.max(0, amount) }),
+    spendEnergy: (amount, owner = 'player') => {
+      const state = get()
+      const current = owner === 'opponent' ? state.opponentEnergyCounters : state.energyCounters
+      if (current < Math.max(0, amount)) return false
+      set(owner === 'opponent'
+        ? { opponentEnergyCounters: current - Math.max(0, amount) }
+        : { energyCounters: current - Math.max(0, amount) })
+      return true
+    },
+    gainRad: (amount, owner = 'player') =>
+      set((state) => owner === 'opponent'
+        ? { opponentRadCounters: state.opponentRadCounters + Math.max(0, amount) }
+        : { radCounters: state.radCounters + Math.max(0, amount) }),
+    loseRad: (amount, owner = 'player') =>
+      set((state) => owner === 'opponent'
+        ? { opponentRadCounters: Math.max(0, state.opponentRadCounters - Math.max(0, amount)) }
+        : { radCounters: Math.max(0, state.radCounters - Math.max(0, amount)) }),
     setBackground: (url) => set({ backgroundImage: url }),
     setCardScale: (scale) => set({ cardScale: scale }),
     saveBackground: (name, dataUrl) =>
@@ -274,7 +320,7 @@ export const useGameStore = create<GameState>((set, get) => {
             if (rule) registerDiesTriggers(event.cardId, event.cardName, rule)
           }
         }
-        const { stack, newTriggers } = buildTriggerInstances(event, state.triggerStack, state.cards)
+        const { stack, newTriggers } = buildTriggerInstances(event, state.triggerStack, state.cards, state.tokens)
         if (newTriggers === 0) return {}
         return { triggerStack: stack }
       }),
@@ -356,7 +402,7 @@ export const useGameStore = create<GameState>((set, get) => {
       const trigger = state.triggerStack.find((t) => t.id === triggerId)
       if (!trigger) return
       const params = trigger.ability.effect.params as Record<string, unknown>
-      const scryAmount = (params.amount as number) ?? 1
+      const scryAmount = typeof params.amount === 'number' && params.amount > 0 ? params.amount : 1
       const bottomIds = trigger.selectedTargets ?? []
 
       const libraryCards = state.cards.filter((c) => c.zone === 'library')
@@ -443,9 +489,39 @@ export const useGameStore = create<GameState>((set, get) => {
 
 let applyingExternalState = false
 
+// Persist on a trailing debounce: an opponent turn fires ~15 state updates, and
+// each full-board JSON.stringify + backgrounds IndexedDB write is expensive.
+let persistTimer: ReturnType<typeof setTimeout> | null = null
+function schedulePersist(state: GameState) {
+  if (persistTimer) clearTimeout(persistTimer)
+  persistTimer = setTimeout(() => {
+    persistTimer = null
+    persistGameState(state)
+  }, 400)
+}
+
 useGameStore.subscribe((state) => {
-  if (!applyingExternalState) persistGameState(state)
+  if (!applyingExternalState) schedulePersist(state)
 })
+
+// Flush the trailing debounce when the tab is hidden/closed so the last state
+// is not lost.
+if (typeof window !== 'undefined') {
+  window.addEventListener('visibilitychange', () => {
+    if (document.visibilityState === 'hidden' && persistTimer) {
+      clearTimeout(persistTimer)
+      persistTimer = null
+      persistGameState(useGameStore.getState())
+    }
+  })
+  window.addEventListener('pagehide', () => {
+    if (persistTimer) {
+      clearTimeout(persistTimer)
+      persistTimer = null
+      persistGameState(useGameStore.getState())
+    }
+  })
+}
 
 void hydratePersistedBackgroundState().then((hydrated) => {
   if (!hydrated) return

@@ -77,9 +77,13 @@ export function resetAndDealCards(sourceCards: BoardCard[], openingHandSize = 0)
     zone: commanders.has(card.id) ? 'command' as const : 'library' as const,
     tapped: false,
     counters: 0,
+    minusCounters: 0,
     damage: 0,
     powerBoost: 0,
     toughnessBoost: 0,
+    keywordBoosts: undefined,
+    originalOwner: undefined,
+    controlUntilTurnEnd: undefined,
     revealed: commanders.has(card.id),
     commanderTax: card.commanderTax ?? 0,
   }))
@@ -193,6 +197,20 @@ export function takeSnapshot(state: GameState): GameSnapshot {
     opponentPotentialMana: state.opponentPotentialMana.map((source) => ({ ...source })),
     opponentLandPlaysThisTurn: state.opponentLandPlaysThisTurn,
     commanderDamage: { ...state.commanderDamage },
+    energyCounters: state.energyCounters,
+    opponentEnergyCounters: state.opponentEnergyCounters,
+    radCounters: state.radCounters,
+    opponentRadCounters: state.opponentRadCounters,
+    triggerStack: state.triggerStack.map((trigger) => ({
+      ...trigger,
+      context: { ...trigger.context },
+      selectedTargets: trigger.selectedTargets ? [...trigger.selectedTargets] : undefined,
+    })),
+    wardPrompt: state.wardPrompt ? { ...state.wardPrompt } : null,
+    auraPrompt: state.auraPrompt ? { ...state.auraPrompt, candidates: state.auraPrompt.candidates.map((candidate) => ({ ...candidate })) } : null,
+    gameOver: state.gameOver,
+    monarch: state.monarch,
+    aiResponsePending: state.aiResponsePending,
   }
 }
 
@@ -202,10 +220,26 @@ export function pushUndo(state: GameState) {
   if (undoTransactionDepth > 0) {
     return { undoStack: state.undoStack, redoStack: state.redoStack }
   }
+  // The AI turn is asynchronous and not undoable; capturing it would let undo
+  // restore activePlayer to 'opponent' with no AI timers scheduled.
+  if (state.activePlayer === 'opponent') {
+    return { undoStack: state.undoStack, redoStack: state.redoStack }
+  }
   return {
     undoStack: [...state.undoStack.slice(-(MAX_UNDO - 1)), takeSnapshot(state)],
     redoStack: [],
   }
+}
+
+let aiTurnActive = false
+/** Marks whether the AI's asynchronous turn is currently running. The whole AI
+ *  turn is not undoable — undoing it could restore an opponent-turn state with
+ *  no AI timers scheduled (a soft-lock). */
+export function setAITurnActive(active: boolean): void {
+  aiTurnActive = active
+}
+export function isAITurnActive(): boolean {
+  return aiTurnActive
 }
 
 export function pushUndoSnapshot(state: GameState, snapshot: GameSnapshot) {

@@ -1,8 +1,8 @@
 import type { BoardCard } from '../../types/card'
 
 export function targetsForEffect(kind: string, cards: BoardCard[]): BoardCard[] {
-  if (kind === 'return_from_graveyard') {
-    return cards.filter((card) => card.zone === 'graveyard')
+  if (kind === 'return_from_graveyard' || kind === 'cast_from_graveyard') {
+    return cards.filter((card) => card.zone === 'graveyard' || card.zone === 'exile')
   }
   return cards.filter((card) => card.zone === 'battlefield')
 }

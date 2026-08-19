@@ -24,9 +24,12 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
+          "kind": "create_token",
           "params": {
-            "description": "Phaeron — Whenever one or more artifact cards leave your graveyard, create two 2/2 black Necron Warrior artifact creature tokens"
+            "tokenPower": 2,
+            "tokenToughness": 2,
+            "tokenName": "artifact creature",
+            "amount": 2
           }
         }
       },
@@ -68,6 +71,11 @@
       {
         "abilityType": "triggered",
         "triggerEvent": "attack",
+        "triggerEvents": [
+          "attack",
+          "cast",
+          "graveyard"
+        ],
         "triggerCondition": "Lord of the Pyrrhian Legions — Whenever Anrakyr the Traveller attacks",
         "isOptional": true,
         "cost": null,
@@ -162,8 +170,8 @@
         "triggerCondition": "Vigilance Exile Cannon — When this creature enters from a graveyard",
         "isOptional": false,
         "cost": null,
-        "targets": 0,
-        "targetFilter": null,
+        "targets": 1,
+        "targetFilter": "nonland permanent",
         "effect": {
           "kind": "exile",
           "params": {
@@ -181,7 +189,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "return_from_graveyard",
-          "params": {}
+          "params": {
+            "zone": "battlefield"
+          }
         }
       },
       {
@@ -193,9 +203,10 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
+          "kind": "keyword_pump",
           "params": {
-            "description": "It gains haste"
+            "keyword": "haste",
+            "scope": "all"
           }
         }
       },
@@ -238,8 +249,8 @@
         "triggerCondition": "Flying Feeder Mandibles — When this creature enters",
         "isOptional": false,
         "cost": null,
-        "targets": 1,
-        "targetFilter": "player 's graveyard",
+        "targets": 0,
+        "targetFilter": null,
         "effect": {
           "kind": "exile",
           "params": {
@@ -405,7 +416,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "return_from_graveyard",
-          "params": {}
+          "params": {
+            "zone": "hand"
+          }
         }
       }
     ],
@@ -455,7 +468,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "return_from_graveyard",
-          "params": {}
+          "params": {
+            "zone": "battlefield"
+          }
         }
       },
       {
@@ -467,9 +482,10 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
+          "kind": "keyword_pump",
           "params": {
-            "description": "It gains haste"
+            "keyword": "haste",
+            "scope": "all"
           }
         }
       },
@@ -530,7 +546,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "return_from_graveyard",
-          "params": {}
+          "params": {
+            "zone": "battlefield"
+          }
         }
       }
     ],
@@ -563,9 +581,10 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
+          "kind": "mass_sacrifice",
           "params": {
-            "description": "Flying Enmitic Exterminator — When this creature enters, each player sacrifices a creature of their choice"
+            "scope": "all",
+            "kind": "creature"
           }
         }
       },
@@ -579,7 +598,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "return_from_graveyard",
-          "params": {}
+          "params": {
+            "zone": "battlefield"
+          }
         }
       },
       {
@@ -591,9 +612,10 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
+          "kind": "keyword_pump",
           "params": {
-            "description": "It gains haste"
+            "keyword": "haste",
+            "scope": "all"
           }
         }
       },
@@ -638,7 +660,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "return_from_graveyard",
-          "params": {}
+          "params": {
+            "zone": "hand"
+          }
         }
       }
     ],
@@ -701,8 +725,8 @@
         "triggerCondition": null,
         "isOptional": false,
         "cost": "{T}, {X}",
-        "targets": 1,
-        "targetFilter": "opponent loses X life",
+        "targets": 0,
+        "targetFilter": null,
         "effect": {
           "kind": "lose_life",
           "params": {
@@ -739,9 +763,12 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
+          "kind": "create_token",
           "params": {
-            "description": "Phalanx Commander — When this creature enters, create two tapped 2/2 black Necron Warrior artifact creature tokens"
+            "tokenPower": 2,
+            "tokenToughness": 2,
+            "tokenName": "artifact creature",
+            "amount": 2
           }
         }
       },
@@ -755,7 +782,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "return_from_graveyard",
-          "params": {}
+          "params": {
+            "zone": "battlefield"
+          }
         }
       },
       {
@@ -767,9 +796,10 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
+          "kind": "keyword_pump",
           "params": {
-            "description": "It gains haste"
+            "keyword": "haste",
+            "scope": "all"
           }
         }
       },
@@ -812,8 +842,8 @@
         "triggerCondition": "Flying Drain Life — When this creature enters",
         "isOptional": false,
         "cost": null,
-        "targets": 1,
-        "targetFilter": "opponent loses half their life",
+        "targets": 0,
+        "targetFilter": null,
         "effect": {
           "kind": "lose_life",
           "params": {
@@ -865,15 +895,21 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
+          "kind": "mass_sacrifice",
           "params": {
-            "description": "Flying Spear of the Void Dragon — Whenever this creature attacks, each opponent sacrifices a nonland permanent of their choice"
+            "scope": "opponent",
+            "kind": "permanent"
           }
         }
       },
       {
         "abilityType": "triggered",
         "triggerEvent": "dies",
+        "triggerEvents": [
+          "dies",
+          "counter_placed",
+          "graveyard"
+        ],
         "triggerCondition": "Matter Absorption — Whenever an artifact is put into a graveyard from the battlefield or is put into exile from the battlefield",
         "isOptional": false,
         "cost": null,
@@ -881,7 +917,11 @@
         "targetFilter": null,
         "effect": {
           "kind": "put_counter",
-          "params": {}
+          "params": {
+            "counterKind": "+1/+1",
+            "amount": 2,
+            "scope": "all"
+          }
         }
       }
     ],
@@ -933,7 +973,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "return_from_graveyard",
-          "params": {}
+          "params": {
+            "zone": "battlefield"
+          }
         }
       },
       {
@@ -945,9 +987,10 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
+          "kind": "keyword_pump",
           "params": {
-            "description": "It gains haste"
+            "keyword": "haste",
+            "scope": "all"
           }
         }
       },
@@ -986,6 +1029,10 @@
       {
         "abilityType": "triggered",
         "triggerEvent": "etb",
+        "triggerEvents": [
+          "etb",
+          "graveyard"
+        ],
         "triggerCondition": "this creature enters",
         "isOptional": false,
         "cost": null,
@@ -993,7 +1040,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "return_from_graveyard",
-          "params": {}
+          "params": {
+            "zone": "battlefield"
+          }
         }
       }
     ],
@@ -1026,7 +1075,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "deal_damage",
-          "params": {}
+          "params": {
+            "amount": 1
+          }
         }
       }
     ],
@@ -1071,6 +1122,10 @@
       {
         "abilityType": "triggered",
         "triggerEvent": "etb",
+        "triggerEvents": [
+          "etb",
+          "card_drawn"
+        ],
         "triggerCondition": "Flying Fabricator Claw Array — Whenever another nontoken artifact creature or Vehicle you control enters",
         "isOptional": false,
         "cost": null,
@@ -1110,10 +1165,8 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
-          "params": {
-            "description": "Wraith Form — This creature can't be blocked"
-          }
+          "kind": "cant_be_blocked",
+          "params": {}
         }
       },
       {
@@ -1126,7 +1179,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "deal_damage",
-          "params": {}
+          "params": {
+            "amount": 1
+          }
         }
       },
       {
@@ -1161,7 +1216,21 @@
     "manaProduction": null,
     "entryTapRule": null,
     "conditionalEntryText": null,
-    "abilities": [],
+    "abilities": [
+      {
+        "abilityType": "triggered",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "static_keyword",
+          "params": {}
+        }
+      }
+    ],
     "oracleText": "Protector — Other artifact creatures you control have hexproof.",
     "scryfallId": "086d94a0-763e-495e-b952-5c13383657c9"
   },
@@ -1225,10 +1294,8 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
-          "params": {
-            "description": "Multi-threat Eliminator — This creature can't be blocked except by six or more creatures"
-          }
+          "kind": "cant_be_blocked",
+          "params": {}
         }
       },
       {
@@ -1241,7 +1308,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "return_from_graveyard",
-          "params": {}
+          "params": {
+            "zone": "battlefield"
+          }
         }
       },
       {
@@ -1253,9 +1322,10 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
+          "kind": "keyword_pump",
           "params": {
-            "description": "It gains haste"
+            "keyword": "haste",
+            "scope": "all"
           }
         }
       },
@@ -1333,8 +1403,8 @@
         "triggerCondition": null,
         "isOptional": false,
         "cost": null,
-        "targets": 1,
-        "targetFilter": "opponent loses 1 life and you gain 1 life",
+        "targets": 0,
+        "targetFilter": null,
         "effect": {
           "kind": "exile",
           "params": {
@@ -1391,9 +1461,10 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
+          "kind": "keyword_pump",
           "params": {
-            "description": "Deathtouch Hyperphase Threshers — Whenever an artifact you control enters, this creature gains first strike until end of turn"
+            "keyword": "deathtouch",
+            "scope": "own"
           }
         }
       }
@@ -1443,7 +1514,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "return_from_graveyard",
-          "params": {}
+          "params": {
+            "zone": "battlefield"
+          }
         }
       },
       {
@@ -1455,9 +1528,10 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
+          "kind": "keyword_pump",
           "params": {
-            "description": "It gains haste"
+            "keyword": "haste",
+            "scope": "all"
           }
         }
       },
@@ -1607,8 +1681,11 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "gain_life",
+          "kind": "create_token",
           "params": {
+            "tokenPower": 2,
+            "tokenToughness": 2,
+            "tokenName": "artifact creature",
             "amount": "X"
           }
         }
@@ -1652,7 +1729,9 @@
         "targetFilter": "artifact or creature card from a graveyard onto the battlefield under your control",
         "effect": {
           "kind": "return_from_graveyard",
-          "params": {}
+          "params": {
+            "zone": "battlefield"
+          }
         }
       }
     ],
@@ -1670,7 +1749,24 @@
     "manaProduction": null,
     "entryTapRule": null,
     "conditionalEntryText": null,
-    "abilities": [],
+    "abilities": [
+      {
+        "abilityType": "spell",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "mass_sacrifice",
+          "params": {
+            "scope": "all",
+            "kind": "creature"
+          }
+        }
+      }
+    ],
     "oracleText": "Each player exiles all creature cards from their graveyard, then sacrifices all creatures they control, then puts all cards they exiled this way onto the battlefield.",
     "scryfallId": "4ac29c46-f8ee-42ba-a98c-d785ba65485e"
   },
@@ -1729,7 +1825,9 @@
         "targetFilter": "creature card from your graveyard to the battlefield",
         "effect": {
           "kind": "return_from_graveyard",
-          "params": {}
+          "params": {
+            "zone": "battlefield"
+          }
         }
       },
       {
@@ -1896,7 +1994,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "return_from_graveyard",
-          "params": {}
+          "params": {
+            "zone": "battlefield"
+          }
         }
       }
     ],
@@ -2048,10 +2148,8 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
-          "params": {
-            "description": "Equipped creature has lifelink"
-          }
+          "kind": "static_keyword",
+          "params": {}
         }
       },
       {
@@ -2064,7 +2162,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "return_from_graveyard",
-          "params": {}
+          "params": {
+            "zone": "battlefield"
+          }
         }
       },
       {
@@ -2295,6 +2395,21 @@
     "conditionalEntryText": null,
     "abilities": [
       {
+        "abilityType": "triggered",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": true,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "scry",
+          "params": {
+            "amount": 1
+          }
+        }
+      },
+      {
         "abilityType": "activated",
         "triggerEvent": null,
         "triggerCondition": null,
@@ -2464,7 +2579,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "deal_damage",
-          "params": {}
+          "params": {
+            "amount": 1
+          }
         }
       },
       {

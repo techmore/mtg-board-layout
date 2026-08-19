@@ -25,10 +25,8 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
-          "params": {
-            "description": "(If you cast a spell for its evoke cost, it's sacrificed when it enters"
-          }
+          "kind": "static_noop",
+          "params": {}
         }
       },
       {
@@ -56,10 +54,24 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
+          "kind": "keyword_pump",
           "params": {
-            "description": "The token gains haste until end of turn"
+            "keyword": "haste",
+            "scope": "all"
           }
+        }
+      },
+      {
+        "abilityType": "triggered",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "sacrifice",
+          "params": {}
         }
       }
     ],
@@ -138,6 +150,24 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
+          "kind": "create_token",
+          "params": {
+            "tokenPower": 5,
+            "tokenToughness": 5,
+            "tokenName": "Elemental creature",
+            "amount": 0
+          }
+        }
+      },
+      {
+        "abilityType": "spell",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
           "kind": "gain_life",
           "params": {
             "amount": 1
@@ -172,8 +202,8 @@
         "triggerCondition": "Flash Reach When this creature enters",
         "isOptional": false,
         "cost": null,
-        "targets": 1,
-        "targetFilter": "player puts all the cards from their graveyard on the bottom of their library in a random order",
+        "targets": 0,
+        "targetFilter": null,
         "effect": {
           "kind": "other",
           "params": {
@@ -225,7 +255,9 @@
         "targetFilter": "creature s and/or planeswalkers",
         "effect": {
           "kind": "deal_damage",
-          "params": {}
+          "params": {
+            "amount": 4
+          }
         }
       },
       {
@@ -267,7 +299,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "return_from_graveyard",
-          "params": {}
+          "params": {
+            "zone": "battlefield"
+          }
         }
       },
       {
@@ -280,7 +314,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "return_from_graveyard",
-          "params": {}
+          "params": {
+            "zone": "battlefield"
+          }
         }
       },
       {
@@ -342,7 +378,11 @@
         "targetFilter": null,
         "effect": {
           "kind": "put_counter",
-          "params": {}
+          "params": {
+            "counterKind": "+1/+1",
+            "amount": 1,
+            "scope": "own"
+          }
         }
       }
     ],
@@ -375,9 +415,9 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
+          "kind": "scry",
           "params": {
-            "description": "Reach When this creature enters, reveal the top five cards of your library"
+            "amount": 5
           }
         }
       },
@@ -391,7 +431,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "return_from_graveyard",
-          "params": {}
+          "params": {
+            "zone": "battlefield"
+          }
         }
       },
       {
@@ -519,8 +561,8 @@
         "triggerCondition": null,
         "isOptional": true,
         "cost": null,
-        "targets": 1,
-        "targetFilter": "player gains 5 life",
+        "targets": 0,
+        "targetFilter": null,
         "effect": {
           "kind": "gain_life",
           "params": {
@@ -616,6 +658,10 @@
       {
         "abilityType": "triggered",
         "triggerEvent": "dies",
+        "triggerEvents": [
+          "dies",
+          "graveyard"
+        ],
         "triggerCondition": "Omnath or another Elemental you control dies",
         "isOptional": false,
         "cost": null,
@@ -623,7 +669,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "deal_damage",
-          "params": {}
+          "params": {
+            "amount": 3
+          }
         }
       }
     ],
@@ -675,7 +723,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "deal_damage",
-          "params": {}
+          "params": {
+            "amount": 1
+          }
         }
       },
       {
@@ -688,7 +738,11 @@
         "targetFilter": null,
         "effect": {
           "kind": "put_counter",
-          "params": {}
+          "params": {
+            "counterKind": "+1/+1",
+            "amount": 1,
+            "scope": "own"
+          }
         }
       },
       {
@@ -702,7 +756,7 @@
         "effect": {
           "kind": "draw_cards",
           "params": {
-            "amount": 1
+            "amount": 8
           }
         }
       }
@@ -770,7 +824,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "deal_damage",
-          "params": {}
+          "params": {
+            "amount": 13
+          }
         }
       }
     ],
@@ -788,7 +844,23 @@
     "manaProduction": null,
     "entryTapRule": null,
     "conditionalEntryText": null,
-    "abilities": [],
+    "abilities": [
+      {
+        "abilityType": "spell",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "return_from_graveyard",
+          "params": {
+            "zone": "battlefield"
+          }
+        }
+      }
+    ],
     "oracleText": "Choose a creature type. Reveal cards from the top of your library until you reveal X creature cards of the chosen type, where X is the number of creatures you control of that type. Put those cards onto the battlefield, then shuffle the rest of the revealed cards into your library.",
     "scryfallId": "3485e240-4957-421b-86f4-2aa494563747"
   },
@@ -829,7 +901,11 @@
         "targetFilter": null,
         "effect": {
           "kind": "put_counter",
-          "params": {}
+          "params": {
+            "counterKind": "+1/+1",
+            "amount": 1,
+            "scope": "all"
+          }
         }
       }
     ],
@@ -849,7 +925,23 @@
     "manaProduction": null,
     "entryTapRule": null,
     "conditionalEntryText": null,
-    "abilities": [],
+    "abilities": [
+      {
+        "abilityType": "triggered",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": true,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "scry",
+          "params": {
+            "amount": 1
+          }
+        }
+      }
+    ],
     "oracleText": "Changeling (This card is every creature type.)\nAs this creature enters, choose a creature type.\nYou may look at the top card of your library any time.\nYou may cast creature spells of the chosen type from the top of your library.",
     "scryfallId": "52733829-27b7-40ec-a897-cabab35b3729"
   },
@@ -870,7 +962,21 @@
     "manaProduction": null,
     "entryTapRule": null,
     "conditionalEntryText": null,
-    "abilities": [],
+    "abilities": [
+      {
+        "abilityType": "triggered",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": true,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "cast_from_graveyard",
+          "params": {}
+        }
+      }
+    ],
     "oracleText": "Vigilance, trample, haste\n{W}{U}{B}{R}{G}: You may play target Elemental card from your graveyard without paying its mana cost.",
     "scryfallId": "e7d3e472-5589-4655-b246-6f2d7ccf029e"
   },
@@ -899,10 +1005,8 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
-          "params": {
-            "description": "Creatures you control have haste"
-          }
+          "kind": "static_keyword",
+          "params": {}
         }
       },
       {
@@ -1205,10 +1309,8 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
-          "params": {
-            "description": "If you do, it's sacrificed when it enters"
-          }
+          "kind": "static_noop",
+          "params": {}
         }
       }
     ],
@@ -1271,10 +1373,8 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
-          "params": {
-            "description": "Fear (This creature can't be blocked except by artifact creatures and/or black creatures"
-          }
+          "kind": "cant_be_blocked",
+          "params": {}
         }
       },
       {
@@ -1301,10 +1401,8 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
-          "params": {
-            "description": "If you do, it's sacrificed when it enters"
-          }
+          "kind": "static_noop",
+          "params": {}
         }
       }
     ],
@@ -1479,9 +1577,39 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
+          "kind": "scry",
           "params": {
-            "description": "Whenever this creature or another Elemental you control enters, look at the top card of your library"
+            "amount": 1
+          }
+        }
+      },
+      {
+        "abilityType": "triggered",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": true,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "return_from_graveyard",
+          "params": {
+            "zone": "battlefield"
+          }
+        }
+      },
+      {
+        "abilityType": "triggered",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "return_from_graveyard",
+          "params": {
+            "zone": "battlefield"
           }
         }
       }
@@ -1627,6 +1755,21 @@
         "abilityType": "triggered",
         "triggerEvent": "cast",
         "triggerCondition": "that mana is spent to cast a creature spell that shares a creature type with your commander",
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "scry",
+          "params": {
+            "amount": 1
+          }
+        }
+      },
+      {
+        "abilityType": "triggered",
+        "triggerEvent": null,
+        "triggerCondition": null,
         "isOptional": false,
         "cost": null,
         "targets": 0,
@@ -1902,9 +2045,10 @@
         "targets": 1,
         "targetFilter": "creature gains haste until end of turn",
         "effect": {
-          "kind": "other",
+          "kind": "keyword_pump",
           "params": {
-            "description": "{R}, {T}: Target creature gains haste until end of turn"
+            "keyword": "haste",
+            "scope": "all"
           }
         }
       }
@@ -2113,7 +2257,11 @@
         "targetFilter": null,
         "effect": {
           "kind": "put_counter",
-          "params": {}
+          "params": {
+            "counterKind": "+1/+1",
+            "amount": 1,
+            "scope": "all"
+          }
         }
       }
     ],
@@ -2619,9 +2767,12 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
+          "kind": "create_token",
           "params": {
-            "description": "When this creature enters, create three 1/1 colorless Shapeshifter creature tokens with changeling"
+            "tokenPower": 1,
+            "tokenToughness": 1,
+            "tokenName": "Shapeshifter creature",
+            "amount": 3
           }
         }
       },
@@ -2650,9 +2801,10 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
+          "kind": "keyword_pump",
           "params": {
-            "description": "They gain haste"
+            "keyword": "haste",
+            "scope": "all"
           }
         }
       }
@@ -2684,9 +2836,9 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
+          "kind": "scry",
           "params": {
-            "description": "When this creature enters, look at the top four cards of your library"
+            "amount": 4
           }
         }
       }
@@ -2825,10 +2977,8 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
-          "params": {
-            "description": "If you do, it's sacrificed when it enters"
-          }
+          "kind": "static_noop",
+          "params": {}
         }
       }
     ],
@@ -2859,7 +3009,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "return_from_graveyard",
-          "params": {}
+          "params": {
+            "zone": "hand"
+          }
         }
       },
       {
@@ -2885,7 +3037,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "return_from_graveyard",
-          "params": {}
+          "params": {
+            "zone": "hand"
+          }
         }
       }
     ],
@@ -2912,16 +3066,19 @@
       {
         "abilityType": "triggered",
         "triggerEvent": "etb",
+        "triggerEvents": [
+          "etb",
+          "cast",
+          "graveyard"
+        ],
         "triggerCondition": "this creature enters",
         "isOptional": true,
         "cost": null,
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
-          "params": {
-            "description": "When this creature enters, you may cast target instant or sorcery card from a graveyard without paying its mana cost"
-          }
+          "kind": "cast_from_graveyard",
+          "params": {}
         }
       },
       {
@@ -2962,9 +3119,10 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
+          "kind": "keyword_pump",
           "params": {
-            "description": "They gain haste"
+            "keyword": "haste",
+            "scope": "all"
           }
         }
       }
@@ -3016,7 +3174,9 @@
         "targetFilter": null,
         "effect": {
           "kind": "return_from_graveyard",
-          "params": {}
+          "params": {
+            "zone": "battlefield"
+          }
         }
       },
       {
@@ -3028,10 +3188,24 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
+          "kind": "keyword_pump",
           "params": {
-            "description": "That creature gains haste until end of turn"
+            "keyword": "haste",
+            "scope": "all"
           }
+        }
+      },
+      {
+        "abilityType": "triggered",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "sacrifice",
+          "params": {}
         }
       }
     ],
@@ -3076,10 +3250,8 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
-          "params": {
-            "description": "If you do, it's sacrificed when it enters"
-          }
+          "kind": "static_noop",
+          "params": {}
         }
       }
     ],
@@ -3146,9 +3318,10 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
+          "kind": "keyword_pump",
           "params": {
-            "description": "They gain haste"
+            "keyword": "haste",
+            "scope": "all"
           }
         }
       }
@@ -3228,9 +3401,10 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
+          "kind": "keyword_pump",
           "params": {
-            "description": "They gain haste"
+            "keyword": "haste",
+            "scope": "all"
           }
         }
       }
@@ -3263,10 +3437,8 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
-          "params": {
-            "description": "Menace (This creature can't be blocked except by two or more creatures"
-          }
+          "kind": "cant_be_blocked",
+          "params": {}
         }
       },
       {
@@ -3341,10 +3513,8 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
-          "params": {
-            "description": "If you do, it's sacrificed when it enters"
-          }
+          "kind": "static_noop",
+          "params": {}
         }
       }
     ],
@@ -3421,7 +3591,9 @@
         "targetFilter": "creature gains flying and \"Whenever this creature deals combat damage to a player",
         "effect": {
           "kind": "deal_damage",
-          "params": {}
+          "params": {
+            "amount": 1
+          }
         }
       },
       {
@@ -3449,9 +3621,10 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
+          "kind": "keyword_pump",
           "params": {
-            "description": "They gain haste"
+            "keyword": "haste",
+            "scope": "all"
           }
         }
       }
@@ -3477,6 +3650,10 @@
       {
         "abilityType": "triggered",
         "triggerEvent": "etb",
+        "triggerEvents": [
+          "etb",
+          "attack"
+        ],
         "triggerCondition": "this creature enters or attacks",
         "isOptional": false,
         "cost": null,
@@ -3537,6 +3714,21 @@
     "entryTapRule": null,
     "conditionalEntryText": null,
     "abilities": [
+      {
+        "abilityType": "spell",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "draw_cards",
+          "params": {
+            "amount": 4
+          }
+        }
+      },
       {
         "abilityType": "spell",
         "triggerEvent": null,
@@ -3631,9 +3823,9 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
+          "kind": "scry",
           "params": {
-            "description": "Whenever a creature you control enters, you may look at the top X cards of your library, where X is that creature's power"
+            "amount": "X"
           }
         }
       }
@@ -3656,6 +3848,10 @@
       {
         "abilityType": "triggered",
         "triggerEvent": "combat_damage",
+        "triggerEvents": [
+          "combat_damage",
+          "sacrifice"
+        ],
         "triggerCondition": "one or more creatures you control deal combat damage to a player",
         "isOptional": true,
         "cost": null,
@@ -3663,7 +3859,24 @@
         "targetFilter": null,
         "effect": {
           "kind": "deal_damage",
-          "params": {}
+          "params": {
+            "amount": 1
+          }
+        }
+      },
+      {
+        "abilityType": "triggered",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "return_from_graveyard",
+          "params": {
+            "zone": "battlefield"
+          }
         }
       }
     ],
@@ -3704,6 +3917,10 @@
       {
         "abilityType": "triggered",
         "triggerEvent": "etb",
+        "triggerEvents": [
+          "etb",
+          "card_drawn"
+        ],
         "triggerCondition": "this enchantment enters",
         "isOptional": false,
         "cost": null,
@@ -3725,10 +3942,8 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
-          "params": {
-            "description": "Creatures you control have trample"
-          }
+          "kind": "static_keyword",
+          "params": {}
         }
       },
       {
@@ -3741,12 +3956,18 @@
         "targetFilter": null,
         "effect": {
           "kind": "deal_damage",
-          "params": {}
+          "params": {
+            "amount": 1
+          }
         }
       },
       {
         "abilityType": "triggered",
-        "triggerEvent": "card_drawn",
+        "triggerEvent": "etb",
+        "triggerEvents": [
+          "etb",
+          "card_drawn"
+        ],
         "triggerCondition": ") Whenever a creature you control with power 4 or greater enters",
         "isOptional": false,
         "cost": null,
@@ -3845,9 +4066,12 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
+          "kind": "create_token",
           "params": {
-            "description": "When this enchantment enters, create X 1/1 colorless Shapeshifter creature tokens with changeling"
+            "tokenPower": 1,
+            "tokenToughness": 1,
+            "tokenName": "Shapeshifter creature",
+            "amount": "X"
           }
         }
       },

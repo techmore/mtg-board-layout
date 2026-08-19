@@ -3,7 +3,7 @@ import { useNavigate, useSearchParams } from 'react-router-dom'
 import ServerUrlField from '../components/ServerUrlField'
 import { getServerUrlFromSearchParams, saveServerUrl } from '../multiplayer/serverUrl'
 import { useDeckStore } from '../stores/deckStore'
-import { createRoom, useRoomSession } from '../multiplayer/useRoom'
+import { createRoom, adopt } from '../multiplayer/useRoom'
 import { deckToRoomCards } from '../multiplayer/roomCards'
 import { modeToLabel, modeToMaxPlayers } from 'mtg-protocol'
 import type { GameMode, RoomCreateOptions } from 'mtg-protocol'
@@ -14,7 +14,6 @@ export default function LobbyPage() {
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
   const decks = useDeckStore((s) => s.decks)
-  const adopt = useRoomSession().adopt
   const hasDecks = decks.length > 0
 
   const [gameMode, setGameMode] = useState<GameMode>('1v1')
