@@ -697,15 +697,17 @@ export function resolveTrigger(get: () => GameState, set: (partial: Partial<Game
       // source spell's abilities and resolve them.
       const source = state.cards.find((c) => c.id === trigger.sourceCardId)
       const rule = source ? getCardRule(source.name, getCachedCardRules()) : undefined
-      const spellAbilities = (rule?.abilities ?? []).filter((a) => a.abilityType === 'spell')
+      const spellAbilities = (rule?.abilities ?? []).filter((a) => a.abilityType === 'spell' && a.effect.kind !== 'copy_spell')
       if (spellAbilities.length > 0) {
+        const copyDepth = Number(trigger.context.copyDepth ?? 0)
+        if (copyDepth >= 3) break
         const copyInstances: TriggerInstance[] = spellAbilities.map((ability) => ({
           id: crypto.randomUUID(),
           sourceCardId: trigger.sourceCardId,
           sourceCardName: trigger.sourceCardName,
           ability,
           event: 'cast' as const,
-          context: {},
+          context: { copyDepth: copyDepth + 1 },
         }))
         set({
           triggerStack: [...state.triggerStack, ...copyInstances],

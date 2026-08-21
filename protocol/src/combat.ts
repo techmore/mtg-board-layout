@@ -225,7 +225,9 @@ export function getStaticKeywords(
     // "other orcs and goblins you control"): the card must match the subtype.
     if (!/creature|creatures|other|equipped|enchanted/.test(subject)) {
       const tribe = subject.replace(/\b(?:other\s+|creatures?\s+|you control|you\s+control)\b/g, '').trim()
-      if (tribe && !new RegExp(`\\b${tribe}\\b`, 'i').test(card.typeLine)) continue
+      // Card text is untrusted input for RegExp — escape metacharacters.
+      const escaped = tribe.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+      if (tribe && !new RegExp(`\\b${escaped}\\b`, 'i').test(card.typeLine)) continue
     }
     // Attached grants ("equipped creature has ...") apply only to the attached
     // creature; for everyone else they are skipped.

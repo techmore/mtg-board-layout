@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { COMBAT_KEYWORDS, canBlock, computeStaticPump, parseKeywords, parsePower, parseToughness } from './combat'
+import { COMBAT_KEYWORDS, canBlock, computeStaticPump, getStaticKeywords, parseKeywords, parsePower, parseToughness } from './combat'
 
 describe('parseKeywords', () => {
   it('finds keywords on the first line', () => {
@@ -105,6 +105,14 @@ describe('canBlock conditional self-restrictions', () => {
     expect(canBlock(nightkin, [], { defenderRadCounters: 0 })).toBe(true)
     expect(canBlock(nightkin, [], { defenderRadCounters: 2 })).toBe(false)
     expect(canBlock(nightkin)).toBe(true)
+  })
+
+  it('never throws on hostile regex input from card text', () => {
+    // A static-grant sentence whose tribal subject contains RegExp
+    // metacharacters must not crash keyword resolution.
+    const weird = { id: 'w', typeLine: 'Creature — Nightmare', oracleText: 'Other creatures you control have first strike. (it\u2019s a nightmare.)', ownerId: 'a' }
+    const card = { id: 'c', typeLine: 'Creature — Nightmare', ownerId: 'a' }
+    expect(() => getStaticKeywords([weird], card)).not.toThrow()
   })
 
   it('Ring L1: the attacking Ring-bearer can\'t be blocked by greater power', () => {
