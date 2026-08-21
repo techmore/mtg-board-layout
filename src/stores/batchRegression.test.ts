@@ -371,3 +371,89 @@ describe('AI modal spells pick one mode', () => {
     push.mockRestore()
   })
 })
+
+describe('graveyard-cast window (escape/unearth/jump-start)', () => {
+  function grantSetup() {
+    const grantor = boardCard({ id: 'grantor', name: 'Filigree Racer', owner: 'player' })
+    const bolt = boardCard({ id: 'bolt-gy', name: 'Grave Bolt', typeLine: 'Instant', type: 'instant', zone: 'graveyard', owner: 'player', revealed: true })
+    const bear = boardCard({ id: 'bear-gy', name: 'Grave Bear', typeLine: 'Creature 2/2', zone: 'graveyard', owner: 'player', revealed: true })
+    useGameStore.setState({ cards: [grantor, bolt, bear], opponentLifeTotal: 20 })
+    pushTrigger(makeTrigger({
+      id: 't-gycast',
+      sourceCardId: 'grantor',
+      sourceCardName: 'Filigree Racer',
+      ability: {
+        abilityType: 'triggered',
+        triggerEvent: 'etb',
+        triggerCondition: null,
+        isOptional: false,
+        cost: null,
+        targets: 0,
+        targetFilter: null,
+        effect: { kind: 'enable_graveyard_cast', params: {} },
+      },
+    }))
+    return { bolt, bear }
+  }
+
+  it('opens a window for the player instead of auto-casting', () => {
+    grantSetup()
+    useGameStore.getState().resolveTrigger('t-gycast')
+
+    const window = useGameStore.getState().graveyardCast
+    expect(window).toMatchObject({ owner: 'player', untilTurn: 3 })
+    // Nothing was cast automatically — both cards stay in the graveyard.
+    expect(useGameStore.getState().cards.find((c) => c.id === 'bolt-gy')?.zone).toBe('graveyard')
+    expect(useGameStore.getState().cards.find((c) => c.id === 'bear-gy')?.zone).toBe('graveyard')
+  })
+
+  it('castFromGraveyard exiles an instant and enqueues its spell abilities', () => {
+    primeCardRules({
+      'Grave Bolt': {
+        cardName: 'Grave Bolt', manaCost: '{1}{R}', manaValue: 2, typeLine: 'Instant', cardType: 'instant',
+        subtypes: [], keywords: [], manaProduction: null, entryTapRule: null, conditionalEntryText: null,
+        oracleText: '', scryfallId: 'sf-bolt',
+        abilities: [{
+          abilityType: 'spell', triggerEvent: null, triggerCondition: null, isOptional: false,
+          cost: null, targets: 1, targetFilter: 'creature',
+          effect: { kind: 'deal_damage', params: { amount: 3 } },
+        }],
+      },
+    })
+    grantSetup()
+    useGameStore.getState().resolveTrigger('t-gycast')
+    useGameStore.setState({ graveyardCast: { owner: 'player', untilTurn: 3, filter: 'instant or sorcery' } })
+
+    useGameStore.getState().castFromGraveyard('bolt-gy')
+
+    expect(useGameStore.getState().cards.find((c) => c.id === 'bolt-gy')?.zone).toBe('exile')
+    // The spell's abilities wait on the stack for a target.
+    expect(useGameStore.getState().triggerStack).toHaveLength(1)
+  })
+
+  it('returns a creature to the battlefield tapped when cast through the window', () => {
+    primeCardRules({})
+    grantSetup()
+    useGameStore.getState().resolveTrigger('t-gycast')
+    useGameStore.setState({ graveyardCast: { owner: 'player', untilTurn: 3, filter: '' } })
+
+    useGameStore.getState().castFromGraveyard('bear-gy')
+
+    const bear = useGameStore.getState().cards.find((c) => c.id === 'bear-gy')
+    expect(bear?.zone).toBe('battlefield')
+    expect(bear?.tapped).toBe(true)
+  })
+
+  it('refuses cards outside the window or the filter', () => {
+    primeCardRules({})
+    grantSetup()
+    useGameStore.setState({ graveyardCast: null })
+    useGameStore.getState().castFromGraveyard('bear-gy')
+    expect(useGameStore.getState().cards.find((c) => c.id === 'bear-gy')?.zone).toBe('graveyard')
+
+    useGameStore.setState({ graveyardCast: { owner: 'player', untilTurn: 2, filter: '' } })
+    useGameStore.getState().castFromGraveyard('bear-gy')
+    // Stale window from an earlier turn is invalid.
+    expect(useGameStore.getState().cards.find((c) => c.id === 'bear-gy')?.zone).toBe('graveyard')
+  })
+})

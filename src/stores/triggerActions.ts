@@ -1143,12 +1143,21 @@ export function resolveTrigger(get: () => GameState, set: (partial: Partial<Game
       break
     }
     case 'enable_graveyard_cast': {
-      // Desdemona / Ghost Ark / Filigree Racer: cast the best eligible card
-      // from the graveyard now (escape/unearth/jump-start simplified to an
-      // immediate cast).
+      // Desdemona / Ghost Ark / Filigree Racer: escape/unearth/jump-start is
+      // granted until end of turn. The AI casts its best eligible card
+      // immediately; the player gets a window and chooses what to cast
+      // (right-click a graveyard card).
       const source = state.cards.find((c) => c.id === trigger.sourceCardId)
       const owner = ((source?.owner ?? 'player') === 'opponent' ? 'opponent' : 'player') as 'player' | 'opponent'
       const filter = String(params.cardFilter ?? '')
+      if (owner === 'player') {
+        set({ graveyardCast: { owner, untilTurn: state.turn, filter } })
+        useToastStore.getState().push(
+          `${source?.name ?? 'The effect'}: your graveyard cards may be cast this turn — right-click one.`,
+          'info',
+        )
+        break
+      }
       const eligible = state.cards.filter((c) => {
         if ((c.owner ?? 'player') !== owner || c.zone !== 'graveyard') return false
         if (/artifact creature/i.test(filter)) return c.type === 'creature' && /artifact/i.test(c.typeLine)
@@ -1924,6 +1933,36 @@ export function processSuspendedCards(get: () => GameState, set: (partial: Parti
       `Suspend recast: ${card.name} destroys ${target.name}, drains 3, and suspends again with ${amount} time counters.`,
       'info',
     )
+  }
+}
+
+/**
+ * Whether a card can be cast through the active graveyard-cast window
+ * (escape/unearth/jump-start): same-side graveyard card matching the
+ * effect's filter.
+ */
+export function graveyardCastEligible(card: BoardCard, filter: string, owner: 'player' | 'opponent'): boolean {
+  if ((card.owner ?? 'player') !== owner || card.zone !== 'graveyard') return false
+  if (/artifact creature/i.test(filter)) return card.type === 'creature' && /artifact/i.test(card.typeLine)
+  if (/instant or sorcery/i.test(filter)) return card.type === 'instant' || card.type === 'sorcery'
+  return card.type === 'creature' || card.type === 'artifact' || ((card.manaValue ?? 99) <= 3)
+}
+
+/** Player-facing cast from the graveyard through the active until-EOT window. */
+export function castFromGraveyardImpl(get: () => GameState, set: (partial: Partial<GameState>) => void, cardId: string) {
+  const state = get()
+  const window = state.graveyardCast
+  if (!window || window.untilTurn < state.turn) return
+  const card = state.cards.find((c) => c.id === cardId)
+  if (!card || !graveyardCastEligible(card, window.filter, window.owner)) return
+  if (card.type === 'instant' || card.type === 'sorcery') {
+    get().moveCard(cardId, 'exile')
+    enqueueSpellAbilities(set as unknown as Parameters<typeof enqueueSpellAbilities>[0], get, { ...card, zone: 'exile' })
+    useToastStore.getState().push(`${card.name} cast from the graveyard (jump-start).`, 'info')
+  } else {
+    set({ cards: updateCard(get().cards, cardId, { zone: 'battlefield', tapped: true, enteredAtTurn: state.turn }) })
+    get().emitGameEvent({ type: 'etb', cardId, cardName: card.name })
+    useToastStore.getState().push(`${card.name} returned from the graveyard to the battlefield.`, 'info')
   }
 }
 

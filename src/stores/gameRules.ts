@@ -253,6 +253,7 @@ export function takeSnapshot(state: GameState): GameSnapshot {
     graveyardIntake: state.graveyardIntake
       ? { player: state.graveyardIntake.player, opponent: state.graveyardIntake.opponent }
       : { player: 0, opponent: 0 },
+    graveyardCast: state.graveyardCast ? { ...state.graveyardCast } : null,
   }
 }
 

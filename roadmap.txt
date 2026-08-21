@@ -1,13 +1,13 @@
 ═══════════════════════════════════════════════════════════════════
  MTG BOARD LAYOUT — ROADMAP
- Updated: 2026-08-21 (batch 26: modal chooser UI + deterministic
-                       AI mode picks)
+ Updated: 2026-08-21 (batch 27: graveyard-cast window — player
+                       chooses what to cast until end of turn)
 ═══════════════════════════════════════════════════════════════════
 
 CURRENT STATE
 ─────────────
   "Other" (unimplemented) abilities : 322 → 1   (99.7% recovered)
-  Root test suite                   : 476 → 592 passing
+  Root test suite                   : 476 → 596 passing
   Server test suite                 :  78 → 121 passing (65 in root run)
   Gates                             : tsc + oxlint + vitest + build all green
   Main bundle (gzip)                : 154 KB → ~95 KB
@@ -159,12 +159,37 @@ REMAINING KNOWN GAPS (all documented, intentional)
 ──────────────────────────────────────────────────
   - Scourge's extra combat phase is not modeled (untap-all is).
   - Black Gate uses cantBeBlockedThisTurn (equivalent in solo 1v1).
-  - Graveyard-cast mechanics fire immediately rather than granting a
-    until-EOT window (toasted transparently).
   - Star Athlete: AI sacrifices only tokens/toughness≤2 creatures.
 
-KEY FILES TOUCHED THIS ROUND (batch 26)
+KEY FILES TOUCHED THIS ROUND (batch 27)
 ───────────────────────────────────────
+  src/stores/triggerActions.ts      enable_graveyard_cast opens a player window
+                                    (AI still auto-casts); graveyardCastEligible
+                                    + castFromGraveyardImpl (exile+enqueue for
+                                    instants/sorceries, tapped ETB otherwise)
+  src/stores/gameStore.ts           graveyardCast state (+snapshot), new
+                                    castFromGraveyard action (undoable)
+  src/stores/gameTurnPhases.ts      window cleared at both handoffs + discard
+  src/stores/gameDeckActions.ts     loadDeck reset
+  src/components/Board/CardContextMenu.tsx  "Cast from graveyard" item when
+                                    the window is active and the card is
+                                    eligible (jump-start vs escape/unearth label)
+
+KEY FILES TOUCHED PREVIOUS ROUNDS (batches 23-26)
+────────────────────────────────────────────────
+  Batch 26:
+  src/components/Board/triggerUtils.ts   modalChoiceCount + groupModalRuns
+                                         (pure, tested)
+  src/components/Board/ModalPicker.tsx   NEW — grouped mode picker (chips,
+                                         choose-one/two limits, Skip all)
+  src/components/Board/TriggerStack.tsx  consecutive same-source optional runs
+                                         render as one picker
+  src/stores/spellResolution.ts          AI casts modal spells by picking the
+                                         deterministic first N modes instead of
+                                         firing every mode (kicker cards still
+                                         resolve everything)
+  src/components/Board/triggerUtils.test.ts  NEW — grouping tests
+  src/stores/batchRegression.test.ts     AI single-mode-pick test
   src/components/Board/triggerUtils.ts   modalChoiceCount + groupModalRuns
                                          (pure, tested)
   src/components/Board/ModalPicker.tsx   NEW — grouped mode picker (chips,

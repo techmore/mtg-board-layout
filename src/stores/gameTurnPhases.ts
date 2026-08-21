@@ -68,6 +68,7 @@ export function createTurnPhases(set: SetFn, get: () => GameState): Pick<GameSta
           turnAnnouncement: { id: Date.now(), text: "OPPONENT'S TURN" },
           graveyardIntake: { player: 0, opponent: 0 },
           lastResolvedAbility: null,
+          graveyardCast: null,
         }))
         get().emitGameEvent({ type: 'end_of_turn', owner: 'player' })
         get().runOpponentTurn()
@@ -84,6 +85,7 @@ export function createTurnPhases(set: SetFn, get: () => GameState): Pick<GameSta
           turnAnnouncement: { id: Date.now(), text: `YOUR TURN ${prev.turn + 1}` },
           graveyardIntake: { player: 0, opponent: 0 },
           lastResolvedAbility: null,
+          graveyardCast: null,
         }))
         get().emitGameEvent({ type: 'end_of_turn', owner: 'player' })
       }
@@ -268,6 +270,7 @@ export function createTurnPhases(set: SetFn, get: () => GameState): Pick<GameSta
               turnAnnouncement: { id: Date.now(), text: "OPPONENT'S TURN" },
               turnPrompt: null,
               graveyardIntake: { player: 0, opponent: 0 },
+              graveyardCast: null,
             }
           : { ...undo, cards: resolvedCards, ...intake, turnPrompt: null, turnAnnouncement: { id: Date.now(), text: 'END TURN' } }
       })

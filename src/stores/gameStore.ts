@@ -3,7 +3,7 @@ import type { BackgroundOption, BoardCard, CardAbilityDef, CardScale, EffectHist
 import { hydratePersistedBackgroundState, loadPersistedGameState, persistGameState, STORAGE_KEY } from './gamePersistence'
 import { reindexTriggers, buildTriggerInstances, registerDiesTriggers } from './triggerEngine'
 import { getCachedCardRules, getCardRule } from './cardRulesLoader'
-import { resolveTrigger as resolveTriggerImpl, selectTarget as selectTargetImpl, payWardImpl, refuseWardImpl } from './triggerActions'
+import { resolveTrigger as resolveTriggerImpl, selectTarget as selectTargetImpl, payWardImpl, refuseWardImpl, castFromGraveyardImpl } from './triggerActions'
 import { attachAuras, updateCard } from './gameRules'
 import { createUndoContext, createUndoActions, runUndoableAction } from './gameHistory'
 import { createTurnPhases } from './gameTurnPhases'
@@ -59,7 +59,7 @@ export type ActivePlayer = 'player' | 'opponent'
 
 export type GameSnapshot = Pick<
   GameState,
-  'cards' | 'manaPool' | 'potentialMana' | 'manaLog' | 'effectHistory' | 'tokens' | 'lifeTotal' | 'opponentLifeTotal' | 'turn' | 'landPlaysThisTurn' | 'drawNotice' | 'turnAnnouncement' | 'turnPrompt' | 'combatState' | 'currentPhase' | 'activePlayer' | 'opponentManaPool' | 'opponentPotentialMana' | 'opponentLandPlaysThisTurn' | 'commanderDamage' | 'playerSpellsCastThisTurn' | 'opponentSpellsCastThisTurn' | 'triggerStack' | 'wardPrompt' | 'auraPrompt' | 'gameOver' | 'energyCounters' | 'opponentEnergyCounters' | 'radCounters' | 'opponentRadCounters' | 'experienceCounters' | 'opponentExperienceCounters' | 'aiResponsePending' | 'monarch' | 'graveyardIntake'
+  'cards' | 'manaPool' | 'potentialMana' | 'manaLog' | 'effectHistory' | 'tokens' | 'lifeTotal' | 'opponentLifeTotal' | 'turn' | 'landPlaysThisTurn' | 'drawNotice' | 'turnAnnouncement' | 'turnPrompt' | 'combatState' | 'currentPhase' | 'activePlayer' | 'opponentManaPool' | 'opponentPotentialMana' | 'opponentLandPlaysThisTurn' | 'commanderDamage' | 'playerSpellsCastThisTurn' | 'opponentSpellsCastThisTurn' | 'triggerStack' | 'wardPrompt' | 'auraPrompt' | 'gameOver' | 'energyCounters' | 'opponentEnergyCounters' | 'radCounters' | 'opponentRadCounters' | 'experienceCounters' | 'opponentExperienceCounters' | 'aiResponsePending' | 'monarch' | 'graveyardIntake' | 'graveyardCast'
 >
 
 export interface GameState {
@@ -130,6 +130,8 @@ export interface GameState {
   graveyardIntake?: { player: number; opponent: number }
   /** Most recently resolved ability this turn (Abstruse Archaic's ability copy). */
   lastResolvedAbility?: { sourceCardId: string; sourceCardName: string; owner: 'player' | 'opponent'; turn: number; ability: CardAbilityDef } | null
+  /** Until-end-of-turn permission to cast from the graveyard (escape/unearth/jump-start). */
+  graveyardCast?: { owner: 'player' | 'opponent'; untilTurn: number; filter: string } | null
   /** AI spell card id whose resolution is deferred while the player responds. */
   aiResponsePending: string | null
   /** Combat damage each commander has dealt to the opposing player, keyed by commander card id. */
@@ -202,6 +204,7 @@ export interface GameState {
 
   emitGameEvent: (event: import('../types/card').GameEvent) => void
   resolveTrigger: (triggerId: string) => void
+  castFromGraveyard: (cardId: string) => void
   selectTarget: (triggerId: string, cardId: string, bypassWard?: boolean) => void
   toggleProliferateTarget: (triggerId: string, cardId: string) => void
   confirmProliferate: (triggerId: string) => void
@@ -252,6 +255,7 @@ export const useGameStore = create<GameState>((set, get) => {
     aiFixedDeck: true,
     graveyardIntake: { player: 0, opponent: 0 },
     lastResolvedAbility: null,
+    graveyardCast: null,
 
     ...createTurnPhases(set, get),
     ...createOpponentAI(set, get),
@@ -354,6 +358,8 @@ export const useGameStore = create<GameState>((set, get) => {
       }),
 
     resolveTrigger: (triggerId) => resolveTriggerImpl(get, set, triggerId),
+
+    castFromGraveyard: (cardId) => castFromGraveyardImpl(get, set, cardId),
 
     selectTarget: (triggerId, cardId, bypassWard) => selectTargetImpl(get, set, triggerId, cardId, bypassWard),
 
@@ -501,7 +507,7 @@ export const useGameStore = create<GameState>((set, get) => {
     'drawCards', 'addCard', 'moveCard', 'reorderBattlefield', 'toggleTap', 'addCounter',
     'removeCounter', 'removeCard', 'revealCard', 'addToken', 'addTokenToCard', 'toggleTokenTap',
     'addTokenCounter', 'removeTokenCounter', 'removeToken', 'confirmProliferate', 'confirmScry',
-    'confirmSearchLibrary', 'toggleCombat', 'toggleAttacker', 'assignBlocker', 'resolveCombat',
+    'confirmSearchLibrary', 'castFromGraveyard', 'toggleCombat', 'toggleAttacker', 'assignBlocker', 'resolveCombat',
   ] as const
 
   for (const actionName of undoableActions) {

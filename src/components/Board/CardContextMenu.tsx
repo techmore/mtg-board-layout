@@ -2,6 +2,7 @@ import { useGameStore } from '../../stores/gameStore'
 import { ContextItem } from './ContextItem'
 import { getCachedCardRules, getCardRule } from '../../stores/cardRulesLoader'
 import { effectKindLabel, executeActivated } from './contextMenuActions'
+import { graveyardCastEligible } from '../../stores/triggerActions'
 
 interface CardContextMenuProps {
   cardId: string
@@ -123,6 +124,24 @@ export function CardContextMenu({ cardId, x, y, onClose }: CardContextMenuProps)
                 }}
               />
             )
+        })()}
+        {(() => {
+          const card = cards.find((c) => c.id === cardId)
+          const g = useGameStore.getState()
+          const window = g.graveyardCast
+          if (!card || card.zone !== 'graveyard' || !window || window.untilTurn < g.turn) return null
+          if (window.owner !== 'player') return null
+          if (!graveyardCastEligible(card, window.filter, window.owner)) return null
+          const kind = /instant or sorcery/i.test(window.filter) ? 'jump-start' : 'escape/unearth'
+          return (
+            <ContextItem
+              label={`Cast from graveyard (${kind})`}
+              onClick={() => {
+                g.castFromGraveyard(cardId)
+                onClose()
+              }}
+            />
+          )
         })()}
         <ContextItem
           label="Add token"
