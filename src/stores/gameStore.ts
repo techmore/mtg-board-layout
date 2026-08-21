@@ -1,5 +1,5 @@
 import { create } from 'zustand'
-import type { BackgroundOption, BoardCard, CardScale, EffectHistoryEntry, ManaColor, ManaLogEntry, ManaPool, ManaUsageKind, PotentialManaSource, Token, Zone, DeckCard, TriggerInstance } from '../types/card'
+import type { BackgroundOption, BoardCard, CardAbilityDef, CardScale, EffectHistoryEntry, ManaColor, ManaLogEntry, ManaPool, ManaUsageKind, PotentialManaSource, Token, Zone, DeckCard, TriggerInstance } from '../types/card'
 import { hydratePersistedBackgroundState, loadPersistedGameState, persistGameState, STORAGE_KEY } from './gamePersistence'
 import { reindexTriggers, buildTriggerInstances, registerDiesTriggers } from './triggerEngine'
 import { getCachedCardRules, getCardRule } from './cardRulesLoader'
@@ -59,7 +59,7 @@ export type ActivePlayer = 'player' | 'opponent'
 
 export type GameSnapshot = Pick<
   GameState,
-  'cards' | 'manaPool' | 'potentialMana' | 'manaLog' | 'effectHistory' | 'tokens' | 'lifeTotal' | 'opponentLifeTotal' | 'turn' | 'landPlaysThisTurn' | 'drawNotice' | 'turnAnnouncement' | 'turnPrompt' | 'combatState' | 'currentPhase' | 'activePlayer' | 'opponentManaPool' | 'opponentPotentialMana' | 'opponentLandPlaysThisTurn' | 'commanderDamage' | 'playerSpellsCastThisTurn' | 'opponentSpellsCastThisTurn' | 'triggerStack' | 'wardPrompt' | 'auraPrompt' | 'gameOver' | 'energyCounters' | 'opponentEnergyCounters' | 'radCounters' | 'opponentRadCounters' | 'experienceCounters' | 'opponentExperienceCounters' | 'aiResponsePending' | 'monarch'
+  'cards' | 'manaPool' | 'potentialMana' | 'manaLog' | 'effectHistory' | 'tokens' | 'lifeTotal' | 'opponentLifeTotal' | 'turn' | 'landPlaysThisTurn' | 'drawNotice' | 'turnAnnouncement' | 'turnPrompt' | 'combatState' | 'currentPhase' | 'activePlayer' | 'opponentManaPool' | 'opponentPotentialMana' | 'opponentLandPlaysThisTurn' | 'commanderDamage' | 'playerSpellsCastThisTurn' | 'opponentSpellsCastThisTurn' | 'triggerStack' | 'wardPrompt' | 'auraPrompt' | 'gameOver' | 'energyCounters' | 'opponentEnergyCounters' | 'radCounters' | 'opponentRadCounters' | 'experienceCounters' | 'opponentExperienceCounters' | 'aiResponsePending' | 'monarch' | 'graveyardIntake'
 >
 
 export interface GameState {
@@ -126,6 +126,10 @@ export interface GameState {
   poisonCounters?: { player: number; opponent: number }
   /** Arcane Lighthouse: the side's creatures lose hexproof/shroud until this turn ends. */
   keywordsStrippedUntil?: { owner: 'player' | 'opponent'; turn: number }
+  /** Cards put into each side's graveyard this turn (Fraying Sanity). Reset at the turn handoff. */
+  graveyardIntake?: { player: number; opponent: number }
+  /** Most recently resolved ability this turn (Abstruse Archaic's ability copy). */
+  lastResolvedAbility?: { sourceCardId: string; sourceCardName: string; owner: 'player' | 'opponent'; turn: number; ability: CardAbilityDef } | null
   /** AI spell card id whose resolution is deferred while the player responds. */
   aiResponsePending: string | null
   /** Combat damage each commander has dealt to the opposing player, keyed by commander card id. */
@@ -246,6 +250,8 @@ export const useGameStore = create<GameState>((set, get) => {
     aiResponsePending: null,
     commanderDamage: {},
     aiFixedDeck: true,
+    graveyardIntake: { player: 0, opponent: 0 },
+    lastResolvedAbility: null,
 
     ...createTurnPhases(set, get),
     ...createOpponentAI(set, get),

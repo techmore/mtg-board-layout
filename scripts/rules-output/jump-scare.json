@@ -38,21 +38,6 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "manifest",
-          "params": {
-            "dread": 1
-          }
-        }
-      },
-      {
-        "abilityType": "triggered",
-        "triggerEvent": null,
-        "triggerCondition": null,
-        "isOptional": false,
-        "cost": null,
-        "targets": 0,
-        "targetFilter": null,
-        "effect": {
           "kind": "return_from_graveyard",
           "params": {
             "zone": "battlefield"
@@ -572,39 +557,9 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "manifest",
-          "params": {
-            "dread": 1
-          }
-        }
-      },
-      {
-        "abilityType": "triggered",
-        "triggerEvent": null,
-        "triggerCondition": null,
-        "isOptional": false,
-        "cost": null,
-        "targets": 0,
-        "targetFilter": null,
-        "effect": {
           "kind": "return_from_graveyard",
           "params": {
             "zone": "battlefield"
-          }
-        }
-      },
-      {
-        "abilityType": "triggered",
-        "triggerEvent": "card_drawn",
-        "triggerCondition": ") Whenever a face-down creature you control enters",
-        "isOptional": false,
-        "cost": null,
-        "targets": 0,
-        "targetFilter": null,
-        "effect": {
-          "kind": "draw_cards",
-          "params": {
-            "amount": 1
           }
         }
       }
@@ -705,21 +660,6 @@
           "kind": "manifest",
           "params": {
             "dread": 1
-          }
-        }
-      },
-      {
-        "abilityType": "triggered",
-        "triggerEvent": null,
-        "triggerCondition": null,
-        "isOptional": false,
-        "cost": null,
-        "targets": 0,
-        "targetFilter": null,
-        "effect": {
-          "kind": "scry",
-          "params": {
-            "amount": 2
           }
         }
       },
@@ -836,19 +776,17 @@
         }
       },
       {
-        "abilityType": "triggered",
+        "abilityType": "activated",
         "triggerEvent": null,
         "triggerCondition": null,
         "isOptional": false,
-        "cost": null,
+        "cost": "{5}",
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "put_counter",
+          "kind": "monstrosity",
           "params": {
-            "counterKind": "+1/+1",
-            "amount": 5,
-            "scope": "all"
+            "amount": 5
           }
         }
       }
@@ -1021,21 +959,6 @@
           "kind": "exile",
           "params": {}
         }
-      },
-      {
-        "abilityType": "spell",
-        "triggerEvent": null,
-        "triggerCondition": null,
-        "isOptional": false,
-        "cost": null,
-        "targets": 0,
-        "targetFilter": null,
-        "effect": {
-          "kind": "scry",
-          "params": {
-            "amount": 7
-          }
-        }
       }
     ],
     "oracleText": "Delve (Each card you exile from your graveyard while casting this spell pays for {1}.)\nLook at the top seven cards of your library. Put two of them into your hand and the rest on the bottom of your library in any order.",
@@ -1072,11 +995,11 @@
         }
       },
       {
-        "abilityType": "triggered",
+        "abilityType": "activated",
         "triggerEvent": null,
         "triggerCondition": null,
         "isOptional": true,
-        "cost": null,
+        "cost": "{3}{U}",
         "targets": 0,
         "targetFilter": null,
         "effect": {
@@ -1105,19 +1028,6 @@
     "entryTapRule": null,
     "conditionalEntryText": null,
     "abilities": [
-      {
-        "abilityType": "triggered",
-        "triggerEvent": null,
-        "triggerCondition": null,
-        "isOptional": false,
-        "cost": null,
-        "targets": 1,
-        "targetFilter": "spell",
-        "effect": {
-          "kind": "counter_target",
-          "params": {}
-        }
-      },
       {
         "abilityType": "triggered",
         "triggerEvent": null,
@@ -1160,34 +1070,6 @@
           "params": {
             "dread": 0
           }
-        }
-      },
-      {
-        "abilityType": "triggered",
-        "triggerEvent": null,
-        "triggerCondition": null,
-        "isOptional": false,
-        "cost": null,
-        "targets": 0,
-        "targetFilter": null,
-        "effect": {
-          "kind": "return_from_graveyard",
-          "params": {
-            "zone": "battlefield"
-          }
-        }
-      },
-      {
-        "abilityType": "triggered",
-        "triggerEvent": null,
-        "triggerCondition": null,
-        "isOptional": true,
-        "cost": null,
-        "targets": 0,
-        "targetFilter": null,
-        "effect": {
-          "kind": "exile",
-          "params": {}
         }
       }
     ],
@@ -1669,34 +1551,6 @@
             "dread": 0
           }
         }
-      },
-      {
-        "abilityType": "triggered",
-        "triggerEvent": null,
-        "triggerCondition": null,
-        "isOptional": false,
-        "cost": null,
-        "targets": 0,
-        "targetFilter": null,
-        "effect": {
-          "kind": "return_from_graveyard",
-          "params": {
-            "zone": "battlefield"
-          }
-        }
-      },
-      {
-        "abilityType": "triggered",
-        "triggerEvent": null,
-        "triggerCondition": null,
-        "isOptional": true,
-        "cost": null,
-        "targets": 1,
-        "targetFilter": "creature you don't control",
-        "effect": {
-          "kind": "fight",
-          "params": {}
-        }
       }
     ],
     "oracleText": "When this creature enters, manifest the top card of your library. (Put that card onto the battlefield face down as a 2/2 creature. Turn it face up any time for its mana cost if it's a creature card.)\nWhenever a permanent you control is turned face up, if it's a creature, you may have it fight target creature you don't control.",
@@ -1813,34 +1667,6 @@
             "dread": 0
           }
         }
-      },
-      {
-        "abilityType": "triggered",
-        "triggerEvent": null,
-        "triggerCondition": null,
-        "isOptional": false,
-        "cost": null,
-        "targets": 0,
-        "targetFilter": null,
-        "effect": {
-          "kind": "return_from_graveyard",
-          "params": {
-            "zone": "battlefield"
-          }
-        }
-      },
-      {
-        "abilityType": "activated",
-        "triggerEvent": null,
-        "triggerCondition": null,
-        "isOptional": false,
-        "cost": "Sacrifice",
-        "targets": 0,
-        "targetFilter": null,
-        "effect": {
-          "kind": "sacrifice",
-          "params": {}
-        }
       }
     ],
     "oracleText": "At the beginning of your end step, manifest the top card of your library. (Put it onto the battlefield face down as a 2/2 creature. Turn it face up any time for its mana cost if it's a creature card.)\nSacrifice this creature: Until end of turn, face-up nontoken creatures you control gain \"When this creature dies, manifest the top card of your library.\"",
@@ -1917,21 +1743,6 @@
     "entryTapRule": "always",
     "conditionalEntryText": null,
     "abilities": [
-      {
-        "abilityType": "triggered",
-        "triggerEvent": "cast",
-        "triggerCondition": ") Whenever you cast a spell",
-        "isOptional": true,
-        "cost": null,
-        "targets": 0,
-        "targetFilter": null,
-        "effect": {
-          "kind": "remove_counters",
-          "params": {
-            "amount": 1
-          }
-        }
-      },
       {
         "abilityType": "activated",
         "triggerEvent": null,
@@ -2073,21 +1884,6 @@
             "dread": 0
           }
         }
-      },
-      {
-        "abilityType": "triggered",
-        "triggerEvent": null,
-        "triggerCondition": null,
-        "isOptional": false,
-        "cost": null,
-        "targets": 0,
-        "targetFilter": null,
-        "effect": {
-          "kind": "return_from_graveyard",
-          "params": {
-            "zone": "battlefield"
-          }
-        }
       }
     ],
     "oracleText": "{T}: Manifest a card from your hand. (Put that card onto the battlefield face down as a 2/2 creature. Turn it face up any time for its mana cost if it's a creature card.)",
@@ -2173,11 +1969,11 @@
         }
       },
       {
-        "abilityType": "triggered",
+        "abilityType": "activated",
         "triggerEvent": null,
         "triggerCondition": null,
         "isOptional": false,
-        "cost": null,
+        "cost": "{3}",
         "targets": 0,
         "targetFilter": null,
         "effect": {
@@ -2402,34 +2198,6 @@
             "amount": 1
           }
         }
-      },
-      {
-        "abilityType": "triggered",
-        "triggerEvent": null,
-        "triggerCondition": null,
-        "isOptional": false,
-        "cost": null,
-        "targets": 0,
-        "targetFilter": null,
-        "effect": {
-          "kind": "scry",
-          "params": {
-            "amount": 1
-          }
-        }
-      },
-      {
-        "abilityType": "activated",
-        "triggerEvent": null,
-        "triggerCondition": null,
-        "isOptional": false,
-        "cost": "{T}",
-        "targets": 0,
-        "targetFilter": null,
-        "effect": {
-          "kind": "add_mana",
-          "params": {}
-        }
       }
     ],
     "oracleText": "This land enters tapped.\nWhen this land enters, scry 1. (Look at the top card of your library. You may put that card on the bottom.)\n{T}: Add {G} or {U}.",
@@ -2627,41 +2395,9 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "scry",
-          "params": {
-            "amount": 2
-          }
-        }
-      },
-      {
-        "abilityType": "triggered",
-        "triggerEvent": null,
-        "triggerCondition": null,
-        "isOptional": false,
-        "cost": null,
-        "targets": 0,
-        "targetFilter": null,
-        "effect": {
           "kind": "return_from_graveyard",
           "params": {
             "zone": "battlefield"
-          }
-        }
-      },
-      {
-        "abilityType": "triggered",
-        "triggerEvent": "counter_placed",
-        "triggerCondition": ") Whenever you turn a permanent face up",
-        "isOptional": false,
-        "cost": null,
-        "targets": 0,
-        "targetFilter": null,
-        "effect": {
-          "kind": "put_counter",
-          "params": {
-            "counterKind": "+1/+1",
-            "amount": 1,
-            "scope": "all"
           }
         }
       }
@@ -2858,21 +2594,6 @@
         "effect": {
           "kind": "tap_target",
           "params": {}
-        }
-      },
-      {
-        "abilityType": "triggered",
-        "triggerEvent": null,
-        "triggerCondition": null,
-        "isOptional": true,
-        "cost": null,
-        "targets": 0,
-        "targetFilter": null,
-        "effect": {
-          "kind": "scry",
-          "params": {
-            "amount": 1
-          }
         }
       },
       {
@@ -3343,21 +3064,6 @@
           "kind": "scry",
           "params": {
             "amount": 4
-          }
-        }
-      },
-      {
-        "abilityType": "triggered",
-        "triggerEvent": null,
-        "triggerCondition": null,
-        "isOptional": false,
-        "cost": null,
-        "targets": 0,
-        "targetFilter": null,
-        "effect": {
-          "kind": "scry",
-          "params": {
-            "amount": 1
           }
         }
       }

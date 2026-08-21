@@ -1,0 +1,96 @@
+import { describe, expect, it } from 'vitest'
+import { parseCard } from './parse-card-rules.mjs'
+
+// Reconstructs a minimal Scryfall-shaped card for the parser.
+function scryfall(name, typeLine, oracleText, manaCost = '', cmc = 0) {
+  return { name, type_line: typeLine, oracle_text: oracleText, mana_cost: manaCost, cmc, id: `sf-${name}` }
+}
+
+describe('parse-card-rules — post-roadmap tail shapes', () => {
+  it('parses Mirage Mirror as an activated become_copy with the full type list', () => {
+    const card = parseCard(scryfall(
+      'Mirage Mirror',
+      'Artifact',
+      '{2}: This artifact becomes a copy of target artifact, creature, enchantment, or land until end of turn.',
+      '{3}',
+      3,
+    ))
+    const [ability] = card.abilities
+    expect(ability.abilityType).toBe('activated')
+    expect(ability.cost).toBe('{2}')
+    expect(ability.targets).toBe(1)
+    expect(ability.effect.kind).toBe('become_copy')
+    expect(ability.targetFilter).toBe('artifact, creature, enchantment, land')
+    expect(ability.effect.params.copyTypes).toEqual(['artifact', 'creature', 'enchantment', 'land'])
+  })
+
+  it('parses Razorfield Ripper reconfigure into attach_target with payable costs', () => {
+    const card = parseCard(scryfall(
+      'Razorfield Ripper',
+      'Artifact Creature — Equipment Rhino',
+      'Whenever this creature or equipped creature attacks, you get {E} (an energy counter), then it gets +X/+X until end of turn, where X is the amount of {E} you have.\nReconfigure—Pay {2} or {E}{E}{E}. (Pay {2} or {E}{E}{E}: Attach to target creature you control; or unattach from a creature. Reconfigure only as a sorcery. While attached, this isn\'t a creature.)',
+      '{2}{W}',
+      3,
+    ))
+    const attach = card.abilities.find((a) => a.effect.kind === 'attach_target')
+    expect(attach).toBeDefined()
+    expect(attach.abilityType).toBe('activated')
+    expect(attach.cost).toContain('{2}')
+    expect(attach.cost).toMatch(/Pay 3 \{E\}/)
+    expect(attach.targetFilter).toContain('creature you control')
+  })
+
+  it('parses Abstruse Archaic as an activated copy_ability', () => {
+    const card = parseCard(scryfall(
+      'Abstruse Archaic',
+      'Creature — Avatar',
+      'Vigilance\n{1}, {T}: Copy target activated or triggered ability you control from a colorless source.',
+      '{4}',
+      4,
+    ))
+    const copy = card.abilities.find((a) => a.effect.kind === 'copy_ability')
+    expect(copy).toBeDefined()
+    expect(copy.abilityType).toBe('activated')
+    expect(copy.cost).toContain('{T}')
+    expect(copy.cost).toContain('{1}')
+  })
+
+  it('parses Fraying Sanity end-step mill keyed on graveyard intake', () => {
+    const card = parseCard(scryfall(
+      'Fraying Sanity',
+      'Enchantment — Aura Curse',
+      'Enchant player\nAt the beginning of each end step, enchanted player mills X cards, where X is the number of cards put into their graveyard from anywhere this turn.',
+      '{2}{U}',
+      3,
+    ))
+    const [ability] = card.abilities
+    expect(ability.triggerEvent).toBe('end_of_turn')
+    expect(ability.effect.kind).toBe('graveyard_intake_mill')
+  })
+
+  it('drops reminder-text residue instead of inventing abilities', () => {
+    const card = parseCard(scryfall(
+      'Giggling Skitterspike',
+      'Artifact Creature — Toy',
+      "Indestructible\nWhenever this creature attacks, blocks, or becomes the target of a spell, it deals damage equal to its power to each opponent.\n{5}: Monstrosity 5. (If this creature isn't monstrous, put five +1/+1 counters on it and it becomes monstrous.)",
+      '{4}',
+      4,
+    ))
+    const kinds = card.abilities.map((a) => a.effect.kind)
+    expect(kinds).toContain('monstrosity')
+    // No phantom put_counter from the "(If this creature …" reminder fragment.
+    expect(kinds).not.toContain('put_counter')
+  })
+
+  it('keeps colon-bearing functional reminders (Reconfigure unattach clause)', () => {
+    const card = parseCard(scryfall(
+      'Basalt Monolith',
+      'Artifact',
+      '{T}: Add {C}{C}. \n{3}: Untap this artifact.',
+      '{3}',
+      3,
+    ))
+    const untap = card.abilities.find((a) => a.effect.kind === 'untap_self')
+    expect(untap?.cost).toBe('{3}')
+  })
+})

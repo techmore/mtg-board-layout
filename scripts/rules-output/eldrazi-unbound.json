@@ -71,21 +71,6 @@
             "amount": 2
           }
         }
-      },
-      {
-        "abilityType": "triggered",
-        "triggerEvent": "sacrifice",
-        "triggerCondition": ") Whenever an opponent sacrifices a nontoken permanent",
-        "isOptional": false,
-        "cost": null,
-        "targets": 0,
-        "targetFilter": null,
-        "effect": {
-          "kind": "return_from_graveyard",
-          "params": {
-            "zone": "battlefield"
-          }
-        }
       }
     ],
     "oracleText": "Annihilator 2 (Whenever this creature attacks, defending player sacrifices two permanents of their choice.)\nWhenever an opponent sacrifices a nontoken permanent, put that card onto the battlefield under your control.",
@@ -153,6 +138,19 @@
     "entryTapRule": null,
     "conditionalEntryText": null,
     "abilities": [
+      {
+        "abilityType": "triggered",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "untap_self",
+          "params": {}
+        }
+      },
       {
         "abilityType": "activated",
         "triggerEvent": null,
@@ -582,22 +580,7 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
-          "params": {
-            "description": "Vigilance {1}, {T}: Copy target activated or triggered ability you control from a colorless source"
-          }
-        }
-      },
-      {
-        "abilityType": "static",
-        "triggerEvent": null,
-        "triggerCondition": null,
-        "isOptional": false,
-        "cost": null,
-        "targets": 0,
-        "targetFilter": null,
-        "effect": {
-          "kind": "static_noop",
+          "kind": "copy_ability",
           "params": {}
         }
       }
@@ -658,21 +641,6 @@
           "kind": "exile",
           "params": {
             "targetHint": "target permanent that"
-          }
-        }
-      },
-      {
-        "abilityType": "spell",
-        "triggerEvent": null,
-        "triggerCondition": null,
-        "isOptional": false,
-        "cost": null,
-        "targets": 0,
-        "targetFilter": null,
-        "effect": {
-          "kind": "return_from_graveyard",
-          "params": {
-            "zone": "battlefield"
           }
         }
       }
@@ -881,34 +849,6 @@
             "dread": 0
           }
         }
-      },
-      {
-        "abilityType": "triggered",
-        "triggerEvent": null,
-        "triggerCondition": null,
-        "isOptional": false,
-        "cost": null,
-        "targets": 0,
-        "targetFilter": null,
-        "effect": {
-          "kind": "return_from_graveyard",
-          "params": {
-            "zone": "battlefield"
-          }
-        }
-      },
-      {
-        "abilityType": "triggered",
-        "triggerEvent": "attack",
-        "triggerCondition": ") Whenever you attack with creatures with total power 6 or greater",
-        "isOptional": true,
-        "cost": null,
-        "targets": 0,
-        "targetFilter": null,
-        "effect": {
-          "kind": "manifest_flip",
-          "params": {}
-        }
       }
     ],
     "oracleText": "Whenever you cast a colorless creature spell, manifest the top card of your library. (Put it onto the battlefield face down as a 2/2 creature. Turn it face up any time for its mana cost if it's a creature card.)\nWhenever you attack with creatures with total power 6 or greater, you may turn a face-down creature you control face up.",
@@ -1014,21 +954,6 @@
     "entryTapRule": null,
     "conditionalEntryText": null,
     "abilities": [
-      {
-        "abilityType": "triggered",
-        "triggerEvent": "dies",
-        "triggerCondition": ") When this creature dies",
-        "isOptional": false,
-        "cost": null,
-        "targets": 0,
-        "targetFilter": null,
-        "effect": {
-          "kind": "scry",
-          "params": {
-            "amount": 1
-          }
-        }
-      },
       {
         "abilityType": "triggered",
         "triggerEvent": null,
@@ -1473,34 +1398,6 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "scry",
-          "params": {
-            "amount": 1
-          }
-        }
-      },
-      {
-        "abilityType": "activated",
-        "triggerEvent": null,
-        "triggerCondition": null,
-        "isOptional": false,
-        "cost": "{T}, {2}",
-        "targets": 0,
-        "targetFilter": null,
-        "effect": {
-          "kind": "put_counter",
-          "params": {}
-        }
-      },
-      {
-        "abilityType": "triggered",
-        "triggerEvent": null,
-        "triggerCondition": null,
-        "isOptional": false,
-        "cost": null,
-        "targets": 0,
-        "targetFilter": null,
-        "effect": {
           "kind": "exile",
           "params": {}
         }
@@ -1570,17 +1467,22 @@
     "conditionalEntryText": null,
     "abilities": [
       {
-        "abilityType": "triggered",
+        "abilityType": "activated",
         "triggerEvent": null,
         "triggerCondition": null,
         "isOptional": false,
-        "cost": null,
+        "cost": "{2}",
         "targets": 1,
-        "targetFilter": "artifact",
+        "targetFilter": "artifact, creature, enchantment, land",
         "effect": {
-          "kind": "other",
+          "kind": "become_copy",
           "params": {
-            "description": "{2}: This artifact becomes a copy of target artifact, creature, enchantment, or land until end of turn"
+            "copyTypes": [
+              "artifact",
+              "creature",
+              "enchantment",
+              "land"
+            ]
           }
         }
       }
@@ -1899,11 +1801,11 @@
         }
       },
       {
-        "abilityType": "triggered",
+        "abilityType": "activated",
         "triggerEvent": null,
         "triggerCondition": null,
         "isOptional": false,
-        "cost": null,
+        "cost": "{X}",
         "targets": 0,
         "targetFilter": null,
         "effect": {
@@ -1983,19 +1885,6 @@
     "entryTapRule": null,
     "conditionalEntryText": null,
     "abilities": [
-      {
-        "abilityType": "activated",
-        "triggerEvent": null,
-        "triggerCondition": null,
-        "isOptional": false,
-        "cost": "{T}",
-        "targets": 0,
-        "targetFilter": null,
-        "effect": {
-          "kind": "add_mana",
-          "params": {}
-        }
-      },
       {
         "abilityType": "activated",
         "triggerEvent": null,
@@ -2278,23 +2167,6 @@
           "kind": "add_mana",
           "params": {}
         }
-      },
-      {
-        "abilityType": "activated",
-        "triggerEvent": null,
-        "triggerCondition": null,
-        "isOptional": false,
-        "cost": "{T}",
-        "targets": 0,
-        "targetFilter": null,
-        "effect": {
-          "kind": "put_counter",
-          "params": {
-            "counterKind": "+1/+1",
-            "amount": 1,
-            "scope": "all"
-          }
-        }
       }
     ],
     "oracleText": "This land enters tapped.\n{T}: Add {C}. ({C} represents colorless mana.)\n{T}: Put a +1/+1 counter on target colorless creature that entered this turn.",
@@ -2377,21 +2249,6 @@
         "effect": {
           "kind": "add_mana",
           "params": {}
-        }
-      },
-      {
-        "abilityType": "activated",
-        "triggerEvent": null,
-        "triggerCondition": null,
-        "isOptional": false,
-        "cost": "{T}, {2}{C}",
-        "targets": 0,
-        "targetFilter": null,
-        "effect": {
-          "kind": "draw_cards",
-          "params": {
-            "amount": 2
-          }
         }
       },
       {
@@ -2640,34 +2497,6 @@
         "effect": {
           "kind": "static_keyword",
           "params": {}
-        }
-      },
-      {
-        "abilityType": "static",
-        "triggerEvent": null,
-        "triggerCondition": null,
-        "isOptional": false,
-        "cost": null,
-        "targets": 0,
-        "targetFilter": null,
-        "effect": {
-          "kind": "static_noop",
-          "params": {}
-        }
-      },
-      {
-        "abilityType": "activated",
-        "triggerEvent": null,
-        "triggerCondition": null,
-        "isOptional": false,
-        "cost": "{0}",
-        "targets": 0,
-        "targetFilter": null,
-        "effect": {
-          "kind": "equip",
-          "params": {
-            "cost": "{0}"
-          }
         }
       }
     ],
@@ -2947,25 +2776,7 @@
     "manaProduction": null,
     "entryTapRule": null,
     "conditionalEntryText": null,
-    "abilities": [
-      {
-        "abilityType": "static",
-        "triggerEvent": null,
-        "triggerCondition": null,
-        "isOptional": false,
-        "cost": null,
-        "targets": 1,
-        "targetFilter": "creature gets +3/-3 until end of turn",
-        "effect": {
-          "kind": "pump",
-          "params": {
-            "power": 3,
-            "toughness": -3,
-            "scope": "all"
-          }
-        }
-      }
-    ],
+    "abilities": [],
     "oracleText": "({C} represents colorless mana.)\nTarget creature gets +3/-3 until end of turn.",
     "scryfallId": "3fd2f8b3-62f3-4e52-ae17-dd0a61bc0e26"
   },
@@ -3012,21 +2823,6 @@
     "entryTapRule": null,
     "conditionalEntryText": null,
     "abilities": [
-      {
-        "abilityType": "spell",
-        "triggerEvent": null,
-        "triggerCondition": null,
-        "isOptional": true,
-        "cost": null,
-        "targets": 1,
-        "targetFilter": "creature with power or toughness 1 or less",
-        "effect": {
-          "kind": "exile",
-          "params": {
-            "targetHint": "target creature with"
-          }
-        }
-      },
       {
         "abilityType": "spell",
         "triggerEvent": null,
@@ -3173,36 +2969,6 @@
         "effect": {
           "kind": "static_keyword",
           "params": {}
-        }
-      },
-      {
-        "abilityType": "triggered",
-        "triggerEvent": null,
-        "triggerCondition": null,
-        "isOptional": false,
-        "cost": null,
-        "targets": 0,
-        "targetFilter": null,
-        "effect": {
-          "kind": "deal_damage",
-          "params": {
-            "amount": 1
-          }
-        }
-      },
-      {
-        "abilityType": "activated",
-        "triggerEvent": null,
-        "triggerCondition": null,
-        "isOptional": false,
-        "cost": "{2}",
-        "targets": 1,
-        "targetFilter": "creature you control",
-        "effect": {
-          "kind": "equip",
-          "params": {
-            "cost": "{2}"
-          }
         }
       }
     ],

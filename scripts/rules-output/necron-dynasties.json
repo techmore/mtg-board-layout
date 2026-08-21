@@ -1950,21 +1950,7 @@
     "manaProduction": null,
     "entryTapRule": null,
     "conditionalEntryText": null,
-    "abilities": [
-      {
-        "abilityType": "triggered",
-        "triggerEvent": null,
-        "triggerCondition": null,
-        "isOptional": false,
-        "cost": null,
-        "targets": 1,
-        "targetFilter": "creature cards with total mana value 8 or less in your graveyard Return each of them to the battlefield with a necrodermis counter on it",
-        "effect": {
-          "kind": "war_in_heaven_reanimate",
-          "params": {}
-        }
-      }
-    ],
+    "abilities": [],
     "oracleText": "(As this Saga enters and after your draw step, add a lore counter. Sacrifice after III.)\nI — You draw three cards and you lose 3 life.\nII — Mill three cards.\nIII — Choose up to three target creature cards with total mana value 8 or less in your graveyard. Return each of them to the battlefield with a necrodermis counter on it. They're artifacts in addition to their other types.",
     "scryfallId": "cd556cd1-e33a-433d-ac18-4a4fd195c3ab"
   },
@@ -2173,10 +2159,8 @@
         "targets": 1,
         "targetFilter": "creature you control",
         "effect": {
-          "kind": "equip",
-          "params": {
-            "cost": "{4}"
-          }
+          "kind": "attach_target",
+          "params": {}
         }
       }
     ],
@@ -2511,11 +2495,11 @@
         }
       },
       {
-        "abilityType": "triggered",
+        "abilityType": "activated",
         "triggerEvent": null,
         "triggerCondition": null,
         "isOptional": false,
-        "cost": null,
+        "cost": "{B}{B}",
         "targets": 1,
         "targetFilter": "creature you control",
         "effect": {
@@ -2629,10 +2613,8 @@
         "targets": 1,
         "targetFilter": "creature you control",
         "effect": {
-          "kind": "equip",
-          "params": {
-            "cost": "{1}"
-          }
+          "kind": "attach_target",
+          "params": {}
         }
       }
     ],

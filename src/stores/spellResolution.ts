@@ -17,6 +17,10 @@ function autoTarget(kind: string, params: Record<string, unknown> | undefined, c
   const harmful = ['destroy', 'exile', 'deal_damage', 'fight', 'sacrifice'].includes(kind) ||
     (kind === 'pump' && (power < 0 || toughness < 0)) ||
     (kind === 'put_counter' && (params?.amount === -1 || String(params?.counterKind ?? '').includes('-1/-1')))
+  // Cloning copies the biggest body on the battlefield (either side).
+  if (kind === 'become_copy') {
+    return [...candidates].sort((a, b) => getPower(b) + getToughness(b) - (getPower(a) + getToughness(a)))[0] ?? null
+  }
   const preferredOwner: 'player' | 'opponent' = harmful ? 'player' : 'opponent'
   const ranked = [...candidates].sort((a, b) => {
     const aScore = (a.owner ?? 'player') === preferredOwner ? 1 : 0
@@ -33,6 +37,10 @@ function autoTarget(kind: string, params: Record<string, unknown> | undefined, c
 
 function getToughness(card: BoardCard): number {
   return parseInt(card.typeLine?.match(/\/(\d+)/)?.[1] ?? '0', 10) + (card.toughnessBoost ?? 0) + (card.counters ?? 0)
+}
+
+function getPower(card: BoardCard): number {
+  return parseInt(card.typeLine?.match(/(\d+)\//)?.[1] ?? '0', 10) + (card.powerBoost ?? 0) + (card.counters ?? 0)
 }
 
 /** Push a cast card's parsed spell abilities onto the trigger stack for manual resolution. */

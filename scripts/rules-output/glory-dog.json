@@ -813,21 +813,6 @@
           "kind": "put_counter",
           "params": {}
         }
-      },
-      {
-        "abilityType": "triggered",
-        "triggerEvent": null,
-        "triggerCondition": null,
-        "isOptional": true,
-        "cost": null,
-        "targets": 0,
-        "targetFilter": null,
-        "effect": {
-          "kind": "remove_counters",
-          "params": {
-            "amount": 1
-          }
-        }
       }
     ],
     "oracleText": "When this creature enters, choose one —\n• Return target Aura or Equipment card with mana value 3 or less from your graveyard to the battlefield.\n• Put a shield counter on target creature. (If it would be dealt damage or destroyed, remove a shield counter from it instead.)",
@@ -1346,34 +1331,6 @@
             "scope": "all"
           }
         }
-      },
-      {
-        "abilityType": "spell",
-        "triggerEvent": null,
-        "triggerCondition": null,
-        "isOptional": true,
-        "cost": null,
-        "targets": 0,
-        "targetFilter": null,
-        "effect": {
-          "kind": "destroy",
-          "params": {}
-        }
-      },
-      {
-        "abilityType": "spell",
-        "triggerEvent": null,
-        "triggerCondition": null,
-        "isOptional": true,
-        "cost": null,
-        "targets": 1,
-        "targetFilter": "creature with toughness 4 or greater",
-        "effect": {
-          "kind": "destroy",
-          "params": {
-            "targetHint": "target creature with"
-          }
-        }
       }
     ],
     "oracleText": "Choose one —\n• Target creature gains indestructible until end of turn. (Damage and effects that say \"destroy\" don't destroy it.)\n• Destroy target creature with toughness 4 or greater.",
@@ -1544,7 +1501,7 @@
         "effect": {
           "kind": "x_pump",
           "params": {
-            "toughness": "+X",
+            "toughness": "x",
             "power": "x"
           }
         }
@@ -1568,24 +1525,6 @@
     "conditionalEntryText": null,
     "abilities": [
       {
-        "abilityType": "triggered",
-        "triggerEvent": null,
-        "triggerCondition": null,
-        "isOptional": false,
-        "cost": null,
-        "targets": 0,
-        "targetFilter": null,
-        "effect": {
-          "kind": "create_token",
-          "params": {
-            "tokenPower": 1,
-            "tokenToughness": 1,
-            "tokenName": "Soldier creature",
-            "amount": 1
-          }
-        }
-      },
-      {
         "abilityType": "activated",
         "triggerEvent": null,
         "triggerCondition": null,
@@ -1597,21 +1536,6 @@
           "kind": "gain_life",
           "params": {
             "amount": 2
-          }
-        }
-      },
-      {
-        "abilityType": "triggered",
-        "triggerEvent": null,
-        "triggerCondition": null,
-        "isOptional": true,
-        "cost": null,
-        "targets": 0,
-        "targetFilter": null,
-        "effect": {
-          "kind": "return_from_graveyard",
-          "params": {
-            "zone": "battlefield"
           }
         }
       },
@@ -1698,21 +1622,6 @@
     "entryTapRule": null,
     "conditionalEntryText": null,
     "abilities": [
-      {
-        "abilityType": "triggered",
-        "triggerEvent": null,
-        "triggerCondition": null,
-        "isOptional": false,
-        "cost": null,
-        "targets": 0,
-        "targetFilter": null,
-        "effect": {
-          "kind": "draw_cards",
-          "params": {
-            "amount": 1
-          }
-        }
-      },
       {
         "abilityType": "triggered",
         "triggerEvent": null,
@@ -1924,22 +1833,6 @@
             "scope": "all"
           }
         }
-      },
-      {
-        "abilityType": "triggered",
-        "triggerEvent": "attack",
-        "triggerCondition": ") Whenever enchanted creature attacks",
-        "isOptional": false,
-        "cost": null,
-        "targets": 0,
-        "targetFilter": null,
-        "effect": {
-          "kind": "gain_rad",
-          "params": {
-            "scope": "opponent",
-            "amount": 2
-          }
-        }
       }
     ],
     "oracleText": "Enchant creature\nEnchanted creature gets +2/+2 and is goaded. (It attacks each combat if able and attacks a player other than you if able.)\nWhenever enchanted creature attacks, defending player gets two rad counters.",
@@ -2071,21 +1964,6 @@
         "effect": {
           "kind": "add_mana",
           "params": {}
-        }
-      },
-      {
-        "abilityType": "triggered",
-        "triggerEvent": "dies",
-        "triggerCondition": "\") When enchanted creature dies",
-        "isOptional": false,
-        "cost": null,
-        "targets": 0,
-        "targetFilter": null,
-        "effect": {
-          "kind": "draw_cards",
-          "params": {
-            "amount": 1
-          }
         }
       }
     ],
@@ -2413,19 +2291,6 @@
         "triggerEvent": null,
         "triggerCondition": null,
         "isOptional": false,
-        "cost": "{3}, Sacrifice",
-        "targets": 0,
-        "targetFilter": null,
-        "effect": {
-          "kind": "double_equipped_power",
-          "params": {}
-        }
-      },
-      {
-        "abilityType": "activated",
-        "triggerEvent": null,
-        "triggerCondition": null,
-        "isOptional": false,
         "cost": "{1}",
         "targets": 0,
         "targetFilter": null,
@@ -2557,37 +2422,9 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "destroy",
-          "params": {}
-        }
-      },
-      {
-        "abilityType": "triggered",
-        "triggerEvent": null,
-        "triggerCondition": null,
-        "isOptional": false,
-        "cost": null,
-        "targets": 0,
-        "targetFilter": null,
-        "effect": {
           "kind": "gain_life",
           "params": {
             "amount": 1
-          }
-        }
-      },
-      {
-        "abilityType": "activated",
-        "triggerEvent": null,
-        "triggerCondition": null,
-        "isOptional": false,
-        "cost": "{2}",
-        "targets": 1,
-        "targetFilter": "creature you control",
-        "effect": {
-          "kind": "equip",
-          "params": {
-            "cost": "{2}"
           }
         }
       }
@@ -2691,34 +2528,6 @@
             "power": 2,
             "toughness": 2,
             "scope": "all"
-          }
-        }
-      },
-      {
-        "abilityType": "static",
-        "triggerEvent": null,
-        "triggerCondition": null,
-        "isOptional": false,
-        "cost": null,
-        "targets": 0,
-        "targetFilter": null,
-        "effect": {
-          "kind": "static_noop",
-          "params": {}
-        }
-      },
-      {
-        "abilityType": "activated",
-        "triggerEvent": null,
-        "triggerCondition": null,
-        "isOptional": false,
-        "cost": "{1}",
-        "targets": 0,
-        "targetFilter": null,
-        "effect": {
-          "kind": "equip",
-          "params": {
-            "cost": "{1}"
           }
         }
       }
@@ -3000,19 +2809,6 @@
         }
       },
       {
-        "abilityType": "triggered",
-        "triggerEvent": null,
-        "triggerCondition": null,
-        "isOptional": false,
-        "cost": null,
-        "targets": 0,
-        "targetFilter": null,
-        "effect": {
-          "kind": "static_keyword",
-          "params": {}
-        }
-      },
-      {
         "abilityType": "activated",
         "triggerEvent": null,
         "triggerCondition": null,
@@ -3021,10 +2817,8 @@
         "targets": 1,
         "targetFilter": "creature you control",
         "effect": {
-          "kind": "equip",
-          "params": {
-            "cost": "{1}"
-          }
+          "kind": "attach_target",
+          "params": {}
         }
       }
     ],
@@ -3084,10 +2878,8 @@
         "targets": 1,
         "targetFilter": "creature you control",
         "effect": {
-          "kind": "equip",
-          "params": {
-            "cost": "{1}"
-          }
+          "kind": "attach_target",
+          "params": {}
         }
       }
     ],
@@ -3122,36 +2914,6 @@
           "kind": "static_keyword",
           "params": {}
         }
-      },
-      {
-        "abilityType": "triggered",
-        "triggerEvent": null,
-        "triggerCondition": null,
-        "isOptional": false,
-        "cost": null,
-        "targets": 0,
-        "targetFilter": null,
-        "effect": {
-          "kind": "deal_damage",
-          "params": {
-            "amount": 1
-          }
-        }
-      },
-      {
-        "abilityType": "activated",
-        "triggerEvent": null,
-        "triggerCondition": null,
-        "isOptional": false,
-        "cost": "{2}",
-        "targets": 1,
-        "targetFilter": "creature you control",
-        "effect": {
-          "kind": "equip",
-          "params": {
-            "cost": "{2}"
-          }
-        }
       }
     ],
     "oracleText": "Equipped creature has double strike. (It deals both first-strike and regular combat damage.)\nEquip {2} ({2}: Attach to target creature you control. Equip only as a sorcery.)",
@@ -3185,34 +2947,6 @@
         "effect": {
           "kind": "static_keyword",
           "params": {}
-        }
-      },
-      {
-        "abilityType": "static",
-        "triggerEvent": null,
-        "triggerCondition": null,
-        "isOptional": false,
-        "cost": null,
-        "targets": 0,
-        "targetFilter": null,
-        "effect": {
-          "kind": "static_noop",
-          "params": {}
-        }
-      },
-      {
-        "abilityType": "activated",
-        "triggerEvent": null,
-        "triggerCondition": null,
-        "isOptional": false,
-        "cost": "{1}",
-        "targets": 1,
-        "targetFilter": "creature you control",
-        "effect": {
-          "kind": "equip",
-          "params": {
-            "cost": "{1}"
-          }
         }
       }
     ],
@@ -3794,34 +3528,6 @@
             "amount": 1
           }
         }
-      },
-      {
-        "abilityType": "triggered",
-        "triggerEvent": null,
-        "triggerCondition": null,
-        "isOptional": false,
-        "cost": null,
-        "targets": 0,
-        "targetFilter": null,
-        "effect": {
-          "kind": "scry",
-          "params": {
-            "amount": 1
-          }
-        }
-      },
-      {
-        "abilityType": "activated",
-        "triggerEvent": null,
-        "triggerCondition": null,
-        "isOptional": false,
-        "cost": "{T}",
-        "targets": 0,
-        "targetFilter": null,
-        "effect": {
-          "kind": "add_mana",
-          "params": {}
-        }
       }
     ],
     "oracleText": "This land enters tapped.\nWhen this land enters, scry 1. (Look at the top card of your library. You may put that card on the bottom.)\n{T}: Add {R} or {G}.",
@@ -3859,34 +3565,6 @@
             "amount": 1
           }
         }
-      },
-      {
-        "abilityType": "triggered",
-        "triggerEvent": null,
-        "triggerCondition": null,
-        "isOptional": false,
-        "cost": null,
-        "targets": 0,
-        "targetFilter": null,
-        "effect": {
-          "kind": "scry",
-          "params": {
-            "amount": 1
-          }
-        }
-      },
-      {
-        "abilityType": "activated",
-        "triggerEvent": null,
-        "triggerCondition": null,
-        "isOptional": false,
-        "cost": "{T}",
-        "targets": 0,
-        "targetFilter": null,
-        "effect": {
-          "kind": "add_mana",
-          "params": {}
-        }
       }
     ],
     "oracleText": "This land enters tapped.\nWhen this land enters, scry 1. (Look at the top card of your library. You may put that card on the bottom.)\n{T}: Add {G} or {W}.",
@@ -3923,34 +3601,6 @@
           "params": {
             "amount": 1
           }
-        }
-      },
-      {
-        "abilityType": "triggered",
-        "triggerEvent": null,
-        "triggerCondition": null,
-        "isOptional": false,
-        "cost": null,
-        "targets": 0,
-        "targetFilter": null,
-        "effect": {
-          "kind": "scry",
-          "params": {
-            "amount": 1
-          }
-        }
-      },
-      {
-        "abilityType": "activated",
-        "triggerEvent": null,
-        "triggerCondition": null,
-        "isOptional": false,
-        "cost": "{T}",
-        "targets": 0,
-        "targetFilter": null,
-        "effect": {
-          "kind": "add_mana",
-          "params": {}
         }
       }
     ],
@@ -4157,21 +3807,6 @@
         "abilityType": "triggered",
         "triggerEvent": "cast",
         "triggerCondition": "that mana is spent to cast a creature spell that shares a creature type with your commander",
-        "isOptional": false,
-        "cost": null,
-        "targets": 0,
-        "targetFilter": null,
-        "effect": {
-          "kind": "scry",
-          "params": {
-            "amount": 1
-          }
-        }
-      },
-      {
-        "abilityType": "triggered",
-        "triggerEvent": null,
-        "triggerCondition": null,
         "isOptional": false,
         "cost": null,
         "targets": 0,

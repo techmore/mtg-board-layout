@@ -3,7 +3,8 @@ import type { CardEffect, Token, TriggerInstance, BoardCard } from '../types/car
 import { CARD_BACK_URL } from '../constants'
 import { canPayManaCost, getCardPower, getCardToughness, getCreaturePower, getCreatureToughness } from '../utils/misc'
 import { hasKeyword, getCardRule, getCachedCardRules } from './cardRulesLoader'
-import { attachAuras, updateCard } from './gameRules'
+import { attachAuras, updateCard, withGraveyardIntake } from './gameRules'
+import { filterMatch } from '../components/Board/triggerUtils'
 import { enqueueSpellAbilities } from './spellResolution'
 import { useToastStore } from './toastStore'
 
@@ -221,10 +222,22 @@ export function resolveTrigger(get: () => GameState, set: (partial: Partial<Game
         x = owner === 'player' ? state.energyCounters : state.opponentEnergyCounters
       } else if (params.x_source === 'auras') {
         x = state.cards.filter((c) => (c.owner ?? 'player') === owner && c.zone === 'battlefield' && c.enchantsCardId === source?.id).length || 1
+      } else if (params.x_source === 'experience') {
+        x = owner === 'player' ? state.experienceCounters : state.opponentExperienceCounters
       }
       const power = params.power === 'x' ? x : typeof params.power === 'number' ? params.power : parseInt(String(params.power), 10) || 0
       const toughness = params.toughness === 'x' ? x : typeof params.toughness === 'number' ? params.toughness : parseInt(String(params.toughness), 10) || 0
-      if (source) {
+      if (source && params.scope === 'own_creatures') {
+        // Team X-pump ("Creatures you control get +X/+X … where X is the
+        // number of experience counters" — Azlask).
+        set({
+          cards: state.cards.map((c) =>
+            c.zone === 'battlefield' && c.type === 'creature' && (c.owner ?? 'player') === owner
+              ? { ...c, powerBoost: (c.powerBoost ?? 0) + power, toughnessBoost: (c.toughnessBoost ?? 0) + toughness }
+              : c,
+          ),
+        })
+      } else if (source) {
         set({ cards: updateCard(state.cards, source.id, { powerBoost: (source.powerBoost ?? 0) + power, toughnessBoost: (source.toughnessBoost ?? 0) + toughness }) })
       }
       break
@@ -432,9 +445,11 @@ export function resolveTrigger(get: () => GameState, set: (partial: Partial<Game
       const targetOwner = sourceOwner === 'player' ? 'opponent' : 'player'
       const amount = numericAmount(params)
       const lib = state.cards.filter((c) => (c.owner ?? 'player') === targetOwner && c.zone === 'library')
-      for (let i = 0; i < Math.min(amount, lib.length); i++) {
-        const milled = lib[i]
-        set({ cards: get().cards.map((c) => c.id === milled.id ? { ...c, zone: 'graveyard' as const, revealed: true } : c) })
+      const milledIds = new Set(lib.slice(0, Math.min(amount, lib.length)).map((c) => c.id))
+      if (milledIds.size > 0) {
+        const nextCards = state.cards.map((c) =>
+          milledIds.has(c.id) ? { ...c, zone: 'graveyard' as const, revealed: true } : c)
+        set({ cards: nextCards, ...withGraveyardIntake(state, nextCards) })
       }
       break
     }
@@ -459,10 +474,15 @@ export function resolveTrigger(get: () => GameState, set: (partial: Partial<Game
       // Each player mills a card (Raul, Trouble Shooter).
       const mill = (owner: 'player' | 'opponent') => {
         const lib = state.cards.find((c) => (c.owner ?? 'player') === owner && c.zone === 'library')
-        if (lib) set({ cards: get().cards.map((c) => c.id === lib.id ? { ...c, zone: 'graveyard' as const, revealed: true } : c) })
+        return lib
       }
-      mill('player')
-      mill('opponent')
+      const targets = [mill('player'), mill('opponent')].filter((c): c is BoardCard => Boolean(c))
+      if (targets.length > 0) {
+        const ids = new Set(targets.map((c) => c.id))
+        const nextCards = state.cards.map((c) =>
+          ids.has(c.id) ? { ...c, zone: 'graveyard' as const, revealed: true } : c)
+        set({ cards: nextCards, ...withGraveyardIntake(state, nextCards) })
+      }
       break
     }
     case 'untap_lands':
@@ -749,14 +769,11 @@ export function resolveTrigger(get: () => GameState, set: (partial: Partial<Game
       const amount = numericAmount(params)
       const owner = state.cards.find((c) => c.id === trigger.sourceCardId)?.owner ?? 'player'
       const library = state.cards.filter((c) => (c.owner ?? 'player') === owner && c.zone === 'library')
-      const milled = library.slice(0, amount).map((c) => ({ ...c, zone: 'graveyard' as const, revealed: true }))
-      if (milled.length > 0) {
-        set({
-          cards: state.cards.map((c) => {
-            const target = milled.find((m) => m.id === c.id)
-            return target ?? c
-          }),
-        })
+      const milled = new Set(library.slice(0, amount).map((c) => c.id))
+      if (milled.size > 0) {
+        const nextCards = state.cards.map((c) =>
+          milled.has(c.id) ? { ...c, zone: 'graveyard' as const, revealed: true } : c)
+        set({ cards: nextCards, ...withGraveyardIntake(state, nextCards) })
       }
       break
     }
@@ -767,6 +784,90 @@ export function resolveTrigger(get: () => GameState, set: (partial: Partial<Game
           get().addMana(color, { cardId: card.id, cardName: card.name })
         }
       }
+      break
+    }
+    case 'monstrosity': {
+      // "{5}{B}{G}: Monstrosity 4" — pay to put that many +1/+1 counters on
+      // this creature.
+      const amount = numericAmount(params)
+      const source = state.cards.find((c) => c.id === trigger.sourceCardId)
+      if (source) {
+        for (let i = 0; i < amount; i++) get().addCounter(source.id)
+        useToastStore.getState().push(`${source.name} becomes monstrous (+${amount}/+${amount}).`, 'info')
+      }
+      break
+    }
+    case 'untap_self': {
+      // "{3}: Untap this artifact" (Basalt Monolith).
+      set({ cards: updateCard(state.cards, trigger.sourceCardId, { tapped: false }) })
+      break
+    }
+    case 'copy_ability': {
+      // Abstruse Archaic: "{1}, {T}: Copy target activated or triggered ability
+      // you control from a colorless source." Ability instances aren't cards,
+      // so targeting is deterministic: re-resolve the most recent ability
+      // resolved THIS TURN by the same side from a colorless source.
+      const source = state.cards.find((c) => c.id === trigger.sourceCardId)
+      const owner = ((source?.owner ?? 'player') === 'opponent' ? 'opponent' : 'player') as 'player' | 'opponent'
+      const snap = state.lastResolvedAbility
+      const snapSource = snap ? state.cards.find((c) => c.id === snap.sourceCardId) : undefined
+      const colorless = Boolean(snapSource && !/\{[WUBRG]\}/i.test(snapSource.manaCost ?? ''))
+      if (!snap || snap.turn !== state.turn || snap.owner !== owner || !colorless || snap.ability.effect.kind === 'copy_ability') {
+        useToastStore.getState().push(`${trigger.sourceCardName}: no copyable colorless-source ability resolved this turn.`, 'error')
+        break
+      }
+      const synthetic: TriggerInstance = {
+        id: crypto.randomUUID(),
+        sourceCardId: snap.sourceCardId,
+        sourceCardName: snap.sourceCardName,
+        ability: snap.ability,
+        event: 'cast',
+        context: {},
+      }
+      set({ triggerStack: [...get().triggerStack, synthetic] })
+      useToastStore.getState().push(
+        `${trigger.sourceCardName} copies ${snap.sourceCardName}'s ability (${snap.ability.effect.kind}).`,
+        'info',
+      )
+      if (synthetic.ability.targets > 0) {
+        // Deterministic target for the copy: first valid battlefield card.
+        const candidate = get().cards.find((c) =>
+          c.zone === 'battlefield' &&
+          c.id !== snap.sourceCardId &&
+          filterMatch(snap.ability.targetFilter, c) &&
+          !(hasKeyword(c, 'hexproof') && (c.owner ?? 'player') !== owner))
+        if (!candidate) {
+          set({ triggerStack: get().triggerStack.filter((t) => t.id !== synthetic.id) })
+          useToastStore.getState().push('The copied ability has no legal target and fizzles.', 'error')
+        } else {
+          get().selectTarget(synthetic.id, candidate.id, true)
+        }
+      } else {
+        get().resolveTrigger(synthetic.id)
+      }
+      break
+    }
+    case 'graveyard_intake_mill': {
+      // Fraying Sanity: "enchanted player mills X cards, where X is the number
+      // of cards put into their graveyard from anywhere this turn". The curse
+      // enchants the opposing side.
+      const source = state.cards.find((c) => c.id === trigger.sourceCardId)
+      const sourceOwner = ((source?.owner ?? 'player') === 'opponent' ? 'opponent' : 'player')
+      const enchanted = sourceOwner === 'player' ? 'opponent' : 'player'
+      const intake = (state.graveyardIntake ?? { player: 0, opponent: 0 })[enchanted]
+      if (intake <= 0) {
+        useToastStore.getState().push(`Fraying Sanity: no cards entered ${enchanted === 'player' ? "your" : "the opponent's"} graveyard this turn.`, 'info')
+        break
+      }
+      const lib = state.cards.filter((c) => (c.owner ?? 'player') === enchanted && c.zone === 'library')
+      const milledIds = new Set(lib.slice(0, Math.min(intake, lib.length)).map((c) => c.id))
+      const nextCards = state.cards.map((c) =>
+        milledIds.has(c.id) ? { ...c, zone: 'graveyard' as const, revealed: true } : c)
+      set({ cards: nextCards, ...withGraveyardIntake(state, nextCards) })
+      useToastStore.getState().push(
+        `Fraying Sanity mills ${milledIds.size} card(s) ${enchanted === 'player' ? 'from your library' : "from the opponent's library"} (X=${intake}).`,
+        'info',
+      )
       break
     }
     case 'ring_tempts': {
@@ -1272,6 +1373,21 @@ export function resolveTrigger(get: () => GameState, set: (partial: Partial<Game
       break
   }
 
+  // Snapshot for ability-copy effects (Abstruse Archaic): remember this
+  // instance as the most recent ability resolved this turn.
+  {
+    const src = state.cards.find((c) => c.id === trigger.sourceCardId)
+    set({
+      lastResolvedAbility: {
+        sourceCardId: trigger.sourceCardId,
+        sourceCardName: trigger.sourceCardName,
+        owner: (src?.owner ?? 'player') === 'opponent' ? 'opponent' : 'player',
+        turn: state.turn,
+        ability: trigger.ability,
+      },
+    })
+  }
+
   const triggerStack = get().triggerStack.filter((t) => t.id !== triggerId)
   if (triggerStack.length !== get().triggerStack.length) {
     set({ triggerStack })
@@ -1459,6 +1575,34 @@ function applyTargetedEffect(get: () => GameState, set: (partial: Partial<GameSt
           cards: updateCard(state.cards, source.id, { enchantsCardId: cardId }),
         })
       }
+      break
+    }
+    case 'become_copy': {
+      // Mirage Mirror: "{2}: This artifact becomes a copy of target artifact,
+      // creature, enchantment, or land until end of turn." Swap the printed
+      // identity — combat stats follow typeLine and rules lookups follow name,
+      // so the copy's abilities/production work — and restore at the turn
+      // handoff via cloneOriginal.
+      const mirror = state.cards.find((c) => c.id === trigger.sourceCardId)
+      const target = state.cards.find((c) => c.id === cardId)
+      if (!mirror || !target || mirror.id === target.id || target.zone !== 'battlefield') break
+      set({
+        cards: updateCard(state.cards, mirror.id, {
+          cloneOriginal: mirror.cloneOriginal ?? {
+            name: mirror.name,
+            typeLine: mirror.typeLine,
+            subtypes: [...mirror.subtypes],
+            oracleText: mirror.oracleText,
+            manaProduction: mirror.manaProduction,
+          },
+          name: target.name,
+          typeLine: target.typeLine,
+          subtypes: [...target.subtypes],
+          oracleText: target.oracleText,
+          manaProduction: target.manaProduction,
+        }),
+      })
+      useToastStore.getState().push(`${mirror.name} became a copy of ${target.name} until end of turn.`, 'info')
       break
     }
     case 'skyclave_exile': {
@@ -1704,6 +1848,20 @@ function applyTargetedEffect(get: () => GameState, set: (partial: Partial<GameSt
     case 'exile':
       get().moveCard(cardId, 'exile')
       break
+  }
+  // Snapshot for ability-copy effects (Abstruse Archaic) — targeted abilities
+  // resolve here, so record them the same way.
+  {
+    const src = state.cards.find((c) => c.id === trigger.sourceCardId)
+    set({
+      lastResolvedAbility: {
+        sourceCardId: trigger.sourceCardId,
+        sourceCardName: trigger.sourceCardName,
+        owner: (src?.owner ?? 'player') === 'opponent' ? 'opponent' : 'player',
+        turn: state.turn,
+        ability: trigger.ability,
+      },
+    })
   }
   set({
     triggerStack: get().triggerStack.filter((t) => t.id !== trigger.id),

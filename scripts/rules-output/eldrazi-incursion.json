@@ -12,44 +12,7 @@
     "manaProduction": null,
     "entryTapRule": null,
     "conditionalEntryText": null,
-    "abilities": [
-      {
-        "abilityType": "triggered",
-        "triggerEvent": "cast",
-        "triggerCondition": ") Whenever you cast an Eldrazi spell",
-        "isOptional": true,
-        "cost": null,
-        "targets": 0,
-        "targetFilter": null,
-        "effect": {
-          "kind": "optional_pay",
-          "params": {
-            "cost": "{C}",
-            "payer": "self",
-            "then": {
-              "kind": "other",
-              "params": {
-                "description": "If you do, copy all spells you control, then copy all other activated and triggered abilities you control"
-              }
-            },
-            "thenIfNotPaid": false
-          }
-        }
-      },
-      {
-        "abilityType": "static",
-        "triggerEvent": null,
-        "triggerCondition": null,
-        "isOptional": false,
-        "cost": null,
-        "targets": 0,
-        "targetFilter": null,
-        "effect": {
-          "kind": "static_noop",
-          "params": {}
-        }
-      }
-    ],
+    "abilities": [],
     "oracleText": "Devoid (This card has no color.)\nWhenever you cast an Eldrazi spell, you may pay {C}{C}. If you do, copy all spells you control, then copy all other activated and triggered abilities you control. You may choose new targets for the copies. (Mana abilities can't be copied.)",
     "scryfallId": "fdad1b0e-d3cc-4d76-ae7e-fee12558cf2c"
   },
@@ -84,6 +47,24 @@
         "effect": {
           "kind": "experience_counter",
           "params": {}
+        }
+      },
+      {
+        "abilityType": "activated",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": "{W}{U}{B}{R}{G}",
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "x_pump",
+          "params": {
+            "x_source": "experience",
+            "scope": "own_creatures",
+            "toughness": "x",
+            "power": "x"
+          }
         }
       },
       {
@@ -183,19 +164,6 @@
           "params": {
             "amount": 2
           }
-        }
-      },
-      {
-        "abilityType": "triggered",
-        "triggerEvent": "attack",
-        "triggerCondition": "(Whenever it attacks",
-        "isOptional": false,
-        "cost": null,
-        "targets": 0,
-        "targetFilter": null,
-        "effect": {
-          "kind": "sacrifice_n_permanents",
-          "params": {}
         }
       }
     ],
@@ -488,23 +456,7 @@
     "manaProduction": null,
     "entryTapRule": null,
     "conditionalEntryText": null,
-    "abilities": [
-      {
-        "abilityType": "triggered",
-        "triggerEvent": "combat_damage",
-        "triggerCondition": ") Menace Whenever this creature deals combat damage to a player",
-        "isOptional": false,
-        "cost": null,
-        "targets": 0,
-        "targetFilter": null,
-        "effect": {
-          "kind": "deal_damage",
-          "params": {
-            "amount": 1
-          }
-        }
-      }
-    ],
+    "abilities": [],
     "oracleText": "Devoid (This card has no color.)\nMenace\nWhenever this creature deals combat damage to a player, that player exiles cards from the top of their library until they exile a nonland card. You may cast that card by paying life equal to the spell's mana value rather than paying its mana cost.",
     "scryfallId": "d1ee8ead-df6a-4c02-83f7-2902d97132b8"
   },
@@ -525,21 +477,6 @@
     "entryTapRule": null,
     "conditionalEntryText": null,
     "abilities": [
-      {
-        "abilityType": "triggered",
-        "triggerEvent": "cast",
-        "triggerCondition": ") When you cast this spell",
-        "isOptional": false,
-        "cost": null,
-        "targets": 1,
-        "targetFilter": "creature that player controls until end of turn",
-        "effect": {
-          "kind": "gain_control",
-          "params": {
-            "temporary": true
-          }
-        }
-      },
       {
         "abilityType": "static",
         "triggerEvent": null,
@@ -621,23 +558,7 @@
     "manaProduction": null,
     "entryTapRule": null,
     "conditionalEntryText": null,
-    "abilities": [
-      {
-        "abilityType": "triggered",
-        "triggerEvent": "cast",
-        "triggerCondition": ") When you cast this spell",
-        "isOptional": false,
-        "cost": null,
-        "targets": 1,
-        "targetFilter": "permanent or opponent",
-        "effect": {
-          "kind": "remove_counters",
-          "params": {
-            "amount": "all"
-          }
-        }
-      }
-    ],
+    "abilities": [],
     "oracleText": "Devoid (This card has no color.)\nWhen you cast this spell, remove all counters from up to one target permanent or opponent. The next spell you cast this turn costs {1} less to cast for each counter removed this way.\nDeathtouch",
     "scryfallId": "cc4bb871-cde9-43a9-8089-5987fa0dd4ef"
   },
@@ -772,26 +693,7 @@
     "manaProduction": null,
     "entryTapRule": null,
     "conditionalEntryText": null,
-    "abilities": [
-      {
-        "abilityType": "activated",
-        "triggerEvent": null,
-        "triggerCondition": null,
-        "isOptional": false,
-        "cost": "{C}, Sacrifice",
-        "targets": 0,
-        "targetFilter": null,
-        "effect": {
-          "kind": "create_token",
-          "params": {
-            "tokenPower": 0,
-            "tokenToughness": 1,
-            "tokenName": "Spawn creature",
-            "amount": 1
-          }
-        }
-      }
-    ],
+    "abilities": [],
     "oracleText": "Devoid (This card has no color.)\nMyriad\nWhen this creature leaves the battlefield, create a 0/1 colorless Eldrazi Spawn creature token with \"Sacrifice this token: Add {C}.\"",
     "scryfallId": "ec5fe7d0-b444-4488-b058-f3916e404cac"
   },
@@ -1004,23 +906,7 @@
     "manaProduction": null,
     "entryTapRule": null,
     "conditionalEntryText": null,
-    "abilities": [
-      {
-        "abilityType": "triggered",
-        "triggerEvent": "landfall",
-        "triggerCondition": ") Whenever a land an opponent controls enters",
-        "isOptional": false,
-        "cost": null,
-        "targets": 0,
-        "targetFilter": null,
-        "effect": {
-          "kind": "draw_cards",
-          "params": {
-            "amount": 2
-          }
-        }
-      }
-    ],
+    "abilities": [],
     "oracleText": "Devoid (This card has no color.)\nWhenever a land an opponent controls enters, that player exiles the top two cards of their library and you draw two cards.",
     "scryfallId": "d6252913-7b8e-4746-91e0-658ce13cdf18"
   },
@@ -1116,24 +1002,6 @@
     "entryTapRule": null,
     "conditionalEntryText": null,
     "abilities": [
-      {
-        "abilityType": "triggered",
-        "triggerEvent": "etb",
-        "triggerCondition": ") When this creature enters",
-        "isOptional": false,
-        "cost": null,
-        "targets": 0,
-        "targetFilter": null,
-        "effect": {
-          "kind": "create_token",
-          "params": {
-            "tokenPower": 1,
-            "tokenToughness": 1,
-            "tokenName": "Scion creature",
-            "amount": 2
-          }
-        }
-      },
       {
         "abilityType": "activated",
         "triggerEvent": null,
@@ -2002,34 +1870,6 @@
             "amount": 1
           }
         }
-      },
-      {
-        "abilityType": "triggered",
-        "triggerEvent": null,
-        "triggerCondition": null,
-        "isOptional": false,
-        "cost": null,
-        "targets": 0,
-        "targetFilter": null,
-        "effect": {
-          "kind": "scry",
-          "params": {
-            "amount": 1
-          }
-        }
-      },
-      {
-        "abilityType": "activated",
-        "triggerEvent": null,
-        "triggerCondition": null,
-        "isOptional": false,
-        "cost": "{T}",
-        "targets": 0,
-        "targetFilter": null,
-        "effect": {
-          "kind": "add_mana",
-          "params": {}
-        }
       }
     ],
     "oracleText": "This land enters tapped.\nWhen this land enters, scry 1. (Look at the top card of your library. You may put that card on the bottom.)\n{T}: Add {B} or {G}.",
@@ -2066,34 +1906,6 @@
           "params": {
             "amount": 1
           }
-        }
-      },
-      {
-        "abilityType": "triggered",
-        "triggerEvent": null,
-        "triggerCondition": null,
-        "isOptional": false,
-        "cost": null,
-        "targets": 0,
-        "targetFilter": null,
-        "effect": {
-          "kind": "scry",
-          "params": {
-            "amount": 1
-          }
-        }
-      },
-      {
-        "abilityType": "activated",
-        "triggerEvent": null,
-        "triggerCondition": null,
-        "isOptional": false,
-        "cost": "{T}",
-        "targets": 0,
-        "targetFilter": null,
-        "effect": {
-          "kind": "add_mana",
-          "params": {}
         }
       }
     ],
@@ -2148,21 +1960,6 @@
     "conditionalEntryText": null,
     "abilities": [
       {
-        "abilityType": "spell",
-        "triggerEvent": null,
-        "triggerCondition": null,
-        "isOptional": false,
-        "cost": null,
-        "targets": 0,
-        "targetFilter": null,
-        "effect": {
-          "kind": "deal_damage",
-          "params": {
-            "amount": 2
-          }
-        }
-      },
-      {
         "abilityType": "triggered",
         "triggerEvent": "cast",
         "triggerEvents": [
@@ -2215,21 +2012,6 @@
     "conditionalEntryText": null,
     "abilities": [
       {
-        "abilityType": "triggered",
-        "triggerEvent": "cast",
-        "triggerCondition": ") When you cast this spell",
-        "isOptional": false,
-        "cost": null,
-        "targets": 1,
-        "targetFilter": "artifact",
-        "effect": {
-          "kind": "exile",
-          "params": {
-            "targetHint": "target artifact"
-          }
-        }
-      },
-      {
         "abilityType": "activated",
         "triggerEvent": null,
         "triggerCondition": null,
@@ -2277,23 +2059,6 @@
           "kind": "add_mana",
           "params": {}
         }
-      },
-      {
-        "abilityType": "activated",
-        "triggerEvent": null,
-        "triggerCondition": null,
-        "isOptional": false,
-        "cost": "{T}",
-        "targets": 0,
-        "targetFilter": null,
-        "effect": {
-          "kind": "put_counter",
-          "params": {
-            "counterKind": "+1/+1",
-            "amount": 1,
-            "scope": "all"
-          }
-        }
       }
     ],
     "oracleText": "This land enters tapped.\n{T}: Add {C}. ({C} represents colorless mana.)\n{T}: Put a +1/+1 counter on target colorless creature that entered this turn.",
@@ -2313,24 +2078,6 @@
     "entryTapRule": null,
     "conditionalEntryText": null,
     "abilities": [
-      {
-        "abilityType": "triggered",
-        "triggerEvent": "dies",
-        "triggerCondition": ") Whenever another nontoken creature you control dies",
-        "isOptional": false,
-        "cost": null,
-        "targets": 0,
-        "targetFilter": null,
-        "effect": {
-          "kind": "create_token",
-          "params": {
-            "tokenPower": 1,
-            "tokenToughness": 1,
-            "tokenName": "Scion creature",
-            "amount": 1
-          }
-        }
-      },
       {
         "abilityType": "activated",
         "triggerEvent": null,
@@ -2362,6 +2109,19 @@
     "entryTapRule": null,
     "conditionalEntryText": null,
     "abilities": [
+      {
+        "abilityType": "triggered",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "untap_self",
+          "params": {}
+        }
+      },
       {
         "abilityType": "activated",
         "triggerEvent": null,
@@ -2443,19 +2203,6 @@
           "kind": "add_mana",
           "params": {}
         }
-      },
-      {
-        "abilityType": "activated",
-        "triggerEvent": null,
-        "triggerCondition": null,
-        "isOptional": false,
-        "cost": "{T}, Pay 1 life",
-        "targets": 0,
-        "targetFilter": null,
-        "effect": {
-          "kind": "add_mana",
-          "params": {}
-        }
       }
     ],
     "oracleText": "{T}: Add {C}. ({C} represents colorless mana.)\n{T}, Pay 1 life: Add one mana of any color. Spend this mana only to cast a spell with devoid.",
@@ -2476,26 +2223,11 @@
     "conditionalEntryText": null,
     "abilities": [
       {
-        "abilityType": "triggered",
-        "triggerEvent": "combat_damage",
-        "triggerCondition": ") Whenever a creature you control deals combat damage to a player",
-        "isOptional": true,
-        "cost": null,
-        "targets": 0,
-        "targetFilter": null,
-        "effect": {
-          "kind": "deal_damage",
-          "params": {
-            "amount": 1
-          }
-        }
-      },
-      {
-        "abilityType": "static",
+        "abilityType": "activated",
         "triggerEvent": null,
         "triggerCondition": null,
         "isOptional": false,
-        "cost": null,
+        "cost": "{3}{C}",
         "targets": 1,
         "targetFilter": "creature can't be blocked this turn",
         "effect": {
@@ -2525,27 +2257,19 @@
     "abilities": [
       {
         "abilityType": "triggered",
-        "triggerEvent": "cast",
-        "triggerCondition": ") Flash When you cast this spell",
-        "isOptional": true,
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
         "cost": null,
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "optional_pay",
+          "kind": "create_token",
           "params": {
-            "cost": "{C}",
-            "payer": "self",
-            "then": {
-              "kind": "create_token",
-              "params": {
-                "tokenPower": 1,
-                "tokenToughness": 1,
-                "tokenName": "Scion creature",
-                "amount": 1
-              }
-            },
-            "thenIfNotPaid": false
+            "tokenPower": 1,
+            "tokenToughness": 1,
+            "tokenName": "Scion creature",
+            "amount": 1
           }
         }
       },
@@ -2579,23 +2303,7 @@
     "manaProduction": null,
     "entryTapRule": null,
     "conditionalEntryText": null,
-    "abilities": [
-      {
-        "abilityType": "triggered",
-        "triggerEvent": null,
-        "triggerCondition": null,
-        "isOptional": false,
-        "cost": null,
-        "targets": 1,
-        "targetFilter": "creature",
-        "effect": {
-          "kind": "exile",
-          "params": {
-            "targetHint": "target creature"
-          }
-        }
-      }
-    ],
+    "abilities": [],
     "oracleText": "Devoid (This card has no color.)\n{2}{C}: Exile another target creature, then return it to the battlefield tapped under its owner's control. ({C} represents colorless mana.)",
     "scryfallId": "f0bb1a5c-0f59-4951-827f-fe9df968232d"
   },
@@ -2771,21 +2479,7 @@
     "manaProduction": null,
     "entryTapRule": null,
     "conditionalEntryText": null,
-    "abilities": [
-      {
-        "abilityType": "triggered",
-        "triggerEvent": "cast",
-        "triggerCondition": ") When you cast this spell",
-        "isOptional": false,
-        "cost": null,
-        "targets": 1,
-        "targetFilter": "permanent s",
-        "effect": {
-          "kind": "tap_target",
-          "params": {}
-        }
-      }
-    ],
+    "abilities": [],
     "oracleText": "Flash\nEmerge {5}{U}{U} (You may cast this spell by sacrificing a creature and paying the emerge cost reduced by that creature's mana value.)\nWhen you cast this spell, tap up to four target permanents.",
     "scryfallId": "10532d06-94e3-47bc-a036-7535be05be98"
   },
@@ -2963,19 +2657,6 @@
     "entryTapRule": null,
     "conditionalEntryText": null,
     "abilities": [
-      {
-        "abilityType": "activated",
-        "triggerEvent": null,
-        "triggerCondition": null,
-        "isOptional": false,
-        "cost": "{T}",
-        "targets": 0,
-        "targetFilter": null,
-        "effect": {
-          "kind": "add_mana",
-          "params": {}
-        }
-      },
       {
         "abilityType": "activated",
         "triggerEvent": null,
@@ -3174,23 +2855,7 @@
     "manaProduction": null,
     "entryTapRule": null,
     "conditionalEntryText": null,
-    "abilities": [
-      {
-        "abilityType": "spell",
-        "triggerEvent": null,
-        "triggerCondition": null,
-        "isOptional": false,
-        "cost": null,
-        "targets": 1,
-        "targetFilter": "creature",
-        "effect": {
-          "kind": "exile",
-          "params": {
-            "targetHint": "target creature"
-          }
-        }
-      }
-    ],
+    "abilities": [],
     "oracleText": "Changeling (This card is every creature type.)\nExile target creature. Its controller creates a 1/1 colorless Shapeshifter creature token with changeling.",
     "scryfallId": "8f2fb3c6-af75-47a3-9f97-521872c32890"
   },
@@ -3209,25 +2874,7 @@
     "manaProduction": null,
     "entryTapRule": null,
     "conditionalEntryText": null,
-    "abilities": [
-      {
-        "abilityType": "triggered",
-        "triggerEvent": "attack",
-        "triggerCondition": ") When you cast this spell and whenever this creature attacks",
-        "isOptional": false,
-        "cost": null,
-        "targets": 0,
-        "targetFilter": null,
-        "effect": {
-          "kind": "put_counter",
-          "params": {
-            "counterKind": "+1/+1",
-            "amount": 1,
-            "scope": "own"
-          }
-        }
-      }
-    ],
+    "abilities": [],
     "oracleText": "Devoid (This card has no color.)\nWhen you cast this spell and whenever this creature attacks, put a +1/+1 counter on each colorless creature you control.\nTrample",
     "scryfallId": "fb3ea14e-44ac-4f69-bfea-cb6bf1bfbd74"
   },
@@ -3427,19 +3074,6 @@
     "entryTapRule": null,
     "conditionalEntryText": null,
     "abilities": [
-      {
-        "abilityType": "triggered",
-        "triggerEvent": "etb",
-        "triggerCondition": ") Flash Flying When this creature enters",
-        "isOptional": true,
-        "cost": null,
-        "targets": 0,
-        "targetFilter": null,
-        "effect": {
-          "kind": "exile",
-          "params": {}
-        }
-      },
       {
         "abilityType": "triggered",
         "triggerEvent": null,
@@ -4100,21 +3734,6 @@
         "triggerCondition": null,
         "isOptional": true,
         "cost": null,
-        "targets": 1,
-        "targetFilter": "creature with power or toughness 1 or less",
-        "effect": {
-          "kind": "exile",
-          "params": {
-            "targetHint": "target creature with"
-          }
-        }
-      },
-      {
-        "abilityType": "spell",
-        "triggerEvent": null,
-        "triggerCondition": null,
-        "isOptional": true,
-        "cost": null,
         "targets": 0,
         "targetFilter": null,
         "effect": {
@@ -4416,40 +4035,6 @@
           "kind": "static_keyword",
           "params": {}
         }
-      },
-      {
-        "abilityType": "triggered",
-        "triggerEvent": null,
-        "triggerCondition": null,
-        "isOptional": false,
-        "cost": null,
-        "targets": 0,
-        "targetFilter": null,
-        "effect": {
-          "kind": "deal_damage",
-          "params": {
-            "amount": 1
-          }
-        }
-      },
-      {
-        "abilityType": "triggered",
-        "triggerEvent": "etb",
-        "triggerEvents": [
-          "etb",
-          "card_drawn"
-        ],
-        "triggerCondition": ") Whenever a creature you control with power 4 or greater enters",
-        "isOptional": false,
-        "cost": null,
-        "targets": 0,
-        "targetFilter": null,
-        "effect": {
-          "kind": "draw_cards",
-          "params": {
-            "amount": 4
-          }
-        }
       }
     ],
     "oracleText": "When this enchantment enters, if you control a creature with power 4 or greater, draw a card.\nCreatures you control have trample. (Each of those creatures can deal excess combat damage to the player or planeswalker it's attacking.)\nWhenever a creature you control with power 4 or greater enters, draw a card.",
@@ -4588,21 +4173,6 @@
         "abilityType": "triggered",
         "triggerEvent": "cast",
         "triggerCondition": "that mana is spent to cast a creature spell that shares a creature type with your commander",
-        "isOptional": false,
-        "cost": null,
-        "targets": 0,
-        "targetFilter": null,
-        "effect": {
-          "kind": "scry",
-          "params": {
-            "amount": 1
-          }
-        }
-      },
-      {
-        "abilityType": "triggered",
-        "triggerEvent": null,
-        "triggerCondition": null,
         "isOptional": false,
         "cost": null,
         "targets": 0,

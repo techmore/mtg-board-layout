@@ -89,21 +89,6 @@
             "amount": 2
           }
         }
-      },
-      {
-        "abilityType": "activated",
-        "triggerEvent": null,
-        "triggerCondition": null,
-        "isOptional": false,
-        "cost": "Sacrifice",
-        "targets": 0,
-        "targetFilter": null,
-        "effect": {
-          "kind": "return_from_graveyard",
-          "params": {
-            "zone": "hand"
-          }
-        }
       }
     ],
     "oracleText": "Whenever another nontoken creature you control enters, create a Food token. (It's an artifact with \"{2}, {T}, Sacrifice this token: You gain 3 life.\")\nSacrifice three Foods: Return target historic card from your graveyard to your hand. (Artifacts, legendaries, and Sagas are historic.)",
@@ -138,24 +123,6 @@
           "kind": "partner_tutor",
           "params": {}
         }
-      },
-      {
-        "abilityType": "triggered",
-        "triggerEvent": "etb",
-        "triggerCondition": ") Whenever one or more artifacts you control enter",
-        "isOptional": false,
-        "cost": null,
-        "targets": 0,
-        "targetFilter": null,
-        "effect": {
-          "kind": "create_token",
-          "params": {
-            "tokenPower": 1,
-            "tokenToughness": 1,
-            "tokenName": "Soldier creature",
-            "amount": 1
-          }
-        }
       }
     ],
     "oracleText": "Partner with Pippin, Warden of Isengard (When this creature enters, target player may put Pippin into their hand from their library, then shuffle.)\nWhenever one or more artifacts you control enter, create a 1/1 white Soldier creature token with lifelink. This ability triggers only once each turn.",
@@ -189,22 +156,6 @@
         "effect": {
           "kind": "partner_tutor",
           "params": {}
-        }
-      },
-      {
-        "abilityType": "activated",
-        "triggerEvent": null,
-        "triggerCondition": null,
-        "isOptional": false,
-        "cost": "{T}, {1}",
-        "targets": 0,
-        "targetFilter": null,
-        "effect": {
-          "kind": "create_token",
-          "params": {
-            "tokenName": "Food",
-            "amount": 1
-          }
         }
       },
       {
@@ -273,24 +224,6 @@
             "amount": 2
           }
         }
-      },
-      {
-        "abilityType": "triggered",
-        "triggerEvent": "counter_placed",
-        "triggerCondition": "\") Whenever you create a token",
-        "isOptional": false,
-        "cost": null,
-        "targets": 1,
-        "targetFilter": "creature you control other than Rosie Cotton",
-        "effect": {
-          "kind": "create_token",
-          "params": {
-            "counterKind": "+1/+1",
-            "amount": 1,
-            "scope": "own",
-            "tokenName": "a"
-          }
-        }
       }
     ],
     "oracleText": "When Rosie Cotton enters, create a Food token. (It's an artifact with \"{2}, {T}, Sacrifice this token: You gain 3 life.\")\nWhenever you create a token, put a +1/+1 counter on target creature you control other than Rosie Cotton.",
@@ -310,21 +243,7 @@
     "manaProduction": null,
     "entryTapRule": null,
     "conditionalEntryText": null,
-    "abilities": [
-      {
-        "abilityType": "static",
-        "triggerEvent": null,
-        "triggerCondition": null,
-        "isOptional": false,
-        "cost": null,
-        "targets": 0,
-        "targetFilter": null,
-        "effect": {
-          "kind": "static_restriction",
-          "params": {}
-        }
-      }
-    ],
+    "abilities": [],
     "oracleText": "Devour Food 3 (As this creature enters, you may sacrifice any number of Foods. It enters with three times that many +1/+1 counters on it.)\nCreatures with power less than this creature's power can't block it.",
     "scryfallId": "17662301-7284-40d4-af51-45a496c0eac0"
   },
@@ -1118,21 +1037,6 @@
             "amount": 1
           }
         }
-      },
-      {
-        "abilityType": "triggered",
-        "triggerEvent": null,
-        "triggerCondition": null,
-        "isOptional": false,
-        "cost": null,
-        "targets": 0,
-        "targetFilter": null,
-        "effect": {
-          "kind": "scry",
-          "params": {
-            "amount": 1
-          }
-        }
       }
     ],
     "oracleText": "This land enters tapped.\n{T}: Add one mana of any color in your commander's color identity. When that mana is spent to cast a creature spell that shares a creature type with your commander, scry 1. (Look at the top card of your library. You may put that card on the bottom.)",
@@ -1835,19 +1739,6 @@
             "amount": 2
           }
         }
-      },
-      {
-        "abilityType": "triggered",
-        "triggerEvent": null,
-        "triggerCondition": null,
-        "isOptional": false,
-        "cost": null,
-        "targets": 0,
-        "targetFilter": null,
-        "effect": {
-          "kind": "search_library",
-          "params": {}
-        }
       }
     ],
     "oracleText": "Reach\nWhen this creature enters, create a Food token. (It's an artifact with \"{2}, {T}, Sacrifice this token: You gain 3 life.\")\nForestcycling {1} ({1}, Discard this card: Search your library for a Forest card, reveal it, put it into your hand, then shuffle.)",
@@ -1915,22 +1806,6 @@
         "triggerEvent": null,
         "triggerCondition": null,
         "isOptional": false,
-        "cost": "{T}, {1}{G}",
-        "targets": 0,
-        "targetFilter": null,
-        "effect": {
-          "kind": "create_token",
-          "params": {
-            "tokenName": "Food",
-            "amount": 1
-          }
-        }
-      },
-      {
-        "abilityType": "activated",
-        "triggerEvent": null,
-        "triggerCondition": null,
-        "isOptional": false,
         "cost": "{T}, Sacrifice",
         "targets": 0,
         "targetFilter": null,
@@ -1972,21 +1847,6 @@
           "kind": "static_restriction",
           "params": {}
         }
-      },
-      {
-        "abilityType": "triggered",
-        "triggerEvent": "end_of_turn",
-        "triggerCondition": ") At the beginning of your end step",
-        "isOptional": false,
-        "cost": null,
-        "targets": 0,
-        "targetFilter": null,
-        "effect": {
-          "kind": "lose_life",
-          "params": {
-            "amount": 1
-          }
-        }
       }
     ],
     "oracleText": "Skulk (This creature can't be blocked by creatures with greater power.)\nAt the beginning of your end step, each opponent dealt combat damage this game by a creature named Gollum, Obsessed Stalker loses life equal to the amount of life you gained this turn.",
@@ -2008,25 +1868,7 @@
     "manaProduction": null,
     "entryTapRule": null,
     "conditionalEntryText": null,
-    "abilities": [
-      {
-        "abilityType": "static",
-        "triggerEvent": null,
-        "triggerCondition": null,
-        "isOptional": false,
-        "cost": null,
-        "targets": 0,
-        "targetFilter": null,
-        "effect": {
-          "kind": "pump",
-          "params": {
-            "power": 2,
-            "toughness": 2,
-            "scope": "all"
-          }
-        }
-      }
-    ],
+    "abilities": [],
     "oracleText": "Flash (You may cast this spell any time you could cast an instant.)\nReach\nWhen this creature enters, creatures target player controls get +2/+2 until end of turn. Untap them.",
     "scryfallId": "65d36326-897e-4207-909a-8d1323d6c8e7"
   },
@@ -2356,19 +2198,6 @@
             "amount": 2
           }
         }
-      },
-      {
-        "abilityType": "triggered",
-        "triggerEvent": null,
-        "triggerCondition": null,
-        "isOptional": false,
-        "cost": null,
-        "targets": 0,
-        "targetFilter": null,
-        "effect": {
-          "kind": "search_library",
-          "params": {}
-        }
       }
     ],
     "oracleText": "When this creature enters, create two Food tokens. (They're artifacts with \"{2}, {T}, Sacrifice this token: You gain 3 life.\")\nBasic landcycling {1}{G} ({1}{G}, Discard this card: Search your library for a basic land card, reveal it, put it into your hand, then shuffle.)",
@@ -2486,21 +2315,6 @@
           "kind": "add_mana",
           "params": {}
         }
-      },
-      {
-        "abilityType": "static",
-        "triggerEvent": null,
-        "triggerCondition": null,
-        "isOptional": false,
-        "cost": null,
-        "targets": 0,
-        "targetFilter": null,
-        "effect": {
-          "kind": "gain_life",
-          "params": {
-            "amount": 1
-          }
-        }
       }
     ],
     "oracleText": "When this creature enters, create a Treasure token. (It's an artifact with \"{T}, Sacrifice this token: Add one mana of any color.\")\nWhenever another creature you control enters, you gain 1 life.",
@@ -2616,21 +2430,6 @@
         "targetFilter": null,
         "effect": {
           "kind": "gain_life",
-          "params": {
-            "amount": 2
-          }
-        }
-      },
-      {
-        "abilityType": "activated",
-        "triggerEvent": null,
-        "triggerCondition": null,
-        "isOptional": false,
-        "cost": "Sacrifice",
-        "targets": 0,
-        "targetFilter": null,
-        "effect": {
-          "kind": "draw_cards",
           "params": {
             "amount": 2
           }
@@ -4030,11 +3829,11 @@
         }
       },
       {
-        "abilityType": "triggered",
+        "abilityType": "activated",
         "triggerEvent": null,
         "triggerCondition": null,
         "isOptional": false,
-        "cost": null,
+        "cost": "{3}{W}",
         "targets": 0,
         "targetFilter": null,
         "effect": {
@@ -4065,23 +3864,6 @@
     "entryTapRule": null,
     "conditionalEntryText": null,
     "abilities": [
-      {
-        "abilityType": "triggered",
-        "triggerEvent": null,
-        "triggerCondition": null,
-        "isOptional": false,
-        "cost": null,
-        "targets": 1,
-        "targetFilter": "creature",
-        "effect": {
-          "kind": "put_counter",
-          "params": {
-            "counterKind": "+1/+1",
-            "amount": 1,
-            "scope": "all"
-          }
-        }
-      },
       {
         "abilityType": "triggered",
         "triggerEvent": null,

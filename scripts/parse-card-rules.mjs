@@ -478,6 +478,20 @@ const EFFECT_PATTERNS = [
   { kind: 'parity_ban', regex: /\bchoose odd or even\b/i },
   { kind: 'sacrifice_small_make_tokens', regex: /\bsacrifice any number of creatures each with base power or toughness 1 or less\b/i },
   { kind: 'black_gate', regex: /\bcan't be blocked by creatures that player controls this turn\b/i },
+  // ── Post-roadmap tail: clone overlay, ability copy, graveyard intake ──
+  // Mirage Mirror: "{2}: This artifact becomes a copy of target artifact,
+  // creature, enchantment, or land until end of turn."
+  { kind: 'become_copy', regex: /\bbecomes? (?:a |the )?copy of target\b/i },
+  // Abstruse Archaic: "{1}, {T}: Copy target activated or triggered ability
+  // you control from a colorless source."
+  { kind: 'copy_ability', regex: /\bcopy target (?:activated or triggered )?ability you control\b/i },
+  // Fraying Sanity: "enchanted player mills X cards, where X is the number of
+  // cards put into their graveyard from anywhere this turn".
+  { kind: 'graveyard_intake_mill', regex: /\bmills? X cards?, where X is the number of cards put into (?:their|your) graveyard\b/i },
+  // "{5}{B}{G}: Monstrosity 4" — pay to put that many +1/+1 counters on this.
+  { kind: 'monstrosity', regex: /\bmonstrosity\s+(\d+|x)\b/i },
+  // "{3}: Untap this artifact" (Basalt Monolith).
+  { kind: 'untap_self', regex: /\buntap this (?:artifact|permanent|creature)\b/i },
   // Engine-enforced conditional taxes/gates classified silently.
   { kind: 'static_restriction', regex: /\bcreatures? can't attack you or planeswalkers you control unless their controller pays \{\d+\}/i },
   { kind: 'static_restriction', regex: /\bcreatures? can't block unless their controller pays \{\d+\}/i },
@@ -505,6 +519,9 @@ const EFFECT_PATTERNS = [
   { kind: 'double_power', regex: /\bdouble its power until end of turn\b/i },
   { kind: 'double_equipped_power', regex: /\bdouble equipped creature's power\b/i },
   { kind: 'x_pump', regex: /\bgets \+x\/(?:[+-]?x|[+-]?\d+)\s+until end of turn\b/i },
+  // Team X-pump ("Creatures you control get +X/+X until end of turn, where X
+  // is the number of experience counters you have" — Azlask).
+  { kind: 'x_pump', regex: /\bget \+x\/\+x\b[^.]*?until end of turn\b/i },
   { kind: 'move_counter', regex: /\bmove (?:a |\{1\} )?(?:shield counter|counter|the counter)/i },
   { kind: 'amass', regex: /\bamass (?:orcs |an? army )?(\d+|x)/i },
   { kind: 'investigate', regex: /\binvestigate\b/i },
@@ -523,6 +540,9 @@ const EFFECT_PATTERNS = [
   { kind: 'target_player_mill', regex: /\b(?:target player|each opponent)\s+mills?\b/i },
   { kind: 'untap_target', regex: /\buntap up to \w+ target\b/i },
   { kind: 'attach_target', regex: /\battach (?:this|target) (?:Aura|Equipment|aura|equipment)\b/i },
+  // Reconfigure reminder shape ("Pay {2} or {E}{E}{E}: Attach to target
+  // creature you control") — reuses the attach_target resolver.
+  { kind: 'attach_target', regex: /\battach to target creature\b/i },
   { kind: 'roll_dice', regex: /\broll (?:a |x )?(?:six-sided|\d+-sided)? ?(?:die|dice)\b/i },
   { kind: 'cant_be_blocked', regex: /\btarget\b[^.]*\bcan't be blocked\b/i },
   { kind: 'manifest', regex: /\bmanifest\b(?:\s+dread(?:\s+twice)?)?/i },
@@ -715,9 +735,18 @@ function parseEffect(sentence) {
         else if (/\bnumber of food counters/i.test(sentence)) params.x_source = 'counters'
         else if (/\bnumber of auras? .*(?:attached|on)/i.test(sentence)) params.x_source = 'auras'
         else if (/\bamount of \{e\} you have\b/i.test(sentence)) params.x_source = 'energy'
+        else if (/\bnumber of experience counters/i.test(sentence)) { params.x_source = 'experience'; params.scope = 'own_creatures' }
         const m = sentence.match(/\+x\s*\/\s*([+-]?x|[+-]?\d+)/i)
-        if (m) params.toughness = m[1].toLowerCase() === 'x' ? 'x' : m[1]
+        if (m) {
+          const t = m[1].toLowerCase()
+          // "+X" (team pump) and "X" are the same X value.
+          params.toughness = /^\+?x$/.test(t) ? 'x' : t
+        }
         params.power = 'x'
+      }
+      if (ep.kind === 'monstrosity') {
+        const n = sentence.match(/monstrosity\s+(\d+|x)/i)
+        params.amount = n ? (n[1].toLowerCase() === 'x' ? 1 : parseInt(n[1], 10)) : 1
       }
       if (ep.kind === 'manifest') {
         // "manifest dread" mills one card then manifests the next; "twice" x2.
@@ -795,6 +824,17 @@ function parseEffect(sentence) {
         const n = sentence.match(/Return (\w+) target nonland/i)
         params.count = n ? (({ one: 1, two: 2, three: 3, four: 4, five: 5, six: 6, seven: 7 })[n[1].toLowerCase()] ?? 6) : 6
       }
+      if (ep.kind === 'become_copy') {
+        // Capture the copyable type list: "copy of target artifact, creature,
+        // enchantment, or land" → ['artifact', 'creature', 'enchantment', 'land'].
+        const list = sentence.match(/copy of target\s+(.+?)(?:\s+until\b|\s*$)/i)
+        if (list) {
+          params.copyTypes = list[1]
+            .split(/\s*,\s*|\s+or\s+|\s+and\s+/i)
+            .map((t) => t.replace(/^(?:or|and)\s+/i, '').trim())
+            .filter((t) => t && !/^(or|and)$/i.test(t))
+        }
+      }
       return { kind: ep.kind, params }
     }
   }
@@ -857,7 +897,10 @@ function parseCost(sentence) {
 
 function isActivated(sentence) {
   return /\bequip\s*\{[^}]+\}/i.test(sentence) ||
-    (/:\s*\w/i.test(sentence) && (/\{T\}/.test(sentence) || /\bpay\b/i.test(sentence) || /\bsacrifice\b/i.test(sentence)))
+    (/:\s*\w/i.test(sentence) && (/\{T\}/.test(sentence) || /\bpay\b/i.test(sentence) || /\bsacrifice\b/i.test(sentence))) ||
+    // Bare mana-cost activation ("{2}: This artifact becomes a copy of …") —
+    // the colon activation has no {T}/pay/sacrifice keyword to key on.
+    /^\s*(?:\{[^}]+\}\s*)+:/.test(sentence)
 }
 
 function mkAbility(abilityType, effect, extra = {}) {
@@ -1046,6 +1089,13 @@ function parseAbilities(oracleText, typeLine) {
     // Skip reminder text in parentheses
     const cleanSentence = sentence.replace(/\([^)]*\)/g, '').trim()
     if (!cleanSentence) continue
+    // Reminder-text residue: fragments left over after sentence-splitting
+    // inside a parenthetical — a stray trailing ")" or an unclosed leading "(".
+    // Colon-bearing shapes survive ("(Pay {2} or {E}{E}{E}: Attach…" —
+    // Reconfigure), pure reminder prose is dropped ("(If this creature isn't
+    // monstrous, put five…").
+    if (/^[^(]*\)/.test(cleanSentence)) continue
+    if (/^\([^)]*$/.test(cleanSentence) && !/:/.test(cleanSentence)) continue
 
     // Recurring static/aura/CDA shapes the generic tables miss
     const special = parseSpecialAbility(cleanSentence)
@@ -1080,7 +1130,14 @@ function parseAbilities(oracleText, typeLine) {
     if (isActivated(cleanSentence)) {
       const cost = parseCost(cleanSentence)
       const effect = parseEffect(cleanSentence)
-      const tgt = parseTargets(cleanSentence)
+      let tgt = parseTargets(cleanSentence)
+      // "becomes a copy of target artifact, creature, enchantment, or land":
+      // parseTargets stops at the first comma ("artifact") — widen the filter
+      // to the full type list so every copyable permanent is offered.
+      if (effect.kind === 'become_copy') {
+        const types = (effect.params.copyTypes ?? []).length > 0 ? effect.params.copyTypes : ['permanent']
+        tgt = { targets: 1, targetFilter: types.join(', ') }
+      }
       abilities.push({
         abilityType: 'activated',
         triggerEvent: null,
@@ -1263,4 +1320,11 @@ async function main() {
   console.log(`Total abilities extracted: ${totalAbilities}`)
 }
 
-main().catch(err => { console.error(err); process.exit(1) })
+// Exported for offline re-runs: scripts/reparse-rules.mjs re-parses the stored
+// oracle text in scripts/rules-output/*.json without refetching Scryfall.
+export { parseCard }
+
+const invokedDirectly = Boolean(process.argv[1]) && resolve(process.argv[1]) === fileURLToPath(import.meta.url)
+if (invokedDirectly) {
+  main().catch(err => { console.error(err); process.exit(1) })
+}

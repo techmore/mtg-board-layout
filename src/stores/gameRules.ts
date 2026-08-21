@@ -122,6 +122,39 @@ export function isAttachable(card: Pick<BoardCard, 'type' | 'typeLine'>): boolea
 }
 
 /**
+ * Cards that moved into the graveyard between two board snapshots (deaths,
+ * sacrifices, mills, discards). The per-side intake count feeds Fraying
+ * Sanity's end-step mill ("X = cards put into their graveyard this turn").
+ */
+export function graveyardIntakeDelta(before: BoardCard[], after: BoardCard[]): { player: number; opponent: number } {
+  const prevZone = new Map(before.map((card) => [card.id, card.zone]))
+  const delta = { player: 0, opponent: 0 }
+  for (const card of after) {
+    if (card.zone !== 'graveyard') continue
+    const was = prevZone.get(card.id)
+    if (!was || was === 'graveyard') continue
+    const owner = (card.owner ?? 'player') === 'opponent' ? 'opponent' : 'player'
+    delta[owner]++
+  }
+  return delta
+}
+
+/**
+ * Merge a board transition into the running intake counters. Spread the
+ * result into the same set() that installs `after` — an empty delta returns {}
+ * so untouched state keeps referential stability.
+ */
+export function withGraveyardIntake(
+  state: Pick<GameState, 'cards' | 'graveyardIntake'>,
+  after: BoardCard[],
+): { graveyardIntake?: { player: number; opponent: number } } {
+  const delta = graveyardIntakeDelta(state.cards, after)
+  if (delta.player === 0 && delta.opponent === 0) return {}
+  const current = state.graveyardIntake ?? { player: 0, opponent: 0 }
+  return { graveyardIntake: { player: current.player + delta.player, opponent: current.opponent + delta.opponent } }
+}
+
+/**
  * Attach unattached battlefield auras to a friendly creature (the strongest
  * one by default, or a preferred target). Auras with no valid creature die.
  * With `deferUnattached`, unattached auras are left untouched for a caller
@@ -217,6 +250,9 @@ export function takeSnapshot(state: GameState): GameSnapshot {
     gameOver: state.gameOver,
     monarch: state.monarch,
     aiResponsePending: state.aiResponsePending,
+    graveyardIntake: state.graveyardIntake
+      ? { player: state.graveyardIntake.player, opponent: state.graveyardIntake.opponent }
+      : { player: 0, opponent: 0 },
   }
 }
 

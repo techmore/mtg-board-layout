@@ -18,27 +18,6 @@
     "abilities": [
       {
         "abilityType": "triggered",
-        "triggerEvent": "counter_placed",
-        "triggerEvents": [
-          "counter_placed",
-          "card_drawn"
-        ],
-        "triggerCondition": ") Whenever one or more -1/-1 counters are put on a creature",
-        "isOptional": false,
-        "cost": null,
-        "targets": 0,
-        "targetFilter": null,
-        "effect": {
-          "kind": "draw_cards",
-          "params": {
-            "counterKind": "-1/-1",
-            "amount": 1,
-            "scope": "own"
-          }
-        }
-      },
-      {
-        "abilityType": "triggered",
         "triggerEvent": null,
         "triggerCondition": null,
         "isOptional": false,
@@ -210,23 +189,6 @@
           "kind": "draw_cards",
           "params": {
             "amount": 1
-          }
-        }
-      },
-      {
-        "abilityType": "triggered",
-        "triggerEvent": null,
-        "triggerCondition": null,
-        "isOptional": false,
-        "cost": null,
-        "targets": 0,
-        "targetFilter": null,
-        "effect": {
-          "kind": "put_counter",
-          "params": {
-            "counterKind": "-1/-1",
-            "amount": 1,
-            "scope": "own"
           }
         }
       }
@@ -442,11 +404,11 @@
     "conditionalEntryText": null,
     "abilities": [
       {
-        "abilityType": "triggered",
+        "abilityType": "activated",
         "triggerEvent": null,
         "triggerCondition": null,
         "isOptional": false,
-        "cost": null,
+        "cost": "{1}",
         "targets": 0,
         "targetFilter": null,
         "effect": {
@@ -518,21 +480,6 @@
         "abilityType": "triggered",
         "triggerEvent": null,
         "triggerCondition": null,
-        "isOptional": false,
-        "cost": null,
-        "targets": 0,
-        "targetFilter": null,
-        "effect": {
-          "kind": "deal_damage",
-          "params": {
-            "amount": 1
-          }
-        }
-      },
-      {
-        "abilityType": "triggered",
-        "triggerEvent": "etb",
-        "triggerCondition": ") When this creature enters",
         "isOptional": false,
         "cost": null,
         "targets": 0,
@@ -803,21 +750,6 @@
             "amount": 1
           }
         }
-      },
-      {
-        "abilityType": "triggered",
-        "triggerEvent": "dies",
-        "triggerCondition": ") Whenever a creature an opponent controls with a -1/-1 counter on it dies",
-        "isOptional": true,
-        "cost": null,
-        "targets": 0,
-        "targetFilter": null,
-        "effect": {
-          "kind": "return_from_graveyard",
-          "params": {
-            "zone": "battlefield"
-          }
-        }
       }
     ],
     "oracleText": "Wither (This deals damage to creatures in the form of -1/-1 counters.)\nWhenever a creature an opponent controls with a -1/-1 counter on it dies, you may return that card to the battlefield under your control.",
@@ -862,19 +794,6 @@
             "toughness": 1,
             "scope": "own"
           }
-        }
-      },
-      {
-        "abilityType": "activated",
-        "triggerEvent": null,
-        "triggerCondition": null,
-        "isOptional": false,
-        "cost": "{T}",
-        "targets": 0,
-        "targetFilter": null,
-        "effect": {
-          "kind": "add_mana",
-          "params": {}
         }
       }
     ],
@@ -945,38 +864,7 @@
     "manaProduction": null,
     "entryTapRule": null,
     "conditionalEntryText": null,
-    "abilities": [
-      {
-        "abilityType": "triggered",
-        "triggerEvent": null,
-        "triggerCondition": null,
-        "isOptional": false,
-        "cost": null,
-        "targets": 0,
-        "targetFilter": null,
-        "effect": {
-          "kind": "deal_damage",
-          "params": {
-            "amount": 1
-          }
-        }
-      },
-      {
-        "abilityType": "triggered",
-        "triggerEvent": "dies",
-        "triggerCondition": ") Whenever a creature an opponent controls dies",
-        "isOptional": false,
-        "cost": null,
-        "targets": 0,
-        "targetFilter": null,
-        "effect": {
-          "kind": "draw_cards",
-          "params": {
-            "amount": 1
-          }
-        }
-      }
-    ],
+    "abilities": [],
     "oracleText": "Menace\nCreatures you control have wither. (They deal damage to creatures in the form of -1/-1 counters.)\nWhenever a creature an opponent controls dies, if its toughness was less than 1, draw a card.",
     "scryfallId": "8ef53e5e-709c-4613-a5ab-6bf12961b2e1"
   },
@@ -1096,11 +984,11 @@
         }
       },
       {
-        "abilityType": "triggered",
+        "abilityType": "activated",
         "triggerEvent": null,
         "triggerCondition": null,
         "isOptional": false,
-        "cost": null,
+        "cost": "{1}{B}{R}",
         "targets": 1,
         "targetFilter": "creature",
         "effect": {
@@ -1234,19 +1122,6 @@
           "params": {
             "amount": 5
           }
-        }
-      },
-      {
-        "abilityType": "triggered",
-        "triggerEvent": null,
-        "triggerCondition": null,
-        "isOptional": false,
-        "cost": null,
-        "targets": 0,
-        "targetFilter": null,
-        "effect": {
-          "kind": "exile",
-          "params": {}
         }
       }
     ],
@@ -1550,23 +1425,6 @@
           "kind": "deal_damage",
           "params": {
             "amount": 1
-          }
-        }
-      },
-      {
-        "abilityType": "triggered",
-        "triggerEvent": "upkeep",
-        "triggerCondition": ") At the beginning of your upkeep",
-        "isOptional": false,
-        "cost": null,
-        "targets": 0,
-        "targetFilter": null,
-        "effect": {
-          "kind": "put_counter",
-          "params": {
-            "counterKind": "-1/-1",
-            "amount": 1,
-            "scope": "all"
           }
         }
       }
@@ -1888,21 +1746,6 @@
         "effect": {
           "kind": "static_noop",
           "params": {}
-        }
-      },
-      {
-        "abilityType": "triggered",
-        "triggerEvent": null,
-        "triggerCondition": null,
-        "isOptional": false,
-        "cost": null,
-        "targets": 0,
-        "targetFilter": null,
-        "effect": {
-          "kind": "deal_damage",
-          "params": {
-            "amount": 1
-          }
         }
       }
     ],
@@ -2355,36 +2198,6 @@
     "entryTapRule": null,
     "conditionalEntryText": null,
     "abilities": [
-      {
-        "abilityType": "spell",
-        "triggerEvent": null,
-        "triggerCondition": null,
-        "isOptional": true,
-        "cost": null,
-        "targets": 0,
-        "targetFilter": null,
-        "effect": {
-          "kind": "put_counter",
-          "params": {
-            "counterKind": "-1/-1",
-            "amount": 1,
-            "scope": "own"
-          }
-        }
-      },
-      {
-        "abilityType": "spell",
-        "triggerEvent": null,
-        "triggerCondition": null,
-        "isOptional": false,
-        "cost": null,
-        "targets": 0,
-        "targetFilter": null,
-        "effect": {
-          "kind": "exile",
-          "params": {}
-        }
-      },
       {
         "abilityType": "spell",
         "triggerEvent": null,
@@ -2865,7 +2678,7 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "put_counter",
+          "kind": "untap_self",
           "params": {
             "counterKind": "-1/-1",
             "amount": 1,
@@ -3010,21 +2823,6 @@
         "triggerCondition": null,
         "isOptional": false,
         "cost": null,
-        "targets": 1,
-        "targetFilter": "nonland permanent an opponent controls",
-        "effect": {
-          "kind": "destroy",
-          "params": {
-            "targetHint": "target nonland permanent"
-          }
-        }
-      },
-      {
-        "abilityType": "triggered",
-        "triggerEvent": null,
-        "triggerCondition": null,
-        "isOptional": false,
-        "cost": null,
         "targets": 0,
         "targetFilter": null,
         "effect": {
@@ -3083,19 +2881,6 @@
           "params": {
             "amount": 1
           }
-        }
-      },
-      {
-        "abilityType": "static",
-        "triggerEvent": null,
-        "triggerCondition": null,
-        "isOptional": false,
-        "cost": null,
-        "targets": 0,
-        "targetFilter": null,
-        "effect": {
-          "kind": "static_restriction",
-          "params": {}
         }
       }
     ],
@@ -3557,21 +3342,6 @@
         "abilityType": "triggered",
         "triggerEvent": "cast",
         "triggerCondition": "that mana is spent to cast a creature spell that shares a creature type with your commander",
-        "isOptional": false,
-        "cost": null,
-        "targets": 0,
-        "targetFilter": null,
-        "effect": {
-          "kind": "scry",
-          "params": {
-            "amount": 1
-          }
-        }
-      },
-      {
-        "abilityType": "triggered",
-        "triggerEvent": null,
-        "triggerCondition": null,
         "isOptional": false,
         "cost": null,
         "targets": 0,

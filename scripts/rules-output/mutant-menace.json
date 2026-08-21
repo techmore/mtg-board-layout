@@ -323,22 +323,6 @@
     "abilities": [
       {
         "abilityType": "triggered",
-        "triggerEvent": "attack",
-        "triggerCondition": ") Whenever a creature you control attacks",
-        "isOptional": false,
-        "cost": null,
-        "targets": 0,
-        "targetFilter": null,
-        "effect": {
-          "kind": "keyword_pump",
-          "params": {
-            "keyword": "double strike",
-            "scope": "own"
-          }
-        }
-      },
-      {
-        "abilityType": "triggered",
         "triggerEvent": null,
         "triggerCondition": null,
         "isOptional": false,
@@ -456,23 +440,6 @@
             "tokenName": "that many"
           }
         }
-      },
-      {
-        "abilityType": "triggered",
-        "triggerEvent": "etb",
-        "triggerCondition": ") Vigilance Whenever a creature token you control enters",
-        "isOptional": false,
-        "cost": null,
-        "targets": 0,
-        "targetFilter": null,
-        "effect": {
-          "kind": "put_counter",
-          "params": {
-            "counterKind": "+1/+1",
-            "amount": 1,
-            "scope": "own"
-          }
-        }
       }
     ],
     "oracleText": "Squad {3} (As an additional cost to cast this spell, you may pay {3} any number of times. When this creature enters, create that many tokens that are copies of it.)\nVigilance\nWhenever a creature token you control enters, put a +1/+1 counter on it.",
@@ -524,7 +491,7 @@
         "effect": {
           "kind": "x_pump",
           "params": {
-            "toughness": "+X",
+            "toughness": "x",
             "power": "x"
           }
         }
@@ -591,22 +558,6 @@
           "kind": "create_token",
           "params": {
             "tokenName": "that many"
-          }
-        }
-      },
-      {
-        "abilityType": "triggered",
-        "triggerEvent": "etb",
-        "triggerCondition": ") When this creature enters",
-        "isOptional": false,
-        "cost": null,
-        "targets": 0,
-        "targetFilter": null,
-        "effect": {
-          "kind": "mass_sacrifice",
-          "params": {
-            "scope": "all",
-            "kind": "creature"
           }
         }
       }
@@ -696,21 +647,6 @@
             "tokenName": "that many"
           }
         }
-      },
-      {
-        "abilityType": "triggered",
-        "triggerEvent": "etb",
-        "triggerCondition": ") When this creature enters",
-        "isOptional": false,
-        "cost": null,
-        "targets": 1,
-        "targetFilter": "artifact",
-        "effect": {
-          "kind": "destroy",
-          "params": {
-            "targetHint": "target artifact"
-          }
-        }
       }
     ],
     "oracleText": "Squad {2} (As an additional cost to cast this spell, you may pay {2} any number of times. When this creature enters, create that many tokens that are copies of it.)\nWhen this creature enters, destroy up to one target artifact.",
@@ -765,19 +701,6 @@
           "kind": "exile",
           "params": {}
         }
-      },
-      {
-        "abilityType": "triggered",
-        "triggerEvent": "sacrifice",
-        "triggerCondition": "\") Whenever you sacrifice a Junk",
-        "isOptional": false,
-        "cost": null,
-        "targets": 0,
-        "targetFilter": null,
-        "effect": {
-          "kind": "add_mana",
-          "params": {}
-        }
       }
     ],
     "oracleText": "First strike\nRaid — At end of combat on your turn, if you attacked this turn, create a Junk token for each opponent you attacked. (It's an artifact with \"{T}, Sacrifice this token: Exile the top card of your library. You may play that card this turn. Activate only as a sorcery.\")\nWhenever you sacrifice a Junk, add {R}.",
@@ -810,22 +733,6 @@
           "kind": "create_token",
           "params": {
             "tokenName": "that many"
-          }
-        }
-      },
-      {
-        "abilityType": "triggered",
-        "triggerEvent": "dies",
-        "triggerCondition": ") When this creature dies",
-        "isOptional": false,
-        "cost": null,
-        "targets": 0,
-        "targetFilter": null,
-        "effect": {
-          "kind": "create_token",
-          "params": {
-            "tokenName": "Junk",
-            "amount": 1
           }
         }
       }
@@ -879,23 +786,6 @@
         "effect": {
           "kind": "exile",
           "params": {}
-        }
-      },
-      {
-        "abilityType": "triggered",
-        "triggerEvent": "dies",
-        "triggerCondition": "\") Whenever a token you control leaves the battlefield",
-        "isOptional": false,
-        "cost": null,
-        "targets": 0,
-        "targetFilter": null,
-        "effect": {
-          "kind": "put_counter",
-          "params": {
-            "counterKind": "+1/+1",
-            "amount": 1,
-            "scope": "own"
-          }
         }
       }
     ],
@@ -1010,41 +900,7 @@
     "manaProduction": null,
     "entryTapRule": null,
     "conditionalEntryText": null,
-    "abilities": [
-      {
-        "abilityType": "triggered",
-        "triggerEvent": "attack",
-        "triggerCondition": "(Whenever a creature token you control attacks with another creature with greater power",
-        "isOptional": false,
-        "cost": null,
-        "targets": 0,
-        "targetFilter": null,
-        "effect": {
-          "kind": "put_counter",
-          "params": {
-            "counterKind": "+1/+1",
-            "amount": 1,
-            "scope": "own"
-          }
-        }
-      },
-      {
-        "abilityType": "activated",
-        "triggerEvent": null,
-        "triggerCondition": null,
-        "isOptional": false,
-        "cost": "Sacrifice",
-        "targets": 0,
-        "targetFilter": null,
-        "effect": {
-          "kind": "keyword_pump",
-          "params": {
-            "keyword": "indestructible",
-            "scope": "all"
-          }
-        }
-      }
-    ],
+    "abilities": [],
     "oracleText": "Creature tokens you control have training. (Whenever a creature token you control attacks with another creature with greater power, put a +1/+1 counter on that token.)\nBlind Betrayal — Sacrifice another creature: Elder Arthur Maxson gains indestructible until end of turn.",
     "scryfallId": "049771b0-69ad-4f2d-8567-47e8a87b4496"
   },
@@ -1130,34 +986,6 @@
           "kind": "gains_keyword",
           "params": {
             "keyword": "skulk"
-          }
-        }
-      },
-      {
-        "abilityType": "static",
-        "triggerEvent": null,
-        "triggerCondition": null,
-        "isOptional": false,
-        "cost": null,
-        "targets": 0,
-        "targetFilter": null,
-        "effect": {
-          "kind": "static_restriction",
-          "params": {}
-        }
-      },
-      {
-        "abilityType": "static",
-        "triggerEvent": null,
-        "triggerCondition": null,
-        "isOptional": false,
-        "cost": null,
-        "targets": 0,
-        "targetFilter": null,
-        "effect": {
-          "kind": "lose_life",
-          "params": {
-            "amount": 4
           }
         }
       }
@@ -1269,23 +1097,6 @@
     "conditionalEntryText": null,
     "abilities": [
       {
-        "abilityType": "static",
-        "triggerEvent": null,
-        "triggerCondition": null,
-        "isOptional": false,
-        "cost": null,
-        "targets": 0,
-        "targetFilter": null,
-        "effect": {
-          "kind": "pump",
-          "params": {
-            "power": 1,
-            "toughness": 1,
-            "scope": "own"
-          }
-        }
-      },
-      {
         "abilityType": "triggered",
         "triggerEvent": "etb",
         "triggerCondition": "this creature enters",
@@ -1386,23 +1197,6 @@
             "tokenName": "that many"
           }
         }
-      },
-      {
-        "abilityType": "static",
-        "triggerEvent": null,
-        "triggerCondition": null,
-        "isOptional": false,
-        "cost": null,
-        "targets": 0,
-        "targetFilter": null,
-        "effect": {
-          "kind": "pump",
-          "params": {
-            "power": 1,
-            "toughness": 0,
-            "scope": "own"
-          }
-        }
       }
     ],
     "oracleText": "Squad {2} (As an additional cost to cast this spell, you may pay {2} any number of times. When this creature enters, create that many tokens that are copies of it.)\nWhenever this creature attacks, each creature you control named Gary Clone gets +1/+0 until end of turn.",
@@ -1439,28 +1233,11 @@
         }
       },
       {
-        "abilityType": "static",
+        "abilityType": "activated",
         "triggerEvent": null,
         "triggerCondition": null,
         "isOptional": false,
-        "cost": null,
-        "targets": 0,
-        "targetFilter": null,
-        "effect": {
-          "kind": "pump",
-          "params": {
-            "power": 1,
-            "toughness": 1,
-            "scope": "own"
-          }
-        }
-      },
-      {
-        "abilityType": "triggered",
-        "triggerEvent": null,
-        "triggerCondition": null,
-        "isOptional": false,
-        "cost": null,
+        "cost": "{1}{B}",
         "targets": 1,
         "targetFilter": "creature",
         "effect": {
@@ -1515,19 +1292,6 @@
           "params": {
             "tokenName": "that many"
           }
-        }
-      },
-      {
-        "abilityType": "static",
-        "triggerEvent": null,
-        "triggerCondition": null,
-        "isOptional": false,
-        "cost": null,
-        "targets": 0,
-        "targetFilter": null,
-        "effect": {
-          "kind": "static_restriction",
-          "params": {}
         }
       }
     ],
@@ -1845,11 +1609,11 @@
         }
       },
       {
-        "abilityType": "triggered",
+        "abilityType": "activated",
         "triggerEvent": null,
         "triggerCondition": null,
         "isOptional": false,
-        "cost": null,
+        "cost": "{2}{W}{B}",
         "targets": 0,
         "targetFilter": null,
         "effect": {
@@ -1992,36 +1756,6 @@
     "entryTapRule": null,
     "conditionalEntryText": null,
     "abilities": [
-      {
-        "abilityType": "spell",
-        "triggerEvent": null,
-        "triggerCondition": null,
-        "isOptional": false,
-        "cost": null,
-        "targets": 1,
-        "targetFilter": "creature or planeswalker",
-        "effect": {
-          "kind": "destroy",
-          "params": {
-            "targetHint": "target creature or"
-          }
-        }
-      },
-      {
-        "abilityType": "spell",
-        "triggerEvent": null,
-        "triggerCondition": null,
-        "isOptional": false,
-        "cost": null,
-        "targets": 0,
-        "targetFilter": null,
-        "effect": {
-          "kind": "draw_cards",
-          "params": {
-            "amount": 1
-          }
-        }
-      },
       {
         "abilityType": "spell",
         "triggerEvent": null,
@@ -2208,21 +1942,7 @@
     "manaProduction": null,
     "entryTapRule": null,
     "conditionalEntryText": null,
-    "abilities": [
-      {
-        "abilityType": "spell",
-        "triggerEvent": null,
-        "triggerCondition": null,
-        "isOptional": false,
-        "cost": null,
-        "targets": 0,
-        "targetFilter": null,
-        "effect": {
-          "kind": "destroy",
-          "params": {}
-        }
-      }
-    ],
+    "abilities": [],
     "oracleText": "Convoke (Your creatures can help cast this spell. Each creature you tap while casting this spell pays for {1} or one mana of that creature's color.)\nDestroy all nontoken creatures.",
     "scryfallId": "14d60131-8715-477d-8a67-5f1f99a906a8"
   },
@@ -2426,19 +2146,6 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "exile",
-          "params": {}
-        }
-      },
-      {
-        "abilityType": "triggered",
-        "triggerEvent": null,
-        "triggerCondition": null,
-        "isOptional": false,
-        "cost": null,
-        "targets": 0,
-        "targetFilter": null,
-        "effect": {
           "kind": "put_counter",
           "params": {
             "counterKind": "+1/+1",
@@ -2503,24 +2210,6 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "create_token",
-          "params": {
-            "tokenPower": 1,
-            "tokenToughness": 1,
-            "tokenName": "Soldier creature",
-            "amount": 1
-          }
-        }
-      },
-      {
-        "abilityType": "triggered",
-        "triggerEvent": null,
-        "triggerCondition": null,
-        "isOptional": false,
-        "cost": null,
-        "targets": 0,
-        "targetFilter": null,
-        "effect": {
           "kind": "draw_cards",
           "params": {
             "amount": 1
@@ -2556,23 +2245,6 @@
     "entryTapRule": null,
     "conditionalEntryText": null,
     "abilities": [
-      {
-        "abilityType": "static",
-        "triggerEvent": null,
-        "triggerCondition": null,
-        "isOptional": true,
-        "cost": null,
-        "targets": 0,
-        "targetFilter": null,
-        "effect": {
-          "kind": "pump",
-          "params": {
-            "power": 1,
-            "toughness": 1,
-            "scope": "own"
-          }
-        }
-      },
       {
         "abilityType": "triggered",
         "triggerEvent": "etb",
@@ -3030,22 +2702,6 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "lose_rad",
-          "params": {
-            "scope": "opponent",
-            "amount": 1
-          }
-        }
-      },
-      {
-        "abilityType": "triggered",
-        "triggerEvent": null,
-        "triggerCondition": null,
-        "isOptional": true,
-        "cost": null,
-        "targets": 0,
-        "targetFilter": null,
-        "effect": {
           "kind": "sacrifice",
           "params": {}
         }
@@ -3364,34 +3020,6 @@
     "conditionalEntryText": null,
     "abilities": [
       {
-        "abilityType": "triggered",
-        "triggerEvent": null,
-        "triggerCondition": null,
-        "isOptional": false,
-        "cost": null,
-        "targets": 0,
-        "targetFilter": null,
-        "effect": {
-          "kind": "remove_counters",
-          "params": {
-            "amount": 1
-          }
-        }
-      },
-      {
-        "abilityType": "activated",
-        "triggerEvent": null,
-        "triggerCondition": null,
-        "isOptional": false,
-        "cost": "{T}",
-        "targets": 0,
-        "targetFilter": null,
-        "effect": {
-          "kind": "add_mana",
-          "params": {}
-        }
-      },
-      {
         "abilityType": "activated",
         "triggerEvent": null,
         "triggerCondition": null,
@@ -3671,34 +3299,6 @@
             "amount": 1
           }
         }
-      },
-      {
-        "abilityType": "triggered",
-        "triggerEvent": null,
-        "triggerCondition": null,
-        "isOptional": false,
-        "cost": null,
-        "targets": 0,
-        "targetFilter": null,
-        "effect": {
-          "kind": "scry",
-          "params": {
-            "amount": 1
-          }
-        }
-      },
-      {
-        "abilityType": "activated",
-        "triggerEvent": null,
-        "triggerCondition": null,
-        "isOptional": false,
-        "cost": "{T}",
-        "targets": 0,
-        "targetFilter": null,
-        "effect": {
-          "kind": "add_mana",
-          "params": {}
-        }
       }
     ],
     "oracleText": "This land enters tapped.\nWhen this land enters, scry 1. (Look at the top card of your library. You may put that card on the bottom.)\n{T}: Add {B} or {R}.",
@@ -3736,34 +3336,6 @@
             "amount": 1
           }
         }
-      },
-      {
-        "abilityType": "triggered",
-        "triggerEvent": null,
-        "triggerCondition": null,
-        "isOptional": false,
-        "cost": null,
-        "targets": 0,
-        "targetFilter": null,
-        "effect": {
-          "kind": "scry",
-          "params": {
-            "amount": 1
-          }
-        }
-      },
-      {
-        "abilityType": "activated",
-        "triggerEvent": null,
-        "triggerCondition": null,
-        "isOptional": false,
-        "cost": "{T}",
-        "targets": 0,
-        "targetFilter": null,
-        "effect": {
-          "kind": "add_mana",
-          "params": {}
-        }
       }
     ],
     "oracleText": "This land enters tapped.\nWhen this land enters, scry 1. (Look at the top card of your library. You may put that card on the bottom.)\n{T}: Add {W} or {B}.",
@@ -3800,34 +3372,6 @@
           "params": {
             "amount": 1
           }
-        }
-      },
-      {
-        "abilityType": "triggered",
-        "triggerEvent": null,
-        "triggerCondition": null,
-        "isOptional": false,
-        "cost": null,
-        "targets": 0,
-        "targetFilter": null,
-        "effect": {
-          "kind": "scry",
-          "params": {
-            "amount": 1
-          }
-        }
-      },
-      {
-        "abilityType": "activated",
-        "triggerEvent": null,
-        "triggerCondition": null,
-        "isOptional": false,
-        "cost": "{T}",
-        "targets": 0,
-        "targetFilter": null,
-        "effect": {
-          "kind": "add_mana",
-          "params": {}
         }
       }
     ],
@@ -4144,21 +3688,6 @@
         "abilityType": "triggered",
         "triggerEvent": "cast",
         "triggerCondition": "that mana is spent to cast a creature spell that shares a creature type with your commander",
-        "isOptional": false,
-        "cost": null,
-        "targets": 0,
-        "targetFilter": null,
-        "effect": {
-          "kind": "scry",
-          "params": {
-            "amount": 1
-          }
-        }
-      },
-      {
-        "abilityType": "triggered",
-        "triggerEvent": null,
-        "triggerCondition": null,
         "isOptional": false,
         "cost": null,
         "targets": 0,

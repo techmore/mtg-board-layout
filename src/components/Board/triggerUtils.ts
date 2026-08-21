@@ -55,6 +55,11 @@ export function effectLabelFor(kind: string, params: Record<string, unknown>): s
     proliferate: () => 'Proliferate',
     search_library: () => 'Search library',
     sacrifice: () => 'Sacrifice',
+    become_copy: () => 'Become a copy of the target',
+    copy_ability: () => 'Copy an ability you resolved this turn',
+    graveyard_intake_mill: () => 'Mill X = cards put into their graveyard this turn',
+    monstrosity: (p) => `Monstrosity ${(p as { amount?: number }).amount ?? 1} — +1/+1 counters on this`,
+    untap_self: () => 'Untap this',
   }
   const fn = labels[kind]
   if (fn) return fn(params)

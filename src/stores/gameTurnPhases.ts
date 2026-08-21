@@ -1,14 +1,14 @@
 import type { BoardCard } from '../types/card'
 import type { GameState } from './gameStore'
-import { emptyManaPool, moveCastSpellsToGraveyard, prepareCardPlay, pushUndo } from './gameRules'
+import { emptyManaPool, moveCastSpellsToGraveyard, prepareCardPlay, pushUndo, withGraveyardIntake } from './gameRules'
 
 type SetFn = (partial: GameState | Partial<GameState> | ((state: GameState) => Partial<GameState>)) => void
 
 /** "Until end of turn" pumps/keywords expire at the turn handoff, not at the
  *  start of the next own turn (CR: effects last until the cleanup step of the
  *  turn they were created in). Cleared for both sides, including temporary
- *  control changes. */
-function clearTurnBoosts(cards: BoardCard[]): BoardCard[] {
+ *  control changes. Exported for tests (clone-overlay restore). */
+export function clearTurnBoosts(cards: BoardCard[]): BoardCard[] {
   return cards.map((card) => {
     let updated = card
     if (card.controlUntilTurnEnd && card.originalOwner) {
@@ -18,6 +18,19 @@ function clearTurnBoosts(cards: BoardCard[]): BoardCard[] {
     // Temporary animation ("becomes a creature until end of turn") reverts too.
     if (updated.originalType) {
       updated = { ...updated, type: updated.originalType, originalType: undefined }
+    }
+    // Clone overlay (Mirage Mirror): the printed identity comes back.
+    if (updated.cloneOriginal) {
+      const original = updated.cloneOriginal
+      updated = {
+        ...updated,
+        name: original.name,
+        typeLine: original.typeLine,
+        subtypes: original.subtypes,
+        oracleText: original.oracleText ?? updated.oracleText,
+        manaProduction: original.manaProduction ?? updated.manaProduction,
+        cloneOriginal: undefined,
+      }
     }
     return { ...updated, powerBoost: 0, toughnessBoost: 0, keywordBoosts: undefined, cantBeBlockedThisTurn: undefined }
   })
@@ -52,6 +65,8 @@ export function createTurnPhases(set: SetFn, get: () => GameState): Pick<GameSta
           activePlayer: 'opponent',
           currentPhase: 'beginning',
           turnAnnouncement: { id: Date.now(), text: "OPPONENT'S TURN" },
+          graveyardIntake: { player: 0, opponent: 0 },
+          lastResolvedAbility: null,
         }))
         get().emitGameEvent({ type: 'end_of_turn', owner: 'player' })
         get().runOpponentTurn()
@@ -66,6 +81,8 @@ export function createTurnPhases(set: SetFn, get: () => GameState): Pick<GameSta
           currentPhase: 'beginning',
           turn: prev.turn + 1,
           turnAnnouncement: { id: Date.now(), text: `YOUR TURN ${prev.turn + 1}` },
+          graveyardIntake: { player: 0, opponent: 0 },
+          lastResolvedAbility: null,
         }))
         get().emitGameEvent({ type: 'end_of_turn', owner: 'player' })
       }
@@ -96,14 +113,16 @@ export function createTurnPhases(set: SetFn, get: () => GameState): Pick<GameSta
             const rad = get().radCounters
             set((prev) => {
               let remaining = rad
+              const nextCards = prev.cards.map((c) => {
+                if (remaining > 0 && (c.owner ?? 'player') === 'player' && c.zone === 'library') {
+                  remaining--
+                  return { ...c, zone: 'graveyard' as const, revealed: true }
+                }
+                return c
+              })
               return {
-                cards: prev.cards.map((c) => {
-                  if (remaining > 0 && (c.owner ?? 'player') === 'player' && c.zone === 'library') {
-                    remaining--
-                    return { ...c, zone: 'graveyard' as const, revealed: true }
-                  }
-                  return c
-                }),
+                cards: nextCards,
+                ...withGraveyardIntake(prev, nextCards),
                 radCounters: 0,
               }
             })
@@ -230,8 +249,9 @@ export function createTurnPhases(set: SetFn, get: () => GameState): Pick<GameSta
         )
         const resolvedCards = moveCastSpellsToGraveyard(cards)
         const undo = pushUndo(state)
+        const intake = withGraveyardIntake(state, resolvedCards)
         if (resolvedCards.filter((candidate) => (candidate.owner ?? 'player') === 'player' && candidate.zone === 'hand').length > 7) {
-          return { ...undo, cards: resolvedCards, turnPrompt: { id: Date.now(), action: state.turnPrompt.action, reason: 'discard' } }
+          return { ...undo, cards: resolvedCards, ...intake, turnPrompt: { id: Date.now(), action: state.turnPrompt.action, reason: 'discard' } }
         }
         return action === 'advance'
           ? {
@@ -244,8 +264,9 @@ export function createTurnPhases(set: SetFn, get: () => GameState): Pick<GameSta
               currentPhase: 'beginning' as const,
               turnAnnouncement: { id: Date.now(), text: "OPPONENT'S TURN" },
               turnPrompt: null,
+              graveyardIntake: { player: 0, opponent: 0 },
             }
-          : { ...undo, cards: resolvedCards, turnPrompt: null, turnAnnouncement: { id: Date.now(), text: 'END TURN' } }
+          : { ...undo, cards: resolvedCards, ...intake, turnPrompt: null, turnAnnouncement: { id: Date.now(), text: 'END TURN' } }
       })
       if (discarded) {
         get().emitGameEvent({ type: 'discard', cardId, cardName: discarded.name })

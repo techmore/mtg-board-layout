@@ -14,6 +14,11 @@ export function effectKindLabel(ab: CardAbilityDef): string {
     case 'search_library': return 'Search library'
     case 'proliferate': return 'Proliferate'
     case 'exile': return 'Exile'
+    case 'become_copy': return 'Become a copy of target permanent'
+    case 'copy_ability': return 'Copy an ability you resolved this turn'
+    case 'graveyard_intake_mill': return 'Mill X = cards put into GY this turn'
+    case 'monstrosity': return `Monstrosity ${(p.amount as number) ?? ''}`
+    case 'untap_self': return 'Untap this'
     case 'other': return (p.description as string) ?? 'Activate'
     default: return ab.effect.kind
   }
@@ -73,6 +78,24 @@ export function executeActivated(ab: CardAbilityDef, cardId: string, cardName: s
     }
   }
 
+  // Targeted activations other than equip (which has its own prompt): push a
+  // targeting prompt onto the trigger stack so the shared selection UI runs,
+  // ward and hexproof guards included.
+  if (ab.targets > 0 && ab.effect.kind !== 'equip') {
+    useGameStore.setState((state) => ({
+      triggerStack: [...state.triggerStack, {
+        id: crypto.randomUUID(),
+        sourceCardId: cardId,
+        sourceCardName: cardName,
+        ability: ab,
+        event: 'cast' as const,
+        context: {},
+        selectedTargets: [] as string[],
+      }],
+    }))
+    return
+  }
+
   const params = ab.effect.params as Record<string, unknown>
   switch (ab.effect.kind) {
     case 'equip': {
@@ -94,11 +117,7 @@ export function executeActivated(ab: CardAbilityDef, cardId: string, cardName: s
       break
     }
     case 'put_counter':
-      if (ab.targets > 0) {
-        get().emitGameEvent({ type: 'counter_placed', cardId, cardName, kind: '' })
-      } else {
-        get().addCounter(cardId)
-      }
+      get().addCounter(cardId)
       break
     case 'destroy':
       get().emitGameEvent({ type: 'dies', cardId, cardName })

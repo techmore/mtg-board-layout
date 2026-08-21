@@ -90,7 +90,7 @@ export function aiCastInstant(set: SetFn, get: () => GameState): boolean {
 }
 
 /** Effects the AI is willing to activate on its planeswalkers. */
-const BENEFICIAL_EFFECTS = new Set(['create_token', 'draw_cards', 'gain_life', 'add_mana', 'destroy', 'deal_damage', 'exile', 'put_counter', 'proliferate', 'scry'])
+const BENEFICIAL_EFFECTS = new Set(['create_token', 'draw_cards', 'gain_life', 'add_mana', 'destroy', 'deal_damage', 'exile', 'put_counter', 'proliferate', 'scry', 'become_copy'])
 
 /**
  * Tap the AI's mana-producing creatures/artifacts ({T}: Add mana) and credit

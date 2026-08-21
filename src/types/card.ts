@@ -129,6 +129,8 @@ export interface BoardCard {
   manifestOriginal?: { typeLine: string; type: BoardCard['type'] }
   /** Temporary animation ("becomes a creature until end of turn"): original type restored at cleanup. */
   originalType?: BoardCard['type']
+  /** Clone overlay (Mirage Mirror): printed identity restored at turn handoff. */
+  cloneOriginal?: { name: string; typeLine: string; subtypes: string[]; oracleText?: string; manaProduction?: ManaProduction }
   /** Quest counters (Yes Man). */
   questCounters?: number
   /** Cryptek: return to the battlefield tapped if this dies this turn. */
