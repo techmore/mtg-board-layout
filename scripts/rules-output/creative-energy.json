@@ -426,10 +426,8 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
-          "params": {
-            "description": "{2}, {T}: Choose one — • Populate"
-          }
+          "kind": "populate",
+          "params": {}
         }
       },
       {
@@ -517,46 +515,20 @@
       {
         "abilityType": "triggered",
         "triggerEvent": "etb",
+        "triggerEvents": [
+          "etb",
+          "attack",
+          "cast",
+          "graveyard"
+        ],
         "triggerCondition": "this Vehicle enters",
-        "isOptional": false,
-        "cost": null,
-        "targets": 0,
-        "targetFilter": null,
-        "effect": {
-          "kind": "add_energy",
-          "params": {
-            "amount": 4
-          }
-        }
-      },
-      {
-        "abilityType": "triggered",
-        "triggerEvent": "attack",
-        "triggerCondition": "this Vehicle attacks",
         "isOptional": true,
         "cost": null,
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
-          "params": {
-            "description": "Whenever this Vehicle attacks, you may pay {E}{E}"
-          }
-        }
-      },
-      {
-        "abilityType": "triggered",
-        "triggerEvent": "graveyard",
-        "triggerCondition": "you do",
-        "isOptional": false,
-        "cost": null,
-        "targets": 0,
-        "targetFilter": null,
-        "effect": {
-          "kind": "other",
-          "params": {
-            "description": "When you do, target instant or sorcery card in your graveyard gains jump-start until end of turn"
-          }
+          "kind": "enable_graveyard_cast",
+          "params": {}
         }
       },
       {
@@ -921,9 +893,11 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "add_energy",
+          "kind": "x_pump",
           "params": {
-            "amount": 2
+            "x_source": "energy",
+            "toughness": "+X",
+            "power": "x"
           }
         }
       },
@@ -970,10 +944,21 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
-          "params": {
-            "description": "(Whenever you cast a creature spell, you may copy it"
-          }
+          "kind": "copy_spell",
+          "params": {}
+        }
+      },
+      {
+        "abilityType": "triggered",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "copy_spell",
+          "params": {}
         }
       }
     ],
@@ -1421,11 +1406,11 @@
         }
       },
       {
-        "abilityType": "static",
+        "abilityType": "activated",
         "triggerEvent": null,
         "triggerCondition": null,
         "isOptional": false,
-        "cost": null,
+        "cost": "{E}, Pay 1 {E}",
         "targets": 0,
         "targetFilter": null,
         "effect": {
@@ -1433,6 +1418,23 @@
           "params": {
             "keyword": "lifelink",
             "scope": "all"
+          }
+        }
+      },
+      {
+        "abilityType": "triggered",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "animate_self",
+          "params": {
+            "power": 0,
+            "toughness": 0,
+            "keywords": []
           }
         }
       }
@@ -1476,10 +1478,8 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
-          "params": {
-            "description": "{1}{U}, {T}: Creatures your opponents control attack this turn if able"
-          }
+          "kind": "force_attack",
+          "params": {}
         }
       }
     ],
@@ -1656,10 +1656,8 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
-          "params": {
-            "description": "Whenever this creature attacks, you may tap X untapped Myr you control"
-          }
+          "kind": "tap_x_myr",
+          "params": {}
         }
       },
       {
@@ -1788,7 +1786,17 @@
     "cardType": "artifact",
     "subtypes": [],
     "keywords": [],
-    "manaProduction": null,
+    "manaProduction": {
+      "colors": [
+        "W",
+        "U",
+        "B",
+        "R",
+        "G",
+        "C"
+      ],
+      "amount": 3
+    },
     "entryTapRule": null,
     "conditionalEntryText": null,
     "abilities": [
@@ -2374,30 +2382,13 @@
         "abilityType": "spell",
         "triggerEvent": null,
         "triggerCondition": null,
-        "isOptional": false,
-        "cost": null,
-        "targets": 1,
-        "targetFilter": "artifact or creature",
-        "effect": {
-          "kind": "other",
-          "params": {
-            "description": "Choose target artifact or creature"
-          }
-        }
-      },
-      {
-        "abilityType": "spell",
-        "triggerEvent": null,
-        "triggerCondition": null,
         "isOptional": true,
         "cost": null,
-        "targets": 0,
-        "targetFilter": null,
+        "targets": 1,
+        "targetFilter": "artifact or creature You get {E}{E}{E}{E}",
         "effect": {
-          "kind": "add_energy",
-          "params": {
-            "amount": 5
-          }
+          "kind": "confiscation_energy",
+          "params": {}
         }
       }
     ],
@@ -2917,7 +2908,7 @@
     ],
     "keywords": [],
     "manaProduction": null,
-    "entryTapRule": null,
+    "entryTapRule": "conditional",
     "conditionalEntryText": "When this creature enters, you may search your library for a basic land card, put that card onto the battlefield tapped, then shuffle",
     "abilities": [
       {
@@ -3079,10 +3070,8 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "exile",
-          "params": {
-            "targetHint": "target nonland"
-          }
+          "kind": "skyclave_exile",
+          "params": {}
         }
       },
       {
@@ -3094,10 +3083,8 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
-          "params": {
-            "description": "When this creature leaves the battlefield, the exiled card's owner creates an X/X blue Illusion creature token, where X is the mana value of the exiled card"
-          }
+          "kind": "skyclave_return",
+          "params": {}
         }
       }
     ],
@@ -3169,45 +3156,13 @@
         "abilityType": "spell",
         "triggerEvent": null,
         "triggerCondition": null,
-        "isOptional": false,
+        "isOptional": true,
         "cost": null,
         "targets": 1,
-        "targetFilter": "artifact or creature card in your graveyard",
+        "targetFilter": "artifact or creature card in your graveyard You get {E}{E} Then you may pay an amount of {E} equal to that card's mana value If you do",
         "effect": {
-          "kind": "other",
-          "params": {
-            "description": "Choose up to one target artifact or creature card in your graveyard"
-          }
-        }
-      },
-      {
-        "abilityType": "spell",
-        "triggerEvent": null,
-        "triggerCondition": null,
-        "isOptional": false,
-        "cost": null,
-        "targets": 0,
-        "targetFilter": null,
-        "effect": {
-          "kind": "add_energy",
-          "params": {
-            "amount": 2
-          }
-        }
-      },
-      {
-        "abilityType": "spell",
-        "triggerEvent": null,
-        "triggerCondition": null,
-        "isOptional": false,
-        "cost": null,
-        "targets": 0,
-        "targetFilter": null,
-        "effect": {
-          "kind": "return_from_graveyard",
-          "params": {
-            "zone": "battlefield"
-          }
+          "kind": "energy_reanimate",
+          "params": {}
         }
       },
       {
@@ -3295,9 +3250,11 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
+          "kind": "animate_self",
           "params": {
-            "description": "Pay {E}{E}{E}{E}: This Vehicle becomes an artifact creature until end of turn"
+            "power": 0,
+            "toughness": 0,
+            "keywords": []
           }
         }
       }
@@ -3445,7 +3402,7 @@
       ],
       "amount": 1
     },
-    "entryTapRule": null,
+    "entryTapRule": "always",
     "conditionalEntryText": null,
     "abilities": [
       {
@@ -3541,11 +3498,11 @@
         }
       },
       {
-        "abilityType": "static",
+        "abilityType": "activated",
         "triggerEvent": null,
         "triggerCondition": null,
         "isOptional": false,
-        "cost": null,
+        "cost": "{E}{E}{E}{E}, Pay 4 {E}",
         "targets": 0,
         "targetFilter": null,
         "effect": {

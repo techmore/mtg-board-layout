@@ -286,6 +286,10 @@ export function createOpponentAI(set: SetFn, get: () => GameState): Pick<GameSta
               return c
             }),
             opponentRadCounters: 0,
+
+            experienceCounters: 0,
+
+            opponentExperienceCounters: 0,
           }
         })
       }
@@ -404,7 +408,7 @@ export function createOpponentAI(set: SetFn, get: () => GameState): Pick<GameSta
                 const s4 = get()
                 const oppBattlefield2 = s4.cards.filter((c) => (c.owner ?? 'player') === 'opponent' && c.zone === 'battlefield')
                 const playerDefenders = s4.cards.filter((c) => (c.owner ?? 'player') === 'player' && c.zone === 'battlefield')
-                const attackerIds = pickAttackers(oppBattlefield2, s4.turn, playerDefenders, s4.lifeTotal, s4.commanderDamage)
+                const attackerIds = pickAttackers(oppBattlefield2, s4.turn, playerDefenders, s4.lifeTotal, s4.commanderDamage, Boolean(s4.forceAttack && s4.forceAttack.victims === 'opponent' && s4.forceAttack.untilTurn >= s4.turn))
 
                 // Combat trick: cast the first affordable instant before attacking.
                 aiCastInstant(set, get)
@@ -421,6 +425,13 @@ export function createOpponentAI(set: SetFn, get: () => GameState): Pick<GameSta
                 for (const id of attackerIds) {
                   const attacker = get().cards.find((c) => c.id === id)
                   if (attacker) resolveAIAutoAbilities(set, get, attacker, 'attack')
+                  // The Ring L2: the AI's Ring-bearer loots on attack.
+                  const ringMine = get().ring?.[(attacker?.owner ?? 'opponent') as 'player' | 'opponent']
+                  if (ringMine && ringMine.temptations >= 2 && ringMine.bearerId === id) {
+                    get().drawCards(1)
+                    const hand = get().cards.filter((c) => (c.owner ?? 'player') === 'opponent' && c.zone === 'hand')
+                    if (hand.length > 0) get().moveCard(hand[hand.length - 1].id, 'graveyard')
+                  }
                 }
 
                 // Response window: the player may cast a combat trick before
@@ -546,6 +557,10 @@ export function createOpponentAI(set: SetFn, get: () => GameState): Pick<GameSta
           opponentEnergyCounters: 0,
           radCounters: 0,
           opponentRadCounters: 0,
+
+          experienceCounters: 0,
+
+          opponentExperienceCounters: 0,
           opponentManaPool: emptyManaPool(),
           opponentPotentialMana: [],
           opponentLandPlaysThisTurn: 0,

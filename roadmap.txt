@@ -1,0 +1,133 @@
+═══════════════════════════════════════════════════════════════════
+ MTG BOARD LAYOUT — ROADMAP
+ Updated: 2026-08-21 (batches 20–22: the four-category completion push)
+═══════════════════════════════════════════════════════════════════
+
+CURRENT STATE
+─────────────
+  "Other" (unimplemented) abilities : 322 → 5   (98% recovered)
+  Root test suite                   : 476 → 599 passing
+  Server test suite                 :  78 → 116 passing
+  Gates                             : tsc + oxlint + vitest + build all green
+  Main bundle (gzip)                : 154 KB → ~95 KB
+
+THE FOUR CATEGORIES — STATUS
+────────────────────────────
+  1. Conditional attack/block gates ......... DONE
+     - Archangel of Tithes attack tax broadened ("or planeswalkers you
+       control"); NEW blockTax() helper enforced in resolveCombat
+       (defender pays {1}/blocker or those blocks are removed).
+     - Kefnet hand-size gate moved into canAttack/canBlock context so it
+       applies to attacks AND blocks, player AND AI.
+     - Scourge of the Throne: untap-all-attackers when attacking the
+       most-life player, once per turn (scourgeUntapTurn).
+     - Bident of Thassa activation + Kardur ETB: force_attack state flag
+       drives pickAttackers(mustAttack); player-side compulsion toasts.
+     - Twins of Discord: parity_ban state (odd/even MV can't block),
+       deterministic parity choice, enforced in both blocker filters.
+
+  2. Two-sentence "Choose target X. <effect>" ............ DONE
+     - Parser gained a COMPOUND_PATTERNS merge pass: consecutive sentences
+       matching a known compound shape are joined before classification
+       (period-tolerant regexes — joinClean strips sentence periods).
+     - 23 compound shapes wired to dedicated resolvers: Confiscation Coup,
+       Jolted Awake, V.A.T.S., War in Heaven, Chaos Warp, Cryptek, Star
+       Athlete, Tyrite Sanctum, Suspended Sentence, Slithermuse, Disorienting
+       Choice, Benthic Anomaly, Yes Man, Forge of Heroes, Destiny Spinner,
+       Cacophony Unleashed, Three Dog, Filigree Racer, Desdemona, Angelic
+       Aberration, Silver Shroud Costume, The Black Gate, Veronica/Sauron
+       loot shapes.
+
+  3. Player-targeting ("choose an opponent", "target player") ... DONE
+     - Solo-deterministic resolution: "target player/opponent" already
+       parses as targets=0; new resolvers pick the opposing side.
+     - Vial Smasher / The Lord of Pain (first_spell_damage): damage equal
+       to the cast spell's MV on first-spell-each-turn.
+     - Endurance (graveyard_to_library_bottom), Slithermuse (hand-size
+       difference draw), Vraska −9 (poison_diff + poison SBA at 10),
+       The Black Gate (unblockable-this-turn approximation), Yes Man
+       (control handoff + quest counters), Disorienting Choice (ramp).
+
+  4. Full sub-mechanics ................................... DONE
+     - RING: full ladder implemented per LTR rules — temptations count +
+       Ring-bearer per side; L1 bearer can't be blocked by greater power;
+       L2 attack-loot (draw+discard, both sides); L3 blocked→blocker is
+       sacrificed at end of combat; L4 bearer combat damage→each opponent
+       loses 3. Frodo "must be blocked if able" enforced in pickBlockers.
+     - PARTNER: Merry/Pippin tutor the named partner from library to hand.
+     - POPULATE (+ Proliferate modal): Cayth auto-picks proliferate when
+       counters exist, else copies the strongest token.
+     - MANIFEST FLIP: manifest now stores manifestOriginal; Ugin's Mastery
+       flips the best face-down creature face up (power ≥ 6 gate).
+     - ANIMATE: originalType + boosts revert at turn handoff — Cacophony
+       Unleashed (6/6 menace/deathtouch), Bespoke Battlewagon (printed P/T),
+       Destiny Spinner (X/X land where X = enchantments).
+     - GRAVEYARD-CAST: escape/unearth/jump-start simplified to an immediate
+       cast of the best eligible card (Desdemona, Ghost Ark, Filigree Racer).
+     - POISON: poisonCounters state + lose-at-10 SBA (Vraska).
+
+REMAINING TAIL — 5 ABILITIES (each needs a designed feature)
+────────────────────────────────────────────────────────────
+  1. Razorfield Ripper — "(Pay {2} or {E}{E}{E}: Attach …"
+     Reconfigure alternative-cost shape defeats isActivated's cost parser.
+     Fix: normalize leading-paren alt-costs ("Pay X or Y:") before cost
+     parsing, then route to the existing attach_target resolver.
+  2. Abstruse Archaic — "{1}, {T}: Copy target activated or triggered
+     ability you control from a colorless source."
+     Needs ability-instance copying: re-enqueue a chosen resolved ability.
+     Approach: snapshot last-resolved TriggerInstance per source and
+     re-enqueue it with sourceCardId swapped.
+  3. Mirage Mirror — "{2}: becomes a copy of target …"
+     Copy-permanent: needs a clone overlay (typeLine/name/oracleText swap +
+     restore at EOT, like manifestOriginal). Medium UI + state work.
+  4. Suspended Sentence — suspend recast ("When the last is removed…").
+     Main destroy+drain resolves; full suspend needs time-counter state +
+     upkeep ticking + free-cast. Low priority (reminder text only).
+  5. Fraying Sanity — "enchanted player mills X, X = cards put into their
+     graveyard from anywhere this turn."
+     Needs a graveyard-intake counter incremented at every zone→graveyard
+     transition (deaths, mills, discards, sacrifices) — one chokepoint
+     helper in gameCardMovement + SBA would cover it.
+
+KNOWN APPROXIMATIONS (documented, intentional)
+──────────────────────────────────────────────
+  - Server multiplayer has no rad-counter or hand-size context: Nightkin
+    Ambusher stays blockable and Kefnet's gate is solo-enforced only.
+    Forestwalk works everywhere (battlefield-only data).
+  - Scourge's extra combat phase is not modeled (untap-all is).
+  - Black Gate uses cantBeBlockedThisTurn (equivalent in solo 1v1).
+  - Graveyard-cast mechanics fire immediately rather than granting a
+    until-EOT window (toasted transparently).
+  - Modal abilities auto-pick deterministically (toasted); no chooser UI.
+  - Star Athlete: AI sacrifices only tokens/toughness≤2 creatures.
+
+SUGGESTED NEXT STEPS (post-roadmap)
+───────────────────────────────────
+  1. Mirage Mirror clone overlay (highest player-visible value left).
+  2. Graveyard-intake chokepoint → Fraying Sanity + future death-matters.
+  3. Ability-instance copy engine → Abstruse Archaic + "copy ability" family.
+  4. Reconfigure cost normalization → Razorfield Ripper.
+  5. Multiplayer parity: sync ring/poison/forceAttack/parityBan through the
+     room protocol so solo-only mechanics work online.
+  6. Regression tests for the new resolvers (ring ladder, compound parsing,
+     animate revert, partner tutor) — engines are green but under-tested.
+
+KEY FILES TOUCHED THIS ROUND
+────────────────────────────
+  protocol/src/combat.ts            attackTax broaden, blockTax, hand-gate,
+                                    forestwalk, rad gate (canAttack/canBlock)
+  src/stores/gameCombatActions.ts   block tax, Ring L1–L4, parity ban,
+                                    Scourge, Kefnet-on-blocks, force-attack toast
+  src/stores/opponentAI.ts          mustAttack, Frodo must-block, parity/ring/
+                                    rad/hand-aware blocking
+  src/stores/gameOpponentAI.ts      forceAttack threading, AI Ring L2
+  src/stores/gameStore.ts           forceAttack, parityBan, scourgeUntapTurn,
+                                    ring, poisonCounters, keywordsStrippedUntil
+  src/types/card.ts                 manifestOriginal, originalType,
+                                    questCounters, reanimateOnDeathTurn,
+                                    exiledWithMV/exiledCardOwner
+  src/stores/triggerActions.ts      ~30 new effect-kind resolvers
+  src/stores/gameTurnPhases.ts      originalType revert at cleanup
+  scripts/parse-card-rules.mjs      COMPOUND_PATTERNS merge pass, ~40 new
+                                    patterns, param extraction, isStatic tweak
+  docs/AUDIT-2026-08.md             batches 20–21 documented

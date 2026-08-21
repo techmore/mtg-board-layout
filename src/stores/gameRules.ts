@@ -127,6 +127,10 @@ export function isAttachable(card: Pick<BoardCard, 'type' | 'typeLine'>): boolea
  * With `deferUnattached`, unattached auras are left untouched for a caller
  * that wants to prompt the player first.
  */
+export function updateCard(cards: BoardCard[], id: string, patch: Partial<BoardCard>): BoardCard[] {
+  return cards.map((c) => (c.id === id ? { ...c, ...patch } : c))
+}
+
 export function attachAuras(
   cards: BoardCard[],
   options: { deferUnattached?: boolean; preferredTargetId?: string } = {},
@@ -201,6 +205,8 @@ export function takeSnapshot(state: GameState): GameSnapshot {
     opponentEnergyCounters: state.opponentEnergyCounters,
     radCounters: state.radCounters,
     opponentRadCounters: state.opponentRadCounters,
+    experienceCounters: state.experienceCounters,
+    opponentExperienceCounters: state.opponentExperienceCounters,
     triggerStack: state.triggerStack.map((trigger) => ({
       ...trigger,
       context: { ...trigger.context },

@@ -18,62 +18,15 @@
     "abilities": [
       {
         "abilityType": "triggered",
-        "triggerEvent": "cast",
-        "triggerCondition": "an opponent casts a spell",
-        "isOptional": false,
-        "cost": null,
-        "targets": 0,
-        "targetFilter": null,
-        "effect": {
-          "kind": "other",
-          "params": {
-            "description": "Whenever an opponent casts a spell, amass Orcs 1"
-          }
-        }
-      },
-      {
-        "abilityType": "triggered",
         "triggerEvent": "combat_damage",
-        "triggerCondition": "an Army you control deals combat damage to a player",
-        "isOptional": false,
-        "cost": null,
-        "targets": 0,
-        "targetFilter": null,
-        "effect": {
-          "kind": "deal_damage",
-          "params": {
-            "amount": 1
-          }
-        }
-      },
-      {
-        "abilityType": "triggered",
-        "triggerEvent": "discard",
-        "triggerCondition": "the Ring tempts you",
+        "triggerCondition": "an opponent casts a spell",
         "isOptional": true,
         "cost": null,
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
-          "params": {
-            "description": "Whenever the Ring tempts you, you may discard your hand"
-          }
-        }
-      },
-      {
-        "abilityType": "triggered",
-        "triggerEvent": null,
-        "triggerCondition": null,
-        "isOptional": false,
-        "cost": null,
-        "targets": 0,
-        "targetFilter": null,
-        "effect": {
-          "kind": "draw_cards",
-          "params": {
-            "amount": 4
-          }
+          "kind": "ring_tempts",
+          "params": {}
         }
       }
     ],
@@ -736,11 +689,11 @@
         }
       },
       {
-        "abilityType": "static",
+        "abilityType": "activated",
         "triggerEvent": null,
         "triggerCondition": null,
         "isOptional": false,
-        "cost": null,
+        "cost": "{T}, {4}",
         "targets": 1,
         "targetFilter": "creature can't be blocked this turn",
         "effect": {
@@ -981,38 +934,10 @@
         "triggerCondition": null,
         "isOptional": false,
         "cost": "{T}",
-        "targets": 0,
-        "targetFilter": null,
-        "effect": {
-          "kind": "add_mana",
-          "params": {}
-        }
-      },
-      {
-        "abilityType": "activated",
-        "triggerEvent": null,
-        "triggerCondition": null,
-        "isOptional": false,
-        "cost": "{T}, {1}{B}",
-        "targets": 0,
-        "targetFilter": null,
-        "effect": {
-          "kind": "other",
-          "params": {
-            "description": "{1}{B}, {T}: Choose a player with the most life or tied for most life"
-          }
-        }
-      },
-      {
-        "abilityType": "static",
-        "triggerEvent": null,
-        "triggerCondition": null,
-        "isOptional": false,
-        "cost": null,
         "targets": 1,
         "targetFilter": "creature can't be blocked by creatures that player controls this turn",
         "effect": {
-          "kind": "cant_be_blocked",
+          "kind": "black_gate",
           "params": {}
         }
       }
@@ -1151,6 +1076,21 @@
     "conditionalEntryText": null,
     "abilities": [
       {
+        "abilityType": "triggered",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "amass",
+          "params": {
+            "amount": 2
+          }
+        }
+      },
+      {
         "abilityType": "static",
         "triggerEvent": null,
         "triggerCondition": null,
@@ -1281,6 +1221,21 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
+          "kind": "amass",
+          "params": {
+            "amount": 1
+          }
+        }
+      },
+      {
+        "abilityType": "triggered",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
           "kind": "put_counter",
           "params": {
             "counterKind": "+1/+1",
@@ -1350,9 +1305,11 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
+          "kind": "x_pump",
           "params": {
-            "description": "Whenever this creature attacks, it gets +X/+0 until end of turn, where X is the greatest power among creatures you control"
+            "x_source": "greatest_power",
+            "toughness": "+0",
+            "power": "x"
           }
         }
       }
@@ -1374,7 +1331,23 @@
     "manaProduction": null,
     "entryTapRule": null,
     "conditionalEntryText": null,
-    "abilities": [],
+    "abilities": [
+      {
+        "abilityType": "triggered",
+        "triggerEvent": "mana_tapped",
+        "triggerCondition": "Whenever an opponent taps an artifact for mana, gain control of that artifact until the end of your next turn",
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "gain_control",
+          "params": {
+            "temporary": true
+          }
+        }
+      }
+    ],
     "oracleText": "Whenever an opponent taps an artifact for mana, gain control of that artifact until the end of your next turn.",
     "scryfallId": "5facc43f-f865-45ad-888b-398f6e07b947"
   },
@@ -1517,10 +1490,8 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
-          "params": {
-            "description": "Gríma can't be blocked"
-          }
+          "kind": "static_restriction",
+          "params": {}
         }
       },
       {
@@ -1642,9 +1613,9 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
+          "kind": "amass",
           "params": {
-            "description": "Whenever you cast a noncreature spell, amass Orcs X, where X is that spell's mana value"
+            "amount": 1
           }
         }
       },
@@ -1804,7 +1775,7 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "cant_be_blocked",
+          "kind": "static_restriction",
           "params": {}
         }
       },
@@ -1970,9 +1941,22 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
+          "kind": "target_player_mill",
+          "params": {}
+        }
+      },
+      {
+        "abilityType": "triggered",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "amass",
           "params": {
-            "description": "When The Mouth of Sauron enters, target player mills three cards"
+            "amount": 1
           }
         }
       },
@@ -2115,10 +2099,8 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
-          "params": {
-            "description": ") Whenever this creature attacks for the first time each turn, if it's attacking the player with the most life or tied for most life, untap all attacking creatures"
-          }
+          "kind": "static_noop",
+          "params": {}
         }
       }
     ],
@@ -2148,7 +2130,7 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "cant_be_blocked",
+          "kind": "static_restriction",
           "params": {}
         }
       },
@@ -2219,11 +2201,11 @@
         }
       },
       {
-        "abilityType": "static",
+        "abilityType": "activated",
         "triggerEvent": null,
         "triggerCondition": null,
         "isOptional": false,
-        "cost": null,
+        "cost": "{T}, {2}, Sacrifice",
         "targets": 0,
         "targetFilter": null,
         "effect": {
@@ -2855,6 +2837,21 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
+          "kind": "amass",
+          "params": {
+            "amount": 1
+          }
+        }
+      },
+      {
+        "abilityType": "spell",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
           "kind": "mill",
           "params": {
             "amount": 1
@@ -2936,6 +2933,21 @@
         "effect": {
           "kind": "return_from_graveyard",
           "params": {}
+        }
+      },
+      {
+        "abilityType": "spell",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "amass",
+          "params": {
+            "amount": 2
+          }
         }
       },
       {
@@ -3036,7 +3048,7 @@
       {
         "abilityType": "spell",
         "triggerEvent": null,
-        "triggerCondition": null,
+        "triggerCondition": "All creatures get -4/-4 until end of turn",
         "isOptional": false,
         "cost": null,
         "targets": 0,
@@ -3044,9 +3056,10 @@
         "effect": {
           "kind": "pump",
           "params": {
-            "power": -4,
-            "toughness": -4,
-            "scope": "all"
+            "power": "-4",
+            "toughness": "-4",
+            "scope": "all_creatures",
+            "untilEndOfTurn": true
           }
         }
       }
@@ -3108,6 +3121,19 @@
     "entryTapRule": null,
     "conditionalEntryText": null,
     "abilities": [
+      {
+        "abilityType": "spell",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "each_player_mill",
+          "params": {}
+        }
+      },
       {
         "abilityType": "spell",
         "triggerEvent": null,
@@ -3266,7 +3292,25 @@
     "manaProduction": null,
     "entryTapRule": null,
     "conditionalEntryText": null,
-    "abilities": [],
+    "abilities": [
+      {
+        "abilityType": "spell",
+        "triggerEvent": null,
+        "triggerCondition": "Gain control of each noncommander creature with mana value 3 or less",
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "gain_control",
+          "params": {
+            "scope": "each",
+            "maxManaValue": 3,
+            "excludeCommander": true
+          }
+        }
+      }
+    ],
     "oracleText": "Gain control of each noncommander creature with mana value 3 or less.",
     "scryfallId": "6206d9f1-6a57-46a2-942f-6f20e33e5d6a"
   },
@@ -3621,7 +3665,7 @@
       ],
       "amount": 2
     },
-    "entryTapRule": null,
+    "entryTapRule": "always",
     "conditionalEntryText": null,
     "abilities": [
       {
@@ -3716,10 +3760,8 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
-          "params": {
-            "description": "When this enchantment enters, the Ring tempts you"
-          }
+          "kind": "ring_tempts",
+          "params": {}
         }
       },
       {
@@ -3751,17 +3793,7 @@
       "Aura"
     ],
     "keywords": [],
-    "manaProduction": {
-      "colors": [
-        "W",
-        "U",
-        "B",
-        "R",
-        "G",
-        "C"
-      ],
-      "amount": 1
-    },
+    "manaProduction": null,
     "entryTapRule": null,
     "conditionalEntryText": null,
     "abilities": [
@@ -3887,6 +3919,19 @@
         "triggerCondition": null,
         "isOptional": false,
         "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "ring_tempts",
+          "params": {}
+        }
+      },
+      {
+        "abilityType": "triggered",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": null,
         "targets": 1,
         "targetFilter": "creature that player controls until end of turn",
         "effect": {
@@ -3910,6 +3955,19 @@
             "keyword": "haste",
             "scope": "all"
           }
+        }
+      },
+      {
+        "abilityType": "triggered",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "ring_tempts",
+          "params": {}
         }
       }
     ],

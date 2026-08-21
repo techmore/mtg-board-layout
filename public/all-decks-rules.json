@@ -674,10 +674,8 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
-          "params": {
-            "description": "Defender {T}: Exchange target opponent's life total with this creature's toughness"
-          }
+          "kind": "exchange_life_toughness",
+          "params": {}
         }
       }
     ],
@@ -922,10 +920,8 @@
         "targets": 1,
         "targetFilter": "permanent you control onto a second target permanent",
         "effect": {
-          "kind": "other",
-          "params": {
-            "description": "{1}, {T}: Move a counter from target permanent you control onto a second target permanent"
-          }
+          "kind": "move_counter",
+          "params": {}
         }
       }
     ],
@@ -1036,17 +1032,7 @@
       "Vraska"
     ],
     "keywords": [],
-    "manaProduction": {
-      "colors": [
-        "W",
-        "U",
-        "B",
-        "R",
-        "G",
-        "C"
-      ],
-      "amount": 1
-    },
+    "manaProduction": null,
     "entryTapRule": null,
     "conditionalEntryText": null,
     "abilities": [
@@ -1072,10 +1058,8 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
-          "params": {
-            "description": "If target player has fewer than nine poison counters, they get a number of poison counters equal to the difference"
-          }
+          "kind": "poison_diff",
+          "params": {}
         }
       }
     ],
@@ -1246,9 +1230,9 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
+          "kind": "discover",
           "params": {
-            "description": "At the beginning of your end step, discover 5"
+            "amount": 5
           }
         }
       },
@@ -4430,17 +4414,7 @@
     "cardType": "enchantment",
     "subtypes": [],
     "keywords": [],
-    "manaProduction": {
-      "colors": [
-        "W",
-        "U",
-        "B",
-        "R",
-        "G",
-        "C"
-      ],
-      "amount": 1
-    },
+    "manaProduction": null,
     "entryTapRule": null,
     "conditionalEntryText": null,
     "abilities": [
@@ -5703,10 +5677,8 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
-          "params": {
-            "description": "Flying As long as this creature is untapped, creatures can't attack you or planeswalkers you control unless their controller pays {1} for each of those creatures"
-          }
+          "kind": "static_restriction",
+          "params": {}
         }
       },
       {
@@ -5718,10 +5690,8 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
-          "params": {
-            "description": "As long as this creature is attacking, creatures can't block unless their controller pays {1} for each of those creatures"
-          }
+          "kind": "static_restriction",
+          "params": {}
         }
       }
     ],
@@ -5753,10 +5723,8 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
-          "params": {
-            "description": "Flying Activated abilities of creatures your opponents control can't be activated"
-          }
+          "kind": "static_noop",
+          "params": {}
         }
       }
     ],
@@ -6695,7 +6663,7 @@
     "subtypes": [],
     "keywords": [],
     "manaProduction": null,
-    "entryTapRule": null,
+    "entryTapRule": "always",
     "conditionalEntryText": null,
     "abilities": [
       {
@@ -6753,10 +6721,8 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
-          "params": {
-            "description": "Whenever a creature an opponent controls enters, you may attach this Aura to that creature"
-          }
+          "kind": "detach_reattach",
+          "params": {}
         }
       }
     ],
@@ -6801,10 +6767,8 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
-          "params": {
-            "description": "Enchanted permanent can't attack or block, and its activated abilities can't be activated unless they're mana abilities"
-          }
+          "kind": "static_noop",
+          "params": {}
         }
       }
     ],
@@ -7276,10 +7240,8 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
-          "params": {
-            "description": "{2}, {T}: Choose one — • Populate"
-          }
+          "kind": "populate",
+          "params": {}
         }
       },
       {
@@ -7367,46 +7329,20 @@
       {
         "abilityType": "triggered",
         "triggerEvent": "etb",
+        "triggerEvents": [
+          "etb",
+          "attack",
+          "cast",
+          "graveyard"
+        ],
         "triggerCondition": "this Vehicle enters",
-        "isOptional": false,
-        "cost": null,
-        "targets": 0,
-        "targetFilter": null,
-        "effect": {
-          "kind": "add_energy",
-          "params": {
-            "amount": 4
-          }
-        }
-      },
-      {
-        "abilityType": "triggered",
-        "triggerEvent": "attack",
-        "triggerCondition": "this Vehicle attacks",
         "isOptional": true,
         "cost": null,
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
-          "params": {
-            "description": "Whenever this Vehicle attacks, you may pay {E}{E}"
-          }
-        }
-      },
-      {
-        "abilityType": "triggered",
-        "triggerEvent": "graveyard",
-        "triggerCondition": "you do",
-        "isOptional": false,
-        "cost": null,
-        "targets": 0,
-        "targetFilter": null,
-        "effect": {
-          "kind": "other",
-          "params": {
-            "description": "When you do, target instant or sorcery card in your graveyard gains jump-start until end of turn"
-          }
+          "kind": "enable_graveyard_cast",
+          "params": {}
         }
       },
       {
@@ -7771,9 +7707,11 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "add_energy",
+          "kind": "x_pump",
           "params": {
-            "amount": 2
+            "x_source": "energy",
+            "toughness": "+X",
+            "power": "x"
           }
         }
       },
@@ -7820,10 +7758,21 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
-          "params": {
-            "description": "(Whenever you cast a creature spell, you may copy it"
-          }
+          "kind": "copy_spell",
+          "params": {}
+        }
+      },
+      {
+        "abilityType": "triggered",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "copy_spell",
+          "params": {}
         }
       }
     ],
@@ -8271,11 +8220,11 @@
         }
       },
       {
-        "abilityType": "static",
+        "abilityType": "activated",
         "triggerEvent": null,
         "triggerCondition": null,
         "isOptional": false,
-        "cost": null,
+        "cost": "{E}, Pay 1 {E}",
         "targets": 0,
         "targetFilter": null,
         "effect": {
@@ -8283,6 +8232,23 @@
           "params": {
             "keyword": "lifelink",
             "scope": "all"
+          }
+        }
+      },
+      {
+        "abilityType": "triggered",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "animate_self",
+          "params": {
+            "power": 0,
+            "toughness": 0,
+            "keywords": []
           }
         }
       }
@@ -8326,10 +8292,8 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
-          "params": {
-            "description": "{1}{U}, {T}: Creatures your opponents control attack this turn if able"
-          }
+          "kind": "force_attack",
+          "params": {}
         }
       }
     ],
@@ -8441,10 +8405,8 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
-          "params": {
-            "description": "Whenever this creature attacks, you may tap X untapped Myr you control"
-          }
+          "kind": "tap_x_myr",
+          "params": {}
         }
       },
       {
@@ -8573,7 +8535,17 @@
     "cardType": "artifact",
     "subtypes": [],
     "keywords": [],
-    "manaProduction": null,
+    "manaProduction": {
+      "colors": [
+        "W",
+        "U",
+        "B",
+        "R",
+        "G",
+        "C"
+      ],
+      "amount": 3
+    },
     "entryTapRule": null,
     "conditionalEntryText": null,
     "abilities": [
@@ -9095,30 +9067,13 @@
         "abilityType": "spell",
         "triggerEvent": null,
         "triggerCondition": null,
-        "isOptional": false,
-        "cost": null,
-        "targets": 1,
-        "targetFilter": "artifact or creature",
-        "effect": {
-          "kind": "other",
-          "params": {
-            "description": "Choose target artifact or creature"
-          }
-        }
-      },
-      {
-        "abilityType": "spell",
-        "triggerEvent": null,
-        "triggerCondition": null,
         "isOptional": true,
         "cost": null,
-        "targets": 0,
-        "targetFilter": null,
+        "targets": 1,
+        "targetFilter": "artifact or creature You get {E}{E}{E}{E}",
         "effect": {
-          "kind": "add_energy",
-          "params": {
-            "amount": 5
-          }
+          "kind": "confiscation_energy",
+          "params": {}
         }
       }
     ],
@@ -9603,7 +9558,7 @@
     ],
     "keywords": [],
     "manaProduction": null,
-    "entryTapRule": null,
+    "entryTapRule": "conditional",
     "conditionalEntryText": "When this creature enters, you may search your library for a basic land card, put that card onto the battlefield tapped, then shuffle",
     "abilities": [
       {
@@ -9727,10 +9682,8 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "exile",
-          "params": {
-            "targetHint": "target nonland"
-          }
+          "kind": "skyclave_exile",
+          "params": {}
         }
       },
       {
@@ -9742,10 +9695,8 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
-          "params": {
-            "description": "When this creature leaves the battlefield, the exiled card's owner creates an X/X blue Illusion creature token, where X is the mana value of the exiled card"
-          }
+          "kind": "skyclave_return",
+          "params": {}
         }
       }
     ],
@@ -9817,45 +9768,13 @@
         "abilityType": "spell",
         "triggerEvent": null,
         "triggerCondition": null,
-        "isOptional": false,
+        "isOptional": true,
         "cost": null,
         "targets": 1,
-        "targetFilter": "artifact or creature card in your graveyard",
+        "targetFilter": "artifact or creature card in your graveyard You get {E}{E} Then you may pay an amount of {E} equal to that card's mana value If you do",
         "effect": {
-          "kind": "other",
-          "params": {
-            "description": "Choose up to one target artifact or creature card in your graveyard"
-          }
-        }
-      },
-      {
-        "abilityType": "spell",
-        "triggerEvent": null,
-        "triggerCondition": null,
-        "isOptional": false,
-        "cost": null,
-        "targets": 0,
-        "targetFilter": null,
-        "effect": {
-          "kind": "add_energy",
-          "params": {
-            "amount": 2
-          }
-        }
-      },
-      {
-        "abilityType": "spell",
-        "triggerEvent": null,
-        "triggerCondition": null,
-        "isOptional": false,
-        "cost": null,
-        "targets": 0,
-        "targetFilter": null,
-        "effect": {
-          "kind": "return_from_graveyard",
-          "params": {
-            "zone": "battlefield"
-          }
+          "kind": "energy_reanimate",
+          "params": {}
         }
       },
       {
@@ -9943,9 +9862,11 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
+          "kind": "animate_self",
           "params": {
-            "description": "Pay {E}{E}{E}{E}: This Vehicle becomes an artifact creature until end of turn"
+            "power": 0,
+            "toughness": 0,
+            "keywords": []
           }
         }
       }
@@ -10093,7 +10014,7 @@
       ],
       "amount": 1
     },
-    "entryTapRule": null,
+    "entryTapRule": "always",
     "conditionalEntryText": null,
     "abilities": [
       {
@@ -10189,11 +10110,11 @@
         }
       },
       {
-        "abilityType": "static",
+        "abilityType": "activated",
         "triggerEvent": null,
         "triggerCondition": null,
         "isOptional": false,
-        "cost": null,
+        "cost": "{E}{E}{E}{E}, Pay 4 {E}",
         "targets": 0,
         "targetFilter": null,
         "effect": {
@@ -11108,10 +11029,8 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
-          "params": {
-            "description": "Flash Reach When this creature enters, up to one target player puts all the cards from their graveyard on the bottom of their library in a random order"
-          }
+          "kind": "graveyard_to_library",
+          "params": {}
         }
       },
       {
@@ -11389,7 +11308,7 @@
         "G",
         "C"
       ],
-      "amount": 1
+      "amount": "X"
     },
     "entryTapRule": null,
     "conditionalEntryText": null,
@@ -11522,7 +11441,23 @@
     "manaProduction": null,
     "entryTapRule": null,
     "conditionalEntryText": null,
-    "abilities": [],
+    "abilities": [
+      {
+        "abilityType": "static",
+        "triggerEvent": null,
+        "triggerCondition": "During each of your turns, you may play a land and cast a permanent spell of each permanent type from your graveyard",
+        "isOptional": true,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "cast_from_graveyard",
+          "params": {
+            "permanentsOnly": true
+          }
+        }
+      }
+    ],
     "oracleText": "During each of your turns, you may play a land and cast a permanent spell of each permanent type from your graveyard. (If a card has multiple permanent types, choose one as you play it.)",
     "scryfallId": "705b4d97-2f50-47f7-9053-d748f4337553"
   },
@@ -11685,7 +11620,7 @@
       ],
       "amount": 5
     },
-    "entryTapRule": null,
+    "entryTapRule": "always",
     "conditionalEntryText": null,
     "abilities": [
       {
@@ -11975,10 +11910,8 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
-          "params": {
-            "description": "This mana can't be spent to pay generic mana costs"
-          }
+          "kind": "static_noop",
+          "params": {}
         }
       }
     ],
@@ -12193,7 +12126,7 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "cant_be_blocked",
+          "kind": "static_restriction",
           "params": {}
         }
       },
@@ -12566,11 +12499,11 @@
         }
       },
       {
-        "abilityType": "static",
+        "abilityType": "activated",
         "triggerEvent": null,
         "triggerCondition": null,
         "isOptional": false,
-        "cost": null,
+        "cost": "{T}, {R}",
         "targets": 1,
         "targetFilter": "creature gains haste until end of turn",
         "effect": {
@@ -13930,7 +13863,7 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "cant_be_blocked",
+          "kind": "static_restriction",
           "params": {}
         }
       },
@@ -13969,44 +13902,14 @@
     "abilities": [
       {
         "abilityType": "triggered",
-        "triggerEvent": "dies",
-        "triggerCondition": "this creature leaves the battlefield",
-        "isOptional": false,
-        "cost": null,
-        "targets": 0,
-        "targetFilter": null,
-        "effect": {
-          "kind": "other",
-          "params": {
-            "description": "When this creature leaves the battlefield, choose an opponent"
-          }
-        }
-      },
-      {
-        "abilityType": "triggered",
-        "triggerEvent": null,
-        "triggerCondition": null,
-        "isOptional": false,
-        "cost": null,
-        "targets": 0,
-        "targetFilter": null,
-        "effect": {
-          "kind": "draw_cards",
-          "params": {
-            "amount": 1
-          }
-        }
-      },
-      {
-        "abilityType": "triggered",
         "triggerEvent": "etb",
-        "triggerCondition": "If you do",
-        "isOptional": false,
+        "triggerCondition": "this creature leaves the battlefield",
+        "isOptional": true,
         "cost": null,
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "static_noop",
+          "kind": "slithermuse_draw",
           "params": {}
         }
       }
@@ -14141,23 +14044,16 @@
     "conditionalEntryText": null,
     "abilities": [
       {
-        "abilityType": "triggered",
-        "triggerEvent": "etb",
-        "triggerEvents": [
-          "etb",
-          "attack"
-        ],
-        "triggerCondition": "this creature enters or attacks",
+        "abilityType": "static",
+        "triggerEvent": null,
+        "triggerCondition": "Whenever this creature enters or attacks, create a green and white Elemental creature token with \"This token's power and toughness are each equal to the number of creatures you control",
         "isOptional": false,
         "cost": null,
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "create_token",
-          "params": {
-            "tokenName": "Elemental creature",
-            "amount": 1
-          }
+          "kind": "static_noop",
+          "params": {}
         }
       }
     ],
@@ -14249,17 +14145,7 @@
       "Aura"
     ],
     "keywords": [],
-    "manaProduction": {
-      "colors": [
-        "W",
-        "U",
-        "B",
-        "R",
-        "G",
-        "C"
-      ],
-      "amount": 1
-    },
+    "manaProduction": null,
     "entryTapRule": null,
     "conditionalEntryText": null,
     "abilities": [
@@ -14389,7 +14275,23 @@
     "manaProduction": null,
     "entryTapRule": null,
     "conditionalEntryText": null,
-    "abilities": [],
+    "abilities": [
+      {
+        "abilityType": "triggered",
+        "triggerEvent": "mana_tapped",
+        "triggerCondition": "Enchant land Whenever enchanted land is tapped for mana, its controller adds an additional one mana of any color",
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "add_mana",
+          "params": {
+            "anyColor": true
+          }
+        }
+      }
+    ],
     "oracleText": "Enchant land\nWhenever enchanted land is tapped for mana, its controller adds an additional one mana of any color.",
     "scryfallId": "83778d03-6196-4994-8f78-4db6cec823fb"
   },
@@ -14536,17 +14438,7 @@
     "cardType": "enchantment",
     "subtypes": [],
     "keywords": [],
-    "manaProduction": {
-      "colors": [
-        "W",
-        "U",
-        "B",
-        "R",
-        "G",
-        "C"
-      ],
-      "amount": 1
-    },
+    "manaProduction": null,
     "entryTapRule": null,
     "conditionalEntryText": null,
     "abilities": [
@@ -14679,10 +14571,8 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
-          "params": {
-            "description": "(Mana abilities can't be copied"
-          }
+          "kind": "static_noop",
+          "params": {}
         }
       }
     ],
@@ -14718,10 +14608,8 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
-          "params": {
-            "description": "Whenever Azlask or another colorless creature you control dies, you get an experience counter"
-          }
+          "kind": "experience_counter",
+          "params": {}
         }
       },
       {
@@ -14832,10 +14720,8 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
-          "params": {
-            "description": "(Whenever it attacks, defending player sacrifices two permanents of their choice"
-          }
+          "kind": "sacrifice_n_permanents",
+          "params": {}
         }
       }
     ],
@@ -14963,22 +14849,7 @@
       {
         "abilityType": "triggered",
         "triggerEvent": "cast",
-        "triggerCondition": ") When you cast this spell",
-        "isOptional": false,
-        "cost": null,
-        "targets": 0,
-        "targetFilter": null,
-        "effect": {
-          "kind": "other",
-          "params": {
-            "description": ") When you cast this spell, for each opponent, choose a creature that player controls"
-          }
-        }
-      },
-      {
-        "abilityType": "triggered",
-        "triggerEvent": null,
-        "triggerCondition": null,
+        "triggerCondition": "Devoid  When you cast this spell",
         "isOptional": false,
         "cost": null,
         "targets": 0,
@@ -15080,33 +14951,14 @@
           "etb",
           "sacrifice"
         ],
-        "triggerCondition": ") Flying",
+        "triggerCondition": "Devoid  Flying",
         "isOptional": false,
         "cost": null,
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
-          "params": {
-            "description": ") Flying, vigilance When this creature enters, sacrifice any number of creatures each with base power or toughness 1 or less"
-          }
-        }
-      },
-      {
-        "abilityType": "triggered",
-        "triggerEvent": null,
-        "triggerCondition": null,
-        "isOptional": false,
-        "cost": null,
-        "targets": 0,
-        "targetFilter": null,
-        "effect": {
-          "kind": "create_token",
-          "params": {
-            "tokenPower": 4,
-            "tokenToughness": 4,
-            "tokenName": "Angel creature"
-          }
+          "kind": "sacrifice_small_make_tokens",
+          "params": {}
         }
       }
     ],
@@ -15229,21 +15081,6 @@
     "conditionalEntryText": null,
     "abilities": [
       {
-        "abilityType": "triggered",
-        "triggerEvent": "attack",
-        "triggerCondition": "you attack",
-        "isOptional": false,
-        "cost": null,
-        "targets": 0,
-        "targetFilter": null,
-        "effect": {
-          "kind": "other",
-          "params": {
-            "description": "Whenever you attack, choose odd or even"
-          }
-        }
-      },
-      {
         "abilityType": "static",
         "triggerEvent": null,
         "triggerCondition": null,
@@ -15252,7 +15089,7 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "static_restriction",
+          "kind": "parity_ban",
           "params": {}
         }
       }
@@ -15304,12 +15141,7 @@
     "cardType": "instant",
     "subtypes": [],
     "keywords": [],
-    "manaProduction": {
-      "colors": [
-        "C"
-      ],
-      "amount": 1
-    },
+    "manaProduction": null,
     "entryTapRule": null,
     "conditionalEntryText": null,
     "abilities": [
@@ -15377,12 +15209,7 @@
       "Eldrazi"
     ],
     "keywords": [],
-    "manaProduction": {
-      "colors": [
-        "C"
-      ],
-      "amount": 1
-    },
+    "manaProduction": null,
     "entryTapRule": null,
     "conditionalEntryText": null,
     "abilities": [
@@ -15434,12 +15261,7 @@
       "Drone"
     ],
     "keywords": [],
-    "manaProduction": {
-      "colors": [
-        "C"
-      ],
-      "amount": 1
-    },
+    "manaProduction": null,
     "entryTapRule": null,
     "conditionalEntryText": null,
     "abilities": [
@@ -15488,10 +15310,8 @@
         "targets": 1,
         "targetFilter": "creature s until end of turn",
         "effect": {
-          "kind": "other",
-          "params": {
-            "description": "At the beginning of combat on your turn, switch the power and toughness of each of any number of target creatures until end of turn"
-          }
+          "kind": "switch_power_toughness",
+          "params": {}
         }
       }
     ],
@@ -15784,12 +15604,7 @@
       "Eldrazi"
     ],
     "keywords": [],
-    "manaProduction": {
-      "colors": [
-        "C"
-      ],
-      "amount": 1
-    },
+    "manaProduction": null,
     "entryTapRule": null,
     "conditionalEntryText": null,
     "abilities": [
@@ -16386,12 +16201,7 @@
       "Aura"
     ],
     "keywords": [],
-    "manaProduction": {
-      "colors": [
-        "C"
-      ],
-      "amount": 1
-    },
+    "manaProduction": null,
     "entryTapRule": null,
     "conditionalEntryText": null,
     "abilities": [
@@ -16751,12 +16561,7 @@
       "Eldrazi"
     ],
     "keywords": [],
-    "manaProduction": {
-      "colors": [
-        "C"
-      ],
-      "amount": 1
-    },
+    "manaProduction": null,
     "entryTapRule": null,
     "conditionalEntryText": null,
     "abilities": [
@@ -16825,11 +16630,11 @@
         }
       },
       {
-        "abilityType": "static",
+        "abilityType": "activated",
         "triggerEvent": null,
         "triggerCondition": null,
         "isOptional": false,
-        "cost": null,
+        "cost": "{T}, {C}",
         "targets": 1,
         "targetFilter": "creature can't attack or block this turn",
         "effect": {
@@ -16966,12 +16771,7 @@
     "keywords": [
       "flash"
     ],
-    "manaProduction": {
-      "colors": [
-        "C"
-      ],
-      "amount": 1
-    },
+    "manaProduction": null,
     "entryTapRule": null,
     "conditionalEntryText": null,
     "abilities": [
@@ -17168,12 +16968,7 @@
     "cardType": "enchantment",
     "subtypes": [],
     "keywords": [],
-    "manaProduction": {
-      "colors": [
-        "C"
-      ],
-      "amount": 1
-    },
+    "manaProduction": null,
     "entryTapRule": null,
     "conditionalEntryText": null,
     "abilities": [
@@ -17455,12 +17250,7 @@
       "Drone"
     ],
     "keywords": [],
-    "manaProduction": {
-      "colors": [
-        "C"
-      ],
-      "amount": 1
-    },
+    "manaProduction": null,
     "entryTapRule": null,
     "conditionalEntryText": null,
     "abilities": [
@@ -18066,11 +17856,11 @@
         }
       },
       {
-        "abilityType": "static",
+        "abilityType": "activated",
         "triggerEvent": null,
         "triggerCondition": null,
         "isOptional": false,
-        "cost": null,
+        "cost": "{T}, {2}",
         "targets": 0,
         "targetFilter": null,
         "effect": {
@@ -18269,12 +18059,7 @@
     "cardType": "instant",
     "subtypes": [],
     "keywords": [],
-    "manaProduction": {
-      "colors": [
-        "C"
-      ],
-      "amount": 1
-    },
+    "manaProduction": null,
     "entryTapRule": null,
     "conditionalEntryText": null,
     "abilities": [
@@ -18572,12 +18357,7 @@
       "Eldrazi"
     ],
     "keywords": [],
-    "manaProduction": {
-      "colors": [
-        "C"
-      ],
-      "amount": 1
-    },
+    "manaProduction": null,
     "entryTapRule": null,
     "conditionalEntryText": null,
     "abilities": [
@@ -18629,6 +18409,19 @@
     "entryTapRule": null,
     "conditionalEntryText": null,
     "abilities": [
+      {
+        "abilityType": "triggered",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "cascade",
+          "params": {}
+        }
+      },
       {
         "abilityType": "triggered",
         "triggerEvent": "cast",
@@ -18717,10 +18510,8 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
-          "params": {
-            "description": "Whenever this creature attacks, defending player exiles two permanents they control"
-          }
+          "kind": "exile_n_permanents",
+          "params": {}
         }
       }
     ],
@@ -18803,10 +18594,8 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "draw_cards",
-          "params": {
-            "amount": 7
-          }
+          "kind": "slithermuse_draw",
+          "params": {}
         }
       },
       {
@@ -18866,10 +18655,8 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
-          "params": {
-            "description": "(Mana abilities can't be targeted"
-          }
+          "kind": "static_noop",
+          "params": {}
         }
       }
     ],
@@ -19177,10 +18964,8 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
-          "params": {
-            "description": ") Whenever you attack with creatures with total power 6 or greater, you may turn a face-down creature you control face up"
-          }
+          "kind": "manifest_flip",
+          "params": {}
         }
       }
     ],
@@ -19217,7 +19002,25 @@
     "manaProduction": null,
     "entryTapRule": null,
     "conditionalEntryText": null,
-    "abilities": [],
+    "abilities": [
+      {
+        "abilityType": "static",
+        "triggerEvent": null,
+        "triggerCondition": "This creature enters with X +1/+1 counters on it",
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "put_counter",
+          "params": {
+            "counterKind": "+1/+1",
+            "amount": "X",
+            "scope": "self"
+          }
+        }
+      }
+    ],
     "oracleText": "This creature enters with X +1/+1 counters on it.",
     "scryfallId": "00b3c10a-799f-4922-bb0a-44981b13203b"
   },
@@ -19388,6 +19191,23 @@
     "entryTapRule": null,
     "conditionalEntryText": null,
     "abilities": [
+      {
+        "abilityType": "static",
+        "triggerEvent": null,
+        "triggerCondition": "This creature enters with X +1/+1 counters on it",
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "put_counter",
+          "params": {
+            "counterKind": "+1/+1",
+            "amount": "X",
+            "scope": "self"
+          }
+        }
+      },
       {
         "abilityType": "triggered",
         "triggerEvent": "dies",
@@ -20012,6 +19832,19 @@
             "amount": 5
           }
         }
+      },
+      {
+        "abilityType": "triggered",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "static_noop",
+          "params": {}
+        }
       }
     ],
     "oracleText": "Ascend (If you control ten or more permanents, you get the city's blessing for the rest of the game.)\n{T}: Add {C}.\n{5}, {T}: Draw a card. Activate only if you have the city's blessing.",
@@ -20282,6 +20115,19 @@
             "amount": 2
           }
         }
+      },
+      {
+        "abilityType": "triggered",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "static_noop",
+          "params": {}
+        }
       }
     ],
     "oracleText": "{T}: Add {C}. ({C} represents colorless mana.)\n{2}{C}, {T}: Draw a card. Activate only if you have no cards in hand.",
@@ -20311,57 +20157,16 @@
         "triggerEvent": null,
         "triggerCondition": null,
         "isOptional": false,
-        "cost": "{T}",
+        "cost": "{T}, Sacrifice",
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "add_mana",
-          "params": {}
-        }
-      },
-      {
-        "abilityType": "activated",
-        "triggerEvent": null,
-        "triggerCondition": null,
-        "isOptional": false,
-        "cost": "{T}, {2}",
-        "targets": 0,
-        "targetFilter": null,
-        "effect": {
-          "kind": "other",
-          "params": {
-            "description": "{2}, {T}: Target legendary creature becomes a God in addition to its other types"
-          }
-        }
-      },
-      {
-        "abilityType": "triggered",
-        "triggerEvent": null,
-        "triggerCondition": null,
-        "isOptional": false,
-        "cost": null,
-        "targets": 0,
-        "targetFilter": null,
-        "effect": {
-          "kind": "put_counter",
+          "kind": "tyrite_sanctum",
           "params": {
             "counterKind": "+1/+1",
             "amount": 1,
             "scope": "all"
           }
-        }
-      },
-      {
-        "abilityType": "activated",
-        "triggerEvent": null,
-        "triggerCondition": null,
-        "isOptional": false,
-        "cost": "{T}, {4}, Sacrifice",
-        "targets": 0,
-        "targetFilter": null,
-        "effect": {
-          "kind": "put_counter",
-          "params": {}
         }
       }
     ],
@@ -20660,11 +20465,11 @@
         }
       },
       {
-        "abilityType": "static",
+        "abilityType": "activated",
         "triggerEvent": null,
         "triggerCondition": null,
         "isOptional": false,
-        "cost": null,
+        "cost": "{T}, {4}",
         "targets": 1,
         "targetFilter": "creature can't be blocked this turn",
         "effect": {
@@ -20789,11 +20594,11 @@
     "conditionalEntryText": null,
     "abilities": [
       {
-        "abilityType": "static",
+        "abilityType": "activated",
         "triggerEvent": null,
         "triggerCondition": null,
         "isOptional": false,
-        "cost": null,
+        "cost": "{T}",
         "targets": 0,
         "targetFilter": null,
         "effect": {
@@ -21015,11 +20820,11 @@
     "conditionalEntryText": null,
     "abilities": [
       {
-        "abilityType": "static",
+        "abilityType": "activated",
         "triggerEvent": null,
         "triggerCondition": null,
         "isOptional": false,
-        "cost": null,
+        "cost": "{T}, {3}",
         "targets": 1,
         "targetFilter": "creature can't be blocked this turn",
         "effect": {
@@ -21045,7 +20850,7 @@
       ],
       "amount": 2
     },
-    "entryTapRule": null,
+    "entryTapRule": "always",
     "conditionalEntryText": null,
     "abilities": [
       {
@@ -21106,10 +20911,8 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
-          "params": {
-            "description": "{1}, {T}: Until end of turn, creatures your opponents control lose hexproof and shroud and can't have hexproof or shroud"
-          }
+          "kind": "arcane_lighthouse_strip",
+          "params": {}
         }
       }
     ],
@@ -21142,35 +20945,7 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "add_mana",
-          "params": {}
-        }
-      },
-      {
-        "abilityType": "activated",
-        "triggerEvent": null,
-        "triggerCondition": null,
-        "isOptional": false,
-        "cost": "{T}",
-        "targets": 0,
-        "targetFilter": null,
-        "effect": {
-          "kind": "other",
-          "params": {
-            "description": "{T}: Choose target commander that entered this turn"
-          }
-        }
-      },
-      {
-        "abilityType": "triggered",
-        "triggerEvent": null,
-        "triggerCondition": null,
-        "isOptional": false,
-        "cost": null,
-        "targets": 0,
-        "targetFilter": null,
-        "effect": {
-          "kind": "put_counter",
+          "kind": "forge_of_heroes",
           "params": {
             "counterKind": "+1/+1",
             "amount": 1,
@@ -21568,47 +21343,15 @@
     "abilities": [
       {
         "abilityType": "triggered",
-        "triggerEvent": null,
-        "triggerCondition": null,
-        "isOptional": false,
-        "cost": null,
-        "targets": 0,
-        "targetFilter": null,
-        "effect": {
-          "kind": "gain_life",
-          "params": {
-            "amount": 1
-          }
-        }
-      },
-      {
-        "abilityType": "triggered",
         "triggerEvent": "cast",
-        "triggerCondition": "a player casts their first spell each turn",
+        "triggerCondition": "Menace Your opponents can't gain life Whenever a player casts their first spell each turn",
         "isOptional": false,
         "cost": null,
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
-          "params": {
-            "description": "Whenever a player casts their first spell each turn, choose another target player"
-          }
-        }
-      },
-      {
-        "abilityType": "triggered",
-        "triggerEvent": null,
-        "triggerCondition": null,
-        "isOptional": false,
-        "cost": null,
-        "targets": 0,
-        "targetFilter": null,
-        "effect": {
-          "kind": "deal_damage",
-          "params": {
-            "amount": 1
-          }
+          "kind": "first_spell_damage",
+          "params": {}
         }
       }
     ],
@@ -21713,55 +21456,12 @@
         "abilityType": "spell",
         "triggerEvent": null,
         "triggerCondition": null,
-        "isOptional": false,
-        "cost": null,
-        "targets": 1,
-        "targetFilter": "creature an opponent controls",
-        "effect": {
-          "kind": "destroy",
-          "params": {
-            "targetHint": "target creature an"
-          }
-        }
-      },
-      {
-        "abilityType": "spell",
-        "triggerEvent": null,
-        "triggerCondition": null,
-        "isOptional": false,
-        "cost": null,
-        "targets": 0,
-        "targetFilter": null,
-        "effect": {
-          "kind": "lose_life",
-          "params": {
-            "amount": 3
-          }
-        }
-      },
-      {
-        "abilityType": "spell",
-        "triggerEvent": null,
-        "triggerCondition": null,
-        "isOptional": false,
-        "cost": null,
-        "targets": 0,
-        "targetFilter": null,
-        "effect": {
-          "kind": "exile",
-          "params": {}
-        }
-      },
-      {
-        "abilityType": "spell",
-        "triggerEvent": null,
-        "triggerCondition": null,
         "isOptional": true,
         "cost": null,
-        "targets": 0,
-        "targetFilter": null,
+        "targets": 1,
+        "targetFilter": "creature an opponent controls That player loses 3 life Exile Suspended Sentence with three time counters on it Suspend 3—{1}{B} (Rather than cast this card from your hand",
         "effect": {
-          "kind": "exile",
+          "kind": "suspended_sentence",
           "params": {}
         }
       },
@@ -21905,61 +21605,16 @@
     "conditionalEntryText": null,
     "abilities": [
       {
-        "abilityType": "triggered",
-        "triggerEvent": "attack",
-        "triggerCondition": "Menace Whenever this creature attacks",
-        "isOptional": false,
-        "cost": null,
-        "targets": 1,
-        "targetFilter": "nonland permanent",
-        "effect": {
-          "kind": "other",
-          "params": {
-            "description": "Menace Whenever this creature attacks, choose up to one target nonland permanent"
-          }
-        }
-      },
-      {
-        "abilityType": "triggered",
+        "abilityType": "static",
         "triggerEvent": null,
         "triggerCondition": null,
         "isOptional": true,
         "cost": null,
-        "targets": 0,
-        "targetFilter": null,
+        "targets": 1,
+        "targetFilter": "nonland permanent Its controller may sacrifice it If they don't",
         "effect": {
-          "kind": "sacrifice",
+          "kind": "star_athlete_choice",
           "params": {}
-        }
-      },
-      {
-        "abilityType": "triggered",
-        "triggerEvent": null,
-        "triggerCondition": null,
-        "isOptional": false,
-        "cost": null,
-        "targets": 0,
-        "targetFilter": null,
-        "effect": {
-          "kind": "deal_damage",
-          "params": {
-            "amount": 5
-          }
-        }
-      },
-      {
-        "abilityType": "static",
-        "triggerEvent": null,
-        "triggerCondition": null,
-        "isOptional": false,
-        "cost": null,
-        "targets": 0,
-        "targetFilter": null,
-        "effect": {
-          "kind": "draw_cards",
-          "params": {
-            "amount": 3
-          }
         }
       },
       {
@@ -21987,7 +21642,17 @@
     "cardType": "artifact",
     "subtypes": [],
     "keywords": [],
-    "manaProduction": null,
+    "manaProduction": {
+      "colors": [
+        "W",
+        "U",
+        "B",
+        "R",
+        "G",
+        "C"
+      ],
+      "amount": "X"
+    },
     "entryTapRule": null,
     "conditionalEntryText": null,
     "abilities": [
@@ -22572,25 +22237,8 @@
         "targets": 1,
         "targetFilter": "permanent shuffles it into their library",
         "effect": {
-          "kind": "other",
-          "params": {
-            "description": "The owner of target permanent shuffles it into their library, then reveals the top card of their library"
-          }
-        }
-      },
-      {
-        "abilityType": "spell",
-        "triggerEvent": null,
-        "triggerCondition": null,
-        "isOptional": false,
-        "cost": null,
-        "targets": 0,
-        "targetFilter": null,
-        "effect": {
-          "kind": "return_from_graveyard",
-          "params": {
-            "zone": "battlefield"
-          }
+          "kind": "chaos_warp",
+          "params": {}
         }
       }
     ],
@@ -22832,10 +22480,8 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "deal_damage",
-          "params": {
-            "amount": 1
-          }
+          "kind": "first_spell_damage",
+          "params": {}
         }
       }
     ],
@@ -23012,25 +22658,8 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
-          "params": {
-            "description": "Whenever you cast your first spell each turn, choose an opponent at random"
-          }
-        }
-      },
-      {
-        "abilityType": "triggered",
-        "triggerEvent": null,
-        "triggerCondition": null,
-        "isOptional": false,
-        "cost": null,
-        "targets": 0,
-        "targetFilter": null,
-        "effect": {
-          "kind": "deal_damage",
-          "params": {
-            "amount": 1
-          }
+          "kind": "first_spell_damage",
+          "params": {}
         }
       }
     ],
@@ -23475,11 +23104,11 @@
         }
       },
       {
-        "abilityType": "static",
+        "abilityType": "activated",
         "triggerEvent": null,
         "triggerCondition": null,
         "isOptional": false,
-        "cost": null,
+        "cost": "{T}, {2}",
         "targets": 0,
         "targetFilter": null,
         "effect": {
@@ -23968,6 +23597,19 @@
             "amount": 1
           }
         }
+      },
+      {
+        "abilityType": "triggered",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "each_player_mill",
+          "params": {}
+        }
       }
     ],
     "oracleText": "Whenever another creature dies, or a creature card is put into a graveyard from anywhere other than the battlefield, or a creature card leaves your graveyard, Syr Konrad deals 1 damage to each opponent.\n{1}{B}: Each player mills a card. (They each put the top card of their library into their graveyard.)",
@@ -24026,10 +23668,8 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
-          "params": {
-            "description": "When Kardur enters, until your next turn, creatures your opponents control attack each combat if able and attack a player other than you if able"
-          }
+          "kind": "force_attack",
+          "params": {}
         }
       },
       {
@@ -25368,7 +25008,7 @@
     ],
     "keywords": [],
     "manaProduction": null,
-    "entryTapRule": null,
+    "entryTapRule": "conditional",
     "conditionalEntryText": "Constellation — Whenever an enchantment you control enters, you may put a land card from your hand onto the battlefield tapped",
     "abilities": [
       {
@@ -25464,9 +25104,10 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
+          "kind": "x_pump",
           "params": {
-            "description": "{2}{B}, Sacrifice another enchantment: This creature gets +X/+0 until end of turn, where X is the sacrificed enchantment's mana value"
+            "toughness": "+0",
+            "power": "x"
           }
         }
       }
@@ -25497,26 +25138,11 @@
         "triggerCondition": null,
         "isOptional": false,
         "cost": null,
-        "targets": 0,
-        "targetFilter": null,
-        "effect": {
-          "kind": "static_noop",
-          "params": {}
-        }
-      },
-      {
-        "abilityType": "triggered",
-        "triggerEvent": null,
-        "triggerCondition": null,
-        "isOptional": false,
-        "cost": null,
         "targets": 1,
         "targetFilter": "land you control becomes an X/X Elemental creature with trample and haste until end of turn",
         "effect": {
-          "kind": "other",
-          "params": {
-            "description": "{3}{G}: Target land you control becomes an X/X Elemental creature with trample and haste until end of turn, where X is the number of enchantments you control"
-          }
+          "kind": "animate_target_temp",
+          "params": {}
         }
       }
     ],
@@ -25537,7 +25163,34 @@
     "manaProduction": null,
     "entryTapRule": null,
     "conditionalEntryText": null,
-    "abilities": [],
+    "abilities": [
+      {
+        "abilityType": "static",
+        "triggerEvent": null,
+        "triggerCondition": "You may play an additional land on each of your turns",
+        "isOptional": true,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "static_noop",
+          "params": {}
+        }
+      },
+      {
+        "abilityType": "static",
+        "triggerEvent": null,
+        "triggerCondition": "Lands you control are every basic land type in addition to their other types",
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "static_noop",
+          "params": {}
+        }
+      }
+    ],
     "oracleText": "You may play an additional land on each of your turns.\nLands you control are every basic land type in addition to their other types.",
     "scryfallId": "43be1363-7e73-4862-b45f-07f490ab46be"
   },
@@ -25740,7 +25393,21 @@
     "manaProduction": null,
     "entryTapRule": null,
     "conditionalEntryText": null,
-    "abilities": [],
+    "abilities": [
+      {
+        "abilityType": "triggered",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "each_player_mill",
+          "params": {}
+        }
+      }
+    ],
     "oracleText": "Flying\nAt the beginning of combat on your turn, each player mills three cards.",
     "scryfallId": "2dabd3ef-eac8-48ed-b2c1-f4ce8adcedf5"
   },
@@ -25976,7 +25643,17 @@
       "Dryad"
     ],
     "keywords": [],
-    "manaProduction": null,
+    "manaProduction": {
+      "colors": [
+        "W",
+        "U",
+        "B",
+        "R",
+        "G",
+        "C"
+      ],
+      "amount": "X"
+    },
     "entryTapRule": null,
     "conditionalEntryText": null,
     "abilities": [
@@ -26356,6 +26033,10 @@
       {
         "abilityType": "triggered",
         "triggerEvent": "etb",
+        "triggerEvents": [
+          "etb",
+          "cast"
+        ],
         "triggerCondition": "this enchantment enters",
         "isOptional": false,
         "cost": null,
@@ -26364,21 +26045,6 @@
         "effect": {
           "kind": "destroy",
           "params": {}
-        }
-      },
-      {
-        "abilityType": "triggered",
-        "triggerEvent": "etb",
-        "triggerCondition": "this enchantment or another enchantment you control enters",
-        "isOptional": false,
-        "cost": null,
-        "targets": 0,
-        "targetFilter": null,
-        "effect": {
-          "kind": "other",
-          "params": {
-            "description": "Whenever this enchantment or another enchantment you control enters, until end of turn, this enchantment becomes a legendary 6/6 Nightmare God creature with menace and deathtouch"
-          }
         }
       }
     ],
@@ -26898,7 +26564,7 @@
       "flash"
     ],
     "manaProduction": null,
-    "entryTapRule": null,
+    "entryTapRule": "conditional",
     "conditionalEntryText": "Flash When this enchantment enters, you may search your library for a basic land card, put it onto the battlefield tapped, then shuffle",
     "abilities": [
       {
@@ -27074,6 +26740,19 @@
     "entryTapRule": null,
     "conditionalEntryText": null,
     "abilities": [
+      {
+        "abilityType": "triggered",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "each_player_mill",
+          "params": {}
+        }
+      },
       {
         "abilityType": "triggered",
         "triggerEvent": null,
@@ -27442,10 +27121,21 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
-          "params": {
-            "description": "Whenever Frodo Baggins or another legendary creature you control enters, the Ring tempts you"
-          }
+          "kind": "ring_tempts",
+          "params": {}
+        }
+      },
+      {
+        "abilityType": "static",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "static_restriction",
+          "params": {}
         }
       }
     ],
@@ -27484,11 +27174,11 @@
         }
       },
       {
-        "abilityType": "static",
+        "abilityType": "activated",
         "triggerEvent": null,
         "triggerCondition": null,
         "isOptional": false,
-        "cost": null,
+        "cost": "{T}, {2}, Sacrifice",
         "targets": 0,
         "targetFilter": null,
         "effect": {
@@ -27543,10 +27233,8 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
-          "params": {
-            "description": "Partner with Pippin, Warden of Isengard (When this creature enters, target player may put Pippin into their hand from their library, then shuffle"
-          }
+          "kind": "partner_tutor",
+          "params": {}
         }
       },
       {
@@ -27597,10 +27285,8 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
-          "params": {
-            "description": "Partner with Merry, Warden of Isengard (When this creature enters, target player may put Merry into their hand from their library, then shuffle"
-          }
+          "kind": "partner_tutor",
+          "params": {}
         }
       },
       {
@@ -27620,11 +27306,11 @@
         }
       },
       {
-        "abilityType": "static",
+        "abilityType": "activated",
         "triggerEvent": null,
         "triggerCondition": null,
         "isOptional": false,
-        "cost": null,
+        "cost": "{T}, Sacrifice",
         "targets": 0,
         "targetFilter": null,
         "effect": {
@@ -27672,11 +27358,11 @@
         }
       },
       {
-        "abilityType": "static",
+        "abilityType": "activated",
         "triggerEvent": null,
         "triggerCondition": null,
         "isOptional": false,
-        "cost": null,
+        "cost": "{T}, {2}, Sacrifice",
         "targets": 0,
         "targetFilter": null,
         "effect": {
@@ -27809,18 +27495,16 @@
         }
       },
       {
-        "abilityType": "static",
+        "abilityType": "activated",
         "triggerEvent": null,
         "triggerCondition": null,
         "isOptional": false,
-        "cost": null,
+        "cost": "{T}, {3}",
         "targets": 1,
         "targetFilter": "creature with power 3 or less can't be blocked this turn",
         "effect": {
-          "kind": "other",
-          "params": {
-            "description": "{3}, {T}: Target creature with power 3 or less can't be blocked this turn"
-          }
+          "kind": "cant_be_blocked",
+          "params": {}
         }
       }
     ],
@@ -28277,10 +27961,8 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
-          "params": {
-            "description": "Activate only if you have 111 or more life"
-          }
+          "kind": "static_noop",
+          "params": {}
         }
       }
     ],
@@ -28362,11 +28044,11 @@
         }
       },
       {
-        "abilityType": "static",
+        "abilityType": "activated",
         "triggerEvent": null,
         "triggerCondition": null,
         "isOptional": false,
-        "cost": null,
+        "cost": "{T}, {2}, Sacrifice",
         "targets": 0,
         "targetFilter": null,
         "effect": {
@@ -28500,11 +28182,11 @@
         }
       },
       {
-        "abilityType": "static",
+        "abilityType": "activated",
         "triggerEvent": null,
         "triggerCondition": null,
         "isOptional": false,
-        "cost": null,
+        "cost": "{T}, {2}, Sacrifice",
         "targets": 0,
         "targetFilter": null,
         "effect": {
@@ -28551,11 +28233,11 @@
         }
       },
       {
-        "abilityType": "static",
+        "abilityType": "activated",
         "triggerEvent": null,
         "triggerCondition": null,
         "isOptional": false,
-        "cost": null,
+        "cost": "{T}, {2}, Sacrifice",
         "targets": 0,
         "targetFilter": null,
         "effect": {
@@ -28625,11 +28307,11 @@
         }
       },
       {
-        "abilityType": "static",
+        "abilityType": "activated",
         "triggerEvent": null,
         "triggerCondition": null,
         "isOptional": false,
-        "cost": null,
+        "cost": "{T}, {2}, Sacrifice",
         "targets": 0,
         "targetFilter": null,
         "effect": {
@@ -28698,7 +28380,7 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "cant_be_blocked",
+          "kind": "static_restriction",
           "params": {}
         }
       },
@@ -28888,10 +28570,8 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
-          "params": {
-            "description": "{T}, Sacrifice an artifact: Choose one — • Until end of turn, you may play a card exiled with Lobelia without paying its mana cost"
-          }
+          "kind": "cast_from_graveyard",
+          "params": {}
         }
       },
       {
@@ -28903,10 +28583,8 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "lose_life",
-          "params": {
-            "amount": 2
-          }
+          "kind": "lobelia_drain",
+          "params": {}
         }
       }
     ],
@@ -29034,11 +28712,11 @@
         }
       },
       {
-        "abilityType": "static",
+        "abilityType": "activated",
         "triggerEvent": null,
         "triggerCondition": null,
         "isOptional": false,
-        "cost": null,
+        "cost": "{T}, {2}, Sacrifice",
         "targets": 0,
         "targetFilter": null,
         "effect": {
@@ -29145,17 +28823,7 @@
       "Citizen"
     ],
     "keywords": [],
-    "manaProduction": {
-      "colors": [
-        "W",
-        "U",
-        "B",
-        "R",
-        "G",
-        "C"
-      ],
-      "amount": 1
-    },
+    "manaProduction": null,
     "entryTapRule": null,
     "conditionalEntryText": null,
     "abilities": [
@@ -29308,11 +28976,11 @@
         }
       },
       {
-        "abilityType": "static",
+        "abilityType": "activated",
         "triggerEvent": null,
         "triggerCondition": null,
         "isOptional": false,
-        "cost": null,
+        "cost": "{T}, {2}, Sacrifice",
         "targets": 0,
         "targetFilter": null,
         "effect": {
@@ -29438,17 +29106,7 @@
       "Scout"
     ],
     "keywords": [],
-    "manaProduction": {
-      "colors": [
-        "W",
-        "U",
-        "B",
-        "R",
-        "G",
-        "C"
-      ],
-      "amount": 1
-    },
+    "manaProduction": null,
     "entryTapRule": null,
     "conditionalEntryText": null,
     "abilities": [
@@ -29469,11 +29127,11 @@
         }
       },
       {
-        "abilityType": "static",
+        "abilityType": "activated",
         "triggerEvent": null,
         "triggerCondition": null,
         "isOptional": false,
-        "cost": null,
+        "cost": "{T}, {2}, Sacrifice",
         "targets": 0,
         "targetFilter": null,
         "effect": {
@@ -29771,11 +29429,11 @@
         }
       },
       {
-        "abilityType": "static",
+        "abilityType": "activated",
         "triggerEvent": null,
         "triggerCondition": null,
         "isOptional": false,
-        "cost": null,
+        "cost": "{T}, {2}, Sacrifice",
         "targets": 0,
         "targetFilter": null,
         "effect": {
@@ -29800,7 +29458,26 @@
     "manaProduction": null,
     "entryTapRule": null,
     "conditionalEntryText": null,
-    "abilities": [],
+    "abilities": [
+      {
+        "abilityType": "spell",
+        "triggerEvent": null,
+        "triggerCondition": "All creatures get -X/-X until end of turn",
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "pump",
+          "params": {
+            "power": "-X",
+            "toughness": "-X",
+            "scope": "all_creatures",
+            "untilEndOfTurn": true
+          }
+        }
+      }
+    ],
     "oracleText": "As an additional cost to cast this spell, pay X life.\nAll creatures get -X/-X until end of turn.",
     "scryfallId": "de5afccc-8d42-4bd6-b068-b9ea2361655e"
   },
@@ -29891,10 +29568,8 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
-          "params": {
-            "description": "This artifact can't be sacrificed"
-          }
+          "kind": "static_noop",
+          "params": {}
         }
       },
       {
@@ -29991,11 +29666,11 @@
     "conditionalEntryText": null,
     "abilities": [
       {
-        "abilityType": "static",
+        "abilityType": "activated",
         "triggerEvent": null,
         "triggerCondition": null,
         "isOptional": false,
-        "cost": null,
+        "cost": "{T}, {1}, Discard",
         "targets": 0,
         "targetFilter": null,
         "effect": {
@@ -30686,17 +30361,7 @@
       "Soldier"
     ],
     "keywords": [],
-    "manaProduction": {
-      "colors": [
-        "W",
-        "U",
-        "B",
-        "R",
-        "G",
-        "C"
-      ],
-      "amount": 1
-    },
+    "manaProduction": null,
     "entryTapRule": null,
     "conditionalEntryText": null,
     "abilities": [
@@ -30738,10 +30403,8 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
-          "params": {
-            "description": "'\" Whenever Preston Garvey attacks, untap each enchanted permanent you control"
-          }
+          "kind": "untap_enchanted",
+          "params": {}
         }
       }
     ],
@@ -30804,10 +30467,8 @@
         "targets": 1,
         "targetFilter": "creature you control",
         "effect": {
-          "kind": "other",
-          "params": {
-            "description": "{T}: Attach target Aura or Equipment you control to target creature you control"
-          }
+          "kind": "attach_target",
+          "params": {}
         }
       }
     ],
@@ -30894,61 +30555,15 @@
     "conditionalEntryText": null,
     "abilities": [
       {
-        "abilityType": "triggered",
-        "triggerEvent": "attack",
-        "triggerCondition": "Menace Whenever Veronica attacks",
-        "isOptional": true,
-        "cost": null,
-        "targets": 0,
-        "targetFilter": null,
-        "effect": {
-          "kind": "other",
-          "params": {
-            "description": "Menace Whenever Veronica attacks, you may discard a card"
-          }
-        }
-      },
-      {
-        "abilityType": "triggered",
-        "triggerEvent": null,
-        "triggerCondition": null,
-        "isOptional": false,
-        "cost": null,
-        "targets": 0,
-        "targetFilter": null,
-        "effect": {
-          "kind": "draw_cards",
-          "params": {
-            "amount": 1
-          }
-        }
-      },
-      {
-        "abilityType": "triggered",
-        "triggerEvent": "discard",
-        "triggerCondition": "you discard one or more nonland cards for the first time each turn",
-        "isOptional": false,
-        "cost": null,
-        "targets": 0,
-        "targetFilter": null,
-        "effect": {
-          "kind": "create_token",
-          "params": {
-            "tokenName": "Junk",
-            "amount": 1
-          }
-        }
-      },
-      {
         "abilityType": "activated",
         "triggerEvent": null,
         "triggerCondition": null,
-        "isOptional": false,
-        "cost": "{T}, Sacrifice",
+        "isOptional": true,
+        "cost": "{T}, Sacrifice, Discard",
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "exile",
+          "kind": "loot_optional",
           "params": {}
         }
       }
@@ -31099,11 +30714,11 @@
     "conditionalEntryText": null,
     "abilities": [
       {
-        "abilityType": "static",
+        "abilityType": "activated",
         "triggerEvent": null,
         "triggerCondition": null,
         "isOptional": false,
-        "cost": null,
+        "cost": "{1}",
         "targets": 0,
         "targetFilter": null,
         "effect": {
@@ -31155,26 +30770,8 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
-          "params": {
-            "description": "Whenever you attack, you may pay {2} and sacrifice an Aura attached to Three Dog"
-          }
-        }
-      },
-      {
-        "abilityType": "triggered",
-        "triggerEvent": "sacrifice",
-        "triggerCondition": "you sacrifice an Aura this way",
-        "isOptional": false,
-        "cost": null,
-        "targets": 0,
-        "targetFilter": null,
-        "effect": {
-          "kind": "create_token",
-          "params": {
-            "tokenName": "a",
-            "amount": 1
-          }
+          "kind": "three_dog_aura_copies",
+          "params": {}
         }
       }
     ],
@@ -31622,7 +31219,9 @@
     "typeLine": "Instant",
     "cardType": "instant",
     "subtypes": [],
-    "keywords": [],
+    "keywords": [
+      "split second"
+    ],
     "manaProduction": null,
     "entryTapRule": null,
     "conditionalEntryText": null,
@@ -31919,9 +31518,10 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
+          "kind": "x_pump",
           "params": {
-            "description": "Enchant creature Enchanted creature has \"Whenever this creature attacks alone, it gets +X/+X until end of turn, where X is the number of nonland permanents you control"
+            "toughness": "+X",
+            "power": "x"
           }
         }
       }
@@ -31962,11 +31562,11 @@
         }
       },
       {
-        "abilityType": "static",
+        "abilityType": "activated",
         "triggerEvent": null,
         "triggerCondition": null,
         "isOptional": false,
-        "cost": null,
+        "cost": "{T}, {2}, Sacrifice",
         "targets": 0,
         "targetFilter": null,
         "effect": {
@@ -32403,17 +32003,7 @@
     "keywords": [
       "menace"
     ],
-    "manaProduction": {
-      "colors": [
-        "W",
-        "U",
-        "B",
-        "R",
-        "G",
-        "C"
-      ],
-      "amount": 1
-    },
+    "manaProduction": null,
     "entryTapRule": null,
     "conditionalEntryText": null,
     "abilities": [
@@ -32442,7 +32032,7 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "static_noop",
+          "kind": "static_restriction",
           "params": {}
         }
       },
@@ -32579,7 +32169,25 @@
     "manaProduction": null,
     "entryTapRule": null,
     "conditionalEntryText": null,
-    "abilities": [],
+    "abilities": [
+      {
+        "abilityType": "triggered",
+        "triggerEvent": "mana_tapped",
+        "triggerCondition": "Enchant land Whenever enchanted land is tapped for mana, its controller adds an additional {G}",
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "add_mana",
+          "params": {
+            "colors": [
+              "G"
+            ]
+          }
+        }
+      }
+    ],
     "oracleText": "Enchant land\nWhenever enchanted land is tapped for mana, its controller adds an additional {G}.",
     "scryfallId": "47260e7c-29bf-46f1-a029-9da7bbb418b5"
   },
@@ -32706,10 +32314,8 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
-          "params": {
-            "description": "\") {3}, Sacrifice another artifact: Double equipped creature's power until end of turn"
-          }
+          "kind": "double_equipped_power",
+          "params": {}
         }
       },
       {
@@ -32786,10 +32392,8 @@
         "targets": 1,
         "targetFilter": "land s",
         "effect": {
-          "kind": "other",
-          "params": {
-            "description": "• Check Map — Untap up to two target lands"
-          }
+          "kind": "untap_target",
+          "params": {}
         }
       },
       {
@@ -32955,7 +32559,21 @@
     "manaProduction": null,
     "entryTapRule": null,
     "conditionalEntryText": null,
-    "abilities": [],
+    "abilities": [
+      {
+        "abilityType": "static",
+        "triggerEvent": null,
+        "triggerCondition": "You may have this Equipment enter as a copy of any Equipment on the battlefield",
+        "isOptional": true,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "static_noop",
+          "params": {}
+        }
+      }
+    ],
     "oracleText": "You may have this Equipment enter as a copy of any Equipment on the battlefield.",
     "scryfallId": "80b38b13-fc19-4ffc-8100-249f9eb8cca6"
   },
@@ -32999,19 +32617,16 @@
         }
       },
       {
-        "abilityType": "static",
+        "abilityType": "activated",
         "triggerEvent": null,
         "triggerCondition": null,
         "isOptional": false,
-        "cost": null,
+        "cost": "{T}, {3}",
         "targets": 1,
         "targetFilter": "creature s you control each gain haste until end of turn and can't be blocked this turn except by creatures with haste",
         "effect": {
-          "kind": "keyword_pump",
-          "params": {
-            "keyword": "haste",
-            "scope": "own"
-          }
+          "kind": "cant_be_blocked",
+          "params": {}
         }
       }
     ],
@@ -33091,46 +32706,16 @@
     "conditionalEntryText": null,
     "abilities": [
       {
-        "abilityType": "triggered",
-        "triggerEvent": "etb",
-        "triggerCondition": "Flash When this Equipment enters",
+        "abilityType": "static",
+        "triggerEvent": null,
+        "triggerCondition": null,
         "isOptional": false,
         "cost": null,
         "targets": 1,
-        "targetFilter": "creature you control",
+        "targetFilter": "creature you control That creature gains shroud until end of turn  Equipped creature can't be blocked",
         "effect": {
-          "kind": "other",
-          "params": {
-            "description": "Flash When this Equipment enters, attach it to target creature you control"
-          }
-        }
-      },
-      {
-        "abilityType": "static",
-        "triggerEvent": null,
-        "triggerCondition": null,
-        "isOptional": false,
-        "cost": null,
-        "targets": 0,
-        "targetFilter": null,
-        "effect": {
-          "kind": "static_noop",
+          "kind": "cant_be_blocked",
           "params": {}
-        }
-      },
-      {
-        "abilityType": "static",
-        "triggerEvent": null,
-        "triggerCondition": null,
-        "isOptional": false,
-        "cost": null,
-        "targets": 0,
-        "targetFilter": null,
-        "effect": {
-          "kind": "other",
-          "params": {
-            "description": ") Equipped creature can't be blocked"
-          }
         }
       },
       {
@@ -33230,10 +32815,8 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
-          "params": {
-            "description": "When you cast this spell, copy it"
-          }
+          "kind": "copy_spell",
+          "params": {}
         }
       },
       {
@@ -34745,10 +34328,8 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
-          "params": {
-            "description": "Landfall — Whenever a land you control enters, investigate"
-          }
+          "kind": "investigate",
+          "params": {}
         }
       },
       {
@@ -35055,7 +34636,7 @@
       "trample"
     ],
     "manaProduction": null,
-    "entryTapRule": null,
+    "entryTapRule": "always",
     "conditionalEntryText": null,
     "abilities": [],
     "oracleText": "This spell costs {1} less to cast for each counter among players and permanents.\nTrample\nThis creature enters tapped.",
@@ -35103,7 +34684,7 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "cant_be_blocked",
+          "kind": "static_restriction",
           "params": {}
         }
       }
@@ -35136,10 +34717,8 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
-          "params": {
-            "description": "{T}: Each player mills a card"
-          }
+          "kind": "each_player_mill",
+          "params": {}
         }
       }
     ],
@@ -35172,7 +34751,7 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "cant_be_blocked",
+          "kind": "static_restriction",
           "params": {}
         }
       },
@@ -35366,7 +34945,27 @@
     "manaProduction": null,
     "entryTapRule": null,
     "conditionalEntryText": null,
-    "abilities": [],
+    "abilities": [
+      {
+        "abilityType": "spell",
+        "triggerEvent": null,
+        "triggerCondition": "Creatures you control have base power and toughness X/X until end of turn",
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "pump",
+          "params": {
+            "power": "X",
+            "toughness": "X",
+            "scope": "own_creatures",
+            "baseToughness": true,
+            "untilEndOfTurn": true
+          }
+        }
+      }
+    ],
     "oracleText": "Creatures you control have base power and toughness X/X until end of turn.",
     "scryfallId": "9894bed2-c5dc-4569-9ed9-1d40df906f58"
   },
@@ -36026,7 +35625,7 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "static_noop",
+          "kind": "static_restriction",
           "params": {}
         }
       },
@@ -36976,6 +36575,19 @@
     "conditionalEntryText": null,
     "abilities": [
       {
+        "abilityType": "static",
+        "triggerEvent": null,
+        "triggerCondition": "You may play an additional land on each of your turns",
+        "isOptional": true,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "static_noop",
+          "params": {}
+        }
+      },
+      {
         "abilityType": "triggered",
         "triggerEvent": "landfall",
         "triggerCondition": "Landfall — Whenever a land you control enters",
@@ -37232,6 +36844,19 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
+          "kind": "parity_ban",
+          "params": {}
+        }
+      },
+      {
+        "abilityType": "spell",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
           "kind": "return_from_graveyard",
           "params": {
             "zone": "hand"
@@ -37327,40 +36952,12 @@
         "abilityType": "spell",
         "triggerEvent": null,
         "triggerCondition": null,
-        "isOptional": false,
-        "cost": null,
-        "targets": 1,
-        "targetFilter": "artifact or enchantment that player controls",
-        "effect": {
-          "kind": "other",
-          "params": {
-            "description": "For each opponent, choose up to one target artifact or enchantment that player controls"
-          }
-        }
-      },
-      {
-        "abilityType": "spell",
-        "triggerEvent": null,
-        "triggerCondition": null,
         "isOptional": true,
         "cost": null,
-        "targets": 0,
-        "targetFilter": null,
+        "targets": 1,
+        "targetFilter": "artifact or enchantment that player controls For each permanent chosen this way",
         "effect": {
-          "kind": "exile",
-          "params": {}
-        }
-      },
-      {
-        "abilityType": "spell",
-        "triggerEvent": null,
-        "triggerCondition": null,
-        "isOptional": false,
-        "cost": null,
-        "targets": 0,
-        "targetFilter": null,
-        "effect": {
-          "kind": "search_library",
+          "kind": "disorienting_ramp",
           "params": {}
         }
       }
@@ -37393,10 +36990,8 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
-          "params": {
-            "description": "Trample Whenever you attack with one or more creatures, untap up to X lands, where X is the greatest power among those creatures"
-          }
+          "kind": "untap_x_lands",
+          "params": {}
         }
       }
     ],
@@ -37511,12 +37106,7 @@
       "Druid"
     ],
     "keywords": [],
-    "manaProduction": {
-      "colors": [
-        "G"
-      ],
-      "amount": 1
-    },
+    "manaProduction": null,
     "entryTapRule": null,
     "conditionalEntryText": null,
     "abilities": [
@@ -37558,9 +37148,9 @@
         "targets": 1,
         "targetFilter": "nonland permanent s to their owners' hands",
         "effect": {
-          "kind": "other",
+          "kind": "bounce_n_nonland",
           "params": {
-            "description": "Return six target nonland permanents to their owners' hands"
+            "count": 6
           }
         }
       }
@@ -37671,10 +37261,8 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
-          "params": {
-            "description": "Flying, indestructible Kefnet can't attack or block unless you have seven or more cards in hand"
-          }
+          "kind": "static_restriction",
+          "params": {}
         }
       },
       {
@@ -37847,7 +37435,34 @@
     "manaProduction": null,
     "entryTapRule": null,
     "conditionalEntryText": null,
-    "abilities": [],
+    "abilities": [
+      {
+        "abilityType": "static",
+        "triggerEvent": null,
+        "triggerCondition": "Ashaya's power and toughness are each equal to the number of lands you control",
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "static_noop",
+          "params": {}
+        }
+      },
+      {
+        "abilityType": "static",
+        "triggerEvent": null,
+        "triggerCondition": "Nontoken creatures you control are Forest lands in addition to their other types",
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "static_noop",
+          "params": {}
+        }
+      }
+    ],
     "oracleText": "Ashaya's power and toughness are each equal to the number of lands you control.\nNontoken creatures you control are Forest lands in addition to their other types. (They're still affected by summoning sickness.)",
     "scryfallId": "0a74b4e6-f6c9-4fef-a83c-a285a541e720"
   },
@@ -38419,10 +38034,8 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
-          "params": {
-            "description": "When Worldspine Wurm is put into a graveyard from anywhere, shuffle it into its owner's library"
-          }
+          "kind": "shuffle_into_library",
+          "params": {}
         }
       }
     ],
@@ -38446,7 +38059,7 @@
       ],
       "amount": 2
     },
-    "entryTapRule": null,
+    "entryTapRule": "always",
     "conditionalEntryText": null,
     "abilities": [
       {
@@ -39532,7 +39145,21 @@
     "manaProduction": null,
     "entryTapRule": null,
     "conditionalEntryText": null,
-    "abilities": [],
+    "abilities": [
+      {
+        "abilityType": "static",
+        "triggerEvent": null,
+        "triggerCondition": "Beanstalk Giant's power and toughness are each equal to the number of lands you control",
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "static_noop",
+          "params": {}
+        }
+      }
+    ],
     "oracleText": "Beanstalk Giant's power and toughness are each equal to the number of lands you control.",
     "scryfallId": "71096773-69dd-4fb7-a088-e0fe096eaf6b"
   },
@@ -39592,10 +39219,8 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
-          "params": {
-            "description": "{4}, {T}: Roll a six-sided die plus an additional six-sided die for each mana from Treasures spent to activate this ability"
-          }
+          "kind": "roll_dice",
+          "params": {}
         }
       }
     ],
@@ -39905,9 +39530,10 @@
         "targets": 1,
         "targetFilter": "creature you control gets +X/+X until end of turn",
         "effect": {
-          "kind": "other",
+          "kind": "x_pump",
           "params": {
-            "description": "Whenever you sacrifice a Food, target creature you control gets +X/+X until end of turn, where X is the number of quest counters on Sierra"
+            "toughness": "+X",
+            "power": "x"
           }
         }
       }
@@ -39938,38 +39564,8 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
-          "params": {
-            "description": "{T}: Target opponent gains control of Yes Man"
-          }
-        }
-      },
-      {
-        "abilityType": "triggered",
-        "triggerEvent": "counter_placed",
-        "triggerCondition": "they do",
-        "isOptional": false,
-        "cost": null,
-        "targets": 0,
-        "targetFilter": null,
-        "effect": {
-          "kind": "put_counter",
+          "kind": "quest_death_tokens",
           "params": {}
-        }
-      },
-      {
-        "abilityType": "triggered",
-        "triggerEvent": "dies",
-        "triggerCondition": "Wild Card — When Yes Man leaves the battlefield",
-        "isOptional": false,
-        "cost": null,
-        "targets": 0,
-        "targetFilter": null,
-        "effect": {
-          "kind": "other",
-          "params": {
-            "description": "Wild Card — When Yes Man leaves the battlefield, its owner creates a tapped 1/1 white Soldier creature token for each quest counter on it"
-          }
         }
       }
     ],
@@ -40060,6 +39656,19 @@
           "params": {
             "targetHint": "target instant or"
           }
+        }
+      },
+      {
+        "abilityType": "triggered",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": true,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "copy_spell",
+          "params": {}
         }
       }
     ],
@@ -40383,24 +39992,9 @@
         "isOptional": false,
         "cost": null,
         "targets": 1,
-        "targetFilter": "creature card in your graveyard that's an artifact or that has mana value 3 or less gains escape until end of turn",
+        "targetFilter": "creature card in your graveyard that's an artifact or that has mana value 3 or less gains escape until end of turn The escape cost is equal to its mana cost plus exile two other cards from your graveyard",
         "effect": {
-          "kind": "other",
-          "params": {
-            "description": "Vigilance Whenever Desdemona attacks, target creature card in your graveyard that's an artifact or that has mana value 3 or less gains escape until end of turn"
-          }
-        }
-      },
-      {
-        "abilityType": "triggered",
-        "triggerEvent": null,
-        "triggerCondition": null,
-        "isOptional": false,
-        "cost": null,
-        "targets": 0,
-        "targetFilter": null,
-        "effect": {
-          "kind": "exile",
+          "kind": "enable_graveyard_cast",
           "params": {}
         }
       }
@@ -40541,9 +40135,9 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
+          "kind": "gains_keyword",
           "params": {
-            "description": "Whenever a creature you control with power 2 or less attacks, it gains skulk until end of turn"
+            "keyword": "skulk"
           }
         }
       },
@@ -40556,7 +40150,7 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "static_noop",
+          "kind": "static_restriction",
           "params": {}
         }
       },
@@ -40848,7 +40442,7 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "cant_be_blocked",
+          "kind": "static_restriction",
           "params": {}
         }
       },
@@ -40940,7 +40534,7 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "cant_be_blocked",
+          "kind": "static_restriction",
           "params": {}
         }
       }
@@ -41152,17 +40746,7 @@
       "Pirate"
     ],
     "keywords": [],
-    "manaProduction": {
-      "colors": [
-        "W",
-        "U",
-        "B",
-        "R",
-        "G",
-        "C"
-      ],
-      "amount": 1
-    },
+    "manaProduction": null,
     "entryTapRule": null,
     "conditionalEntryText": null,
     "abilities": [
@@ -41273,7 +40857,9 @@
     "typeLine": "Instant",
     "cardType": "instant",
     "subtypes": [],
-    "keywords": [],
+    "keywords": [
+      "split second"
+    ],
     "manaProduction": null,
     "entryTapRule": null,
     "conditionalEntryText": null,
@@ -41285,24 +40871,9 @@
         "isOptional": false,
         "cost": null,
         "targets": 1,
-        "targetFilter": "creature s with equal toughness",
+        "targetFilter": "creature s with equal toughness Destroy the chosen creatures",
         "effect": {
-          "kind": "other",
-          "params": {
-            "description": ") Choose any number of target creatures with equal toughness"
-          }
-        }
-      },
-      {
-        "abilityType": "spell",
-        "triggerEvent": null,
-        "triggerCondition": null,
-        "isOptional": false,
-        "cost": null,
-        "targets": 0,
-        "targetFilter": null,
-        "effect": {
-          "kind": "destroy",
+          "kind": "destroy_equal_toughness",
           "params": {}
         }
       }
@@ -41449,17 +41020,7 @@
     "cardType": "instant",
     "subtypes": [],
     "keywords": [],
-    "manaProduction": {
-      "colors": [
-        "W",
-        "U",
-        "B",
-        "R",
-        "G",
-        "C"
-      ],
-      "amount": 1
-    },
+    "manaProduction": null,
     "entryTapRule": null,
     "conditionalEntryText": null,
     "abilities": [
@@ -42252,10 +41813,8 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
-          "params": {
-            "description": "{1}, {T}: Roll X six-sided dice, where X is the number of Bobbleheads you control"
-          }
+          "kind": "roll_dice",
+          "params": {}
         }
       },
       {
@@ -42322,11 +41881,11 @@
         }
       },
       {
-        "abilityType": "static",
+        "abilityType": "activated",
         "triggerEvent": null,
         "triggerCondition": null,
         "isOptional": true,
-        "cost": null,
+        "cost": "{T}, {2}, Sacrifice",
         "targets": 0,
         "targetFilter": null,
         "effect": {
@@ -42587,10 +42146,8 @@
         "targets": 1,
         "targetFilter": "creature",
         "effect": {
-          "kind": "other",
-          "params": {
-            "description": "{T}: Move a shield counter from this land onto target creature"
-          }
+          "kind": "move_counter",
+          "params": {}
         }
       }
     ],
@@ -42859,10 +42416,8 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
-          "params": {
-            "description": "Lord of the Pyrrhian Legions — Whenever Anrakyr the Traveller attacks, you may cast an artifact spell from your hand or graveyard by paying life equal to its mana value rather than paying its mana cos"
-          }
+          "kind": "anrakyr_life_cast",
+          "params": {}
         }
       }
     ],
@@ -43210,27 +42765,10 @@
         "isOptional": false,
         "cost": "{T}, {1}{B}",
         "targets": 1,
-        "targetFilter": "artifact creature you control",
+        "targetFilter": "artifact creature you control When that creature dies this turn",
         "effect": {
-          "kind": "other",
-          "params": {
-            "description": "{1}{B}, {T}: Choose another target artifact creature you control"
-          }
-        }
-      },
-      {
-        "abilityType": "triggered",
-        "triggerEvent": "dies",
-        "triggerCondition": "that creature dies this turn",
-        "isOptional": false,
-        "cost": null,
-        "targets": 0,
-        "targetFilter": null,
-        "effect": {
-          "kind": "return_from_graveyard",
-          "params": {
-            "zone": "battlefield"
-          }
+          "kind": "cryptek_mark",
+          "params": {}
         }
       }
     ],
@@ -43433,7 +42971,7 @@
       "haste"
     ],
     "manaProduction": null,
-    "entryTapRule": null,
+    "entryTapRule": "always",
     "conditionalEntryText": null,
     "abilities": [
       {
@@ -43847,7 +43385,7 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "cant_be_blocked",
+          "kind": "static_restriction",
           "params": {}
         }
       },
@@ -43976,7 +43514,7 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "cant_be_blocked",
+          "kind": "static_restriction",
           "params": {}
         }
       },
@@ -44278,7 +43816,24 @@
     "manaProduction": null,
     "entryTapRule": null,
     "conditionalEntryText": null,
-    "abilities": [],
+    "abilities": [
+      {
+        "abilityType": "spell",
+        "triggerEvent": null,
+        "triggerCondition": "Prevent all combat damage that would be dealt this turn",
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "static_restriction",
+          "params": {
+            "preventCombatDamage": true,
+            "untilEndOfTurn": true
+          }
+        }
+      }
+    ],
     "oracleText": "Prevent all combat damage that would be dealt this turn.",
     "scryfallId": "584834fb-b7b6-40eb-9fec-8df17172ce5f"
   },
@@ -44436,7 +43991,7 @@
       {
         "abilityType": "spell",
         "triggerEvent": null,
-        "triggerCondition": null,
+        "triggerCondition": "All creatures get -1/-1 until end of turn for each Swamp you control",
         "isOptional": false,
         "cost": null,
         "targets": 0,
@@ -44444,9 +43999,10 @@
         "effect": {
           "kind": "pump",
           "params": {
-            "power": -1,
-            "toughness": -1,
-            "scope": "own"
+            "power": "-1",
+            "toughness": "-1",
+            "scope": "all_creatures",
+            "untilEndOfTurn": true
           }
         }
       }
@@ -44510,6 +44066,19 @@
     "entryTapRule": null,
     "conditionalEntryText": null,
     "abilities": [
+      {
+        "abilityType": "static",
+        "triggerEvent": null,
+        "triggerCondition": "Creatures you control are artifacts in addition to their other types",
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "static_noop",
+          "params": {}
+        }
+      },
       {
         "abilityType": "triggered",
         "triggerEvent": "cast",
@@ -44596,58 +44165,11 @@
         "triggerCondition": null,
         "isOptional": false,
         "cost": null,
-        "targets": 0,
-        "targetFilter": null,
-        "effect": {
-          "kind": "draw_cards",
-          "params": {
-            "amount": 3
-          }
-        }
-      },
-      {
-        "abilityType": "triggered",
-        "triggerEvent": null,
-        "triggerCondition": null,
-        "isOptional": false,
-        "cost": null,
-        "targets": 0,
-        "targetFilter": null,
-        "effect": {
-          "kind": "mill",
-          "params": {
-            "amount": 3
-          }
-        }
-      },
-      {
-        "abilityType": "triggered",
-        "triggerEvent": null,
-        "triggerCondition": null,
-        "isOptional": false,
-        "cost": null,
         "targets": 1,
-        "targetFilter": "creature cards with total mana value 8 or less in your graveyard",
+        "targetFilter": "creature cards with total mana value 8 or less in your graveyard Return each of them to the battlefield with a necrodermis counter on it",
         "effect": {
-          "kind": "other",
-          "params": {
-            "description": "III — Choose up to three target creature cards with total mana value 8 or less in your graveyard"
-          }
-        }
-      },
-      {
-        "abilityType": "triggered",
-        "triggerEvent": null,
-        "triggerCondition": null,
-        "isOptional": false,
-        "cost": null,
-        "targets": 0,
-        "targetFilter": null,
-        "effect": {
-          "kind": "return_from_graveyard",
-          "params": {
-            "zone": "battlefield"
-          }
+          "kind": "war_in_heaven_reanimate",
+          "params": {}
         }
       }
     ],
@@ -44710,9 +44232,24 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
+          "kind": "enable_graveyard_cast",
+          "params": {}
+        }
+      },
+      {
+        "abilityType": "triggered",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "animate_self",
           "params": {
-            "description": "Flying Repair Barge — Whenever this Vehicle becomes crewed, each artifact creature card in your graveyard gains unearth {3} until end of turn"
+            "power": 0,
+            "toughness": 0,
+            "keywords": []
           }
         }
       }
@@ -44767,6 +44304,23 @@
             "tokenToughness": 2,
             "tokenName": "artifact creature",
             "amount": 1
+          }
+        }
+      },
+      {
+        "abilityType": "triggered",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "animate_self",
+          "params": {
+            "power": 0,
+            "toughness": 0,
+            "keywords": []
           }
         }
       }
@@ -44922,6 +44476,23 @@
             "amount": 1
           }
         }
+      },
+      {
+        "abilityType": "triggered",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "animate_self",
+          "params": {
+            "power": 0,
+            "toughness": 0,
+            "keywords": []
+          }
+        }
       }
     ],
     "oracleText": "Flying\nInvasion Beams — When this Vehicle enters, create a 2/2 black Necron Warrior artifact creature token.\nCrew 2 (Tap any number of creatures you control with total power 2 or more: This Vehicle becomes an artifact creature until end of turn.)",
@@ -44981,7 +44552,17 @@
     "cardType": "artifact",
     "subtypes": [],
     "keywords": [],
-    "manaProduction": null,
+    "manaProduction": {
+      "colors": [
+        "W",
+        "U",
+        "B",
+        "R",
+        "G",
+        "C"
+      ],
+      "amount": 3
+    },
     "entryTapRule": null,
     "conditionalEntryText": null,
     "abilities": [
@@ -45013,7 +44594,21 @@
     "manaProduction": null,
     "entryTapRule": null,
     "conditionalEntryText": null,
-    "abilities": [],
+    "abilities": [
+      {
+        "abilityType": "static",
+        "triggerEvent": null,
+        "triggerCondition": "You may have this artifact enter as a copy of any artifact on the battlefield",
+        "isOptional": true,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "static_noop",
+          "params": {}
+        }
+      }
+    ],
     "oracleText": "You may have this artifact enter as a copy of any artifact on the battlefield.",
     "scryfallId": "d1958f01-77e9-4976-b7f8-f9b62aa78edc"
   },
@@ -45057,10 +44652,8 @@
         "targets": 1,
         "targetFilter": "creature you control",
         "effect": {
-          "kind": "other",
-          "params": {
-            "description": "{B}{B}: Attach this Equipment to target creature you control"
-          }
+          "kind": "detach_reattach",
+          "params": {}
         }
       },
       {
@@ -45379,62 +44972,15 @@
     "abilities": [
       {
         "abilityType": "triggered",
-        "triggerEvent": "cast",
-        "triggerCondition": "an opponent casts a spell",
-        "isOptional": false,
-        "cost": null,
-        "targets": 0,
-        "targetFilter": null,
-        "effect": {
-          "kind": "other",
-          "params": {
-            "description": "Whenever an opponent casts a spell, amass Orcs 1"
-          }
-        }
-      },
-      {
-        "abilityType": "triggered",
         "triggerEvent": "combat_damage",
-        "triggerCondition": "an Army you control deals combat damage to a player",
-        "isOptional": false,
-        "cost": null,
-        "targets": 0,
-        "targetFilter": null,
-        "effect": {
-          "kind": "deal_damage",
-          "params": {
-            "amount": 1
-          }
-        }
-      },
-      {
-        "abilityType": "triggered",
-        "triggerEvent": "discard",
-        "triggerCondition": "the Ring tempts you",
+        "triggerCondition": "an opponent casts a spell",
         "isOptional": true,
         "cost": null,
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
-          "params": {
-            "description": "Whenever the Ring tempts you, you may discard your hand"
-          }
-        }
-      },
-      {
-        "abilityType": "triggered",
-        "triggerEvent": null,
-        "triggerCondition": null,
-        "isOptional": false,
-        "cost": null,
-        "targets": 0,
-        "targetFilter": null,
-        "effect": {
-          "kind": "draw_cards",
-          "params": {
-            "amount": 4
-          }
+          "kind": "ring_tempts",
+          "params": {}
         }
       }
     ],
@@ -45710,38 +45256,10 @@
         "triggerCondition": null,
         "isOptional": false,
         "cost": "{T}",
-        "targets": 0,
-        "targetFilter": null,
-        "effect": {
-          "kind": "add_mana",
-          "params": {}
-        }
-      },
-      {
-        "abilityType": "activated",
-        "triggerEvent": null,
-        "triggerCondition": null,
-        "isOptional": false,
-        "cost": "{T}, {1}{B}",
-        "targets": 0,
-        "targetFilter": null,
-        "effect": {
-          "kind": "other",
-          "params": {
-            "description": "{1}{B}, {T}: Choose a player with the most life or tied for most life"
-          }
-        }
-      },
-      {
-        "abilityType": "static",
-        "triggerEvent": null,
-        "triggerCondition": null,
-        "isOptional": false,
-        "cost": null,
         "targets": 1,
         "targetFilter": "creature can't be blocked by creatures that player controls this turn",
         "effect": {
-          "kind": "cant_be_blocked",
+          "kind": "black_gate",
           "params": {}
         }
       }
@@ -45815,6 +45333,21 @@
     "entryTapRule": null,
     "conditionalEntryText": null,
     "abilities": [
+      {
+        "abilityType": "triggered",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "amass",
+          "params": {
+            "amount": 2
+          }
+        }
+      },
       {
         "abilityType": "static",
         "triggerEvent": null,
@@ -45946,6 +45479,21 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
+          "kind": "amass",
+          "params": {
+            "amount": 1
+          }
+        }
+      },
+      {
+        "abilityType": "triggered",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
           "kind": "put_counter",
           "params": {
             "counterKind": "+1/+1",
@@ -46015,9 +45563,11 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
+          "kind": "x_pump",
           "params": {
-            "description": "Whenever this creature attacks, it gets +X/+0 until end of turn, where X is the greatest power among creatures you control"
+            "x_source": "greatest_power",
+            "toughness": "+0",
+            "power": "x"
           }
         }
       }
@@ -46039,7 +45589,23 @@
     "manaProduction": null,
     "entryTapRule": null,
     "conditionalEntryText": null,
-    "abilities": [],
+    "abilities": [
+      {
+        "abilityType": "triggered",
+        "triggerEvent": "mana_tapped",
+        "triggerCondition": "Whenever an opponent taps an artifact for mana, gain control of that artifact until the end of your next turn",
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "gain_control",
+          "params": {
+            "temporary": true
+          }
+        }
+      }
+    ],
     "oracleText": "Whenever an opponent taps an artifact for mana, gain control of that artifact until the end of your next turn.",
     "scryfallId": "5facc43f-f865-45ad-888b-398f6e07b947"
   },
@@ -46182,10 +45748,8 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
-          "params": {
-            "description": "Gríma can't be blocked"
-          }
+          "kind": "static_restriction",
+          "params": {}
         }
       },
       {
@@ -46307,9 +45871,9 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
+          "kind": "amass",
           "params": {
-            "description": "Whenever you cast a noncreature spell, amass Orcs X, where X is that spell's mana value"
+            "amount": 1
           }
         }
       },
@@ -46469,7 +46033,7 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "cant_be_blocked",
+          "kind": "static_restriction",
           "params": {}
         }
       },
@@ -46635,9 +46199,22 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
+          "kind": "target_player_mill",
+          "params": {}
+        }
+      },
+      {
+        "abilityType": "triggered",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "amass",
           "params": {
-            "description": "When The Mouth of Sauron enters, target player mills three cards"
+            "amount": 1
           }
         }
       },
@@ -46780,10 +46357,8 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
-          "params": {
-            "description": ") Whenever this creature attacks for the first time each turn, if it's attacking the player with the most life or tied for most life, untap all attacking creatures"
-          }
+          "kind": "static_noop",
+          "params": {}
         }
       }
     ],
@@ -46813,7 +46388,7 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "cant_be_blocked",
+          "kind": "static_restriction",
           "params": {}
         }
       },
@@ -46884,11 +46459,11 @@
         }
       },
       {
-        "abilityType": "static",
+        "abilityType": "activated",
         "triggerEvent": null,
         "triggerCondition": null,
         "isOptional": false,
-        "cost": null,
+        "cost": "{T}, {2}, Sacrifice",
         "targets": 0,
         "targetFilter": null,
         "effect": {
@@ -47474,6 +47049,21 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
+          "kind": "amass",
+          "params": {
+            "amount": 1
+          }
+        }
+      },
+      {
+        "abilityType": "spell",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
           "kind": "mill",
           "params": {
             "amount": 1
@@ -47555,6 +47145,21 @@
         "effect": {
           "kind": "return_from_graveyard",
           "params": {}
+        }
+      },
+      {
+        "abilityType": "spell",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "amass",
+          "params": {
+            "amount": 2
+          }
         }
       },
       {
@@ -47655,7 +47260,7 @@
       {
         "abilityType": "spell",
         "triggerEvent": null,
-        "triggerCondition": null,
+        "triggerCondition": "All creatures get -4/-4 until end of turn",
         "isOptional": false,
         "cost": null,
         "targets": 0,
@@ -47663,9 +47268,10 @@
         "effect": {
           "kind": "pump",
           "params": {
-            "power": -4,
-            "toughness": -4,
-            "scope": "all"
+            "power": "-4",
+            "toughness": "-4",
+            "scope": "all_creatures",
+            "untilEndOfTurn": true
           }
         }
       }
@@ -47727,6 +47333,19 @@
     "entryTapRule": null,
     "conditionalEntryText": null,
     "abilities": [
+      {
+        "abilityType": "spell",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "each_player_mill",
+          "params": {}
+        }
+      },
       {
         "abilityType": "spell",
         "triggerEvent": null,
@@ -47853,7 +47472,25 @@
     "manaProduction": null,
     "entryTapRule": null,
     "conditionalEntryText": null,
-    "abilities": [],
+    "abilities": [
+      {
+        "abilityType": "spell",
+        "triggerEvent": null,
+        "triggerCondition": "Gain control of each noncommander creature with mana value 3 or less",
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "gain_control",
+          "params": {
+            "scope": "each",
+            "maxManaValue": 3,
+            "excludeCommander": true
+          }
+        }
+      }
+    ],
     "oracleText": "Gain control of each noncommander creature with mana value 3 or less.",
     "scryfallId": "6206d9f1-6a57-46a2-942f-6f20e33e5d6a"
   },
@@ -48012,10 +47649,8 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
-          "params": {
-            "description": "When this enchantment enters, the Ring tempts you"
-          }
+          "kind": "ring_tempts",
+          "params": {}
         }
       },
       {
@@ -48047,17 +47682,7 @@
       "Aura"
     ],
     "keywords": [],
-    "manaProduction": {
-      "colors": [
-        "W",
-        "U",
-        "B",
-        "R",
-        "G",
-        "C"
-      ],
-      "amount": 1
-    },
+    "manaProduction": null,
     "entryTapRule": null,
     "conditionalEntryText": null,
     "abilities": [
@@ -48183,6 +47808,19 @@
         "triggerCondition": null,
         "isOptional": false,
         "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "ring_tempts",
+          "params": {}
+        }
+      },
+      {
+        "abilityType": "triggered",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": null,
         "targets": 1,
         "targetFilter": "creature that player controls until end of turn",
         "effect": {
@@ -48206,6 +47844,19 @@
             "keyword": "haste",
             "scope": "all"
           }
+        }
+      },
+      {
+        "abilityType": "triggered",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "ring_tempts",
+          "params": {}
         }
       }
     ],
@@ -48232,7 +47883,7 @@
         "G",
         "C"
       ],
-      "amount": 1
+      "amount": "X"
     },
     "entryTapRule": null,
     "conditionalEntryText": null,
@@ -48310,7 +47961,7 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "cant_be_blocked",
+          "kind": "static_restriction",
           "params": {}
         }
       },
@@ -48323,9 +47974,10 @@
         "targets": 1,
         "targetFilter": "creature gets +X/-X until end of turn",
         "effect": {
-          "kind": "other",
+          "kind": "x_pump",
           "params": {
-            "description": "{B}, Sacrifice X Squirrels: Target creature gets +X/-X until end of turn"
+            "toughness": "-X",
+            "power": "x"
           }
         }
       }
@@ -48389,11 +48041,11 @@
     "conditionalEntryText": null,
     "abilities": [
       {
-        "abilityType": "static",
+        "abilityType": "activated",
         "triggerEvent": null,
         "triggerCondition": null,
         "isOptional": false,
-        "cost": null,
+        "cost": "{T}",
         "targets": 0,
         "targetFilter": null,
         "effect": {
@@ -48911,11 +48563,11 @@
     "conditionalEntryText": null,
     "abilities": [
       {
-        "abilityType": "static",
+        "abilityType": "activated",
         "triggerEvent": null,
         "triggerCondition": null,
         "isOptional": false,
-        "cost": null,
+        "cost": "{T}, {2}, Sacrifice",
         "targets": 0,
         "targetFilter": null,
         "effect": {
@@ -49559,10 +49211,8 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
-          "params": {
-            "description": "{T}: Regenerate target Insect, Rat, Spider, or Squirrel"
-          }
+          "kind": "regenerate",
+          "params": {}
         }
       }
     ],
@@ -49862,6 +49512,19 @@
         }
       },
       {
+        "abilityType": "triggered",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": true,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "detach_reattach",
+          "params": {}
+        }
+      },
+      {
         "abilityType": "activated",
         "triggerEvent": null,
         "triggerCondition": null,
@@ -49926,6 +49589,19 @@
     "entryTapRule": null,
     "conditionalEntryText": null,
     "abilities": [
+      {
+        "abilityType": "spell",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "copy_spell",
+          "params": {}
+        }
+      },
       {
         "abilityType": "spell",
         "triggerEvent": null,
@@ -50058,11 +49734,11 @@
         }
       },
       {
-        "abilityType": "static",
+        "abilityType": "activated",
         "triggerEvent": null,
         "triggerCondition": null,
         "isOptional": false,
-        "cost": null,
+        "cost": "{T}, {2}, Sacrifice",
         "targets": 0,
         "targetFilter": null,
         "effect": {
@@ -50241,11 +49917,11 @@
         }
       },
       {
-        "abilityType": "static",
+        "abilityType": "activated",
         "triggerEvent": null,
         "triggerCondition": null,
         "isOptional": false,
-        "cost": null,
+        "cost": "{1}{B}{G}, Sacrifice",
         "targets": 0,
         "targetFilter": null,
         "effect": {
@@ -50668,6 +50344,23 @@
     "entryTapRule": null,
     "conditionalEntryText": null,
     "abilities": [
+      {
+        "abilityType": "triggered",
+        "triggerEvent": "mana_tapped",
+        "triggerCondition": "Enchant land Whenever enchanted land is tapped for mana, its controller adds an additional {G}",
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "add_mana",
+          "params": {
+            "colors": [
+              "G"
+            ]
+          }
+        }
+      },
       {
         "abilityType": "activated",
         "triggerEvent": null,

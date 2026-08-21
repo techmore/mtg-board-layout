@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { COMBAT_KEYWORDS, computeStaticPump, parseKeywords, parsePower, parseToughness } from './combat'
+import { COMBAT_KEYWORDS, canBlock, computeStaticPump, parseKeywords, parsePower, parseToughness } from './combat'
 
 describe('parseKeywords', () => {
   it('finds keywords on the first line', () => {
@@ -81,5 +81,29 @@ describe('computeStaticPump', () => {
     const battlefield = [sword, bear, wolf]
     expect(computeStaticPump(battlefield, bear)).toEqual({ power: 2, toughness: 2 })
     expect(computeStaticPump(battlefield, wolf)).toEqual({ power: 0, toughness: 0 })
+  })
+})
+
+describe('canBlock conditional self-restrictions', () => {
+  it('enforces plain "can\'t be blocked"', () => {
+    const grim = { id: 'grima', name: 'Gríma', typeLine: 'Creature', oracleText: 'Gríma can\'t be blocked.', owner: 'opponent' }
+    expect(canBlock(grim)).toBe(false)
+  })
+
+  it('forestwalk: unblockable while the defending player controls a matching land', () => {
+    const chatterfang = { id: 'cfang', name: 'Chatterfang', typeLine: 'Creature', oracleText: 'Forestwalk (This creature can\'t be blocked as long as defending player controls a Forest)', ownerId: 'b' }
+    const forest = { id: 'f1', typeLine: 'Land — Forest', ownerId: 'b' }
+    const island = { id: 'i1', typeLine: 'Land — Island', ownerId: 'b' }
+    expect(canBlock(chatterfang, [forest])).toBe(false)
+    expect(canBlock(chatterfang, [island])).toBe(true)
+    // No ownership info → treated as blockable.
+    expect(canBlock(chatterfang)).toBe(true)
+  })
+
+  it('rad-counter gate: unblockable only while the defender has a rad counter', () => {
+    const nightkin = { id: 'nk', name: 'Nightkin Ambusher', typeLine: 'Creature', oracleText: 'This creature can\'t be blocked as long as defending player has a rad counter', owner: 'player' }
+    expect(canBlock(nightkin, [], { defenderRadCounters: 0 })).toBe(true)
+    expect(canBlock(nightkin, [], { defenderRadCounters: 2 })).toBe(false)
+    expect(canBlock(nightkin)).toBe(true)
   })
 })

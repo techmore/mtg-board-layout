@@ -98,7 +98,7 @@ export function createDeckActions(set: SetFn, get: () => GameState): Pick<GameSt
       }
 
       cacheDeckImages(deckCards)
-      set({ ...pushUndo(preState), activeDeckId: deckId ?? null, cards: shuffle(cards), manaPool: emptyManaPool(), potentialMana: [], manaLog: [], effectHistory: [], lifeTotal: 40, tokens: [], rollHistory: [], overlay: { type: null }, turn: 1, turnPlayerMs: 0, turnOpponentMs: 0, landPlaysThisTurn: 0, playerSpellsCastThisTurn: 0, opponentSpellsCastThisTurn: 0, drawNotice: null, turnAnnouncement: null, turnPrompt: null, commanderDamage: {}, gameOver: null, monarch: null, aiResponsePending: null, activePlayer: 'player', currentPhase: 'beginning', opponentLifeTotal: 40, energyCounters: 0, opponentEnergyCounters: 0, radCounters: 0, opponentRadCounters: 0, opponentManaPool: emptyManaPool(), opponentPotentialMana: [], opponentLandPlaysThisTurn: 0, showOpponent: false, opponentName: null, triggerStack: [], auraPrompt: null, wardPrompt: null, combatState: { active: false, attackers: [], blockers: {} } })
+      set({ ...pushUndo(preState), activeDeckId: deckId ?? null, cards: shuffle(cards), manaPool: emptyManaPool(), potentialMana: [], manaLog: [], effectHistory: [], lifeTotal: 40, tokens: [], rollHistory: [], overlay: { type: null }, turn: 1, turnPlayerMs: 0, turnOpponentMs: 0, landPlaysThisTurn: 0, playerSpellsCastThisTurn: 0, opponentSpellsCastThisTurn: 0, drawNotice: null, turnAnnouncement: null, turnPrompt: null, commanderDamage: {}, gameOver: null, monarch: null, aiResponsePending: null, activePlayer: 'player', currentPhase: 'beginning', opponentLifeTotal: 40, energyCounters: 0, opponentEnergyCounters: 0, radCounters: 0, opponentRadCounters: 0, experienceCounters: 0, opponentExperienceCounters: 0, opponentManaPool: emptyManaPool(), opponentPotentialMana: [], opponentLandPlaysThisTurn: 0, showOpponent: false, opponentName: null, triggerStack: [], auraPrompt: null, wardPrompt: null, combatState: { active: false, attackers: [], blockers: {} } })
     },
 
     reshuffle: () =>
@@ -136,6 +136,10 @@ export function createDeckActions(set: SetFn, get: () => GameState): Pick<GameSt
           opponentEnergyCounters: 0,
           radCounters: 0,
           opponentRadCounters: 0,
+
+          experienceCounters: 0,
+
+          opponentExperienceCounters: 0,
           opponentManaPool: emptyManaPool(),
           opponentPotentialMana: [],
           opponentLandPlaysThisTurn: 0,
@@ -178,6 +182,10 @@ export function createDeckActions(set: SetFn, get: () => GameState): Pick<GameSt
           opponentEnergyCounters: 0,
           radCounters: 0,
           opponentRadCounters: 0,
+
+          experienceCounters: 0,
+
+          opponentExperienceCounters: 0,
           opponentManaPool: emptyManaPool(),
           opponentPotentialMana: [],
           opponentLandPlaysThisTurn: 0,

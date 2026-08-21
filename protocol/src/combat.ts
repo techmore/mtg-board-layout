@@ -75,10 +75,18 @@ function hasConditionAfter(text: string, matchIndex: number): boolean {
 export function canAttack(
   card: { id: string; oracleText?: string },
   battlefield: Iterable<{ id: string; oracleText?: string; enchantsCardId?: string }> = [],
+  context: { handSize?: number } = {},
 ): boolean {
   const text = card.oracleText ?? ''
   const m = text.match(/can't\s+attack(?:\s+or\s+block)?/i)
   if (m && !hasConditionAfter(text, (m.index ?? 0) + m[0].length)) return false
+  // Hand-size gate ("Kefnet can't attack or block unless you have seven or
+  // more cards in hand").
+  const handGate = text.match(/can't (?:attack|block|attack or block) unless you have (?:(\d+)|(one|two|three|four|five|six|seven|eight|nine|ten)) or more cards in hand/i)
+  if (handGate && context.handSize !== undefined) {
+    const needed = handGate[1] ? parseInt(handGate[1], 10) : ({ one: 1, two: 2, three: 3, four: 4, five: 5, six: 6, seven: 7, eight: 8, nine: 9, ten: 10 })[handGate[2].toLowerCase()] ?? 7
+    if (context.handSize < needed) return false
+  }
   for (const source of battlefield) {
     if (source.enchantsCardId === card.id) {
       if (/(?:enchanted (?:creature|permanent)|equipped creature)\s+can't\s+attack(?:\s+or\s+block)?/i.test(source.oracleText ?? '')) return false
@@ -89,12 +97,34 @@ export function canAttack(
 
 /** Whether a creature can block (see {@link canAttack}). */
 export function canBlock(
-  card: { id: string; oracleText?: string },
-  battlefield: Iterable<{ id: string; oracleText?: string; enchantsCardId?: string }> = [],
+  card: { id: string; oracleText?: string; ownerId?: string; owner?: string },
+  battlefield: Iterable<{ id: string; oracleText?: string; enchantsCardId?: string; ownerId?: string; owner?: string; typeLine?: string }> = [],
+  context: { defenderRadCounters?: number; handSize?: number } = {},
 ): boolean {
   const text = card.oracleText ?? ''
   const m = text.match(/can't\s+(?:be\s+)?blocked|can't\s+(?:attack\s+or\s+)?block/i)
   if (m && !hasConditionAfter(text, (m.index ?? 0) + m[0].length)) return false
+  // Hand-size gate ("can't attack or block unless you have N or more cards in
+  // hand") — see {@link canAttack}.
+  const handGate = text.match(/can't (?:attack|block|attack or block) unless you have (?:(\d+)|(one|two|three|four|five|six|seven|eight|nine|ten)) or more cards in hand/i)
+  if (handGate && context.handSize !== undefined) {
+    const needed = handGate[1] ? parseInt(handGate[1], 10) : ({ one: 1, two: 2, three: 3, four: 4, five: 5, six: 6, seven: 7, eight: 8, nine: 9, ten: 10 })[handGate[2].toLowerCase()] ?? 7
+    if (context.handSize < needed) return false
+  }
+  // Landwalk ("Forestwalk (This creature can't be blocked as long as defending
+  // player controls a Forest)"): the blocker's controller is the defending side.
+  const walk = text.match(/can't be blocked as long as defending player controls an? ([A-Za-z]+)/i)
+  if (walk) {
+    const myOwner = card.ownerId ?? card.owner
+    if (myOwner !== undefined) {
+      const landRe = new RegExp(`\\b${walk[1]}\\b`, 'i')
+      for (const perm of battlefield) {
+        if ((perm.ownerId ?? perm.owner) === myOwner && landRe.test(perm.typeLine ?? '')) return false
+      }
+    }
+  }
+  // "…as long as defending player has a rad counter" (Nightkin Ambusher).
+  if ((context.defenderRadCounters ?? 0) > 0 && /can't be blocked as long as defending player has a rad counter/i.test(text)) return false
   for (const source of battlefield) {
     if (source.enchantsCardId === card.id) {
       if (/(?:enchanted (?:creature|permanent)|equipped creature)\s+can't\s+(?:be\s+)?blocked|(?:enchanted (?:creature|permanent)|equipped creature)\s+can't\s+(?:attack\s+or\s+)?block/i.test(source.oracleText ?? '')) return false
@@ -106,17 +136,39 @@ export function canBlock(
 const STATIC_KEYWORD_NAMES = ['deathtouch', 'flying', 'first strike', 'double strike', 'haste', 'hexproof', 'indestructible', 'lifelink', 'menace', 'reach', 'trample', 'vigilance', 'ward', 'skulk']
 
 /**
- * Attack tax (Ghostly Prison / Propaganda): "Creatures can't attack you unless
- * their controller pays {N} for each creature they control that's attacking
- * you." Returns N (per attacker) from the defending side's battlefield.
+ * Attack tax (Ghostly Prison / Propaganda / Archangel of Tithes): "Creatures
+ * can't attack you unless their controller pays {N} for each creature they
+ * control that's attacking you." Returns N (per attacker) from the defending
+ * side's battlefield. Archangel only applies while it is untapped.
  */
 export function attackTax(
-  defenderBattlefield: Iterable<{ id: string; oracleText?: string; ownerId?: string; owner?: string }>,
+  defenderBattlefield: Iterable<{ id: string; oracleText?: string; ownerId?: string; owner?: string; tapped?: boolean }>,
 ): number {
   let tax = 0
   for (const source of defenderBattlefield) {
-    const m = (source.oracleText ?? '').match(/creatures?\s+can't attack you unless their controller pays \{(\d+)\}/i)
-    if (m) tax = Math.max(tax, parseInt(m[1], 10))
+    const text = source.oracleText ?? ''
+    const m = text.match(/creatures?\s+can't attack you(?:\s+or\s+planeswalkers\s+you\s+control)?\s+unless their controller pays \{(\d+)\}/i)
+    if (!m) continue
+    // Archangel of Tithes: only applies while untapped.
+    if (/\bas long as this creature is untapped\b/i.test(text) && source.tapped === true) continue
+    tax = Math.max(tax, parseInt(m[1], 10))
+  }
+  return tax
+}
+
+/**
+ * Block tax (Archangel of Tithes, attacking side): "As long as this creature is
+ * attacking, creatures can't block unless their controller pays {1} for each of
+ * those creatures." Returns the per-blocker cost demanded by the ATTACKING
+ * side's battlefield. Callers pass only permanents that are actually attacking.
+ */
+export function blockTax(attackerBattlefield: Iterable<{ id: string; oracleText?: string; tapped?: boolean }>): number {
+  let tax = 0
+  for (const source of attackerBattlefield) {
+    const text = source.oracleText ?? ''
+    const m = text.match(/creatures?\s+can't block unless their controller pays \{(\d+)\}/i)
+    if (!m) continue
+    tax = Math.max(tax, parseInt(m[1], 10))
   }
   return tax
 }

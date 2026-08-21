@@ -25,12 +25,16 @@ export function pickCommanderCast(commandCards: BoardCard[], manaPool: Record<Ma
   return null
 }
 
-export function pickAttackers(battlefield: BoardCard[], currentTurn: number, defenders: BoardCard[] = [], playerLife?: number, commanderDamage: Record<string, number> = {}): string[] {
+export function pickAttackers(battlefield: BoardCard[], currentTurn: number, defenders: BoardCard[] = [], playerLife?: number, commanderDamage: Record<string, number> = {}, mustAttack = false): string[] {
   const candidates = battlefield
     .filter((c) => c.type === 'creature' && !c.tapped)
     .filter((c) => c.enteredAtTurn === currentTurn ? hasKeyword(c, 'haste', battlefield) : true)
     .filter((c) => canAttack(c, battlefield))
   if (candidates.length === 0) return []
+
+  // Turn-scoped compulsion ("creatures your opponents control attack this turn
+  // if able" — Bident of Thassa activation, Kardur's ETB).
+  if (mustAttack) return candidates.map((c) => c.id)
 
   const threats = defenders.filter(
     (c) => c.type === 'creature' && !c.tapped && c.enteredAtTurn !== currentTurn && getCardPower(c) > 0,
@@ -80,12 +84,33 @@ export function pickBlockers(
   currentTurn: number,
   aiLife?: number,
   commanderDamage: Record<string, number> = {},
+  aiRadCounters = 0,
+  parityBan?: { parity: 'odd' | 'even'; untilTurn: number } | null,
+  ring?: { player?: { temptations: number; bearerId: string | null }; opponent?: { temptations: number; bearerId: string | null } },
 ): Record<string, string[]> {
   const blockers: Record<string, string[]> = {}
+  const aiHandSize = allCards.filter((c) => (c.owner ?? 'player') === 'opponent' && c.zone === 'hand').length
   const available = opponentBattlefield.filter(
-    (c) => c.type === 'creature' && c.enteredAtTurn !== currentTurn && canBlock(c, allCards),
+    (c) => c.type === 'creature' && c.enteredAtTurn !== currentTurn
+      && canBlock(c, allCards, { defenderRadCounters: aiRadCounters, handSize: aiHandSize })
+      && !(parityBan && parityBan.untilTurn >= currentTurn && ((c.manaValue ?? 0) % 2 === 0) === (parityBan.parity === 'even')),
   )
   const used = new Set<string>()
+
+  // "Must be blocked if able" (Frodo as Ring-bearer): assign a legal blocker
+  // to that attacker first, before any trade evaluation.
+  for (const attId of playerAttackers) {
+    const attacker = allCards.find((c) => c.id === attId)
+    if (!attacker || !/must be blocked if able/i.test(attacker.oracleText ?? '')) continue
+    const legal = available.filter((b) => !used.has(b.id))
+      .filter((b) => !hasKeyword(attacker, 'flying', allCards) || hasKeyword(b, 'flying', allCards) || hasKeyword(b, 'reach', allCards))
+      .filter((b) => !hasKeyword(attacker, 'skulk', allCards) || getCardPower(b) <= getCardPower(attacker))
+    if (legal.length > 0) {
+      const chosen = legal.sort((a, b) => getCardPower(a) - getCardPower(b))[0]
+      used.add(chosen.id)
+      blockers[attId] = [chosen.id]
+    }
+  }
 
   const incomingPower = playerAttackers.reduce((sum, attId) => {
     const attacker = allCards.find((c) => c.id === attId)
@@ -108,6 +133,11 @@ export function pickBlockers(
       .filter((b) => !used.has(b.id))
       .filter((b) => !attackerFlying || hasKeyword(b, 'flying', allCards) || hasKeyword(b, 'reach', allCards))
       .filter((b) => !hasKeyword(attacker, 'skulk', allCards) || getCardPower(b) <= getCardPower(attacker))
+      .filter((b) => {
+        // The Ring L1: the Ring-bearer can't be blocked by greater power.
+        const ringMine = ring?.[(attacker.owner ?? 'player') as 'player' | 'opponent']
+        return !(ringMine && ringMine.temptations >= 1 && ringMine.bearerId === attacker.id && getCardPower(b) > getCardPower(attacker))
+      })
       .sort((a, b) => {
         const aTough = getCardToughness(a) + computeStaticPump(allCards, a).toughness
         const bTough = getCardToughness(b) + computeStaticPump(allCards, b).toughness

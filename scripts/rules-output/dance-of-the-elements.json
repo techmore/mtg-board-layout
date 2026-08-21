@@ -205,10 +205,8 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
-          "params": {
-            "description": "Flash Reach When this creature enters, up to one target player puts all the cards from their graveyard on the bottom of their library in a random order"
-          }
+          "kind": "graveyard_to_library",
+          "params": {}
         }
       },
       {
@@ -486,7 +484,7 @@
         "G",
         "C"
       ],
-      "amount": 1
+      "amount": "X"
     },
     "entryTapRule": null,
     "conditionalEntryText": null,
@@ -619,7 +617,23 @@
     "manaProduction": null,
     "entryTapRule": null,
     "conditionalEntryText": null,
-    "abilities": [],
+    "abilities": [
+      {
+        "abilityType": "static",
+        "triggerEvent": null,
+        "triggerCondition": "During each of your turns, you may play a land and cast a permanent spell of each permanent type from your graveyard",
+        "isOptional": true,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "cast_from_graveyard",
+          "params": {
+            "permanentsOnly": true
+          }
+        }
+      }
+    ],
     "oracleText": "During each of your turns, you may play a land and cast a permanent spell of each permanent type from your graveyard. (If a card has multiple permanent types, choose one as you play it.)",
     "scryfallId": "705b4d97-2f50-47f7-9053-d748f4337553"
   },
@@ -782,7 +796,7 @@
       ],
       "amount": 5
     },
-    "entryTapRule": null,
+    "entryTapRule": "always",
     "conditionalEntryText": null,
     "abilities": [
       {
@@ -1072,10 +1086,8 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
-          "params": {
-            "description": "This mana can't be spent to pay generic mana costs"
-          }
+          "kind": "static_noop",
+          "params": {}
         }
       }
     ],
@@ -1373,7 +1385,7 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "cant_be_blocked",
+          "kind": "static_restriction",
           "params": {}
         }
       },
@@ -2037,11 +2049,11 @@
         }
       },
       {
-        "abilityType": "static",
+        "abilityType": "activated",
         "triggerEvent": null,
         "triggerCondition": null,
         "isOptional": false,
-        "cost": null,
+        "cost": "{T}, {R}",
         "targets": 1,
         "targetFilter": "creature gains haste until end of turn",
         "effect": {
@@ -3437,7 +3449,7 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "cant_be_blocked",
+          "kind": "static_restriction",
           "params": {}
         }
       },
@@ -3476,44 +3488,14 @@
     "abilities": [
       {
         "abilityType": "triggered",
-        "triggerEvent": "dies",
-        "triggerCondition": "this creature leaves the battlefield",
-        "isOptional": false,
-        "cost": null,
-        "targets": 0,
-        "targetFilter": null,
-        "effect": {
-          "kind": "other",
-          "params": {
-            "description": "When this creature leaves the battlefield, choose an opponent"
-          }
-        }
-      },
-      {
-        "abilityType": "triggered",
-        "triggerEvent": null,
-        "triggerCondition": null,
-        "isOptional": false,
-        "cost": null,
-        "targets": 0,
-        "targetFilter": null,
-        "effect": {
-          "kind": "draw_cards",
-          "params": {
-            "amount": 1
-          }
-        }
-      },
-      {
-        "abilityType": "triggered",
         "triggerEvent": "etb",
-        "triggerCondition": "If you do",
-        "isOptional": false,
+        "triggerCondition": "this creature leaves the battlefield",
+        "isOptional": true,
         "cost": null,
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "static_noop",
+          "kind": "slithermuse_draw",
           "params": {}
         }
       }
@@ -3648,23 +3630,16 @@
     "conditionalEntryText": null,
     "abilities": [
       {
-        "abilityType": "triggered",
-        "triggerEvent": "etb",
-        "triggerEvents": [
-          "etb",
-          "attack"
-        ],
-        "triggerCondition": "this creature enters or attacks",
+        "abilityType": "static",
+        "triggerEvent": null,
+        "triggerCondition": "Whenever this creature enters or attacks, create a green and white Elemental creature token with \"This token's power and toughness are each equal to the number of creatures you control",
         "isOptional": false,
         "cost": null,
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "create_token",
-          "params": {
-            "tokenName": "Elemental creature",
-            "amount": 1
-          }
+          "kind": "static_noop",
+          "params": {}
         }
       }
     ],
@@ -3756,17 +3731,7 @@
       "Aura"
     ],
     "keywords": [],
-    "manaProduction": {
-      "colors": [
-        "W",
-        "U",
-        "B",
-        "R",
-        "G",
-        "C"
-      ],
-      "amount": 1
-    },
+    "manaProduction": null,
     "entryTapRule": null,
     "conditionalEntryText": null,
     "abilities": [
@@ -3896,7 +3861,23 @@
     "manaProduction": null,
     "entryTapRule": null,
     "conditionalEntryText": null,
-    "abilities": [],
+    "abilities": [
+      {
+        "abilityType": "triggered",
+        "triggerEvent": "mana_tapped",
+        "triggerCondition": "Enchant land Whenever enchanted land is tapped for mana, its controller adds an additional one mana of any color",
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "add_mana",
+          "params": {
+            "anyColor": true
+          }
+        }
+      }
+    ],
     "oracleText": "Enchant land\nWhenever enchanted land is tapped for mana, its controller adds an additional one mana of any color.",
     "scryfallId": "83778d03-6196-4994-8f78-4db6cec823fb"
   },
@@ -4043,17 +4024,7 @@
     "cardType": "enchantment",
     "subtypes": [],
     "keywords": [],
-    "manaProduction": {
-      "colors": [
-        "W",
-        "U",
-        "B",
-        "R",
-        "G",
-        "C"
-      ],
-      "amount": 1
-    },
+    "manaProduction": null,
     "entryTapRule": null,
     "conditionalEntryText": null,
     "abilities": [

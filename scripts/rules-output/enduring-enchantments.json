@@ -1413,7 +1413,7 @@
     ],
     "keywords": [],
     "manaProduction": null,
-    "entryTapRule": null,
+    "entryTapRule": "conditional",
     "conditionalEntryText": "Constellation — Whenever an enchantment you control enters, you may put a land card from your hand onto the battlefield tapped",
     "abilities": [
       {
@@ -1509,9 +1509,10 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
+          "kind": "x_pump",
           "params": {
-            "description": "{2}{B}, Sacrifice another enchantment: This creature gets +X/+0 until end of turn, where X is the sacrificed enchantment's mana value"
+            "toughness": "+0",
+            "power": "x"
           }
         }
       }
@@ -1542,26 +1543,11 @@
         "triggerCondition": null,
         "isOptional": false,
         "cost": null,
-        "targets": 0,
-        "targetFilter": null,
-        "effect": {
-          "kind": "static_noop",
-          "params": {}
-        }
-      },
-      {
-        "abilityType": "triggered",
-        "triggerEvent": null,
-        "triggerCondition": null,
-        "isOptional": false,
-        "cost": null,
         "targets": 1,
         "targetFilter": "land you control becomes an X/X Elemental creature with trample and haste until end of turn",
         "effect": {
-          "kind": "other",
-          "params": {
-            "description": "{3}{G}: Target land you control becomes an X/X Elemental creature with trample and haste until end of turn, where X is the number of enchantments you control"
-          }
+          "kind": "animate_target_temp",
+          "params": {}
         }
       }
     ],
@@ -1582,7 +1568,34 @@
     "manaProduction": null,
     "entryTapRule": null,
     "conditionalEntryText": null,
-    "abilities": [],
+    "abilities": [
+      {
+        "abilityType": "static",
+        "triggerEvent": null,
+        "triggerCondition": "You may play an additional land on each of your turns",
+        "isOptional": true,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "static_noop",
+          "params": {}
+        }
+      },
+      {
+        "abilityType": "static",
+        "triggerEvent": null,
+        "triggerCondition": "Lands you control are every basic land type in addition to their other types",
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "static_noop",
+          "params": {}
+        }
+      }
+    ],
     "oracleText": "You may play an additional land on each of your turns.\nLands you control are every basic land type in addition to their other types.",
     "scryfallId": "43be1363-7e73-4862-b45f-07f490ab46be"
   },
@@ -1785,7 +1798,21 @@
     "manaProduction": null,
     "entryTapRule": null,
     "conditionalEntryText": null,
-    "abilities": [],
+    "abilities": [
+      {
+        "abilityType": "triggered",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "each_player_mill",
+          "params": {}
+        }
+      }
+    ],
     "oracleText": "Flying\nAt the beginning of combat on your turn, each player mills three cards.",
     "scryfallId": "2dabd3ef-eac8-48ed-b2c1-f4ce8adcedf5"
   },
@@ -2021,7 +2048,17 @@
       "Dryad"
     ],
     "keywords": [],
-    "manaProduction": null,
+    "manaProduction": {
+      "colors": [
+        "W",
+        "U",
+        "B",
+        "R",
+        "G",
+        "C"
+      ],
+      "amount": "X"
+    },
     "entryTapRule": null,
     "conditionalEntryText": null,
     "abilities": [
@@ -2465,6 +2502,10 @@
       {
         "abilityType": "triggered",
         "triggerEvent": "etb",
+        "triggerEvents": [
+          "etb",
+          "cast"
+        ],
         "triggerCondition": "this enchantment enters",
         "isOptional": false,
         "cost": null,
@@ -2473,21 +2514,6 @@
         "effect": {
           "kind": "destroy",
           "params": {}
-        }
-      },
-      {
-        "abilityType": "triggered",
-        "triggerEvent": "etb",
-        "triggerCondition": "this enchantment or another enchantment you control enters",
-        "isOptional": false,
-        "cost": null,
-        "targets": 0,
-        "targetFilter": null,
-        "effect": {
-          "kind": "other",
-          "params": {
-            "description": "Whenever this enchantment or another enchantment you control enters, until end of turn, this enchantment becomes a legendary 6/6 Nightmare God creature with menace and deathtouch"
-          }
         }
       }
     ],
@@ -3007,7 +3033,7 @@
       "flash"
     ],
     "manaProduction": null,
-    "entryTapRule": null,
+    "entryTapRule": "conditional",
     "conditionalEntryText": "Flash When this enchantment enters, you may search your library for a basic land card, put it onto the battlefield tapped, then shuffle",
     "abilities": [
       {
@@ -3183,6 +3209,19 @@
     "entryTapRule": null,
     "conditionalEntryText": null,
     "abilities": [
+      {
+        "abilityType": "triggered",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "each_player_mill",
+          "params": {}
+        }
+      },
       {
         "abilityType": "triggered",
         "triggerEvent": null,

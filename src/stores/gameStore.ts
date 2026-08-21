@@ -4,7 +4,7 @@ import { hydratePersistedBackgroundState, loadPersistedGameState, persistGameSta
 import { reindexTriggers, buildTriggerInstances, registerDiesTriggers } from './triggerEngine'
 import { getCachedCardRules, getCardRule } from './cardRulesLoader'
 import { resolveTrigger as resolveTriggerImpl, selectTarget as selectTargetImpl, payWardImpl, refuseWardImpl } from './triggerActions'
-import { attachAuras } from './gameRules'
+import { attachAuras, updateCard } from './gameRules'
 import { createUndoContext, createUndoActions, runUndoableAction } from './gameHistory'
 import { createTurnPhases } from './gameTurnPhases'
 import { createOpponentAI } from './gameOpponentAI'
@@ -59,7 +59,7 @@ export type ActivePlayer = 'player' | 'opponent'
 
 export type GameSnapshot = Pick<
   GameState,
-  'cards' | 'manaPool' | 'potentialMana' | 'manaLog' | 'effectHistory' | 'tokens' | 'lifeTotal' | 'opponentLifeTotal' | 'turn' | 'landPlaysThisTurn' | 'drawNotice' | 'turnAnnouncement' | 'turnPrompt' | 'combatState' | 'currentPhase' | 'activePlayer' | 'opponentManaPool' | 'opponentPotentialMana' | 'opponentLandPlaysThisTurn' | 'commanderDamage' | 'playerSpellsCastThisTurn' | 'opponentSpellsCastThisTurn' | 'triggerStack' | 'wardPrompt' | 'auraPrompt' | 'gameOver' | 'energyCounters' | 'opponentEnergyCounters' | 'radCounters' | 'opponentRadCounters' | 'aiResponsePending' | 'monarch'
+  'cards' | 'manaPool' | 'potentialMana' | 'manaLog' | 'effectHistory' | 'tokens' | 'lifeTotal' | 'opponentLifeTotal' | 'turn' | 'landPlaysThisTurn' | 'drawNotice' | 'turnAnnouncement' | 'turnPrompt' | 'combatState' | 'currentPhase' | 'activePlayer' | 'opponentManaPool' | 'opponentPotentialMana' | 'opponentLandPlaysThisTurn' | 'commanderDamage' | 'playerSpellsCastThisTurn' | 'opponentSpellsCastThisTurn' | 'triggerStack' | 'wardPrompt' | 'auraPrompt' | 'gameOver' | 'energyCounters' | 'opponentEnergyCounters' | 'radCounters' | 'opponentRadCounters' | 'experienceCounters' | 'opponentExperienceCounters' | 'aiResponsePending' | 'monarch'
 >
 
 export interface GameState {
@@ -86,6 +86,9 @@ export interface GameState {
   /** Rad counters — at upkeep the holder mills that many and loses them. */
   radCounters: number
   opponentRadCounters: number
+  /** Experience counters. */
+  experienceCounters: number
+  opponentExperienceCounters: number
   turnPlayerMs: number
   turnOpponentMs: number
   activePlayer: ActivePlayer
@@ -111,6 +114,18 @@ export interface GameState {
   gameOver: { winner: 'player' | 'opponent' } | null
   /** The monarch (draws at end step; combat damage transfers it). */
   monarch: 'player' | 'opponent' | null
+  /** Turn-scoped attack compulsion ("creatures your opponents control attack this turn if able"). */
+  forceAttack?: { victims: 'player' | 'opponent'; untilTurn: number } | null
+  /** Turn-scoped parity block ban (Twins of Discord: "choose odd or even"). */
+  parityBan?: { parity: 'odd' | 'even'; untilTurn: number } | null
+  /** Turn the Scourge-of-the-Throne untap-all last fired (once per turn). */
+  scourgeUntapTurn?: number | null
+  /** The Ring emblem per side: temptation count + current Ring-bearer id. */
+  ring?: { player?: { temptations: number; bearerId: string | null }; opponent?: { temptations: number; bearerId: string | null } }
+  /** Poison counters per side (ten loses the game). */
+  poisonCounters?: { player: number; opponent: number }
+  /** Arcane Lighthouse: the side's creatures lose hexproof/shroud until this turn ends. */
+  keywordsStrippedUntil?: { owner: 'player' | 'opponent'; turn: number }
   /** AI spell card id whose resolution is deferred while the player responds. */
   aiResponsePending: string | null
   /** Combat damage each commander has dealt to the opposing player, keyed by commander card id. */
@@ -154,6 +169,7 @@ export interface GameState {
   spendEnergy: (amount: number, owner?: 'player' | 'opponent') => boolean
   gainRad: (amount: number, owner?: 'player' | 'opponent') => void
   loseRad: (amount: number, owner?: 'player' | 'opponent') => void
+  gainExperience: (amount: number, owner?: 'player' | 'opponent') => void
 
   loadDeck: (commanderNames: string[], deckCards: DeckCard[], deckId?: string) => void
   reshuffle: () => void
@@ -219,6 +235,8 @@ export const useGameStore = create<GameState>((set, get) => {
     opponentEnergyCounters: 0,
     radCounters: 0,
     opponentRadCounters: 0,
+    experienceCounters: 0,
+    opponentExperienceCounters: 0,
     activePlayer: 'player' as ActivePlayer,
     opponentManaPool: { W: 0, U: 0, B: 0, R: 0, G: 0, C: 0 } as ManaPool,
     opponentPotentialMana: [] as PotentialManaSource[],
@@ -261,6 +279,10 @@ export const useGameStore = create<GameState>((set, get) => {
       set((state) => owner === 'opponent'
         ? { opponentRadCounters: Math.max(0, state.opponentRadCounters - Math.max(0, amount)) }
         : { radCounters: Math.max(0, state.radCounters - Math.max(0, amount)) }),
+    gainExperience: (amount, owner = 'player') =>
+      set((state) => owner === 'opponent'
+        ? { opponentExperienceCounters: state.opponentExperienceCounters + Math.max(0, amount) }
+        : { experienceCounters: state.experienceCounters + Math.max(0, amount) }),
     setBackground: (url) => set({ backgroundImage: url }),
     setCardScale: (scale) => set({ cardScale: scale }),
     saveBackground: (name, dataUrl) =>
@@ -346,9 +368,7 @@ export const useGameStore = create<GameState>((set, get) => {
         const isEquip = card?.type === 'artifact' && /\bequipment\b/i.test(card.typeLine ?? '')
         return {
           auraPrompt: null,
-          cards: state.cards.map((c) =>
-            c.id === auraCardId && !isEquip ? { ...c, zone: 'graveyard' as const, revealed: true } : c,
-          ),
+          cards: isEquip ? state.cards : updateCard(state.cards, auraCardId, { zone: 'graveyard', revealed: true }),
         }
       }),
 

@@ -3,9 +3,10 @@ import type { GameState } from './gameStore'
 import { pickBlockers } from './opponentAI'
 import { getCardPower, getCardToughness } from '../utils/misc'
 import { hasKeyword, computeStaticPump } from './cardRulesLoader'
-import { attackTax, canAttack, canBlock } from 'mtg-protocol/combat'
+import { attackTax, blockTax, canAttack, canBlock } from 'mtg-protocol/combat'
 import { canPayManaCost, spendManaForCost } from 'mtg-protocol/mana'
 import { aiCastInstant } from './gameOpponentAI'
+import { useToastStore } from './toastStore'
 
 type SetFn = (partial: GameState | Partial<GameState> | ((state: GameState) => Partial<GameState>)) => void
 
@@ -91,7 +92,39 @@ export function createCombatActions(set: SetFn, get: () => GameState): Pick<Game
       let finalBlockers = blockers
       if (state.activePlayer === 'player' && attackers.length > 0 && Object.keys(blockers).length === 0) {
         const oppBattlefield = state.cards.filter((c) => (c.owner ?? 'player') === 'opponent' && c.zone === 'battlefield')
-        finalBlockers = pickBlockers(attackers, oppBattlefield, state.cards, state.turn, state.opponentLifeTotal, state.commanderDamage)
+        finalBlockers = pickBlockers(attackers, oppBattlefield, state.cards, state.turn, state.opponentLifeTotal, state.commanderDamage, state.opponentRadCounters, state.parityBan, state.ring)
+      }
+
+      // Player-side attack compulsion (the AI controls Bident/Kardur): remind
+      // — the UI cannot force attacks.
+      if (state.forceAttack && state.forceAttack.victims === 'player' && state.forceAttack.untilTurn >= state.turn && attackers.length > 0) {
+        const able = state.cards.filter((c) => (c.owner ?? 'player') === 'player' && c.zone === 'battlefield' && c.type === 'creature' && !c.tapped && !attackers.includes(c.id))
+        if (able.length > 0) {
+          useToastStore.getState().push(`Your creatures must attack this combat if able (${able.length} held back).`, 'error')
+        }
+      }
+
+      // Block tax (Archangel of Tithes while attacking): the defending side
+      // pays {N} per blocker, or those creatures don't block at all.
+      const totalBlockers = Object.values(finalBlockers).reduce((n, ids) => n + ids.length, 0)
+      if (totalBlockers > 0 && attackers.length > 0) {
+        const attackingSideIsPlayer = state.cards.some((c) => attackers.includes(c.id) && (c.owner ?? 'player') === 'player')
+        const taxSources = state.cards.filter((c) => attackers.includes(c.id))
+        const bTax = blockTax(taxSources)
+        if (bTax > 0) {
+          const cost = `{${bTax * totalBlockers}}`
+          if (attackingSideIsPlayer) {
+            if (canPayManaCost(get().opponentManaPool, cost)) {
+              set({ opponentManaPool: spendManaForCost(get().opponentManaPool, cost) })
+            } else {
+              finalBlockers = {}
+            }
+          } else if (canPayManaCost(get().manaPool, cost)) {
+            get().spendManaCost(cost, `Block tax (${bTax} per blocker)`)
+          } else {
+            finalBlockers = {}
+          }
+        }
       }
 
       // Build combat pairs. Only flying/reach creatures can block a flying attacker.
@@ -106,7 +139,23 @@ export function createCombatActions(set: SetFn, get: () => GameState): Pick<Game
             const blocker = get().cards.find((c) => c.id === blockerId)
             if (!blocker || blocker.zone !== 'battlefield') return false
             if (attacker.cantBeBlockedThisTurn) return false
-            if (!canBlock(blocker, get().cards)) return false
+            // Parity block ban (Twins of Discord): creatures with the chosen
+            // mana-value parity can't block this turn (zero is even).
+            const ban = get().parityBan
+            if (ban && ban.untilTurn >= state.turn) {
+              const even = (blocker.manaValue ?? 0) % 2 === 0
+              if (even === (ban.parity === 'even')) return false
+            }
+            const handSizeOf = (owner: 'player' | 'opponent') =>
+              get().cards.filter((c) => (c.owner ?? 'player') === owner && c.zone === 'hand').length
+            if (!canBlock(blocker, get().cards, {
+              defenderRadCounters: (blocker.owner ?? 'player') === 'opponent' ? get().opponentRadCounters : get().radCounters,
+              handSize: handSizeOf((blocker.owner ?? 'player') as 'player' | 'opponent'),
+            })) return false
+            // The Ring L1: the Ring-bearer can't be blocked by creatures with
+            // greater power.
+            const ringMine = get().ring?.[(attacker.owner ?? 'player') as 'player' | 'opponent']
+            if (ringMine && ringMine.temptations >= 1 && ringMine.bearerId === attacker.id && getCardPower(blocker) > getCardPower(attacker)) return false
             if (hasKeyword(attacker, 'skulk', get().cards) && getCardPower(blocker) > getCardPower(attacker)) return false
             if (hasKeyword(attacker, 'flying', get().cards)) {
               return hasKeyword(blocker, 'flying', get().cards) || hasKeyword(blocker, 'reach', get().cards)
@@ -163,16 +212,45 @@ export function createCombatActions(set: SetFn, get: () => GameState): Pick<Game
       for (const pair of pairs) {
         if ((pair.attacker.owner ?? 'player') !== 'player') continue
         get().emitGameEvent({ type: 'attack', cardId: pair.attacker.id, cardName: pair.attacker.name })
+        // The Ring L2: "Whenever your Ring-bearer attacks, draw a card, then
+        // discard a card."
+        const bearerOwner = (pair.attacker.owner ?? 'player') as 'player' | 'opponent'
+        const ringMine = get().ring?.[bearerOwner]
+        if (ringMine && ringMine.temptations >= 2 && ringMine.bearerId === pair.attacker.id) {
+          get().drawCards(1)
+          const hand = get().cards.filter((c) => (c.owner ?? 'player') === bearerOwner && c.zone === 'hand')
+          if (hand.length > 0) get().moveCard(hand[hand.length - 1].id, 'graveyard')
+        }
       }
 
       // Attackers tap when they attack — vigilance keeps them untapped.
-      const tappingIds = pairs
-        .filter((p) => !hasKeyword(p.attacker, 'vigilance'))
-        .map((p) => p.attacker.id)
-      if (tappingIds.length > 0) {
+      // Scourge of the Throne: "Whenever this creature attacks for the first
+      // time each turn, if it's attacking the player with the most life or tied
+      // for most life, untap all attacking creatures."
+      let untapAllAttackers = false
+      const scourge = pairs.find((p) => /attacks for the first time each turn[^.]*most life/i.test(p.attacker.oracleText ?? ''))
+      if (scourge && get().scourgeUntapTurn !== state.turn) {
+        const scourgeOwner = (scourge.attacker.owner ?? 'player') as 'player' | 'opponent'
+        const defenderLife = scourgeOwner === 'player' ? get().opponentLifeTotal : get().lifeTotal
+        const attackerLife = scourgeOwner === 'player' ? get().lifeTotal : get().opponentLifeTotal
+        if (defenderLife >= attackerLife) {
+          untapAllAttackers = true
+          set({ scourgeUntapTurn: state.turn })
+        }
+      }
+      if (untapAllAttackers) {
         set({
-          cards: get().cards.map((c) => tappingIds.includes(c.id) ? { ...c, tapped: true } : c),
+          cards: get().cards.map((c) => pairs.some((p) => p.attacker.id === c.id) ? { ...c, tapped: false } : c),
         })
+      } else {
+        const tappingIds = pairs
+          .filter((p) => !hasKeyword(p.attacker, 'vigilance'))
+          .map((p) => p.attacker.id)
+        if (tappingIds.length > 0) {
+          set({
+            cards: get().cards.map((c) => tappingIds.includes(c.id) ? { ...c, tapped: true } : c),
+          })
+        }
       }
 
       const fast = (card: BoardCard | undefined) =>
@@ -325,6 +403,14 @@ export function createCombatActions(set: SetFn, get: () => GameState): Pick<Game
               sourceCardName: attacker.name,
               amount: power,
             })
+            // The Ring L4: "Whenever your Ring-bearer deals combat damage to a
+            // player, each opponent loses 3 life."
+            const dmgBearerOwner = (attacker.owner ?? 'player') as 'player' | 'opponent'
+            const dmgRing = get().ring?.[dmgBearerOwner]
+            if (dmgRing && dmgRing.temptations >= 4 && dmgRing.bearerId === attacker.id) {
+              if (dmgBearerOwner === 'player') set({ opponentLifeTotal: Math.max(0, get().opponentLifeTotal - 3) })
+              else get().setLife(Math.max(0, get().lifeTotal - 3))
+            }
           }
         }
       }
@@ -358,6 +444,21 @@ export function createCombatActions(set: SetFn, get: () => GameState): Pick<Game
         const blockerDeals = blockers.some((blocker) => dealsInRegularStep(blocker))
         if (!attackerDeals && !blockerDeals) continue
         deal(pair, attackerDeals, blockerDeals)
+      }
+
+      // The Ring L3: "Whenever your Ring-bearer becomes blocked by a creature,
+      // that creature's controller sacrifices it at end of combat."
+      for (const pair of pairs) {
+        if (pair.blockerIds.length === 0) continue
+        const bearerOwner = (pair.attacker.owner ?? 'player') as 'player' | 'opponent'
+        const ringMine = get().ring?.[bearerOwner]
+        if (ringMine && ringMine.temptations >= 3 && ringMine.bearerId === pair.attacker.id) {
+          for (const blockerId of pair.blockerIds) {
+            if (get().cards.find((c) => c.id === blockerId)?.zone === 'battlefield') {
+              get().moveCard(blockerId, 'graveyard')
+            }
+          }
+        }
       }
 
       set({

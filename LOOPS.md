@@ -1,5 +1,14 @@
 # Project Loops
 
+## Parser Gap Closure & Rules Sync
+
+Saved: 2026-08-20
+
+Closes recurring Oracle-text parse gaps at the source and ships them to the runtime artifact, stopping when no card has text but no rules.
+
+Prompt:
+> Check `scripts/rules-output/` for cards whose oracleText is non-empty but produced no abilities/keywords. For each recurring sentence shape, add a matcher to `parseSpecialAbility`, regenerate affected decks with `--force`, then run `node scripts/sync-rules.mjs`. Verify with the acceptance check plus `npm run check`. Stop when every failure is either fixed or has no generalizable pattern (repair those by hand in the output JSON). Never hand-edit without first regenerating.
+
 ## Deterministic Card Rule Parser
 
 Saved: 2026-07-24

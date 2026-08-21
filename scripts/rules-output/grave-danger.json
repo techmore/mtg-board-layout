@@ -1161,10 +1161,8 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
-          "params": {
-            "description": "Landfall — Whenever a land you control enters, investigate"
-          }
+          "kind": "investigate",
+          "params": {}
         }
       },
       {
@@ -1471,7 +1469,7 @@
       "trample"
     ],
     "manaProduction": null,
-    "entryTapRule": null,
+    "entryTapRule": "always",
     "conditionalEntryText": null,
     "abilities": [],
     "oracleText": "This spell costs {1} less to cast for each counter among players and permanents.\nTrample\nThis creature enters tapped.",
@@ -1519,7 +1517,7 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "cant_be_blocked",
+          "kind": "static_restriction",
           "params": {}
         }
       }
@@ -1552,10 +1550,8 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
-          "params": {
-            "description": "{T}: Each player mills a card"
-          }
+          "kind": "each_player_mill",
+          "params": {}
         }
       }
     ],
@@ -1588,7 +1584,7 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "cant_be_blocked",
+          "kind": "static_restriction",
           "params": {}
         }
       },
@@ -1782,7 +1778,27 @@
     "manaProduction": null,
     "entryTapRule": null,
     "conditionalEntryText": null,
-    "abilities": [],
+    "abilities": [
+      {
+        "abilityType": "spell",
+        "triggerEvent": null,
+        "triggerCondition": "Creatures you control have base power and toughness X/X until end of turn",
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "pump",
+          "params": {
+            "power": "X",
+            "toughness": "X",
+            "scope": "own_creatures",
+            "baseToughness": true,
+            "untilEndOfTurn": true
+          }
+        }
+      }
+    ],
     "oracleText": "Creatures you control have base power and toughness X/X until end of turn.",
     "scryfallId": "9894bed2-c5dc-4569-9ed9-1d40df906f58"
   },
@@ -2604,7 +2620,7 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "static_noop",
+          "kind": "static_restriction",
           "params": {}
         }
       },
@@ -3378,10 +3394,8 @@
         "targets": 1,
         "targetFilter": "permanent you control onto a second target permanent",
         "effect": {
-          "kind": "other",
-          "params": {
-            "description": "{1}, {T}: Move a counter from target permanent you control onto a second target permanent"
-          }
+          "kind": "move_counter",
+          "params": {}
         }
       }
     ],

@@ -209,6 +209,15 @@ export function CardContextMenu({ cardId, x, y, onClose }: CardContextMenuProps)
           const rule = rules ? getCardRule(card.name, rules) : undefined
           const activated = rule?.abilities.filter((a) => a.abilityType === 'activated' && a.effect.kind !== 'add_mana') ?? []
           if (activated.length === 0) return null
+          // Activated-ability lock (Linvala / enchanted "can't be activated"):
+          // if the opponent controls a source locking activated abilities, hide
+          // the player's non-mana activated ability menu.
+          const cardOwner = (card.owner ?? 'player') === 'opponent' ? 'opponent' : 'player'
+          const lockActive = useGameStore.getState().cards.some((c) =>
+            (cardOwner === 'player' ? (c.owner ?? 'player') === 'opponent' : (c.owner ?? 'player') === 'player') &&
+            (/\bactivated abilities of .* can't be activated\b/i.test(c.oracleText ?? '') || /\bcan't be activated unless\b/i.test(c.oracleText ?? '')),
+          )
+          if (lockActive) return null
           return (
             <>
               <div style={{ height: 1, background: '#30363d', margin: '3px 8px' }} />

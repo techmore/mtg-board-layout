@@ -15,6 +15,19 @@
     "abilities": [
       {
         "abilityType": "triggered",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "cascade",
+          "params": {}
+        }
+      },
+      {
+        "abilityType": "triggered",
         "triggerEvent": "cast",
         "triggerCondition": "\" (When you cast one",
         "isOptional": false,
@@ -156,11 +169,11 @@
         }
       },
       {
-        "abilityType": "static",
+        "abilityType": "activated",
         "triggerEvent": null,
         "triggerCondition": null,
         "isOptional": false,
-        "cost": null,
+        "cost": "{T}, {C}",
         "targets": 1,
         "targetFilter": "creature can't attack or block this turn",
         "effect": {
@@ -210,10 +223,8 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
-          "params": {
-            "description": "Whenever this creature attacks, defending player exiles two permanents they control"
-          }
+          "kind": "exile_n_permanents",
+          "params": {}
         }
       }
     ],
@@ -525,10 +536,8 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "draw_cards",
-          "params": {
-            "amount": 7
-          }
+          "kind": "slithermuse_draw",
+          "params": {}
         }
       },
       {
@@ -588,10 +597,8 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
-          "params": {
-            "description": "(Mana abilities can't be targeted"
-          }
+          "kind": "static_noop",
+          "params": {}
         }
       }
     ],
@@ -899,10 +906,8 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
-          "params": {
-            "description": ") Whenever you attack with creatures with total power 6 or greater, you may turn a face-down creature you control face up"
-          }
+          "kind": "manifest_flip",
+          "params": {}
         }
       }
     ],
@@ -973,7 +978,25 @@
     "manaProduction": null,
     "entryTapRule": null,
     "conditionalEntryText": null,
-    "abilities": [],
+    "abilities": [
+      {
+        "abilityType": "static",
+        "triggerEvent": null,
+        "triggerCondition": "This creature enters with X +1/+1 counters on it",
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "put_counter",
+          "params": {
+            "counterKind": "+1/+1",
+            "amount": "X",
+            "scope": "self"
+          }
+        }
+      }
+    ],
     "oracleText": "This creature enters with X +1/+1 counters on it.",
     "scryfallId": "00b3c10a-799f-4922-bb0a-44981b13203b"
   },
@@ -1256,6 +1279,23 @@
     "entryTapRule": null,
     "conditionalEntryText": null,
     "abilities": [
+      {
+        "abilityType": "static",
+        "triggerEvent": null,
+        "triggerCondition": "This creature enters with X +1/+1 counters on it",
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "put_counter",
+          "params": {
+            "counterKind": "+1/+1",
+            "amount": "X",
+            "scope": "self"
+          }
+        }
+      },
       {
         "abilityType": "triggered",
         "triggerEvent": "dies",
@@ -1739,7 +1779,7 @@
     ],
     "keywords": [],
     "manaProduction": null,
-    "entryTapRule": null,
+    "entryTapRule": "conditional",
     "conditionalEntryText": "When this creature enters, you may search your library for a basic land card, put that card onto the battlefield tapped, then shuffle",
     "abilities": [
       {
@@ -1969,6 +2009,19 @@
           "params": {
             "amount": 5
           }
+        }
+      },
+      {
+        "abilityType": "triggered",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "static_noop",
+          "params": {}
         }
       }
     ],
@@ -2340,6 +2393,19 @@
             "amount": 2
           }
         }
+      },
+      {
+        "abilityType": "triggered",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "static_noop",
+          "params": {}
+        }
       }
     ],
     "oracleText": "{T}: Add {C}. ({C} represents colorless mana.)\n{2}{C}, {T}: Draw a card. Activate only if you have no cards in hand.",
@@ -2416,57 +2482,16 @@
         "triggerEvent": null,
         "triggerCondition": null,
         "isOptional": false,
-        "cost": "{T}",
+        "cost": "{T}, Sacrifice",
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "add_mana",
-          "params": {}
-        }
-      },
-      {
-        "abilityType": "activated",
-        "triggerEvent": null,
-        "triggerCondition": null,
-        "isOptional": false,
-        "cost": "{T}, {2}",
-        "targets": 0,
-        "targetFilter": null,
-        "effect": {
-          "kind": "other",
-          "params": {
-            "description": "{2}, {T}: Target legendary creature becomes a God in addition to its other types"
-          }
-        }
-      },
-      {
-        "abilityType": "triggered",
-        "triggerEvent": null,
-        "triggerCondition": null,
-        "isOptional": false,
-        "cost": null,
-        "targets": 0,
-        "targetFilter": null,
-        "effect": {
-          "kind": "put_counter",
+          "kind": "tyrite_sanctum",
           "params": {
             "counterKind": "+1/+1",
             "amount": 1,
             "scope": "all"
           }
-        }
-      },
-      {
-        "abilityType": "activated",
-        "triggerEvent": null,
-        "triggerCondition": null,
-        "isOptional": false,
-        "cost": "{T}, {4}, Sacrifice",
-        "targets": 0,
-        "targetFilter": null,
-        "effect": {
-          "kind": "put_counter",
-          "params": {}
         }
       }
     ],
@@ -2864,11 +2889,11 @@
         }
       },
       {
-        "abilityType": "static",
+        "abilityType": "activated",
         "triggerEvent": null,
         "triggerCondition": null,
         "isOptional": false,
-        "cost": null,
+        "cost": "{T}, {4}",
         "targets": 1,
         "targetFilter": "creature can't be blocked this turn",
         "effect": {
@@ -2983,12 +3008,7 @@
     "cardType": "instant",
     "subtypes": [],
     "keywords": [],
-    "manaProduction": {
-      "colors": [
-        "C"
-      ],
-      "amount": 1
-    },
+    "manaProduction": null,
     "entryTapRule": null,
     "conditionalEntryText": null,
     "abilities": [
@@ -3073,11 +3093,11 @@
     "conditionalEntryText": null,
     "abilities": [
       {
-        "abilityType": "static",
+        "abilityType": "activated",
         "triggerEvent": null,
         "triggerCondition": null,
         "isOptional": false,
-        "cost": null,
+        "cost": "{T}",
         "targets": 0,
         "targetFilter": null,
         "effect": {
@@ -3382,11 +3402,11 @@
     "conditionalEntryText": null,
     "abilities": [
       {
-        "abilityType": "static",
+        "abilityType": "activated",
         "triggerEvent": null,
         "triggerCondition": null,
         "isOptional": false,
-        "cost": null,
+        "cost": "{T}, {3}",
         "targets": 1,
         "targetFilter": "creature can't be blocked this turn",
         "effect": {
@@ -3412,7 +3432,7 @@
       ],
       "amount": 2
     },
-    "entryTapRule": null,
+    "entryTapRule": "always",
     "conditionalEntryText": null,
     "abilities": [
       {
@@ -3473,10 +3493,8 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
-          "params": {
-            "description": "{1}, {T}: Until end of turn, creatures your opponents control lose hexproof and shroud and can't have hexproof or shroud"
-          }
+          "kind": "arcane_lighthouse_strip",
+          "params": {}
         }
       }
     ],
@@ -3509,35 +3527,7 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "add_mana",
-          "params": {}
-        }
-      },
-      {
-        "abilityType": "activated",
-        "triggerEvent": null,
-        "triggerCondition": null,
-        "isOptional": false,
-        "cost": "{T}",
-        "targets": 0,
-        "targetFilter": null,
-        "effect": {
-          "kind": "other",
-          "params": {
-            "description": "{T}: Choose target commander that entered this turn"
-          }
-        }
-      },
-      {
-        "abilityType": "triggered",
-        "triggerEvent": null,
-        "triggerCondition": null,
-        "isOptional": false,
-        "cost": null,
-        "targets": 0,
-        "targetFilter": null,
-        "effect": {
-          "kind": "put_counter",
+          "kind": "forge_of_heroes",
           "params": {
             "counterKind": "+1/+1",
             "amount": 1,
@@ -3725,11 +3715,11 @@
         }
       },
       {
-        "abilityType": "static",
+        "abilityType": "activated",
         "triggerEvent": null,
         "triggerCondition": null,
         "isOptional": false,
-        "cost": null,
+        "cost": "{T}, {2}",
         "targets": 0,
         "targetFilter": null,
         "effect": {

@@ -15,6 +15,10 @@ function clearTurnBoosts(cards: BoardCard[]): BoardCard[] {
       updated = { ...card, owner: card.originalOwner, originalOwner: undefined, controlUntilTurnEnd: undefined }
     }
     if (updated.zone !== 'battlefield') return updated
+    // Temporary animation ("becomes a creature until end of turn") reverts too.
+    if (updated.originalType) {
+      updated = { ...updated, type: updated.originalType, originalType: undefined }
+    }
     return { ...updated, powerBoost: 0, toughnessBoost: 0, keywordBoosts: undefined, cantBeBlockedThisTurn: undefined }
   })
 }

@@ -196,6 +196,19 @@
     "conditionalEntryText": null,
     "abilities": [
       {
+        "abilityType": "static",
+        "triggerEvent": null,
+        "triggerCondition": "You may play an additional land on each of your turns",
+        "isOptional": true,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "static_noop",
+          "params": {}
+        }
+      },
+      {
         "abilityType": "triggered",
         "triggerEvent": "landfall",
         "triggerCondition": "Landfall — Whenever a land you control enters",
@@ -637,6 +650,19 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
+          "kind": "parity_ban",
+          "params": {}
+        }
+      },
+      {
+        "abilityType": "spell",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
           "kind": "return_from_graveyard",
           "params": {
             "zone": "hand"
@@ -732,40 +758,12 @@
         "abilityType": "spell",
         "triggerEvent": null,
         "triggerCondition": null,
-        "isOptional": false,
-        "cost": null,
-        "targets": 1,
-        "targetFilter": "artifact or enchantment that player controls",
-        "effect": {
-          "kind": "other",
-          "params": {
-            "description": "For each opponent, choose up to one target artifact or enchantment that player controls"
-          }
-        }
-      },
-      {
-        "abilityType": "spell",
-        "triggerEvent": null,
-        "triggerCondition": null,
         "isOptional": true,
         "cost": null,
-        "targets": 0,
-        "targetFilter": null,
+        "targets": 1,
+        "targetFilter": "artifact or enchantment that player controls For each permanent chosen this way",
         "effect": {
-          "kind": "exile",
-          "params": {}
-        }
-      },
-      {
-        "abilityType": "spell",
-        "triggerEvent": null,
-        "triggerCondition": null,
-        "isOptional": false,
-        "cost": null,
-        "targets": 0,
-        "targetFilter": null,
-        "effect": {
-          "kind": "search_library",
+          "kind": "disorienting_ramp",
           "params": {}
         }
       }
@@ -798,10 +796,8 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
-          "params": {
-            "description": "Trample Whenever you attack with one or more creatures, untap up to X lands, where X is the greatest power among those creatures"
-          }
+          "kind": "untap_x_lands",
+          "params": {}
         }
       }
     ],
@@ -916,12 +912,7 @@
       "Druid"
     ],
     "keywords": [],
-    "manaProduction": {
-      "colors": [
-        "G"
-      ],
-      "amount": 1
-    },
+    "manaProduction": null,
     "entryTapRule": null,
     "conditionalEntryText": null,
     "abilities": [
@@ -963,9 +954,9 @@
         "targets": 1,
         "targetFilter": "nonland permanent s to their owners' hands",
         "effect": {
-          "kind": "other",
+          "kind": "bounce_n_nonland",
           "params": {
-            "description": "Return six target nonland permanents to their owners' hands"
+            "count": 6
           }
         }
       }
@@ -1076,10 +1067,8 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
-          "params": {
-            "description": "Flying, indestructible Kefnet can't attack or block unless you have seven or more cards in hand"
-          }
+          "kind": "static_restriction",
+          "params": {}
         }
       },
       {
@@ -1252,7 +1241,34 @@
     "manaProduction": null,
     "entryTapRule": null,
     "conditionalEntryText": null,
-    "abilities": [],
+    "abilities": [
+      {
+        "abilityType": "static",
+        "triggerEvent": null,
+        "triggerCondition": "Ashaya's power and toughness are each equal to the number of lands you control",
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "static_noop",
+          "params": {}
+        }
+      },
+      {
+        "abilityType": "static",
+        "triggerEvent": null,
+        "triggerCondition": "Nontoken creatures you control are Forest lands in addition to their other types",
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "static_noop",
+          "params": {}
+        }
+      }
+    ],
     "oracleText": "Ashaya's power and toughness are each equal to the number of lands you control.\nNontoken creatures you control are Forest lands in addition to their other types. (They're still affected by summoning sickness.)",
     "scryfallId": "0a74b4e6-f6c9-4fef-a83c-a285a541e720"
   },
@@ -1873,10 +1889,8 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
-          "params": {
-            "description": "When Worldspine Wurm is put into a graveyard from anywhere, shuffle it into its owner's library"
-          }
+          "kind": "shuffle_into_library",
+          "params": {}
         }
       }
     ],
@@ -1900,7 +1914,7 @@
       ],
       "amount": 2
     },
-    "entryTapRule": null,
+    "entryTapRule": "always",
     "conditionalEntryText": null,
     "abilities": [
       {
@@ -1946,7 +1960,27 @@
     "manaProduction": null,
     "entryTapRule": null,
     "conditionalEntryText": null,
-    "abilities": [],
+    "abilities": [
+      {
+        "abilityType": "spell",
+        "triggerEvent": null,
+        "triggerCondition": "Creatures you control have base power and toughness X/X until end of turn",
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "pump",
+          "params": {
+            "power": "X",
+            "toughness": "X",
+            "scope": "own_creatures",
+            "baseToughness": true,
+            "untilEndOfTurn": true
+          }
+        }
+      }
+    ],
     "oracleText": "Creatures you control have base power and toughness X/X until end of turn.",
     "scryfallId": "9894bed2-c5dc-4569-9ed9-1d40df906f58"
   },
@@ -3591,7 +3625,21 @@
     "manaProduction": null,
     "entryTapRule": null,
     "conditionalEntryText": null,
-    "abilities": [],
+    "abilities": [
+      {
+        "abilityType": "static",
+        "triggerEvent": null,
+        "triggerCondition": "Beanstalk Giant's power and toughness are each equal to the number of lands you control",
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "static_noop",
+          "params": {}
+        }
+      }
+    ],
     "oracleText": "Beanstalk Giant's power and toughness are each equal to the number of lands you control.",
     "scryfallId": "71096773-69dd-4fb7-a088-e0fe096eaf6b"
   }

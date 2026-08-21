@@ -55,10 +55,8 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
-          "params": {
-            "description": "{4}, {T}: Roll a six-sided die plus an additional six-sided die for each mana from Treasures spent to activate this ability"
-          }
+          "kind": "roll_dice",
+          "params": {}
         }
       }
     ],
@@ -524,9 +522,10 @@
         "targets": 1,
         "targetFilter": "creature you control gets +X/+X until end of turn",
         "effect": {
-          "kind": "other",
+          "kind": "x_pump",
           "params": {
-            "description": "Whenever you sacrifice a Food, target creature you control gets +X/+X until end of turn, where X is the number of quest counters on Sierra"
+            "toughness": "+X",
+            "power": "x"
           }
         }
       }
@@ -557,38 +556,8 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
-          "params": {
-            "description": "{T}: Target opponent gains control of Yes Man"
-          }
-        }
-      },
-      {
-        "abilityType": "triggered",
-        "triggerEvent": "counter_placed",
-        "triggerCondition": "they do",
-        "isOptional": false,
-        "cost": null,
-        "targets": 0,
-        "targetFilter": null,
-        "effect": {
-          "kind": "put_counter",
+          "kind": "quest_death_tokens",
           "params": {}
-        }
-      },
-      {
-        "abilityType": "triggered",
-        "triggerEvent": "dies",
-        "triggerCondition": "Wild Card — When Yes Man leaves the battlefield",
-        "isOptional": false,
-        "cost": null,
-        "targets": 0,
-        "targetFilter": null,
-        "effect": {
-          "kind": "other",
-          "params": {
-            "description": "Wild Card — When Yes Man leaves the battlefield, its owner creates a tapped 1/1 white Soldier creature token for each quest counter on it"
-          }
         }
       }
     ],
@@ -679,6 +648,19 @@
           "params": {
             "targetHint": "target instant or"
           }
+        }
+      },
+      {
+        "abilityType": "triggered",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": true,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "copy_spell",
+          "params": {}
         }
       }
     ],
@@ -1002,24 +984,9 @@
         "isOptional": false,
         "cost": null,
         "targets": 1,
-        "targetFilter": "creature card in your graveyard that's an artifact or that has mana value 3 or less gains escape until end of turn",
+        "targetFilter": "creature card in your graveyard that's an artifact or that has mana value 3 or less gains escape until end of turn The escape cost is equal to its mana cost plus exile two other cards from your graveyard",
         "effect": {
-          "kind": "other",
-          "params": {
-            "description": "Vigilance Whenever Desdemona attacks, target creature card in your graveyard that's an artifact or that has mana value 3 or less gains escape until end of turn"
-          }
-        }
-      },
-      {
-        "abilityType": "triggered",
-        "triggerEvent": null,
-        "triggerCondition": null,
-        "isOptional": false,
-        "cost": null,
-        "targets": 0,
-        "targetFilter": null,
-        "effect": {
-          "kind": "exile",
+          "kind": "enable_graveyard_cast",
           "params": {}
         }
       }
@@ -1160,9 +1127,9 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
+          "kind": "gains_keyword",
           "params": {
-            "description": "Whenever a creature you control with power 2 or less attacks, it gains skulk until end of turn"
+            "keyword": "skulk"
           }
         }
       },
@@ -1175,7 +1142,7 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "static_noop",
+          "kind": "static_restriction",
           "params": {}
         }
       },
@@ -1467,7 +1434,7 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "cant_be_blocked",
+          "kind": "static_restriction",
           "params": {}
         }
       },
@@ -1559,7 +1526,7 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "cant_be_blocked",
+          "kind": "static_restriction",
           "params": {}
         }
       }
@@ -1810,17 +1777,7 @@
       "Pirate"
     ],
     "keywords": [],
-    "manaProduction": {
-      "colors": [
-        "W",
-        "U",
-        "B",
-        "R",
-        "G",
-        "C"
-      ],
-      "amount": 1
-    },
+    "manaProduction": null,
     "entryTapRule": null,
     "conditionalEntryText": null,
     "abilities": [
@@ -1931,7 +1888,9 @@
     "typeLine": "Instant",
     "cardType": "instant",
     "subtypes": [],
-    "keywords": [],
+    "keywords": [
+      "split second"
+    ],
     "manaProduction": null,
     "entryTapRule": null,
     "conditionalEntryText": null,
@@ -1943,24 +1902,9 @@
         "isOptional": false,
         "cost": null,
         "targets": 1,
-        "targetFilter": "creature s with equal toughness",
+        "targetFilter": "creature s with equal toughness Destroy the chosen creatures",
         "effect": {
-          "kind": "other",
-          "params": {
-            "description": ") Choose any number of target creatures with equal toughness"
-          }
-        }
-      },
-      {
-        "abilityType": "spell",
-        "triggerEvent": null,
-        "triggerCondition": null,
-        "isOptional": false,
-        "cost": null,
-        "targets": 0,
-        "targetFilter": null,
-        "effect": {
-          "kind": "destroy",
+          "kind": "destroy_equal_toughness",
           "params": {}
         }
       }
@@ -2153,17 +2097,7 @@
     "cardType": "instant",
     "subtypes": [],
     "keywords": [],
-    "manaProduction": {
-      "colors": [
-        "W",
-        "U",
-        "B",
-        "R",
-        "G",
-        "C"
-      ],
-      "amount": 1
-    },
+    "manaProduction": null,
     "entryTapRule": null,
     "conditionalEntryText": null,
     "abilities": [
@@ -3005,10 +2939,8 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
-          "params": {
-            "description": "{1}, {T}: Roll X six-sided dice, where X is the number of Bobbleheads you control"
-          }
+          "kind": "roll_dice",
+          "params": {}
         }
       },
       {
@@ -3075,11 +3007,11 @@
         }
       },
       {
-        "abilityType": "static",
+        "abilityType": "activated",
         "triggerEvent": null,
         "triggerCondition": null,
         "isOptional": true,
-        "cost": null,
+        "cost": "{T}, {2}, Sacrifice",
         "targets": 0,
         "targetFilter": null,
         "effect": {
@@ -3468,10 +3400,8 @@
         "targets": 1,
         "targetFilter": "creature",
         "effect": {
-          "kind": "other",
-          "params": {
-            "description": "{T}: Move a shield counter from this land onto target creature"
-          }
+          "kind": "move_counter",
+          "params": {}
         }
       }
     ],

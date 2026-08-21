@@ -19,7 +19,7 @@
         "G",
         "C"
       ],
-      "amount": 1
+      "amount": "X"
     },
     "entryTapRule": null,
     "conditionalEntryText": null,
@@ -97,7 +97,7 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "cant_be_blocked",
+          "kind": "static_restriction",
           "params": {}
         }
       },
@@ -110,9 +110,10 @@
         "targets": 1,
         "targetFilter": "creature gets +X/-X until end of turn",
         "effect": {
-          "kind": "other",
+          "kind": "x_pump",
           "params": {
-            "description": "{B}, Sacrifice X Squirrels: Target creature gets +X/-X until end of turn"
+            "toughness": "-X",
+            "power": "x"
           }
         }
       }
@@ -368,11 +369,11 @@
     "conditionalEntryText": null,
     "abilities": [
       {
-        "abilityType": "static",
+        "abilityType": "activated",
         "triggerEvent": null,
         "triggerCondition": null,
         "isOptional": false,
-        "cost": null,
+        "cost": "{T}",
         "targets": 0,
         "targetFilter": null,
         "effect": {
@@ -979,11 +980,11 @@
     "conditionalEntryText": null,
     "abilities": [
       {
-        "abilityType": "static",
+        "abilityType": "activated",
         "triggerEvent": null,
         "triggerCondition": null,
         "isOptional": false,
-        "cost": null,
+        "cost": "{T}, {2}, Sacrifice",
         "targets": 0,
         "targetFilter": null,
         "effect": {
@@ -1891,10 +1892,8 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
-          "params": {
-            "description": "{T}: Regenerate target Insect, Rat, Spider, or Squirrel"
-          }
+          "kind": "regenerate",
+          "params": {}
         }
       }
     ],
@@ -2180,11 +2179,11 @@
         }
       },
       {
-        "abilityType": "static",
+        "abilityType": "activated",
         "triggerEvent": null,
         "triggerCondition": null,
         "isOptional": false,
-        "cost": null,
+        "cost": "{T}, {2}, Sacrifice",
         "targets": 0,
         "targetFilter": null,
         "effect": {
@@ -2471,6 +2470,19 @@
         }
       },
       {
+        "abilityType": "triggered",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": true,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "detach_reattach",
+          "params": {}
+        }
+      },
+      {
         "abilityType": "activated",
         "triggerEvent": null,
         "triggerCondition": null,
@@ -2574,6 +2586,19 @@
     "entryTapRule": null,
     "conditionalEntryText": null,
     "abilities": [
+      {
+        "abilityType": "spell",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "copy_spell",
+          "params": {}
+        }
+      },
       {
         "abilityType": "spell",
         "triggerEvent": null,
@@ -2755,11 +2780,11 @@
         }
       },
       {
-        "abilityType": "static",
+        "abilityType": "activated",
         "triggerEvent": null,
         "triggerCondition": null,
         "isOptional": false,
-        "cost": null,
+        "cost": "{T}, {2}, Sacrifice",
         "targets": 0,
         "targetFilter": null,
         "effect": {
@@ -2938,11 +2963,11 @@
         }
       },
       {
-        "abilityType": "static",
+        "abilityType": "activated",
         "triggerEvent": null,
         "triggerCondition": null,
         "isOptional": false,
-        "cost": null,
+        "cost": "{1}{B}{G}, Sacrifice",
         "targets": 0,
         "targetFilter": null,
         "effect": {
@@ -3281,17 +3306,7 @@
     "cardType": "instant",
     "subtypes": [],
     "keywords": [],
-    "manaProduction": {
-      "colors": [
-        "W",
-        "U",
-        "B",
-        "R",
-        "G",
-        "C"
-      ],
-      "amount": 1
-    },
+    "manaProduction": null,
     "entryTapRule": null,
     "conditionalEntryText": null,
     "abilities": [
@@ -3390,17 +3405,7 @@
       "Citizen"
     ],
     "keywords": [],
-    "manaProduction": {
-      "colors": [
-        "W",
-        "U",
-        "B",
-        "R",
-        "G",
-        "C"
-      ],
-      "amount": 1
-    },
+    "manaProduction": null,
     "entryTapRule": null,
     "conditionalEntryText": null,
     "abilities": [
@@ -3511,17 +3516,7 @@
       "Scout"
     ],
     "keywords": [],
-    "manaProduction": {
-      "colors": [
-        "W",
-        "U",
-        "B",
-        "R",
-        "G",
-        "C"
-      ],
-      "amount": 1
-    },
+    "manaProduction": null,
     "entryTapRule": null,
     "conditionalEntryText": null,
     "abilities": [
@@ -3542,11 +3537,11 @@
         }
       },
       {
-        "abilityType": "static",
+        "abilityType": "activated",
         "triggerEvent": null,
         "triggerCondition": null,
         "isOptional": false,
-        "cost": null,
+        "cost": "{T}, {2}, Sacrifice",
         "targets": 0,
         "targetFilter": null,
         "effect": {
@@ -3696,6 +3691,23 @@
     "entryTapRule": null,
     "conditionalEntryText": null,
     "abilities": [
+      {
+        "abilityType": "triggered",
+        "triggerEvent": "mana_tapped",
+        "triggerCondition": "Enchant land Whenever enchanted land is tapped for mana, its controller adds an additional {G}",
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "add_mana",
+          "params": {
+            "colors": [
+              "G"
+            ]
+          }
+        }
+      },
       {
         "abilityType": "activated",
         "triggerEvent": null,

@@ -82,10 +82,8 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
-          "params": {
-            "description": "Lord of the Pyrrhian Legions — Whenever Anrakyr the Traveller attacks, you may cast an artifact spell from your hand or graveyard by paying life equal to its mana value rather than paying its mana cos"
-          }
+          "kind": "anrakyr_life_cast",
+          "params": {}
         }
       }
     ],
@@ -528,27 +526,10 @@
         "isOptional": false,
         "cost": "{T}, {1}{B}",
         "targets": 1,
-        "targetFilter": "artifact creature you control",
+        "targetFilter": "artifact creature you control When that creature dies this turn",
         "effect": {
-          "kind": "other",
-          "params": {
-            "description": "{1}{B}, {T}: Choose another target artifact creature you control"
-          }
-        }
-      },
-      {
-        "abilityType": "triggered",
-        "triggerEvent": "dies",
-        "triggerCondition": "that creature dies this turn",
-        "isOptional": false,
-        "cost": null,
-        "targets": 0,
-        "targetFilter": null,
-        "effect": {
-          "kind": "return_from_graveyard",
-          "params": {
-            "zone": "battlefield"
-          }
+          "kind": "cryptek_mark",
+          "params": {}
         }
       }
     ],
@@ -751,7 +732,7 @@
       "haste"
     ],
     "manaProduction": null,
-    "entryTapRule": null,
+    "entryTapRule": "always",
     "conditionalEntryText": null,
     "abilities": [
       {
@@ -1165,7 +1146,7 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "cant_be_blocked",
+          "kind": "static_restriction",
           "params": {}
         }
       },
@@ -1294,7 +1275,7 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "cant_be_blocked",
+          "kind": "static_restriction",
           "params": {}
         }
       },
@@ -1596,7 +1577,24 @@
     "manaProduction": null,
     "entryTapRule": null,
     "conditionalEntryText": null,
-    "abilities": [],
+    "abilities": [
+      {
+        "abilityType": "spell",
+        "triggerEvent": null,
+        "triggerCondition": "Prevent all combat damage that would be dealt this turn",
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "static_restriction",
+          "params": {
+            "preventCombatDamage": true,
+            "untilEndOfTurn": true
+          }
+        }
+      }
+    ],
     "oracleText": "Prevent all combat damage that would be dealt this turn.",
     "scryfallId": "584834fb-b7b6-40eb-9fec-8df17172ce5f"
   },
@@ -1785,7 +1783,7 @@
       {
         "abilityType": "spell",
         "triggerEvent": null,
-        "triggerCondition": null,
+        "triggerCondition": "All creatures get -1/-1 until end of turn for each Swamp you control",
         "isOptional": false,
         "cost": null,
         "targets": 0,
@@ -1793,9 +1791,10 @@
         "effect": {
           "kind": "pump",
           "params": {
-            "power": -1,
-            "toughness": -1,
-            "scope": "own"
+            "power": "-1",
+            "toughness": "-1",
+            "scope": "all_creatures",
+            "untilEndOfTurn": true
           }
         }
       }
@@ -1859,6 +1858,19 @@
     "entryTapRule": null,
     "conditionalEntryText": null,
     "abilities": [
+      {
+        "abilityType": "static",
+        "triggerEvent": null,
+        "triggerCondition": "Creatures you control are artifacts in addition to their other types",
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "static_noop",
+          "params": {}
+        }
+      },
       {
         "abilityType": "triggered",
         "triggerEvent": "cast",
@@ -1945,58 +1957,11 @@
         "triggerCondition": null,
         "isOptional": false,
         "cost": null,
-        "targets": 0,
-        "targetFilter": null,
-        "effect": {
-          "kind": "draw_cards",
-          "params": {
-            "amount": 3
-          }
-        }
-      },
-      {
-        "abilityType": "triggered",
-        "triggerEvent": null,
-        "triggerCondition": null,
-        "isOptional": false,
-        "cost": null,
-        "targets": 0,
-        "targetFilter": null,
-        "effect": {
-          "kind": "mill",
-          "params": {
-            "amount": 3
-          }
-        }
-      },
-      {
-        "abilityType": "triggered",
-        "triggerEvent": null,
-        "triggerCondition": null,
-        "isOptional": false,
-        "cost": null,
         "targets": 1,
-        "targetFilter": "creature cards with total mana value 8 or less in your graveyard",
+        "targetFilter": "creature cards with total mana value 8 or less in your graveyard Return each of them to the battlefield with a necrodermis counter on it",
         "effect": {
-          "kind": "other",
-          "params": {
-            "description": "III — Choose up to three target creature cards with total mana value 8 or less in your graveyard"
-          }
-        }
-      },
-      {
-        "abilityType": "triggered",
-        "triggerEvent": null,
-        "triggerCondition": null,
-        "isOptional": false,
-        "cost": null,
-        "targets": 0,
-        "targetFilter": null,
-        "effect": {
-          "kind": "return_from_graveyard",
-          "params": {
-            "zone": "battlefield"
-          }
+          "kind": "war_in_heaven_reanimate",
+          "params": {}
         }
       }
     ],
@@ -2059,9 +2024,24 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
+          "kind": "enable_graveyard_cast",
+          "params": {}
+        }
+      },
+      {
+        "abilityType": "triggered",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "animate_self",
           "params": {
-            "description": "Flying Repair Barge — Whenever this Vehicle becomes crewed, each artifact creature card in your graveyard gains unearth {3} until end of turn"
+            "power": 0,
+            "toughness": 0,
+            "keywords": []
           }
         }
       }
@@ -2116,6 +2096,23 @@
             "tokenToughness": 2,
             "tokenName": "artifact creature",
             "amount": 1
+          }
+        }
+      },
+      {
+        "abilityType": "triggered",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "animate_self",
+          "params": {
+            "power": 0,
+            "toughness": 0,
+            "keywords": []
           }
         }
       }
@@ -2271,6 +2268,23 @@
             "amount": 1
           }
         }
+      },
+      {
+        "abilityType": "triggered",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "animate_self",
+          "params": {
+            "power": 0,
+            "toughness": 0,
+            "keywords": []
+          }
+        }
       }
     ],
     "oracleText": "Flying\nInvasion Beams — When this Vehicle enters, create a 2/2 black Necron Warrior artifact creature token.\nCrew 2 (Tap any number of creatures you control with total power 2 or more: This Vehicle becomes an artifact creature until end of turn.)",
@@ -2361,7 +2375,17 @@
     "cardType": "artifact",
     "subtypes": [],
     "keywords": [],
-    "manaProduction": null,
+    "manaProduction": {
+      "colors": [
+        "W",
+        "U",
+        "B",
+        "R",
+        "G",
+        "C"
+      ],
+      "amount": 3
+    },
     "entryTapRule": null,
     "conditionalEntryText": null,
     "abilities": [
@@ -2437,7 +2461,21 @@
     "manaProduction": null,
     "entryTapRule": null,
     "conditionalEntryText": null,
-    "abilities": [],
+    "abilities": [
+      {
+        "abilityType": "static",
+        "triggerEvent": null,
+        "triggerCondition": "You may have this artifact enter as a copy of any artifact on the battlefield",
+        "isOptional": true,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "static_noop",
+          "params": {}
+        }
+      }
+    ],
     "oracleText": "You may have this artifact enter as a copy of any artifact on the battlefield.",
     "scryfallId": "d1958f01-77e9-4976-b7f8-f9b62aa78edc"
   },
@@ -2481,10 +2519,8 @@
         "targets": 1,
         "targetFilter": "creature you control",
         "effect": {
-          "kind": "other",
-          "params": {
-            "description": "{B}{B}: Attach this Equipment to target creature you control"
-          }
+          "kind": "detach_reattach",
+          "params": {}
         }
       },
       {

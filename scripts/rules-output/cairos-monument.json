@@ -566,17 +566,7 @@
     "cardType": "enchantment",
     "subtypes": [],
     "keywords": [],
-    "manaProduction": {
-      "colors": [
-        "W",
-        "U",
-        "B",
-        "R",
-        "G",
-        "C"
-      ],
-      "amount": 1
-    },
+    "manaProduction": null,
     "entryTapRule": null,
     "conditionalEntryText": null,
     "abilities": [
@@ -2048,10 +2038,8 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
-          "params": {
-            "description": "Flying As long as this creature is untapped, creatures can't attack you or planeswalkers you control unless their controller pays {1} for each of those creatures"
-          }
+          "kind": "static_restriction",
+          "params": {}
         }
       },
       {
@@ -2063,10 +2051,8 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
-          "params": {
-            "description": "As long as this creature is attacking, creatures can't block unless their controller pays {1} for each of those creatures"
-          }
+          "kind": "static_restriction",
+          "params": {}
         }
       }
     ],
@@ -2098,10 +2084,8 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
-          "params": {
-            "description": "Flying Activated abilities of creatures your opponents control can't be activated"
-          }
+          "kind": "static_noop",
+          "params": {}
         }
       }
     ],
@@ -3040,7 +3024,7 @@
     "subtypes": [],
     "keywords": [],
     "manaProduction": null,
-    "entryTapRule": null,
+    "entryTapRule": "always",
     "conditionalEntryText": null,
     "abilities": [
       {
@@ -3098,10 +3082,8 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
-          "params": {
-            "description": "Whenever a creature an opponent controls enters, you may attach this Aura to that creature"
-          }
+          "kind": "detach_reattach",
+          "params": {}
         }
       }
     ],
@@ -3146,10 +3128,8 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
-          "params": {
-            "description": "Enchanted permanent can't attack or block, and its activated abilities can't be activated unless they're mana abilities"
-          }
+          "kind": "static_noop",
+          "params": {}
         }
       }
     ],

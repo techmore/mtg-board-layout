@@ -281,17 +281,7 @@
       "Soldier"
     ],
     "keywords": [],
-    "manaProduction": {
-      "colors": [
-        "W",
-        "U",
-        "B",
-        "R",
-        "G",
-        "C"
-      ],
-      "amount": 1
-    },
+    "manaProduction": null,
     "entryTapRule": null,
     "conditionalEntryText": null,
     "abilities": [
@@ -333,10 +323,8 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
-          "params": {
-            "description": "'\" Whenever Preston Garvey attacks, untap each enchanted permanent you control"
-          }
+          "kind": "untap_enchanted",
+          "params": {}
         }
       }
     ],
@@ -399,10 +387,8 @@
         "targets": 1,
         "targetFilter": "creature you control",
         "effect": {
-          "kind": "other",
-          "params": {
-            "description": "{T}: Attach target Aura or Equipment you control to target creature you control"
-          }
+          "kind": "attach_target",
+          "params": {}
         }
       }
     ],
@@ -489,61 +475,15 @@
     "conditionalEntryText": null,
     "abilities": [
       {
-        "abilityType": "triggered",
-        "triggerEvent": "attack",
-        "triggerCondition": "Menace Whenever Veronica attacks",
-        "isOptional": true,
-        "cost": null,
-        "targets": 0,
-        "targetFilter": null,
-        "effect": {
-          "kind": "other",
-          "params": {
-            "description": "Menace Whenever Veronica attacks, you may discard a card"
-          }
-        }
-      },
-      {
-        "abilityType": "triggered",
-        "triggerEvent": null,
-        "triggerCondition": null,
-        "isOptional": false,
-        "cost": null,
-        "targets": 0,
-        "targetFilter": null,
-        "effect": {
-          "kind": "draw_cards",
-          "params": {
-            "amount": 1
-          }
-        }
-      },
-      {
-        "abilityType": "triggered",
-        "triggerEvent": "discard",
-        "triggerCondition": "you discard one or more nonland cards for the first time each turn",
-        "isOptional": false,
-        "cost": null,
-        "targets": 0,
-        "targetFilter": null,
-        "effect": {
-          "kind": "create_token",
-          "params": {
-            "tokenName": "Junk",
-            "amount": 1
-          }
-        }
-      },
-      {
         "abilityType": "activated",
         "triggerEvent": null,
         "triggerCondition": null,
-        "isOptional": false,
-        "cost": "{T}, Sacrifice",
+        "isOptional": true,
+        "cost": "{T}, Sacrifice, Discard",
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "exile",
+          "kind": "loot_optional",
           "params": {}
         }
       }
@@ -694,11 +634,11 @@
     "conditionalEntryText": null,
     "abilities": [
       {
-        "abilityType": "static",
+        "abilityType": "activated",
         "triggerEvent": null,
         "triggerCondition": null,
         "isOptional": false,
-        "cost": null,
+        "cost": "{1}",
         "targets": 0,
         "targetFilter": null,
         "effect": {
@@ -750,26 +690,8 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
-          "params": {
-            "description": "Whenever you attack, you may pay {2} and sacrifice an Aura attached to Three Dog"
-          }
-        }
-      },
-      {
-        "abilityType": "triggered",
-        "triggerEvent": "sacrifice",
-        "triggerCondition": "you sacrifice an Aura this way",
-        "isOptional": false,
-        "cost": null,
-        "targets": 0,
-        "targetFilter": null,
-        "effect": {
-          "kind": "create_token",
-          "params": {
-            "tokenName": "a",
-            "amount": 1
-          }
+          "kind": "three_dog_aura_copies",
+          "params": {}
         }
       }
     ],
@@ -1217,7 +1139,9 @@
     "typeLine": "Instant",
     "cardType": "instant",
     "subtypes": [],
-    "keywords": [],
+    "keywords": [
+      "split second"
+    ],
     "manaProduction": null,
     "entryTapRule": null,
     "conditionalEntryText": null,
@@ -1246,25 +1170,8 @@
         "targets": 1,
         "targetFilter": "permanent shuffles it into their library",
         "effect": {
-          "kind": "other",
-          "params": {
-            "description": "The owner of target permanent shuffles it into their library, then reveals the top card of their library"
-          }
-        }
-      },
-      {
-        "abilityType": "spell",
-        "triggerEvent": null,
-        "triggerCondition": null,
-        "isOptional": false,
-        "cost": null,
-        "targets": 0,
-        "targetFilter": null,
-        "effect": {
-          "kind": "return_from_graveyard",
-          "params": {
-            "zone": "battlefield"
-          }
+          "kind": "chaos_warp",
+          "params": {}
         }
       }
     ],
@@ -1635,9 +1542,10 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
+          "kind": "x_pump",
           "params": {
-            "description": "Enchant creature Enchanted creature has \"Whenever this creature attacks alone, it gets +X/+X until end of turn, where X is the number of nonland permanents you control"
+            "toughness": "+X",
+            "power": "x"
           }
         }
       }
@@ -1678,11 +1586,11 @@
         }
       },
       {
-        "abilityType": "static",
+        "abilityType": "activated",
         "triggerEvent": null,
         "triggerCondition": null,
         "isOptional": false,
-        "cost": null,
+        "cost": "{T}, {2}, Sacrifice",
         "targets": 0,
         "targetFilter": null,
         "effect": {
@@ -2119,17 +2027,7 @@
     "keywords": [
       "menace"
     ],
-    "manaProduction": {
-      "colors": [
-        "W",
-        "U",
-        "B",
-        "R",
-        "G",
-        "C"
-      ],
-      "amount": 1
-    },
+    "manaProduction": null,
     "entryTapRule": null,
     "conditionalEntryText": null,
     "abilities": [
@@ -2158,7 +2056,7 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "static_noop",
+          "kind": "static_restriction",
           "params": {}
         }
       },
@@ -2204,17 +2102,7 @@
       "Aura"
     ],
     "keywords": [],
-    "manaProduction": {
-      "colors": [
-        "W",
-        "U",
-        "B",
-        "R",
-        "G",
-        "C"
-      ],
-      "amount": 1
-    },
+    "manaProduction": null,
     "entryTapRule": null,
     "conditionalEntryText": null,
     "abilities": [
@@ -2263,7 +2151,23 @@
     "manaProduction": null,
     "entryTapRule": null,
     "conditionalEntryText": null,
-    "abilities": [],
+    "abilities": [
+      {
+        "abilityType": "triggered",
+        "triggerEvent": "mana_tapped",
+        "triggerCondition": "Enchant land Whenever enchanted land is tapped for mana, its controller adds an additional one mana of any color",
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "add_mana",
+          "params": {
+            "anyColor": true
+          }
+        }
+      }
+    ],
     "oracleText": "Enchant land\nWhenever enchanted land is tapped for mana, its controller adds an additional one mana of any color.",
     "scryfallId": "83778d03-6196-4994-8f78-4db6cec823fb"
   },
@@ -2368,7 +2272,25 @@
     "manaProduction": null,
     "entryTapRule": null,
     "conditionalEntryText": null,
-    "abilities": [],
+    "abilities": [
+      {
+        "abilityType": "triggered",
+        "triggerEvent": "mana_tapped",
+        "triggerCondition": "Enchant land Whenever enchanted land is tapped for mana, its controller adds an additional {G}",
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "add_mana",
+          "params": {
+            "colors": [
+              "G"
+            ]
+          }
+        }
+      }
+    ],
     "oracleText": "Enchant land\nWhenever enchanted land is tapped for mana, its controller adds an additional {G}.",
     "scryfallId": "47260e7c-29bf-46f1-a029-9da7bbb418b5"
   },
@@ -2495,10 +2417,8 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
-          "params": {
-            "description": "\") {3}, Sacrifice another artifact: Double equipped creature's power until end of turn"
-          }
+          "kind": "double_equipped_power",
+          "params": {}
         }
       },
       {
@@ -2575,10 +2495,8 @@
         "targets": 1,
         "targetFilter": "land s",
         "effect": {
-          "kind": "other",
-          "params": {
-            "description": "• Check Map — Untap up to two target lands"
-          }
+          "kind": "untap_target",
+          "params": {}
         }
       },
       {
@@ -2821,7 +2739,21 @@
     "manaProduction": null,
     "entryTapRule": null,
     "conditionalEntryText": null,
-    "abilities": [],
+    "abilities": [
+      {
+        "abilityType": "static",
+        "triggerEvent": null,
+        "triggerCondition": "You may have this Equipment enter as a copy of any Equipment on the battlefield",
+        "isOptional": true,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "static_noop",
+          "params": {}
+        }
+      }
+    ],
     "oracleText": "You may have this Equipment enter as a copy of any Equipment on the battlefield.",
     "scryfallId": "80b38b13-fc19-4ffc-8100-249f9eb8cca6"
   },
@@ -2865,19 +2797,16 @@
         }
       },
       {
-        "abilityType": "static",
+        "abilityType": "activated",
         "triggerEvent": null,
         "triggerCondition": null,
         "isOptional": false,
-        "cost": null,
+        "cost": "{T}, {3}",
         "targets": 1,
         "targetFilter": "creature s you control each gain haste until end of turn and can't be blocked this turn except by creatures with haste",
         "effect": {
-          "kind": "keyword_pump",
-          "params": {
-            "keyword": "haste",
-            "scope": "own"
-          }
+          "kind": "cant_be_blocked",
+          "params": {}
         }
       }
     ],
@@ -2957,46 +2886,16 @@
     "conditionalEntryText": null,
     "abilities": [
       {
-        "abilityType": "triggered",
-        "triggerEvent": "etb",
-        "triggerCondition": "Flash When this Equipment enters",
+        "abilityType": "static",
+        "triggerEvent": null,
+        "triggerCondition": null,
         "isOptional": false,
         "cost": null,
         "targets": 1,
-        "targetFilter": "creature you control",
+        "targetFilter": "creature you control That creature gains shroud until end of turn  Equipped creature can't be blocked",
         "effect": {
-          "kind": "other",
-          "params": {
-            "description": "Flash When this Equipment enters, attach it to target creature you control"
-          }
-        }
-      },
-      {
-        "abilityType": "static",
-        "triggerEvent": null,
-        "triggerCondition": null,
-        "isOptional": false,
-        "cost": null,
-        "targets": 0,
-        "targetFilter": null,
-        "effect": {
-          "kind": "static_noop",
+          "kind": "cant_be_blocked",
           "params": {}
-        }
-      },
-      {
-        "abilityType": "static",
-        "triggerEvent": null,
-        "triggerCondition": null,
-        "isOptional": false,
-        "cost": null,
-        "targets": 0,
-        "targetFilter": null,
-        "effect": {
-          "kind": "other",
-          "params": {
-            "description": ") Equipped creature can't be blocked"
-          }
         }
       },
       {
@@ -3096,10 +2995,8 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
-          "params": {
-            "description": "When you cast this spell, copy it"
-          }
+          "kind": "copy_spell",
+          "params": {}
         }
       },
       {
@@ -4385,11 +4282,11 @@
         }
       },
       {
-        "abilityType": "static",
+        "abilityType": "activated",
         "triggerEvent": null,
         "triggerCondition": null,
         "isOptional": false,
-        "cost": null,
+        "cost": "{T}, {4}",
         "targets": 1,
         "targetFilter": "creature can't be blocked this turn",
         "effect": {

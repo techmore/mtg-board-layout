@@ -339,7 +339,7 @@ const KEYWORDS = [
   'indestructible', 'lifelink', 'menace', 'reach', 'trample', 'vigilance',
   'ward', 'flash', 'defender', 'exalted', 'persist', 'undying', 'infect',
   'wither', 'prowess', 'fear', 'intimidate', 'shadow', 'banding', 'totem armor',
-  'skulk',
+  'skulk', 'split second',
 ]
 
 function parseKeywords(typeLine, oracleText) {
@@ -387,23 +387,28 @@ function parseEntryTap(oracleText) {
 // Mana production
 const MANA_COLORS = ['W', 'U', 'B', 'R', 'G', 'C']
 function parseManaProduction(oracleText) {
-  const addClauses = oracleText.match(/\badd\b[^.\n]*/gi) ?? []
+  // Granted abilities ("Treasures you control have \"{T}, Sacrifice ~: Add...\")"
+  // belong to other permanents, not this card — drop quoted segments first.
+  const text = oracleText.replace(/["“”][^"“”]*["“”]/g, ' ')
+  const addClauses = text.match(/\badd\b[^.\n]*/gi) ?? []
   if (addClauses.length === 0) return null
   const colors = new Set()
   for (const clause of addClauses) {
-    if (/any color|any combination/i.test(clause)) { MANA_COLORS.forEach(c => colors.add(c)); break }
+    if (/any(?: one)? color|any combination/i.test(clause)) { MANA_COLORS.forEach(c => colors.add(c)); break }
     const symbols = clause.match(/\{([WUBRGC])\}/gi) ?? []
     symbols.forEach(s => colors.add(s.replace(/[{}]/g, '')))
   }
   if (colors.size === 0) return null
-  const amount = Math.max(...addClauses.map(c => {
+  const amounts = addClauses.map(c => {
     // "Add {B} or {R}" produces one mana of either color — never two.
     if (/\bor\b/i.test(c) && !/\b(one|two|three|four|five)\b/i.test(c)) return 1
+    if (/\bX\b/.test(c)) return 'X'
     const n = c.match(/\b(one|two|three|four|five)\b/i)
     if (n) return ({ one: 1, two: 2, three: 3, four: 4, five: 5 })[n[1].toLowerCase()]
     const syms = c.match(/\{[WUBRGC]\}/gi) ?? []
     return syms.length || 1
-  }))
+  })
+  const amount = amounts.includes('X') ? 'X' : Math.max(...amounts)
   return { colors: [...colors], amount }
 }
 
@@ -431,6 +436,55 @@ const TRIGGER_PATTERNS = [
 ]
 
 const EFFECT_PATTERNS = [
+  // ── Four-category completion: Ring, player-targeting, sub-mechanics ──
+  // Placed above the greedy generic patterns (create_token, deal_damage,
+  // draw_cards, search_library, return_from_graveyard) so these win.
+  { kind: 'ring_tempts', regex: /\bthe Ring tempts you\b/i },
+  { kind: 'force_attack', regex: /\bcreatures your opponents control attack (?:this turn|each combat) if able\b/i },
+  { kind: 'quest_death_tokens', regex: /\bcreates? a tapped 1\/1 white Soldier creature token for each quest counter\b/i },
+  { kind: 'skyclave_return', regex: /\bthe exiled card's owner creates an X\/X blue Illusion creature token\b/i },
+  { kind: 'partner_tutor', regex: /\bPartner with [A-Z][^.]*/i },
+  { kind: 'populate', regex: /\bpopulate\b/i },
+  { kind: 'manifest_flip', regex: /\bturn a face-down creature you control face up\b/i },
+  { kind: 'enable_graveyard_cast', regex: /\bgains? (?:escape|unearth(?: \{\d+\})?|jump-start)(?: \{\d+\})? until end of turn\b/i },
+  { kind: 'anrakyr_life_cast', regex: /\bcast an artifact spell from your hand or graveyard by paying life equal to its mana value\b/i },
+  { kind: 'three_dog_aura_copies', regex: /\byou may pay \{\d+\} and sacrifice an Aura attached to\b/i },
+  { kind: 'lobelia_drain', regex: /\bEach opponent loses 2 life and you gain 2 life\b/i },
+  { kind: 'arcane_lighthouse_strip', regex: /\bcreatures your opponents control lose hexproof and shroud\b/i },
+  { kind: 'energy_reanimate', regex: /\bpay an amount of \{E\} equal to that card's mana value[\s\S]*?return it\b/i },
+  { kind: 'confiscation_energy', regex: /\bpay an amount of \{E\} equal to that permanent's mana value[\s\S]*?gain control of it\b/i },
+  { kind: 'graveyard_to_library', regex: /\bputs? all the cards from (?:their|your) graveyard on the bottom of (?:their|your) library\b/i },
+  { kind: 'loot_optional', regex: /\byou may discard a card[\s.]*If you do, draw a card\b/i },
+  { kind: 'discard_hand_draw', regex: /\byou may discard your hand[\s.]*If you do, draw\b/i },
+  { kind: 'animate_self', regex: /\bbecomes an? (?:legendary )?\d+\/\d+ [\w' ]*creature\b[^.]*until end of turn/i },
+  { kind: 'animate_self', regex: /\bThis Vehicle becomes an artifact creature until end of turn\b/i },
+  { kind: 'untap_x_lands', regex: /\buntap up to X lands, where X is the greatest power\b/i },
+  { kind: 'bounce_n_nonland', regex: /\bReturn \w+ target nonland permanents to their owners' hands\b/i },
+  { kind: 'slithermuse_draw', regex: /\bdraw cards equal to the difference\b/i },
+  { kind: 'poison_diff', regex: /\bfewer than nine poison counters, they get a number of poison counters equal to the difference\b/i },
+  { kind: 'skyclave_exile', regex: /\bexile up to one target nonland, nontoken permanent you don't control with mana value 4 or less\b/i },
+  { kind: 'cryptek_mark', regex: /\bWhen that creature dies this turn, return it to the battlefield tapped under your control\b/i },
+  { kind: 'star_athlete_choice', regex: /\bIts controller may sacrifice it[\s.]*If they don't, this creature deals 5 damage\b/i },
+  { kind: 'chaos_warp', regex: /\bshuffles it into their library, then reveals the top card\b/i },
+  { kind: 'tyrite_sanctum', regex: /\bbecomes a God in addition to its other types[\s.]*Put a \+1\/\+1 counter on it\b/i },
+  { kind: 'suspended_sentence', regex: /\bThat player loses 3 life\b/i },
+  { kind: 'animate_target_temp', regex: /\bTarget land you control becomes an X\/X Elemental creature\b/i },
+  { kind: 'yes_man_give', regex: /\bTarget opponent gains control of Yes Man\b/i },
+  { kind: 'forge_of_heroes', regex: /\bChoose target commander that entered this turn\b/i },
+  { kind: 'war_in_heaven_reanimate', regex: /\bup to three target creature cards with total mana value[\s\S]*?Return each of them to the battlefield\b/i },
+  { kind: 'destroy_equal_toughness', regex: /\btarget creatures with equal toughness[\s\S]*?Destroy the chosen creatures\b/i },
+  { kind: 'disorienting_ramp', regex: /\bsearch your library for up to that many land cards\b/i },
+  { kind: 'first_spell_damage', regex: /\bdeals? damage equal to that spell's mana value\b/i },
+  { kind: 'parity_ban', regex: /\bchoose odd or even\b/i },
+  { kind: 'sacrifice_small_make_tokens', regex: /\bsacrifice any number of creatures each with base power or toughness 1 or less\b/i },
+  { kind: 'black_gate', regex: /\bcan't be blocked by creatures that player controls this turn\b/i },
+  // Engine-enforced conditional taxes/gates classified silently.
+  { kind: 'static_restriction', regex: /\bcreatures? can't attack you or planeswalkers you control unless their controller pays \{\d+\}/i },
+  { kind: 'static_restriction', regex: /\bcreatures? can't block unless their controller pays \{\d+\}/i },
+  { kind: 'static_restriction', regex: /\bcan't attack or block unless you have (?:(?:\d+)|one|two|three|four|five|six|seven|eight|nine|ten) or more cards in hand\b/i },
+  { kind: 'static_noop', regex: /\buntap all attacking creatures\b/i },
+  { kind: 'static_restriction', regex: /\bmust be blocked if able\b/i },
+  // ── Generic patterns ──
   { kind: 'create_token', regex: /\bcreate\b[^.]*\btokens?\b/i },
   { kind: 'put_counter', regex: /\bput\b[^.]*\b(counter|counters)\b/i },
   { kind: 'double_counters', regex: /\bdouble\b[^.]*\bcounters?\b/i },
@@ -445,10 +499,15 @@ const EFFECT_PATTERNS = [
   { kind: 'gain_life', regex: /\bgains?\b[^.]*\blife\b/i },
   { kind: 'search_library', regex: /\bsearch\b[^.]*\blibrary\b/i },
   { kind: 'return_from_graveyard', regex: /\b(return|put)\b[^.]*\b(from|to|onto)\b[^.]*\b(battlefield|hand|graveyard)\b/i },
-  { kind: 'cast_from_graveyard', regex: /\b(?:cast|play)\b[^.]*\b(?:from (?:your|a) graveyard|the exiled card|from exile)\b[^.]*\bwithout paying\b/i },
+  { kind: 'cast_from_graveyard', regex: /\b(?:cast|play)\b[^.]*\b(?:from (?:your|a) graveyard|the exiled card|from exile|exiled with)\b[^.]*\bwithout paying\b/i },
+  { kind: 'detach_reattach', regex: /\battach this (?:Aura|Equipment) to\b/i },
   { kind: 'return_all_other', regex: /\breturn all other creatures\b[^.]*\bt(?:heir owners')? hands?\b/i },
   { kind: 'double_power', regex: /\bdouble its power until end of turn\b/i },
-  { kind: 'move_counter', regex: /\bmove\s+(?:a|{?} ?)?(?:counter|the counter)\b/i },
+  { kind: 'double_equipped_power', regex: /\bdouble equipped creature's power\b/i },
+  { kind: 'x_pump', regex: /\bgets \+x\/(?:[+-]?x|[+-]?\d+)\s+until end of turn\b/i },
+  { kind: 'move_counter', regex: /\bmove (?:a |\{1\} )?(?:shield counter|counter|the counter)/i },
+  { kind: 'amass', regex: /\bamass (?:orcs |an? army )?(\d+|x)/i },
+  { kind: 'investigate', regex: /\binvestigate\b/i },
   { kind: 'exchange_life_toughness', regex: /\bexchange target opponent's life total with\b/i },
   { kind: 'counter_target', regex: /\bcounter\b[^.]*\bspell\b/i },
   { kind: 'sacrifice', regex: /\bsacrifice\b\s+(?:it|this\s+\w+)\b/i },
@@ -456,8 +515,16 @@ const EFFECT_PATTERNS = [
   { kind: 'mass_sacrifice', regex: /\b(?:you )?sacrifice\b\s+(?:a|another|an)\s+(?:artifact|creature|enchantment|land|planeswalker|token)\b/i },
   { kind: 'untap_lands', regex: /\buntap\b[^.]*\ball lands\b/i },
   { kind: 'untap_creatures', regex: /\buntap\b[^.]*\beach creature\b/i },
+  { kind: 'untap_enchanted', regex: /\buntap\b[^.]*\beach enchanted permanent\b/i },
+  { kind: 'each_player_mill', regex: /\beach player mills?\b/i },
+  { kind: 'regenerate', regex: /\bregenerate target\b/i },
+  { kind: 'tap_x_myr', regex: /\btap x untapped myr you control\b/i },
   { kind: 'tap_target', regex: /\btap\b[^.,;]*\btarget\b/i },
-  { kind: 'cant_be_blocked', regex: /\b(?:target|this) (?:creature|Goblin, Orc, or Pirate)(?: you control)? can't be blocked\b/i },
+  { kind: 'target_player_mill', regex: /\b(?:target player|each opponent)\s+mills?\b/i },
+  { kind: 'untap_target', regex: /\buntap up to \w+ target\b/i },
+  { kind: 'attach_target', regex: /\battach (?:this|target) (?:Aura|Equipment|aura|equipment)\b/i },
+  { kind: 'roll_dice', regex: /\broll (?:a |x )?(?:six-sided|\d+-sided)? ?(?:die|dice)\b/i },
+  { kind: 'cant_be_blocked', regex: /\btarget\b[^.]*\bcan't be blocked\b/i },
   { kind: 'manifest', regex: /\bmanifest\b(?:\s+dread(?:\s+twice)?)?/i },
   { kind: 'scry', regex: /\bscry\b\s*\d*/i },
   { kind: 'scry', regex: /\blook at the top\b[^.]*\b(?:card|cards|library)\b[^.]*\blibrary\b/i },
@@ -467,7 +534,12 @@ const EFFECT_PATTERNS = [
   { kind: 'mill', regex: /\bput\b[^.]*?\bthe\s+top\s+(?:\d+|X|one|two|three|four|five)\s+cards?\b[^.]*\b(graveyard|library)\b/i },
   { kind: 'fight', regex: /\bfights?\b/i },
   { kind: 'storm', regex: /\bstorm\b/i },
+  { kind: 'copy_spell', regex: /(?:copy it|copy this spell)\b/i },
+  { kind: 'discover', regex: /\bdiscover\s+(\d+)/i },
+  { kind: 'cascade', regex: /\bcascade\b/i },
   { kind: 'annihilator', regex: /\bannihilator\s*(\d+)/i },
+  { kind: 'sacrifice_n_permanents', regex: /\bdefending player sacrifices (\w+) permanents\b/i },
+  { kind: 'exile_n_permanents', regex: /\bdefending player exiles (\w+) permanents\b/i },
   { kind: 'equip', regex: /\bequip\s*\{[^}]+\}/i },
   { kind: 'pump', regex: /(?:gets|gain(?:s)?|get)\s*[^.,;]*?([-−+]?\d+)\s*\/\s*([-−+]?\d+)\s*until end of turn/i },
   // Static anthems ("creatures you control get +2/+2") have no time limit;
@@ -476,6 +548,10 @@ const EFFECT_PATTERNS = [
   // Temporary keyword grants ("Creatures you control gain deathtouch until end
   // of turn", "It gains haste"). Static "have"/"has" grants stay unresolvable.
   { kind: 'keyword_pump', regex: /\bgains?\s+(?:[a-z ]+?\s+)?(deathtouch|flying|first strike|double strike|haste|hexproof|indestructible|lifelink|menace|reach|trample|vigilance|ward)\b/i },
+  { kind: 'gains_keyword', regex: /\bgains?\s+(skulk|deathtouch|flying|first strike|haste|lifelink|trample|vigilance)\s+until end of turn\b/i },
+  { kind: 'shuffle_into_library', regex: /\bshuffle it into its owner's library\b/i },
+  { kind: 'experience_counter', regex: /\byou get an experience counter\b/i },
+  { kind: 'switch_power_toughness', regex: /\bswitch the power and toughness of\b/i },
   { kind: 'add_energy', regex: /\byou get\b[^.,;]*\{e\}/i },
   { kind: 'gain_monarch', regex: /\byou become the monarch\b/i },
   { kind: 'gain_control', regex: /\bgain(?:s)? control of\s+(?:up to one\s+)?target\s+(?:creature|permanent|artifact|enchantment)\b/i },
@@ -485,9 +561,11 @@ const EFFECT_PATTERNS = [
   // vacuously true — resolve silently instead of toasting "not implemented".
   { kind: 'static_noop', regex: /\bcan't be (countered|regenerated)|can't be prevented/i },
   // Plain attack/block restrictions ("This creature can't block", "can't be
-  // blocked") are enforced by the combat engines; conditional ones ("unless …")
-  // stay unresolvable.
-  { kind: 'static_restriction', regex: /\bcan't\s+(?:attack|block(?:ed)?|attack\s+or\s+block)\b(?!.*\b(unless|as long as|if)\b)/i },
+  // blocked") are enforced by the combat engines.
+  { kind: 'static_restriction', regex: /\bcan't\s+(?:attack(?:\s+or\s+block)?|(?:be\s+)?block(?:ed)?)\b(?!.*\b(unless|as long as|if)\b)/i },
+  { kind: 'static_restriction', regex: /\bcan't be blocked as long as defending player (?:has a rad counter|controls an? [A-Za-z]+)\b/i },
+  // Enchanted/equipped permanent restrictions are enforced by canBlock/canAttack.
+  { kind: 'static_noop', regex: /\b(?:enchanted|equipped) (?:permanent|creature) can't attack or block\b/i },
   // Shroud/hexproof reminders ("It can't be the target of spells or abilities")
   // are covered by the app's hexproof-targeting guard.
   { kind: 'static_noop', regex: /\bcan't be the target of\b/i },
@@ -505,6 +583,19 @@ const EFFECT_PATTERNS = [
   // no per-color damage/block model to honor it mechanically, so it's resolved
   // silently (a pump-like protection isn't modeled).
   { kind: 'static_noop', regex: /\bgains? protection from\b/i },
+  // Activated-ability locks (Linvala, enchanted "can't be activated") — applied
+  // via the context-menu gate.
+  { kind: 'static_noop', regex: /\bactivated abilities of .* can't be activated\b/i },
+  { kind: 'static_noop', regex: /\bcan't be activated unless/i },
+  // "This mana can't be spent to pay generic mana costs" (Jegantha) — a
+  // companion restriction; resolve silently.
+  { kind: 'static_noop', regex: /\bthis mana can't be spent to pay generic\b/i },
+  // "Activate only if you have N or more life" (Bilbo) — gated in the activated
+  // menu.
+  { kind: 'static_noop', regex: /\bactivate only if you have\b/i },
+  // "This .* can't be sacrificed" / "Mana abilities can't be copied/targeted".
+  { kind: 'static_noop', regex: /\bcan't be sacrificed\b/i },
+  { kind: 'static_noop', regex: /\bmana abilities can't be (copied|targeted)\b/i },
   // Evoke consequence ("it's sacrificed when it enters") — evoke costs aren't
   // modeled, so the reminder is vacuously inert.
   { kind: 'static_noop', regex: /\bit'?s sacrificed when it enters\b/i },
@@ -609,10 +700,34 @@ function parseEffect(sentence) {
         if (k) params.keyword = k[1].toLowerCase()
         params.scope = pumpScope(sentence)
       }
+      if (ep.kind === 'discover') {
+        const n = sentence.match(/\bdiscover\s+(\d+)/i)
+        if (n) params.amount = parseInt(n[1], 10)
+      }
+      if (ep.kind === 'gains_keyword') {
+        const k = sentence.match(/\bgains?\s+(skulk|deathtouch|flying|first strike|haste|lifelink|trample|vigilance)\b/i)
+        if (k) params.keyword = k[1].toLowerCase()
+      }
+      if (ep.kind === 'x_pump') {
+        // "gets +X/+0 until end of turn, where X is the greatest power among
+        // creatures you control" (Orcish Siegemaster).
+        if (/\bgreatest power among creatures you control\b/i.test(sentence)) params.x_source = 'greatest_power'
+        else if (/\bnumber of food counters/i.test(sentence)) params.x_source = 'counters'
+        else if (/\bnumber of auras? .*(?:attached|on)/i.test(sentence)) params.x_source = 'auras'
+        else if (/\bamount of \{e\} you have\b/i.test(sentence)) params.x_source = 'energy'
+        const m = sentence.match(/\+x\s*\/\s*([+-]?x|[+-]?\d+)/i)
+        if (m) params.toughness = m[1].toLowerCase() === 'x' ? 'x' : m[1]
+        params.power = 'x'
+      }
       if (ep.kind === 'manifest') {
         // "manifest dread" mills one card then manifests the next; "twice" x2.
         if (/\bdread\b/i.test(sentence)) params.dread = /\btwice\b/i.test(sentence) ? 2 : 1
         else params.dread = 0
+      }
+      if (ep.kind === 'amass') {
+        const n = sentence.match(/\bamass\s+(?:orcs\s+)?(\d+|x)/i)
+        if (n) params.amount = n[1].toLowerCase() === 'x' ? (sentence.match(/\bwhere x is .*? (\d+)/i)?.[1] ? 'X' : 1) : parseInt(n[1], 10)
+        else params.amount = 1
       }
       if (ep.kind === 'gain_control') {
         params.temporary = /\buntil end of turn\b|\bfor as long as\b/i.test(sentence)
@@ -659,6 +774,26 @@ function parseEffect(sentence) {
             params.amount = v === 'one' ? 1 : /^\d+$/.test(v) ? parseInt(v, 10) : ({ two: 2, three: 3, four: 4, five: 5 })[v] ?? 1
           } else params.amount = 1
         }
+      }
+      if (ep.kind === 'animate_self') {
+        // "becomes a legendary 6/6 … creature with menace and deathtouch" /
+        // "This Vehicle becomes an artifact creature" (keeps printed P/T).
+        const pt = sentence.match(/becomes an? (?:legendary )?(\d+)\/(\d+)/i)
+        params.power = pt ? parseInt(pt[1], 10) : 0
+        params.toughness = pt ? parseInt(pt[2], 10) : 0
+        const keywords = []
+        for (const kw of ['menace', 'deathtouch', 'trample', 'haste', 'flying', 'vigilance', 'lifelink']) {
+          if (new RegExp(`\\b${kw}\\b`, 'i').test(sentence)) keywords.push(kw)
+        }
+        params.keywords = keywords
+      }
+      if (ep.kind === 'discard_hand_draw') {
+        const n = sentence.match(/draw (one|two|three|four|five|\d+) cards/i)
+        params.amount = n ? (({ one: 1, two: 2, three: 3, four: 4, five: 5 })[n[1]] ?? parseInt(n[1], 10) ?? 4) : 4
+      }
+      if (ep.kind === 'bounce_n_nonland') {
+        const n = sentence.match(/Return (\w+) target nonland/i)
+        params.count = n ? (({ one: 1, two: 2, three: 3, four: 4, five: 5, six: 6, seven: 7 })[n[1].toLowerCase()] ?? 6) : 6
       }
       return { kind: ep.kind, params }
     }
@@ -725,6 +860,101 @@ function isActivated(sentence) {
     (/:\s*\w/i.test(sentence) && (/\{T\}/.test(sentence) || /\bpay\b/i.test(sentence) || /\bsacrifice\b/i.test(sentence)))
 }
 
+function mkAbility(abilityType, effect, extra = {}) {
+  return {
+    abilityType,
+    triggerEvent: null,
+    triggerCondition: null,
+    isOptional: false,
+    cost: null,
+    targets: 0,
+    targetFilter: null,
+    effect,
+    ...extra,
+  }
+}
+
+function parseManaBoost(s) {
+  if (/any color/i.test(s)) return { anyColor: true }
+  const colors = [...s.matchAll(/\{([WUBRGC])\}/g)].map((x) => x[1])
+  return colors.length ? { colors } : {}
+}
+
+// Sentence shapes seen repeatedly in deck rule outputs that the generic
+// trigger/effect tables miss. Returns an ability or null.
+function parseSpecialAbility(sentence) {
+  let m
+  // "Whenever enchanted land is tapped for mana, its controller adds an additional one mana of any color."
+  // (No ^ anchor: newline-normalized text may prefix "Enchant land" onto the sentence.)
+  if ((m = sentence.match(/Whenever enchanted .+? is tapped for mana, its controller adds an additional (.+?)\.?$/i))) {
+    return mkAbility('triggered', { kind: 'add_mana', params: parseManaBoost(m[1]) }, {
+      abilityType: 'triggered', triggerEvent: 'mana_tapped', triggerCondition: sentence, isOptional: false,
+    })
+  }
+  // "This creature enters with X +1/+1 counters on it."
+  if ((m = sentence.match(/^This creature enters with (X|\d+) ([+-]?\d\/[+-]?\d+) counters? on it/i))) {
+    return mkAbility('static', {
+      kind: 'put_counter',
+      params: { counterKind: m[2].includes('/') ? (m[2].startsWith('-') ? '-1/-1' : '+1/+1') : m[2], amount: /^x$/i.test(m[1]) ? 'X' : parseInt(m[1]), scope: 'self' },
+    }, { triggerCondition: sentence })
+  }
+  // "Creatures you control have base power and toughness X/X until end of turn."
+  if ((m = sentence.match(/^Creatures you control have base power and toughness (\S+)\/(\S+)/i))) {
+    return mkAbility('spell', {
+      kind: 'pump',
+      params: { power: m[1], toughness: m[2], scope: 'own_creatures', baseToughness: true, untilEndOfTurn: true },
+    }, { triggerCondition: sentence })
+  }
+  // "All creatures get -X/-X until end of turn."
+  if ((m = sentence.match(/^(?:All |Each |Nonland )?creatures? get -([^/\s.]+)\/-([^/\s.]+)/i))) {
+    return mkAbility('spell', {
+      kind: 'pump',
+      params: { power: '-' + m[1], toughness: '-' + m[2], scope: 'all_creatures', untilEndOfTurn: true },
+    }, { triggerCondition: sentence })
+  }
+  // "You may have this Equipment/artifact enter as a copy of any ..."
+  if (/^You may have this .+ enter as a copy of any/i.test(sentence)) {
+    return mkAbility('static', { kind: 'static_noop', params: {} }, { triggerCondition: sentence, isOptional: true })
+  }
+  // Characteristic definition: "<Name>'s power and toughness are each equal to the number of lands you control."
+  if (/power and toughness are each equal to the number of .+ you control/i.test(sentence)) {
+    return mkAbility('static', { kind: 'static_noop', params: {} }, { triggerCondition: sentence })
+  }
+  // "Prevent all combat damage that would be dealt this turn."
+  if (/^Prevent all combat damage/i.test(sentence)) {
+    return mkAbility('spell', { kind: 'static_restriction', params: { preventCombatDamage: true, untilEndOfTurn: true } }, { triggerCondition: sentence })
+  }
+  // "Gain control of each noncommander creature with mana value 3 or less."
+  if ((m = sentence.match(/^Gain control of each (.+)$/i))) {
+    const params = { scope: 'each' }
+    const mv = m[1].match(/mana value (\d+) or less/i)
+    if (mv) params.maxManaValue = parseInt(mv[1])
+    if (/noncommander/i.test(m[1])) params.excludeCommander = true
+    return mkAbility('spell', { kind: 'gain_control', params }, { triggerCondition: sentence })
+  }
+  // "Whenever an opponent taps an artifact for mana, gain control of that artifact until ..."
+  if (/^Whenever an opponent taps an artifact for mana, gain control/i.test(sentence)) {
+    return mkAbility('triggered', { kind: 'gain_control', params: { temporary: true } }, {
+      triggerEvent: 'mana_tapped', triggerCondition: sentence,
+    })
+  }
+  // "...you may play a land and cast a permanent spell ... from your graveyard."
+  if (/play a land and cast a permanent spell .* from your graveyard/i.test(sentence)) {
+    return mkAbility('static', { kind: 'cast_from_graveyard', params: { permanentsOnly: true } }, {
+      triggerCondition: sentence, isOptional: true,
+    })
+  }
+  // Extra land drops / land-type grants: "You may play an additional land on each of your turns."
+  if (/play an additional land on each of your turns/i.test(sentence)) {
+    return mkAbility('static', { kind: 'static_noop', params: {} }, { triggerCondition: sentence, isOptional: true })
+  }
+  // "Lands you control are every basic land type ..." / "... are Forest lands in addition to their other types"
+  if (/(?:Lands|creatures) you control are .+(?:in addition to their other types|basic land type)/i.test(sentence)) {
+    return mkAbility('static', { kind: 'static_noop', params: {} }, { triggerCondition: sentence })
+  }
+  return null
+}
+
 function parseAbilities(oracleText, typeLine) {
   const abilities = []
   const text = oracleText.replace(/\s+/g, ' ')
@@ -756,6 +986,56 @@ function parseAbilities(oracleText, typeLine) {
 
   const sentences = text.split(/[.;\n]/).map(s => s.trim()).filter(Boolean)
 
+  // ── Compound multi-sentence abilities ──
+  // "Choose target X. <effect>" shapes resolve as ONE effect spanning several
+  // sentences. When a run of consecutive sentences matches a compound pattern,
+  // merge them so the classification and pattern tables see the whole.
+  const COMPOUND_PATTERNS = [
+    [/target creatures with equal toughness[\s\S]*?Destroy the chosen creatures/i, 'destroy_equal_toughness'],
+    [/up to three target creature cards with total mana value[\s\S]*?Return each of them to the battlefield/i, 'war_in_heaven_reanimate'],
+    [/Choose target artifact or creature[\s.]*You get \{E\}\{E\}\{E\}\{E\}[\s\S]*?gain control of it/i, 'confiscation_energy'],
+    [/Choose up to one target artifact or creature card in your graveyard[\s\S]*?return it from your graveyard to the battlefield/i, 'energy_reanimate'],
+    [/Choose another target artifact creature you control[\s.]*When that creature dies this turn, return it to the battlefield tapped under your control/i, 'cryptek_mark'],
+    [/choose up to one target nonland permanent[\s.]*Its controller may sacrifice it[\s.]*If they don't, this creature deals 5 damage/i, 'star_athlete_choice'],
+    [/The owner of target permanent shuffles it into their library, then reveals the top card of their library[\s.]*If it's a permanent card/i, 'chaos_warp'],
+    [/Target legendary creature becomes a God in addition to its other types[\s.]*Put a \+1\/\+1 counter on it/i, 'tyrite_sanctum'],
+    [/Destroy target creature an opponent controls[\s.]*That player loses 3 life/i, 'suspended_sentence'],
+    [/choose an opponent[\s.]*If that player has more cards in hand than you, draw cards equal to the difference/i, 'slithermuse_draw'],
+    [/For each opponent, choose up to one target artifact or enchantment that player controls[\s\S]*?search your library for up to that many land cards/i, 'disorienting_ramp'],
+    [/for each opponent, choose a creature that player controls[\s\S]*?Create a token that's a copy/i, 'benthic_copy'],
+    [/Target opponent gains control of Yes Man[\s.]*When they do, you draw two cards and put a quest counter on Yes Man/i, 'yes_man_give'],
+    [/Choose target commander that entered this turn[\s.]*Put a \+1\/\+1 counter on it/i, 'forge_of_heroes'],
+    [/Target land you control becomes an X\/X Elemental creature with trample and haste until end of turn, where X is the number of enchantments you control/i, 'animate_target_temp'],
+    [/becomes a legendary 6\/6 Nightmare God creature with menace and deathtouch[\s\S]*?It's still an enchantment/i, 'animate_self'],
+    [/choose odd or even[\s.]*Creatures with mana value of that quality can't block this turn/i, 'parity_ban'],
+    [/choose (?:an opponent at random|another target player)[\s\S]*?deals damage equal to that spell's mana value/i, 'first_spell_damage'],
+    [/you may discard a card[\s.]*If you do, draw a card/i, 'loot_optional'],
+    [/you may discard your hand[\s.]*If you do, draw four cards/i, 'discard_hand_draw'],
+    [/you may pay \{\d+\} and sacrifice an Aura attached to[\s\S]*?create a token that's a copy of that Aura/i, 'three_dog_aura_copies'],
+    [/you may pay \{E\}\{E\}[\s\S]*?gains jump-start until end of turn/i, 'enable_graveyard_cast'],
+    [/gains escape until end of turn[\s\S]*?The escape cost is equal to/i, 'enable_graveyard_cast'],
+    [/sacrifice any number of creatures each with base power or toughness 1 or less[\s\S]*?Create that many/i, 'sacrifice_small_make_tokens'],
+    [/attach it to target creature you control[\s\S]*?gains shroud until end of turn/i, 'detach_reattach'],
+    [/Choose a player with the most life[\s\S]*?can't be blocked by creatures that player controls this turn/i, 'black_gate'],
+  ]
+  const joinClean = (ss) => ss.map(s => s.replace(/\([^)]*\)/g, '').trim()).filter(Boolean).join(' ')
+  const mergedSentences = []
+  for (let i = 0; i < sentences.length; i++) {
+    let absorbed = 0
+    for (let take = Math.min(4, sentences.length - i); take >= 2; take--) {
+      const joined = joinClean(sentences.slice(i, i + take))
+      if (COMPOUND_PATTERNS.some(([re]) => re.test(joined))) { absorbed = take; break }
+    }
+    if (absorbed) {
+      mergedSentences.push(joinClean(sentences.slice(i, i + absorbed)))
+      i += absorbed - 1
+    } else {
+      mergedSentences.push(sentences[i])
+    }
+  }
+  sentences.length = 0
+  sentences.push(...mergedSentences)
+
   // Modal ("Choose one —") and kicker cards: each mode is a choice, so spell
   // abilities on these cards are optional — the player picks one and skips the rest.
   const hasChoices = /\bchoose one\b|\bchoose two\b|\bkicker\b|\bwas kicked\b/i.test(text)
@@ -766,6 +1046,13 @@ function parseAbilities(oracleText, typeLine) {
     // Skip reminder text in parentheses
     const cleanSentence = sentence.replace(/\([^)]*\)/g, '').trim()
     if (!cleanSentence) continue
+
+    // Recurring static/aura/CDA shapes the generic tables miss
+    const special = parseSpecialAbility(cleanSentence)
+    if (special) {
+      abilities.push(special)
+      continue
+    }
 
     // Reassemble "…you may pay {cost}. If you do, <effect>" / "If the player
     // doesn't, <effect>" into a single optional-pay ability.
@@ -787,26 +1074,9 @@ function parseAbilities(oracleText, typeLine) {
       continue
     }
 
-    const isStatic = /\bcan't\b.*\b(attack|block)\b/i.test(cleanSentence) ||
-      /\b(has|have|g(et|ain)s?)\s+(\+?\+?\d|deathtouch|flying|first strike|trample|haste|lifelink)/i.test(cleanSentence) ||
-      /\bcan't be\b/i.test(cleanSentence)
-    if (isStatic) {
-      const effect = parseEffect(cleanSentence)
-      const tgt = parseTargets(cleanSentence)
-      abilities.push({
-        abilityType: 'static',
-        triggerEvent: null,
-        triggerCondition: null,
-        isOptional: optionalSentence(cleanSentence),
-        cost: null,
-        targets: tgt.targets,
-        targetFilter: tgt.targetFilter,
-        effect,
-      })
-      continue
-    }
-
-    // Activated ability (cost: effect)
+    // Activated ability (cost: effect) — checked before static so sentences
+    // like "{3}, {T}: Target creature can't be blocked this turn" (which
+    // contain "can't be") are correctly classified as activated.
     if (isActivated(cleanSentence)) {
       const cost = parseCost(cleanSentence)
       const effect = parseEffect(cleanSentence)
@@ -817,6 +1087,26 @@ function parseAbilities(oracleText, typeLine) {
         triggerCondition: null,
         isOptional: optionalSentence(cleanSentence),
         cost,
+        targets: tgt.targets,
+        targetFilter: tgt.targetFilter,
+        effect,
+      })
+      continue
+    }
+
+    const isStatic = /\bcan't\b.*\b(attack|block)\b/i.test(cleanSentence) ||
+      /\b(has|have|g(et|ain)s?)\s+(\+?\+?\d|deathtouch|flying|first strike|trample|haste|lifelink)/i.test(cleanSentence) ||
+      /\bcan't be\b/i.test(cleanSentence) ||
+      /\bmust be blocked if able\b/i.test(cleanSentence)
+    if (isStatic) {
+      const effect = parseEffect(cleanSentence)
+      const tgt = parseTargets(cleanSentence)
+      abilities.push({
+        abilityType: 'static',
+        triggerEvent: null,
+        triggerCondition: null,
+        isOptional: optionalSentence(cleanSentence),
+        cost: null,
         targets: tgt.targets,
         targetFilter: tgt.targetFilter,
         effect,
@@ -903,7 +1193,7 @@ function parseCard(scryfall) {
     subtypes,
     keywords,
     manaProduction,
-    entryTapRule: cardType === 'land' ? entryTap.entryTapRule : null,
+    entryTapRule: entryTap.entryTapRule,
     conditionalEntryText: entryTap.conditionalEntryText,
     abilities,
     oracleText: fullOracle,

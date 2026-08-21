@@ -674,10 +674,8 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
-          "params": {
-            "description": "Defender {T}: Exchange target opponent's life total with this creature's toughness"
-          }
+          "kind": "exchange_life_toughness",
+          "params": {}
         }
       }
     ],
@@ -922,10 +920,8 @@
         "targets": 1,
         "targetFilter": "permanent you control onto a second target permanent",
         "effect": {
-          "kind": "other",
-          "params": {
-            "description": "{1}, {T}: Move a counter from target permanent you control onto a second target permanent"
-          }
+          "kind": "move_counter",
+          "params": {}
         }
       }
     ],
@@ -1036,17 +1032,7 @@
       "Vraska"
     ],
     "keywords": [],
-    "manaProduction": {
-      "colors": [
-        "W",
-        "U",
-        "B",
-        "R",
-        "G",
-        "C"
-      ],
-      "amount": 1
-    },
+    "manaProduction": null,
     "entryTapRule": null,
     "conditionalEntryText": null,
     "abilities": [
@@ -1072,10 +1058,8 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
-          "params": {
-            "description": "If target player has fewer than nine poison counters, they get a number of poison counters equal to the difference"
-          }
+          "kind": "poison_diff",
+          "params": {}
         }
       }
     ],
@@ -1246,9 +1230,9 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
+          "kind": "discover",
           "params": {
-            "description": "At the beginning of your end step, discover 5"
+            "amount": 5
           }
         }
       },

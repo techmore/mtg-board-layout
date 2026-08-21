@@ -125,6 +125,17 @@ export interface BoardCard {
   controlUntilTurnEnd?: boolean
   /** Manifested face-down (treated as a 2/2 creature). */
   facedown?: boolean
+  /** Original type line/type of a manifested card, restored when it turns face up. */
+  manifestOriginal?: { typeLine: string; type: BoardCard['type'] }
+  /** Temporary animation ("becomes a creature until end of turn"): original type restored at cleanup. */
+  originalType?: BoardCard['type']
+  /** Quest counters (Yes Man). */
+  questCounters?: number
+  /** Cryptek: return to the battlefield tapped if this dies this turn. */
+  reanimateOnDeathTurn?: number
+  /** Skyclave Apparition: MV + owner of the permanent this exiled on ETB. */
+  exiledWithMV?: number
+  exiledCardOwner?: 'player' | 'opponent'
   /** "Can't be blocked this turn" (Rogue's Passage, etc.). */
   cantBeBlockedThisTurn?: boolean
 }

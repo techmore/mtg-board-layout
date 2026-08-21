@@ -45,10 +45,8 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
-          "params": {
-            "description": "(Mana abilities can't be copied"
-          }
+          "kind": "static_noop",
+          "params": {}
         }
       }
     ],
@@ -84,10 +82,8 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
-          "params": {
-            "description": "Whenever Azlask or another colorless creature you control dies, you get an experience counter"
-          }
+          "kind": "experience_counter",
+          "params": {}
         }
       },
       {
@@ -198,10 +194,8 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
-          "params": {
-            "description": "(Whenever it attacks, defending player sacrifices two permanents of their choice"
-          }
+          "kind": "sacrifice_n_permanents",
+          "params": {}
         }
       }
     ],
@@ -363,22 +357,7 @@
       {
         "abilityType": "triggered",
         "triggerEvent": "cast",
-        "triggerCondition": ") When you cast this spell",
-        "isOptional": false,
-        "cost": null,
-        "targets": 0,
-        "targetFilter": null,
-        "effect": {
-          "kind": "other",
-          "params": {
-            "description": ") When you cast this spell, for each opponent, choose a creature that player controls"
-          }
-        }
-      },
-      {
-        "abilityType": "triggered",
-        "triggerEvent": null,
-        "triggerCondition": null,
+        "triggerCondition": "Devoid  When you cast this spell",
         "isOptional": false,
         "cost": null,
         "targets": 0,
@@ -480,33 +459,14 @@
           "etb",
           "sacrifice"
         ],
-        "triggerCondition": ") Flying",
+        "triggerCondition": "Devoid  Flying",
         "isOptional": false,
         "cost": null,
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
-          "params": {
-            "description": ") Flying, vigilance When this creature enters, sacrifice any number of creatures each with base power or toughness 1 or less"
-          }
-        }
-      },
-      {
-        "abilityType": "triggered",
-        "triggerEvent": null,
-        "triggerCondition": null,
-        "isOptional": false,
-        "cost": null,
-        "targets": 0,
-        "targetFilter": null,
-        "effect": {
-          "kind": "create_token",
-          "params": {
-            "tokenPower": 4,
-            "tokenToughness": 4,
-            "tokenName": "Angel creature"
-          }
+          "kind": "sacrifice_small_make_tokens",
+          "params": {}
         }
       }
     ],
@@ -629,21 +589,6 @@
     "conditionalEntryText": null,
     "abilities": [
       {
-        "abilityType": "triggered",
-        "triggerEvent": "attack",
-        "triggerCondition": "you attack",
-        "isOptional": false,
-        "cost": null,
-        "targets": 0,
-        "targetFilter": null,
-        "effect": {
-          "kind": "other",
-          "params": {
-            "description": "Whenever you attack, choose odd or even"
-          }
-        }
-      },
-      {
         "abilityType": "static",
         "triggerEvent": null,
         "triggerCondition": null,
@@ -652,7 +597,7 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "static_restriction",
+          "kind": "parity_ban",
           "params": {}
         }
       }
@@ -704,12 +649,7 @@
     "cardType": "instant",
     "subtypes": [],
     "keywords": [],
-    "manaProduction": {
-      "colors": [
-        "C"
-      ],
-      "amount": 1
-    },
+    "manaProduction": null,
     "entryTapRule": null,
     "conditionalEntryText": null,
     "abilities": [
@@ -777,12 +717,7 @@
       "Eldrazi"
     ],
     "keywords": [],
-    "manaProduction": {
-      "colors": [
-        "C"
-      ],
-      "amount": 1
-    },
+    "manaProduction": null,
     "entryTapRule": null,
     "conditionalEntryText": null,
     "abilities": [
@@ -834,12 +769,7 @@
       "Drone"
     ],
     "keywords": [],
-    "manaProduction": {
-      "colors": [
-        "C"
-      ],
-      "amount": 1
-    },
+    "manaProduction": null,
     "entryTapRule": null,
     "conditionalEntryText": null,
     "abilities": [
@@ -888,10 +818,8 @@
         "targets": 1,
         "targetFilter": "creature s until end of turn",
         "effect": {
-          "kind": "other",
-          "params": {
-            "description": "At the beginning of combat on your turn, switch the power and toughness of each of any number of target creatures until end of turn"
-          }
+          "kind": "switch_power_toughness",
+          "params": {}
         }
       }
     ],
@@ -1184,12 +1112,7 @@
       "Eldrazi"
     ],
     "keywords": [],
-    "manaProduction": {
-      "colors": [
-        "C"
-      ],
-      "amount": 1
-    },
+    "manaProduction": null,
     "entryTapRule": null,
     "conditionalEntryText": null,
     "abilities": [
@@ -2026,12 +1949,7 @@
       "Aura"
     ],
     "keywords": [],
-    "manaProduction": {
-      "colors": [
-        "C"
-      ],
-      "amount": 1
-    },
+    "manaProduction": null,
     "entryTapRule": null,
     "conditionalEntryText": null,
     "abilities": [
@@ -2391,12 +2309,7 @@
       "Eldrazi"
     ],
     "keywords": [],
-    "manaProduction": {
-      "colors": [
-        "C"
-      ],
-      "amount": 1
-    },
+    "manaProduction": null,
     "entryTapRule": null,
     "conditionalEntryText": null,
     "abilities": [
@@ -2465,11 +2378,11 @@
         }
       },
       {
-        "abilityType": "static",
+        "abilityType": "activated",
         "triggerEvent": null,
         "triggerCondition": null,
         "isOptional": false,
-        "cost": null,
+        "cost": "{T}, {C}",
         "targets": 1,
         "targetFilter": "creature can't attack or block this turn",
         "effect": {
@@ -2606,12 +2519,7 @@
     "keywords": [
       "flash"
     ],
-    "manaProduction": {
-      "colors": [
-        "C"
-      ],
-      "amount": 1
-    },
+    "manaProduction": null,
     "entryTapRule": null,
     "conditionalEntryText": null,
     "abilities": [
@@ -2808,12 +2716,7 @@
     "cardType": "enchantment",
     "subtypes": [],
     "keywords": [],
-    "manaProduction": {
-      "colors": [
-        "C"
-      ],
-      "amount": 1
-    },
+    "manaProduction": null,
     "entryTapRule": null,
     "conditionalEntryText": null,
     "abilities": [
@@ -3168,12 +3071,7 @@
       "Drone"
     ],
     "keywords": [],
-    "manaProduction": {
-      "colors": [
-        "C"
-      ],
-      "amount": 1
-    },
+    "manaProduction": null,
     "entryTapRule": null,
     "conditionalEntryText": null,
     "abilities": [
@@ -3937,11 +3835,11 @@
         }
       },
       {
-        "abilityType": "static",
+        "abilityType": "activated",
         "triggerEvent": null,
         "triggerCondition": null,
         "isOptional": false,
-        "cost": null,
+        "cost": "{T}, {2}",
         "targets": 0,
         "targetFilter": null,
         "effect": {
@@ -4192,12 +4090,7 @@
     "cardType": "instant",
     "subtypes": [],
     "keywords": [],
-    "manaProduction": {
-      "colors": [
-        "C"
-      ],
-      "amount": 1
-    },
+    "manaProduction": null,
     "entryTapRule": null,
     "conditionalEntryText": null,
     "abilities": [
@@ -4618,12 +4511,7 @@
       "Eldrazi"
     ],
     "keywords": [],
-    "manaProduction": {
-      "colors": [
-        "C"
-      ],
-      "amount": 1
-    },
+    "manaProduction": null,
     "entryTapRule": null,
     "conditionalEntryText": null,
     "abilities": [

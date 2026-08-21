@@ -15,7 +15,7 @@ export const STORAGE_KEY = 'mtg-board-state'
 
 export type PersistedGameState = Pick<
   GameState,
-  'activeDeckId' | 'lifeTotal' | 'cards' | 'cardScale' | 'manaPool' | 'potentialMana' | 'manaLog' | 'effectHistory' | 'tokens' | 'backgroundImage' | 'backgrounds' | 'rollHistory' | 'overlay' | 'showOpponent' | 'opponentName' | 'aiFixedDeck' | 'opponentLifeTotal' | 'energyCounters' | 'opponentEnergyCounters' | 'radCounters' | 'opponentRadCounters' | 'turnPlayerMs' | 'turnOpponentMs' | 'turn' | 'currentPhase' | 'landPlaysThisTurn' | 'playerSpellsCastThisTurn' | 'opponentSpellsCastThisTurn' | 'turnAnnouncement' | 'triggerStack' | 'commanderDamage'
+  'activeDeckId' | 'lifeTotal' | 'cards' | 'cardScale' | 'manaPool' | 'potentialMana' | 'manaLog' | 'effectHistory' | 'tokens' | 'backgroundImage' | 'backgrounds' | 'rollHistory' | 'overlay' | 'showOpponent' | 'opponentName' | 'aiFixedDeck' | 'opponentLifeTotal' | 'energyCounters' | 'opponentEnergyCounters' | 'radCounters' | 'opponentRadCounters' | 'experienceCounters' | 'opponentExperienceCounters' | 'turnPlayerMs' | 'turnOpponentMs' | 'turn' | 'currentPhase' | 'landPlaysThisTurn' | 'playerSpellsCastThisTurn' | 'opponentSpellsCastThisTurn' | 'turnAnnouncement' | 'triggerStack' | 'commanderDamage'
 >
 
 export const defaultGameState: PersistedGameState & { undoStack: GameSnapshot[]; redoStack: GameSnapshot[] } = {
@@ -40,6 +40,8 @@ export const defaultGameState: PersistedGameState & { undoStack: GameSnapshot[];
   opponentEnergyCounters: 0,
   radCounters: 0,
   opponentRadCounters: 0,
+  experienceCounters: 0,
+  opponentExperienceCounters: 0,
   turnPlayerMs: 0,
   turnOpponentMs: 0,
   opponentLifeTotal: 40,
@@ -119,6 +121,8 @@ export function loadPersistedGameState(): PersistedGameState {
       opponentEnergyCounters: Number.isFinite(parsed.opponentEnergyCounters) ? Math.max(0, parsed.opponentEnergyCounters!) : defaultGameState.opponentEnergyCounters,
       radCounters: Number.isFinite(parsed.radCounters) ? Math.max(0, parsed.radCounters!) : defaultGameState.radCounters,
       opponentRadCounters: Number.isFinite(parsed.opponentRadCounters) ? Math.max(0, parsed.opponentRadCounters!) : defaultGameState.opponentRadCounters,
+      experienceCounters: Number.isFinite(parsed.experienceCounters) ? Math.max(0, parsed.experienceCounters!) : defaultGameState.experienceCounters,
+      opponentExperienceCounters: Number.isFinite(parsed.opponentExperienceCounters) ? Math.max(0, parsed.opponentExperienceCounters!) : defaultGameState.opponentExperienceCounters,
       turn: Number.isFinite(parsed.turn) ? Math.max(1, parsed.turn!) : defaultGameState.turn,
       currentPhase: PHASES.includes(parsed.currentPhase as any) ? parsed.currentPhase as Phase : defaultGameState.currentPhase,
       landPlaysThisTurn: Number.isFinite(parsed.landPlaysThisTurn) ? Math.max(0, Math.floor(parsed.landPlaysThisTurn!)) : defaultGameState.landPlaysThisTurn,
@@ -180,6 +184,8 @@ export function persistGameState(state: GameState) {
       opponentEnergyCounters: state.opponentEnergyCounters,
       radCounters: state.radCounters,
       opponentRadCounters: state.opponentRadCounters,
+      experienceCounters: state.experienceCounters,
+      opponentExperienceCounters: state.opponentExperienceCounters,
       turn: state.turn,
       currentPhase: state.currentPhase,
       landPlaysThisTurn: state.landPlaysThisTurn,

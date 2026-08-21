@@ -246,47 +246,15 @@
     "abilities": [
       {
         "abilityType": "triggered",
-        "triggerEvent": null,
-        "triggerCondition": null,
-        "isOptional": false,
-        "cost": null,
-        "targets": 0,
-        "targetFilter": null,
-        "effect": {
-          "kind": "gain_life",
-          "params": {
-            "amount": 1
-          }
-        }
-      },
-      {
-        "abilityType": "triggered",
         "triggerEvent": "cast",
-        "triggerCondition": "a player casts their first spell each turn",
+        "triggerCondition": "Menace Your opponents can't gain life Whenever a player casts their first spell each turn",
         "isOptional": false,
         "cost": null,
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
-          "params": {
-            "description": "Whenever a player casts their first spell each turn, choose another target player"
-          }
-        }
-      },
-      {
-        "abilityType": "triggered",
-        "triggerEvent": null,
-        "triggerCondition": null,
-        "isOptional": false,
-        "cost": null,
-        "targets": 0,
-        "targetFilter": null,
-        "effect": {
-          "kind": "deal_damage",
-          "params": {
-            "amount": 1
-          }
+          "kind": "first_spell_damage",
+          "params": {}
         }
       }
     ],
@@ -391,55 +359,12 @@
         "abilityType": "spell",
         "triggerEvent": null,
         "triggerCondition": null,
-        "isOptional": false,
-        "cost": null,
-        "targets": 1,
-        "targetFilter": "creature an opponent controls",
-        "effect": {
-          "kind": "destroy",
-          "params": {
-            "targetHint": "target creature an"
-          }
-        }
-      },
-      {
-        "abilityType": "spell",
-        "triggerEvent": null,
-        "triggerCondition": null,
-        "isOptional": false,
-        "cost": null,
-        "targets": 0,
-        "targetFilter": null,
-        "effect": {
-          "kind": "lose_life",
-          "params": {
-            "amount": 3
-          }
-        }
-      },
-      {
-        "abilityType": "spell",
-        "triggerEvent": null,
-        "triggerCondition": null,
-        "isOptional": false,
-        "cost": null,
-        "targets": 0,
-        "targetFilter": null,
-        "effect": {
-          "kind": "exile",
-          "params": {}
-        }
-      },
-      {
-        "abilityType": "spell",
-        "triggerEvent": null,
-        "triggerCondition": null,
         "isOptional": true,
         "cost": null,
-        "targets": 0,
-        "targetFilter": null,
+        "targets": 1,
+        "targetFilter": "creature an opponent controls That player loses 3 life Exile Suspended Sentence with three time counters on it Suspend 3—{1}{B} (Rather than cast this card from your hand",
         "effect": {
-          "kind": "exile",
+          "kind": "suspended_sentence",
           "params": {}
         }
       },
@@ -583,61 +508,16 @@
     "conditionalEntryText": null,
     "abilities": [
       {
-        "abilityType": "triggered",
-        "triggerEvent": "attack",
-        "triggerCondition": "Menace Whenever this creature attacks",
-        "isOptional": false,
-        "cost": null,
-        "targets": 1,
-        "targetFilter": "nonland permanent",
-        "effect": {
-          "kind": "other",
-          "params": {
-            "description": "Menace Whenever this creature attacks, choose up to one target nonland permanent"
-          }
-        }
-      },
-      {
-        "abilityType": "triggered",
+        "abilityType": "static",
         "triggerEvent": null,
         "triggerCondition": null,
         "isOptional": true,
         "cost": null,
-        "targets": 0,
-        "targetFilter": null,
+        "targets": 1,
+        "targetFilter": "nonland permanent Its controller may sacrifice it If they don't",
         "effect": {
-          "kind": "sacrifice",
+          "kind": "star_athlete_choice",
           "params": {}
-        }
-      },
-      {
-        "abilityType": "triggered",
-        "triggerEvent": null,
-        "triggerCondition": null,
-        "isOptional": false,
-        "cost": null,
-        "targets": 0,
-        "targetFilter": null,
-        "effect": {
-          "kind": "deal_damage",
-          "params": {
-            "amount": 5
-          }
-        }
-      },
-      {
-        "abilityType": "static",
-        "triggerEvent": null,
-        "triggerCondition": null,
-        "isOptional": false,
-        "cost": null,
-        "targets": 0,
-        "targetFilter": null,
-        "effect": {
-          "kind": "draw_cards",
-          "params": {
-            "amount": 3
-          }
         }
       },
       {
@@ -665,7 +545,17 @@
     "cardType": "artifact",
     "subtypes": [],
     "keywords": [],
-    "manaProduction": null,
+    "manaProduction": {
+      "colors": [
+        "W",
+        "U",
+        "B",
+        "R",
+        "G",
+        "C"
+      ],
+      "amount": "X"
+    },
     "entryTapRule": null,
     "conditionalEntryText": null,
     "abilities": [
@@ -1281,25 +1171,8 @@
         "targets": 1,
         "targetFilter": "permanent shuffles it into their library",
         "effect": {
-          "kind": "other",
-          "params": {
-            "description": "The owner of target permanent shuffles it into their library, then reveals the top card of their library"
-          }
-        }
-      },
-      {
-        "abilityType": "spell",
-        "triggerEvent": null,
-        "triggerCondition": null,
-        "isOptional": false,
-        "cost": null,
-        "targets": 0,
-        "targetFilter": null,
-        "effect": {
-          "kind": "return_from_graveyard",
-          "params": {
-            "zone": "battlefield"
-          }
+          "kind": "chaos_warp",
+          "params": {}
         }
       }
     ],
@@ -1591,10 +1464,8 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "deal_damage",
-          "params": {
-            "amount": 1
-          }
+          "kind": "first_spell_damage",
+          "params": {}
         }
       }
     ],
@@ -1771,25 +1642,8 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
-          "params": {
-            "description": "Whenever you cast your first spell each turn, choose an opponent at random"
-          }
-        }
-      },
-      {
-        "abilityType": "triggered",
-        "triggerEvent": null,
-        "triggerCondition": null,
-        "isOptional": false,
-        "cost": null,
-        "targets": 0,
-        "targetFilter": null,
-        "effect": {
-          "kind": "deal_damage",
-          "params": {
-            "amount": 1
-          }
+          "kind": "first_spell_damage",
+          "params": {}
         }
       }
     ],
@@ -1884,7 +1738,7 @@
     ],
     "keywords": [],
     "manaProduction": null,
-    "entryTapRule": null,
+    "entryTapRule": "conditional",
     "conditionalEntryText": "When this creature enters, you may search your library for a basic land card, put that card onto the battlefield tapped, then shuffle",
     "abilities": [
       {
@@ -2509,11 +2363,11 @@
         }
       },
       {
-        "abilityType": "static",
+        "abilityType": "activated",
         "triggerEvent": null,
         "triggerCondition": null,
         "isOptional": false,
-        "cost": null,
+        "cost": "{T}, {2}",
         "targets": 0,
         "targetFilter": null,
         "effect": {
@@ -3138,6 +2992,19 @@
             "amount": 1
           }
         }
+      },
+      {
+        "abilityType": "triggered",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "each_player_mill",
+          "params": {}
+        }
       }
     ],
     "oracleText": "Whenever another creature dies, or a creature card is put into a graveyard from anywhere other than the battlefield, or a creature card leaves your graveyard, Syr Konrad deals 1 damage to each opponent.\n{1}{B}: Each player mills a card. (They each put the top card of their library into their graveyard.)",
@@ -3196,10 +3063,8 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
-          "params": {
-            "description": "When Kardur enters, until your next turn, creatures your opponents control attack each combat if able and attack a player other than you if able"
-          }
+          "kind": "force_attack",
+          "params": {}
         }
       },
       {

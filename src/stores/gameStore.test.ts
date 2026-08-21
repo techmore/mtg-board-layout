@@ -2684,6 +2684,153 @@ describe('deep audit regression fixes (2026-08)', () => {
     expect(result).toContain('b2')
   })
 
+  it('exchange-life-with-toughness resolves (Tree of Perdition)', () => {
+    const rule: CardRuleEntry = {
+      cardName: 'Tree of Perdition', manaCost: '{3}{B}', manaValue: 4, typeLine: 'Creature — Plant', cardType: 'creature',
+      subtypes: [], keywords: [], manaProduction: null, entryTapRule: null, conditionalEntryText: null,
+      oracleText: "Exchange target opponent's life total with this creature's toughness.", scryfallId: 't',
+      abilities: [{ abilityType: 'activated', triggerEvent: null, triggerCondition: null, isOptional: false, cost: '{T}', targets: 1, targetFilter: 'player', effect: { kind: 'exchange_life_toughness', params: {} } }],
+    }
+    primeCardRules({ 'Tree of Perdition': rule })
+    const tree = card({ id: 'tree', name: 'Tree of Perdition', typeLine: 'Creature 0/13', type: 'creature', zone: 'battlefield' })
+    useGameStore.setState({ cards: [tree], opponentLifeTotal: 40 })
+    useGameStore.setState({ triggerStack: [{ id: 't1', sourceCardId: 'tree', sourceCardName: 'Tree of Perdition', event: 'etb' as const, context: {}, ability: rule.abilities[0] }] })
+    useGameStore.getState().resolveTrigger('t1')
+    useGameStore.getState().selectTarget('t1', 'tree')
+    expect(useGameStore.getState().opponentLifeTotal).toBe(13)
+  })
+
+  it('move a counter from the source to the target', () => {
+    const rule: CardRuleEntry = {
+      cardName: 'Nesting Grounds', manaCost: '', manaValue: 0, typeLine: 'Land', cardType: 'land',
+      subtypes: [], keywords: [], manaProduction: null, entryTapRule: null, conditionalEntryText: null,
+      oracleText: '{1}, {T}: Move a counter from target permanent you control onto a second target permanent.', scryfallId: 'n',
+      abilities: [{ abilityType: 'activated', triggerEvent: null, triggerCondition: null, isOptional: false, cost: '{T}, {1}', targets: 1, targetFilter: 'permanent', effect: { kind: 'move_counter', params: {} } }],
+    }
+    primeCardRules({ 'Nesting Grounds': rule })
+    const ground = card({ id: 'ground', name: 'Nesting Grounds', type: 'land', typeLine: 'Land', zone: 'battlefield', counters: 0 })
+    const carries = card({ id: 'carries', name: 'Carries', typeLine: 'Creature 1/1', type: 'creature', zone: 'battlefield', counters: 5 })
+    const target = card({ id: 'target', name: 'Target', typeLine: 'Creature 1/1', type: 'creature', zone: 'battlefield' })
+    useGameStore.setState({ cards: [ground, carries, target] })
+    useGameStore.setState({ triggerStack: [{ id: 't1', sourceCardId: 'carries', sourceCardName: 'Carries', event: 'etb' as const, context: {}, ability: rule.abilities[0] }] })
+    useGameStore.getState().resolveTrigger('t1')
+    useGameStore.getState().selectTarget('t1', 'target')
+    expect(useGameStore.getState().cards.find((c) => c.id === 'carries')?.counters).toBe(4)
+    expect(useGameStore.getState().cards.find((c) => c.id === 'target')?.counters).toBe(1)
+  })
+
+  it('amass creates an Army token and strengthens it on subsequent amass', () => {
+    const rule: CardRuleEntry = {
+      cardName: 'Sauron, the Dark Lord', manaCost: '{3}{U}{B}{R}', manaValue: 6, typeLine: 'Legendary Creature — Avatar', cardType: 'creature',
+      subtypes: [], keywords: [], manaProduction: null, entryTapRule: null, conditionalEntryText: null,
+      oracleText: 'Whenever an opponent casts a spell, amass Orcs 1.', scryfallId: 's',
+      abilities: [{ abilityType: 'triggered', triggerEvent: 'cast' as const, triggerCondition: null, isOptional: false, cost: null, targets: 0, targetFilter: null, effect: { kind: 'amass', params: { amount: 1 } } }],
+    }
+    primeCardRules({ 'Sauron, the Dark Lord': rule })
+    const sauron = card({ id: 'sauron', name: 'Sauron, the Dark Lord', typeLine: 'Creature 9/9', type: 'creature', zone: 'battlefield' })
+    useGameStore.setState({ cards: [sauron] })
+    const makeTrigger = () => ({ id: crypto.randomUUID(), sourceCardId: 'sauron', sourceCardName: 'Sauron, the Dark Lord', event: 'cast' as const, context: {}, ability: rule.abilities[0] })
+
+    useGameStore.setState({ triggerStack: [makeTrigger()] })
+    useGameStore.getState().resolveTrigger(useGameStore.getState().triggerStack[0].id)
+    expect(useGameStore.getState().tokens).toHaveLength(1)
+    expect(useGameStore.getState().tokens[0].counters).toBe(1)
+
+    useGameStore.setState({ triggerStack: [makeTrigger()] })
+    useGameStore.getState().resolveTrigger(useGameStore.getState().triggerStack[0].id)
+    expect(useGameStore.getState().tokens).toHaveLength(1)
+    expect(useGameStore.getState().tokens[0].counters).toBe(2)
+  })
+
+  it('investigate creates a Clue token', () => {
+    const invRule: CardRuleEntry = {
+      cardName: 'Tireless Tracker', manaCost: '{2}{G}', manaValue: 3, typeLine: 'Creature — Human Scout', cardType: 'creature',
+      subtypes: [], keywords: [], manaProduction: null, entryTapRule: null, conditionalEntryText: null,
+      oracleText: 'Landfall — Whenever a land you control enters, investigate.', scryfallId: 't',
+      abilities: [{ abilityType: 'triggered', triggerEvent: 'landfall' as const, triggerCondition: null, isOptional: false, cost: null, targets: 0, targetFilter: null, effect: { kind: 'investigate', params: {} } }],
+    }
+    primeCardRules({ 'Tireless Tracker': invRule })
+    const tracker = card({ id: 'tracker', name: 'Tireless Tracker', typeLine: 'Creature 3/2', type: 'creature', zone: 'battlefield' })
+    useGameStore.setState({ cards: [tracker] })
+    useGameStore.setState({ triggerStack: [{ id: 't1', sourceCardId: 'tracker', sourceCardName: 'Tireless Tracker', event: 'landfall' as const, context: {}, ability: invRule.abilities[0] }] })
+    useGameStore.getState().resolveTrigger('t1')
+    expect(useGameStore.getState().tokens.some((t) => t.name === 'Clue')).toBe(true)
+  })
+
+  it('each-player-mill mills one card for each side', () => {
+    const millRule: CardRuleEntry = {
+      cardName: 'Raul', manaCost: '{U}{B}', manaValue: 2, typeLine: 'Creature — Advisor', cardType: 'creature',
+      subtypes: [], keywords: [], manaProduction: null, entryTapRule: null, conditionalEntryText: null,
+      oracleText: '{T}: Each player mills a card.', scryfallId: 'r',
+      abilities: [{ abilityType: 'activated', triggerEvent: null, triggerCondition: null, isOptional: false, cost: '{T}', targets: 0, targetFilter: null, effect: { kind: 'each_player_mill', params: {} } }],
+    }
+    primeCardRules({ 'Raul': millRule })
+    const raul = card({ id: 'raul', name: 'Raul', typeLine: 'Creature 1/3', type: 'creature', zone: 'battlefield' })
+    const myLib = card({ id: 'ml', name: 'MyLib', typeLine: 'Creature 1/1', type: 'creature', zone: 'library' })
+    const aiLib = card({ id: 'al', name: 'AiLib', typeLine: 'Creature 1/1', type: 'creature', zone: 'library', owner: 'opponent' })
+    useGameStore.setState({ cards: [raul, myLib, aiLib] })
+    useGameStore.setState({ triggerStack: [{ id: 't1', sourceCardId: 'raul', sourceCardName: 'Raul', event: 'etb' as const, context: {}, ability: millRule.abilities[0] }] })
+    useGameStore.getState().resolveTrigger('t1')
+    const cards = useGameStore.getState().cards
+    expect(cards.find((c) => c.id === 'ml')?.zone).toBe('graveyard')
+    expect(cards.find((c) => c.id === 'al')?.zone).toBe('graveyard')
+  })
+
+  it('defender-sacrifice/exile and temp-keyword abilities resolve', () => {
+    // Eldrazi Conscription: defending player sacrifices two permanents.
+    const conscriptionRule: CardRuleEntry = {
+      cardName: 'Eldrazi Conscription', manaCost: '{8}', manaValue: 8, typeLine: 'Enchantment — Aura', cardType: 'enchantment',
+      subtypes: [], keywords: [], manaProduction: null, entryTapRule: null, conditionalEntryText: null,
+      oracleText: 'Whenever it attacks, defending player sacrifices two permanents.', scryfallId: 'e',
+      abilities: [{ abilityType: 'triggered', triggerEvent: 'attack' as const, triggerCondition: null, isOptional: false, cost: null, targets: 0, targetFilter: null, effect: { kind: 'sacrifice_n_permanents', params: { amount: 2 } } }],
+    }
+    primeCardRules({ 'Eldrazi Conscription': conscriptionRule })
+    const conscripted = card({ id: 'cons', name: 'Eldrazi Conscription', typeLine: 'Enchantment', type: 'enchantment', zone: 'battlefield', owner: 'opponent', tapped: true })
+    const myA = card({ id: 'a', name: 'A', typeLine: 'Creature 1/1', type: 'creature', zone: 'battlefield' })
+    const myB = card({ id: 'b', name: 'B', typeLine: 'Creature 2/2', type: 'creature', zone: 'battlefield' })
+    const myLand = card({ id: 'l', name: 'Plains', type: 'land', typeLine: 'Basic Land', zone: 'battlefield' })
+    useGameStore.setState({ cards: [conscripted, myA, myB, myLand] })
+    useGameStore.setState({ triggerStack: [{ id: 't1', sourceCardId: 'cons', sourceCardName: 'Eldrazi Conscription', event: 'attack' as const, context: {}, ability: conscriptionRule.abilities[0] }] })
+    useGameStore.getState().resolveTrigger('t1')
+    const cards = useGameStore.getState().cards
+    expect(cards.filter((c) => c.zone === 'graveyard')).toHaveLength(2)
+    expect(cards.find((c) => c.id === 'l')?.zone).toBe('battlefield')
+  })
+
+  it('experience counters accrue and are reset on a new deck', () => {
+    const rule: CardRuleEntry = {
+      cardName: 'Azlask, the Swelling Scourge', manaCost: '{2}{W}', manaValue: 3, typeLine: 'Creature — Avatar', cardType: 'creature',
+      subtypes: [], keywords: [], manaProduction: null, entryTapRule: null, conditionalEntryText: null,
+      oracleText: 'Whenever Azlask or another colorless creature you control dies, you get an experience counter.', scryfallId: 'a',
+      abilities: [{ abilityType: 'triggered', triggerEvent: 'dies' as const, triggerCondition: null, isOptional: false, cost: null, targets: 0, targetFilter: null, effect: { kind: 'experience_counter', params: {} } }],
+    }
+    primeCardRules({ 'Azlask, the Swelling Scourge': rule })
+    const azlask = card({ id: 'az', name: 'Azlask, the Swelling Scourge', typeLine: 'Creature 2/2', type: 'creature', zone: 'battlefield' })
+    useGameStore.setState({ cards: [azlask] })
+    useGameStore.setState({ triggerStack: [{ id: 't1', sourceCardId: 'az', sourceCardName: 'Azlask, the Swelling Scourge', event: 'dies' as const, context: {}, ability: rule.abilities[0] }] })
+    useGameStore.getState().resolveTrigger('t1')
+    expect(useGameStore.getState().experienceCounters).toBe(1)
+  })
+
+  it('switch power and toughness of the target (Inversion Behemoth)', () => {
+    const rule: CardRuleEntry = {
+      cardName: 'Inversion Behemoth', manaCost: '{4}{U}', manaValue: 5, typeLine: 'Creature — Beast', cardType: 'creature',
+      subtypes: [], keywords: [], manaProduction: null, entryTapRule: null, conditionalEntryText: null,
+      oracleText: 'At the beginning of combat on your turn, switch the power and toughness of each of any number of target creatures until end of turn.', scryfallId: 'i',
+      abilities: [{ abilityType: 'triggered', triggerEvent: 'upkeep' as const, triggerCondition: null, isOptional: false, cost: null, targets: 1, targetFilter: 'creature', effect: { kind: 'switch_power_toughness', params: {} } }],
+    }
+    primeCardRules({ 'Inversion Behemoth': rule })
+    const behemoth = card({ id: 'b', name: 'Inversion Behemoth', typeLine: 'Creature 0/5', type: 'creature', zone: 'battlefield' })
+    const victim = card({ id: 'v', name: 'Victim', typeLine: 'Creature 2/3', type: 'creature', zone: 'battlefield' })
+    useGameStore.setState({ cards: [behemoth, victim] })
+    useGameStore.setState({ triggerStack: [{ id: 't1', sourceCardId: 'b', sourceCardName: 'Inversion Behemoth', event: 'upkeep' as const, context: {}, ability: rule.abilities[0] }] })
+    useGameStore.getState().resolveTrigger('t1')
+    useGameStore.getState().selectTarget('t1', 'v')
+    const after = useGameStore.getState().cards.find((c) => c.id === 'v')!
+    expect(getCardPower(after)).toBe(3)
+    expect(getCardToughness(after)).toBe(2)
+  })
+
   it('clears deathtouchDamage from the player\'s creatures at the beginning phase', () => {
     const bear = card({ id: 'bear', name: 'Bear', typeLine: '2/2', type: 'creature', zone: 'battlefield', damage: 1, deathtouchDamage: true })
     useGameStore.setState({ cards: [bear], currentPhase: 'beginning' })
