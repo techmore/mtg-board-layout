@@ -1641,12 +1641,15 @@ function applyTargetedEffect(get: () => GameState, set: (partial: Partial<GameSt
     }
     case 'star_athlete_choice': {
       // Star Athlete: "Its controller may sacrifice it. If they don't, this
-      // creature deals 5 damage to that player." The AI sacrifices only weak
-      // or token permanents; otherwise it takes the 5.
+      // creature deals 5 damage to that player." The AI sacrifices creatures
+      // worth less than 5 life: tokens, small bodies (power or toughness ≤ 2),
+      // and cheap permanents (MV ≤ 3); it keeps bombs and eats the damage.
       const target = state.cards.find((c) => c.id === cardId)
       if (!target) break
       const owner = (target.owner ?? 'player') as 'player' | 'opponent'
-      const weak = target.tokenCount !== undefined || (getCreatureToughness(target.typeLine) <= 2 && target.type === 'creature')
+      const smallBody = target.type === 'creature' &&
+        (getCreatureToughness(target.typeLine) <= 2 || getCreaturePower(target.typeLine) <= 2)
+      const weak = target.tokenCount !== undefined || smallBody || (target.manaValue ?? 0) <= 3
       if (weak && (owner === 'opponent' || true)) {
         get().moveCard(target.id, 'graveyard')
         useToastStore.getState().push(`${target.name}'s controller sacrifices it.`, 'info')

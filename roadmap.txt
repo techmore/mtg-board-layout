@@ -1,13 +1,13 @@
 ═══════════════════════════════════════════════════════════════════
  MTG BOARD LAYOUT — ROADMAP
- Updated: 2026-08-21 (batch 27: graveyard-cast window — player
-                       chooses what to cast until end of turn)
+ Updated: 2026-08-21 (batch 28: Scourge extra combat phase + Star
+                       Athlete heuristic — NO KNOWN GAPS REMAIN)
 ═══════════════════════════════════════════════════════════════════
 
 CURRENT STATE
 ─────────────
   "Other" (unimplemented) abilities : 322 → 1   (99.7% recovered)
-  Root test suite                   : 476 → 596 passing
+  Root test suite                   : 476 → 601 passing
   Server test suite                 :  78 → 121 passing (65 in root run)
   Gates                             : tsc + oxlint + vitest + build all green
   Main bundle (gzip)                : 154 KB → ~95 KB
@@ -155,14 +155,34 @@ BATCH 24 CLEANUPS
     protocol edits propagate without reinstalling.
   - LOOPS.md marked historical with a current-state banner.
 
-REMAINING KNOWN GAPS (all documented, intentional)
-──────────────────────────────────────────────────
-  - Scourge's extra combat phase is not modeled (untap-all is).
-  - Black Gate uses cantBeBlockedThisTurn (equivalent in solo 1v1).
-  - Star Athlete: AI sacrifices only tokens/toughness≤2 creatures.
+REMAINING KNOWN GAPS
+────────────────────
+  None. Every documented approximation has been implemented (batches 23–28).
+  The only trace of the old tail: Scourge's extra combat is solo-only online
+  (the untap-all half works everywhere; the second wave resolves through the
+  solo combat engine, like all effect-side mechanics).
 
-KEY FILES TOUCHED THIS ROUND (batch 27)
+KEY FILES TOUCHED THIS ROUND (batch 28)
 ───────────────────────────────────────
+  src/stores/gameCombatActions.ts  Scourge "additional combat phase": after a
+                                   combat where the untap-all fired, a second
+                                   wave follows — players declare again in an
+                                   auto-reopened combat; the AI's wave is picked
+                                   and resolved deterministically (pickAttackers
+                                   + pickBlockers + attack triggers) and cannot
+                                   chain (first-time-only trigger gate)
+  src/stores/triggerActions.ts     Star Athlete heuristic widened: tokens,
+                                   power-or-toughness ≤ 2 bodies, or MV ≤ 3 are
+                                   sacrificed instead of their controller
+                                   taking 5
+  src/stores/batchRegression.test.ts  5 new tests: player-side extra combat
+                                   reopen, AI deterministic second wave,
+                                   first-time-only no-chain, sacrifice-cheap,
+                                   keep-bomb-take-5
+
+KEY FILES TOUCHED PREVIOUS ROUNDS (batches 23-27)
+────────────────────────────────────────────────
+  Batch 27:
   src/stores/triggerActions.ts      enable_graveyard_cast opens a player window
                                     (AI still auto-casts); graveyardCastEligible
                                     + castFromGraveyardImpl (exile+enqueue for

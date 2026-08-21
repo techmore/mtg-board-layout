@@ -457,3 +457,109 @@ describe('graveyard-cast window (escape/unearth/jump-start)', () => {
     expect(useGameStore.getState().cards.find((c) => c.id === 'bear-gy')?.zone).toBe('graveyard')
   })
 })
+
+describe('Scourge extra combat phase', () => {
+  function scourgeSetup(overrides: { scourgeOwner?: 'player' | 'opponent'; defenderLife?: number; alreadyFired?: boolean } = {}) {
+    const { scourgeOwner = 'player', defenderLife = 25, alreadyFired = false } = overrides
+    // Scourge 5/5 attacking the player with the most life (25 vs 20).
+    const scourge = boardCard({
+      id: 'scourge',
+      name: 'Scourge of the Throne',
+      typeLine: 'Creature 5/5',
+      owner: scourgeOwner,
+      oracleText: 'Whenever this creature attacks for the first time each turn, if it\u2019s attacking the player with the most life or tied for most life, untap all attacking creatures. An additional combat phase occurs after this phase.',
+    })
+    useGameStore.setState({
+      cards: [scourge],
+      lifeTotal: 20,
+      opponentLifeTotal: defenderLife,
+      scourgeUntapTurn: alreadyFired ? 3 : null,
+      combatState: { active: true, attackers: ['scourge'], blockers: {} },
+      activePlayer: scourgeOwner,
+    })
+  }
+
+  it('opens an extra combat for the player after the first resolves', () => {
+    scourgeSetup()
+    useGameStore.getState().resolveCombat()
+
+    const state = useGameStore.getState()
+    // First combat resolved (opponent took 5), then combat REOPENED for the
+    // additional phase.
+    expect(state.opponentLifeTotal).toBe(20)
+    expect(state.combatState.active).toBe(true)
+    expect(state.combatState.attackers).toEqual([])
+    expect(state.scourgeUntapTurn).toBe(3)
+  })
+
+  it('the AI second wave attacks and resolves deterministically', () => {
+    primeCardRules({})
+    // Player has the most life (25 vs 20) so the Scourge condition holds.
+    scourgeSetup({ scourgeOwner: 'opponent' })
+    useGameStore.setState({ lifeTotal: 25, opponentLifeTotal: 20 })
+    // The player has a blocker so the second wave has something to fight with.
+    const blocker = boardCard({ id: 'pguard', name: 'Guard', typeLine: 'Creature 2/2' })
+    useGameStore.setState({ cards: [...useGameStore.getState().cards, blocker] })
+
+    useGameStore.getState().resolveCombat()
+
+    const state = useGameStore.getState()
+    // Player took the first 5 (25 -> 20); the AI's extra combat resolved too —
+    // combat is closed again and the wave dealt its damage (life < 20).
+    expect(state.lifeTotal).toBeLessThan(20)
+    expect(state.combatState.active).toBe(false)
+  })
+
+  it('does not chain an extra combat when the trigger already fired this turn', () => {
+    scourgeSetup({ alreadyFired: true })
+    // Already fired this turn: no untap-all, no extra combat — one hit of 5.
+    useGameStore.getState().resolveCombat()
+    const state = useGameStore.getState()
+    expect(state.opponentLifeTotal).toBe(20)
+    expect(state.combatState.active).toBe(false)
+  })
+})
+
+describe('Star Athlete sacrifice heuristic', () => {
+  function athleteTrigger(): TriggerInstance {
+    return makeTrigger({
+      id: 't-athlete',
+      sourceCardId: 'athlete',
+      sourceCardName: 'Star Athlete',
+      ability: {
+        abilityType: 'triggered',
+        triggerEvent: 'etb',
+        triggerCondition: null,
+        isOptional: false,
+        cost: null,
+        targets: 1,
+        targetFilter: 'nonland permanent',
+        effect: { kind: 'star_athlete_choice', params: {} },
+      },
+      selectedTargets: [],
+    })
+  }
+
+  function selectAndResolve(targetId: string) {
+    pushTrigger(athleteTrigger())
+    useGameStore.getState().selectTarget('t-athlete', targetId)
+  }
+
+  it('sacrifices cheap utility creatures (MV <= 3) instead of taking 5', () => {
+    primeCardRules({})
+    const util = boardCard({ id: 'util', name: 'Lantern Bearer', typeLine: 'Creature 1/3', manaValue: 2, owner: 'opponent' })
+    useGameStore.setState({ cards: [util], opponentLifeTotal: 20 })
+    selectAndResolve('util')
+    expect(useGameStore.getState().cards.find((c) => c.id === 'util')?.zone).toBe('graveyard')
+    expect(useGameStore.getState().opponentLifeTotal).toBe(20)
+  })
+
+  it('keeps bombs and takes the 5 damage', () => {
+    primeCardRules({})
+    const bomb = boardCard({ id: 'bomb', name: 'Big Dragon', typeLine: 'Creature 8/8', manaValue: 7, owner: 'opponent' })
+    useGameStore.setState({ cards: [bomb], opponentLifeTotal: 20 })
+    selectAndResolve('bomb')
+    expect(useGameStore.getState().cards.find((c) => c.id === 'bomb')?.zone).toBe('battlefield')
+    expect(useGameStore.getState().opponentLifeTotal).toBe(15)
+  })
+})
