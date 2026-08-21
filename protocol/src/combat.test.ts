@@ -106,4 +106,27 @@ describe('canBlock conditional self-restrictions', () => {
     expect(canBlock(nightkin, [], { defenderRadCounters: 2 })).toBe(false)
     expect(canBlock(nightkin)).toBe(true)
   })
+
+  it('Ring L1: the attacking Ring-bearer can\'t be blocked by greater power', () => {
+    // The gate keys off the ATTACKER's bearer status, passed via context.
+    const blocker = { id: 'blk', typeLine: 'Creature', oracleText: '' }
+    expect(canBlock(blocker, [], { attackerIsRingBearer: true, attackerPower: 2, blockerPower: 3 })).toBe(false)
+    // Equal or smaller power blocks fine.
+    expect(canBlock(blocker, [], { attackerIsRingBearer: true, attackerPower: 2, blockerPower: 2 })).toBe(true)
+    expect(canBlock(blocker, [], { attackerIsRingBearer: true, attackerPower: 2, blockerPower: 1 })).toBe(true)
+    // Without the context (not a bearer) any power blocks.
+    expect(canBlock(blocker, [], { attackerPower: 2, blockerPower: 3 })).toBe(true)
+  })
+
+  it('parity block ban: blockers of the banned mana-value parity can\'t block', () => {
+    const blocker = { id: 'blk', typeLine: 'Creature', oracleText: '' }
+    // Zero mana value counts as even.
+    expect(canBlock(blocker, [], { parityBan: 'even', blockerManaValue: 0 })).toBe(false)
+    expect(canBlock(blocker, [], { parityBan: 'even', blockerManaValue: 4 })).toBe(false)
+    expect(canBlock(blocker, [], { parityBan: 'even', blockerManaValue: 3 })).toBe(true)
+    expect(canBlock(blocker, [], { parityBan: 'odd', blockerManaValue: 3 })).toBe(false)
+    expect(canBlock(blocker, [], { parityBan: 'odd', blockerManaValue: 2 })).toBe(true)
+    // No ban context → everything blocks.
+    expect(canBlock(blocker, [], { blockerManaValue: 4 })).toBe(true)
+  })
 })

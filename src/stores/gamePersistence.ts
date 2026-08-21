@@ -13,6 +13,19 @@ import {
 
 export const STORAGE_KEY = 'mtg-board-state'
 
+/**
+ * Persistence schema version. The saved payload is `{ schemaVersion, state }`;
+ * loading an older/unknown version resets to defaults instead of silently
+ * misreading the shape (legacy saves without a wrapper load as-is — this
+ * baseline predates versioning).
+ */
+export const SCHEMA_VERSION = 1
+
+interface VersionedPayload {
+  schemaVersion?: number
+  state?: unknown
+}
+
 export type PersistedGameState = Pick<
   GameState,
   'activeDeckId' | 'lifeTotal' | 'cards' | 'cardScale' | 'manaPool' | 'potentialMana' | 'manaLog' | 'effectHistory' | 'tokens' | 'backgroundImage' | 'backgrounds' | 'rollHistory' | 'overlay' | 'showOpponent' | 'opponentName' | 'aiFixedDeck' | 'opponentLifeTotal' | 'energyCounters' | 'opponentEnergyCounters' | 'radCounters' | 'opponentRadCounters' | 'experienceCounters' | 'opponentExperienceCounters' | 'turnPlayerMs' | 'turnOpponentMs' | 'turn' | 'currentPhase' | 'landPlaysThisTurn' | 'playerSpellsCastThisTurn' | 'opponentSpellsCastThisTurn' | 'turnAnnouncement' | 'triggerStack' | 'commanderDamage'
@@ -61,8 +74,25 @@ export function loadPersistedGameState(): PersistedGameState {
     if (typeof localStorage === 'undefined') return defaultGameState
     const raw = localStorage.getItem(STORAGE_KEY)
     if (!raw) return defaultGameState
-    const parsed = JSON.parse(raw) as Partial<PersistedGameState>
+    const parsed = JSON.parse(raw) as Partial<PersistedGameState> & VersionedPayload
     if (!parsed || typeof parsed !== 'object') return defaultGameState
+    // Versioned payload: only the current version loads. Anything else (older
+    // or newer shape) resets rather than guessing at a half-compatible read.
+    if (parsed.schemaVersion !== undefined && parsed.state && typeof parsed.state === 'object') {
+      if (parsed.schemaVersion !== SCHEMA_VERSION) {
+        console.warn(`[gameStore] Saved state schema v${parsed.schemaVersion} != v${SCHEMA_VERSION} — starting fresh.`)
+        return defaultGameState
+      }
+      return loadStatePayload(parsed.state as Partial<PersistedGameState>)
+    }
+    // Legacy (unversioned) save: the state object was stored directly.
+    return loadStatePayload(parsed)
+  } catch {
+    return defaultGameState
+  }
+}
+
+function loadStatePayload(parsed: Partial<PersistedGameState>): PersistedGameState {
     // IndexedDB references are storage keys, not browser-loadable image URLs.
     // Keep the initial state renderable; the async hydration below replaces this
     // with the stored data URL once IndexedDB has been read.
@@ -137,9 +167,6 @@ export function loadPersistedGameState(): PersistedGameState {
           ) as Record<string, number>
         : defaultGameState.commanderDamage,
     }
-  } catch {
-    return defaultGameState
-  }
 }
 
 let lastSavedBackgrounds: BackgroundOption[] | null = null
@@ -195,7 +222,7 @@ export function persistGameState(state: GameState) {
       triggerStack: state.triggerStack,
       commanderDamage: state.commanderDamage,
     }
-    const serialized = JSON.stringify(persisted)
+    const serialized = JSON.stringify({ schemaVersion: SCHEMA_VERSION, state: persisted })
     const sizeMB = new Blob([serialized]).size / (1024 * 1024)
     if (sizeMB > 4) {
       console.warn(`[gameStore] Saved state is ${sizeMB.toFixed(1)} MB — approaching localStorage ~5 MB limit.`)
@@ -211,7 +238,8 @@ export async function hydratePersistedBackgroundState(): Promise<{ backgrounds: 
   try {
     const raw = localStorage.getItem(STORAGE_KEY)
     if (!raw) return null
-    const parsed = JSON.parse(raw) as Partial<PersistedGameState>
+    const wrapper = JSON.parse(raw) as Partial<PersistedGameState> & { state?: Partial<PersistedGameState>; schemaVersion?: number }
+    const parsed = (wrapper.schemaVersion !== undefined && wrapper.state && typeof wrapper.state === 'object' ? wrapper.state : wrapper) as Partial<PersistedGameState>
     const backgrounds = Array.isArray(parsed.backgrounds) ? parsed.backgrounds.filter(isBackgroundOption) : []
     return hydrateBackgrounds(backgrounds, typeof parsed.backgroundImage === 'string' ? parsed.backgroundImage : null)
   } catch {

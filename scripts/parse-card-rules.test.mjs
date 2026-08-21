@@ -93,4 +93,32 @@ describe('parse-card-rules — post-roadmap tail shapes', () => {
     const untap = card.abilities.find((a) => a.effect.kind === 'untap_self')
     expect(untap?.cost).toBe('{3}')
   })
+
+  it('merges two-sentence compound shapes into one ability (Chaos Warp)', () => {
+    const card = parseCard(scryfall(
+      'Chaos Warp',
+      'Instant',
+      "The owner of target permanent shuffles it into their library, then reveals the top card of their library. If it's a permanent card, they put it onto the battlefield.",
+      '{2}{R}',
+      3,
+    ))
+    const warp = card.abilities.filter((a) => a.effect.kind === 'chaos_warp')
+    expect(warp).toHaveLength(1)
+    expect(warp[0].targets).toBe(1)
+    // The follow-up sentence was absorbed — no separate battlefield-return ability.
+    expect(card.abilities.some((a) => a.effect.kind === 'return_from_graveyard')).toBe(false)
+  })
+
+  it('parses Suspended Sentence as a targeted suspended_sentence spell', () => {
+    const card = parseCard(scryfall(
+      'Suspended Sentence',
+      'Instant',
+      'Destroy target creature an opponent controls. That player loses 3 life. Exile Suspended Sentence with three time counters on it.\nSuspend 3—{1}{B} (Rather than cast this card from your hand, you may pay {1}{B} and exile it with three time counters on it. At the beginning of your upkeep, remove a time counter. When the last is removed, you may cast it without paying its mana cost.)',
+      '{3}{B}',
+      4,
+    ))
+    const sentence = card.abilities.find((a) => a.effect.kind === 'suspended_sentence')
+    expect(sentence?.targets).toBe(1)
+    expect(sentence?.targetFilter).toContain('creature an opponent controls')
+  })
 })

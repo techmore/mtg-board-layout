@@ -133,6 +133,8 @@ export interface BoardCard {
   cloneOriginal?: { name: string; typeLine: string; subtypes: string[]; oracleText?: string; manaProduction?: ManaProduction }
   /** Quest counters (Yes Man). */
   questCounters?: number
+  /** Suspend: time counters on an exiled card (Suspended Sentence). Ticked at the owner's upkeep; free-cast at zero. */
+  suspendTimeCounters?: number
   /** Cryptek: return to the battlefield tapped if this dies this turn. */
   reanimateOnDeathTurn?: number
   /** Skyclave Apparition: MV + owner of the permanent this exiled on ETB. */

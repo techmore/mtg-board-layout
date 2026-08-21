@@ -12,6 +12,7 @@
  */
 
 import { canBlock, computeStaticPump, getStaticKeywords, parseKeywords, parsePower, parseToughness } from 'mtg-protocol/combat'
+import { parseManaCost } from 'mtg-protocol/mana'
 
 export interface Combatant {
   id: string
@@ -25,9 +26,25 @@ export interface Combatant {
   tapped: boolean
   enchantsCardId?: string
   cantBeBlockedThisTurn?: boolean
+  /** Mana cost string — mana value is derived for parity-ban blocking. */
+  manaCost?: string
 }
 
-export { parseKeywords, parsePower, parseToughness }
+export { parseKeywords, parsePower, parsePower as parseManaValue, parseToughness }
+
+export interface CombatOptions {
+  /** Ring L1: attacker ids that are their side's Ring-bearer (temptations ≥ 1). */
+  ringBearerIds?: string[]
+  /** Parity block ban (Twins of Discord): blockers of this MV parity can't block. */
+  parityBan?: 'odd' | 'even'
+}
+
+/** Mana value from a cost string ({2}{W} → 3); hybrid symbols count generic. */
+function manaValueOf(manaCost: string | undefined): number {
+  if (!manaCost) return 0
+  const parsed = parseManaCost(manaCost)
+  return parsed.generic + parsed.colored.reduce((sum, entry) => sum + entry.count, 0)
+}
 
 export interface CombatResolution {
   /** damage to add to each involved card (attacker or blocker) */
@@ -48,6 +65,7 @@ export function resolveCombat(
   allPlayers: { id: string; teamId: string; battlefield: Combatant[] }[],
   attackerOwnerId: string,
   attackerTeamId: string,
+  options: CombatOptions = {},
 ): CombatResolution {
   const result: CombatResolution = { cardDamage: [], deadIds: [], playerDamage: [], lifeGain: [], assignments: {} }
   const attackerIds = attackers.map((a) => a.id)
@@ -96,13 +114,21 @@ export function resolveCombat(
   // creatures. (Applied by the caller before resolution is ideal, but we
   // enforce here for robustness: an illegal blocker assignment is ignored.)
   const validBlockers = new Map<string, string[]>()
+  const ringBearers = new Set(options.ringBearerIds ?? [])
   for (const attacker of attackers) {
     const aKeywords = keywordsFor(attacker)
+    const attackerIsBearer = ringBearers.has(attacker.id)
     const valid = (assigned[attackerIds.indexOf(attacker.id)] ?? []).filter((blockerId) => {
       const blocker = findCard(blockerId)
       if (!blocker) return false
       if ((attacker as unknown as { cantBeBlockedThisTurn?: boolean }).cantBeBlockedThisTurn) return false
-      if (!canBlock(blocker, allBattlefield)) return false
+      if (!canBlock(blocker, allBattlefield, {
+        attackerIsRingBearer: attackerIsBearer,
+        attackerPower: parsePower(attacker),
+        blockerPower: parsePower(blocker),
+        parityBan: options.parityBan,
+        blockerManaValue: manaValueOf(blocker.manaCost),
+      })) return false
       // Skulk: can't be blocked by creatures with greater power.
       if (aKeywords.has('skulk') && parsePower(blocker) > parsePower(attacker)) return false
       if (aKeywords.has('flying')) {

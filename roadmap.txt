@@ -1,13 +1,14 @@
 ═══════════════════════════════════════════════════════════════════
  MTG BOARD LAYOUT — ROADMAP
- Updated: 2026-08-21 (batch 23: the last-tail features + parser cleanup)
+ Updated: 2026-08-21 (batch 24: suspend engine, MP parity slice,
+                       regression tests, persistence versioning)
 ═══════════════════════════════════════════════════════════════════
 
 CURRENT STATE
 ─────────────
   "Other" (unimplemented) abilities : 322 → 1   (99.7% recovered)
-  Root test suite                   : 476 → 558 passing
-  Server test suite                 :  78 → 116 passing
+  Root test suite                   : 476 → 575 passing
+  Server test suite                 :  78 → 116 passing (60 in root run)
   Gates                             : tsc + oxlint + vitest + build all green
   Main bundle (gzip)                : 154 KB → ~95 KB
 
@@ -121,14 +122,74 @@ SUGGESTED NEXT STEPS (post-roadmap)
   2. DONE (batch 23): Graveyard-intake chokepoint → Fraying Sanity.
   3. DONE (batch 23): Ability-instance copy engine → Abstruse Archaic.
   4. DONE (batch 23): Reconfigure/attach routing → Razorfield Ripper.
-  5. Multiplayer parity: sync ring/poison/forceAttack/parityBan/graveyardIntake/
-     cloneOriginal through the room protocol so solo-only mechanics work online.
-  6. Full suspend engine for Suspended Sentence (the last "other").
-  7. Regression tests: ring ladder / compound parsing / animate revert are
-     still under-tested; batch 23 added tailAbilities.test.ts + parser tests.
+  5. MOSTLY DONE (batch 24): Multiplayer parity — room schema now carries
+     per-player poisonCounters / ringTemptations / ringBearerCardId and
+     room-level forceAttack + parityBan; new protocol actions (ringTempt,
+     addPoison, setForceAttack, setParityBan); server combat feeds Ring-L1 +
+     parity-ban contexts into canBlock and enforces the forced-attack floor;
+     poison at ten ends the game; client snapshots expose all of it.
+     STILL OPEN: multiplayer UI controls to drive those actions, and
+     effect-side Ring L2/L3/L4 online (combat-legality is enforced;
+     draw-loot/blocker-sacrifice/drain are solo-only).
+  6. DONE (batch 24): Suspend engine — Suspended Sentence exiles itself with
+     three time counters on resolve; ticks at the owner's upkeep
+     (processSuspendedCards) and free-recasts (destroy+drain+re-suspend) at
+     zero; stays exiled when no legal target exists.
+  7. Regression tests: batch 23 added tailAbilities.test.ts + parser tests;
+     batch 24 added batchRegression.test.ts (Ring L1–L4 ladder, partner tutor,
+     animate revert, suspend lifecycle), compound-merge parser tests, protocol
+     canBlock context tests, server combat options tests, persistence
+     versioning tests.
 
-KEY FILES TOUCHED THIS ROUND (batch 23)
+BATCH 24 CLEANUPS
+─────────────────
+  - Persistence schema versioning: saves are wrapped as {schemaVersion, state};
+    unknown future versions reset instead of misreading; legacy unversioned
+    saves still load (tested).
+  - Dead code removed: advanceTurnState (+ its tests).
+  - vitest excludes server/dist (a server build no longer double-runs its
+    tests); node_modules/mtg-protocol copies replaced with symlinks so
+    protocol edits propagate without reinstalling.
+  - LOOPS.md marked historical with a current-state banner.
+
+REMAINING KNOWN GAPS (all documented, intentional)
+──────────────────────────────────────────────────
+  - Multiplayer UI for the new mechanics (see #5) + effect-side Ring online.
+  - Modal chooser UI: "Choose one —" modes auto-pick deterministically
+    (toasted); player can already Resolve/Skip each mode on the stack.
+  - Scourge's extra combat phase is not modeled (untap-all is).
+  - Black Gate uses cantBeBlockedThisTurn (equivalent in solo 1v1).
+  - Graveyard-cast mechanics fire immediately rather than granting a
+    until-EOT window (toasted transparently).
+  - Star Athlete: AI sacrifices only tokens/toughness≤2 creatures.
+
+KEY FILES TOUCHED THIS ROUND (batch 24)
 ───────────────────────────────────────
+  src/types/card.ts                 BoardCard.suspendTimeCounters
+  src/stores/triggerActions.ts      suspended_sentence self-exile,
+                                    processSuspendedCards (upkeep tick +
+                                    deterministic free-recast)
+  src/stores/gameTurnPhases.ts      player-upkeep suspend tick
+  src/stores/gameOpponentAI.ts      AI-upkeep suspend tick
+  src/stores/gamePersistence.ts     SCHEMA_VERSION wrapper + legacy fallback
+  src/stores/gameRules.ts           advanceTurnState removed
+  protocol/src/combat.ts            canBlock context: attackerIsRingBearer /
+                                    parityBan (+ power / mana-value inputs)
+  protocol/src/index.ts             RoomPlayerInfo poison/ring fields;
+                                    ringTempt/addPoison/setForceAttack/
+                                    setParityBan actions
+  server/src/rooms/schema/GameState.ts  PlayerState poison+ring, room-level
+                                    forceAttack + parityBan state
+  server/src/rooms/GameRoom.ts      new action handlers, forced-attack floor,
+                                    combat options wiring, poison lose-at-10
+  server/src/rooms/combat.ts        CombatOptions (ringBearerIds/parityBan),
+                                    mana-value derivation
+  src/multiplayer/roomState.ts      snapshot exposes the new fields
+  vite.config.ts                    vitest/config defineConfig + dist exclude
+
+KEY FILES TOUCHED PREVIOUS ROUNDS
+─────────────────────────────────
+  Batch 23:
   scripts/parse-card-rules.mjs      become_copy / copy_ability /
                                     graveyard_intake_mill / monstrosity /
                                     untap_self patterns, attach_target broaden,
@@ -152,10 +213,7 @@ KEY FILES TOUCHED THIS ROUND (batch 23)
   src/components/Board/triggerUtils.ts   labels for the new kinds
   src/stores/spellResolution.ts     AI autoTarget become_copy ranking
   src/stores/tailAbilities.test.ts  NEW — 11 engine tests
-  scripts/parse-card-rules.test.mjs NEW — 6 parser tests
-
-KEY FILES TOUCHED PREVIOUS ROUNDS
-─────────────────────────────────
+  scripts/parse-card-rules.test.mjs NEW — parser tests
   protocol/src/combat.ts            attackTax broaden, blockTax, hand-gate,
                                     forestwalk, rad gate (canAttack/canBlock)
   src/stores/gameCombatActions.ts   block tax, Ring L1–L4, parity ban,

@@ -1,7 +1,6 @@
 import { afterEach, describe, expect, it } from 'vitest'
 import type { BoardCard, ManaPool } from '../types/card'
 import {
-  advanceTurnState,
   attachAuras,
   beginUndoTransaction,
   emptyManaPool,
@@ -494,63 +493,6 @@ describe('generatedManaState', () => {
     expect(state.manaLog).toEqual([])
   })
 })
-
-describe('advanceTurnState', () => {
-  it('untaps battlefield creatures, moves cast spells to the graveyard, and resets the pool', () => {
-    const tappedCreature = card({ id: 'grizzly', type: 'creature', typeLine: 'Creature', zone: 'battlefield', tapped: true })
-    const untappedCreature = card({ id: 'lion', type: 'creature', typeLine: 'Creature', zone: 'battlefield', tapped: false })
-    const castInstant = card({ id: 'bolt', type: 'instant', typeLine: 'Instant', zone: 'battlefield', tapped: true })
-    const state = makeState({
-      cards: [tappedCreature, untappedCreature, castInstant],
-      manaPool: { ...fullManaPool(), U: 2 },
-      potentialMana: [{ id: 'p1', colors: ['U'] }],
-      landPlaysThisTurn: 1,
-      turn: 3,
-      drawNotice: { id: 1, count: 1 },
-      turnAnnouncement: { id: 2, text: 'X' },
-      turnPrompt: { action: 'end', reason: 'discard' },
-    })
-
-    const next = advanceTurnState(state)
-
-    expect(next.turn).toBe(4)
-    expect(next.landPlaysThisTurn).toBe(0)
-    expect(next.manaPool).toEqual(fullManaPool())
-    expect(next.potentialMana).toEqual([])
-    expect(next.drawNotice).toBeNull()
-    expect(next.turnAnnouncement).toBeNull()
-    expect(next.turnPrompt).toBeNull()
-    const grizzly = next.cards?.find((candidate) => candidate.id === 'grizzly')
-    const lion = next.cards?.find((candidate) => candidate.id === 'lion')
-    const bolt = next.cards?.find((candidate) => candidate.id === 'bolt')
-    expect(grizzly?.tapped).toBe(false)
-    expect(lion?.tapped).toBe(false)
-    expect(bolt?.zone).toBe('graveyard')
-    expect(bolt?.tapped).toBe(false)
-  })
-
-  it('leaves the caller-provided state untouched', () => {
-    const creature = card({ id: 'grizzly', type: 'creature', typeLine: 'Creature', zone: 'battlefield', tapped: true })
-    const state = makeState({ cards: [creature], manaPool: { ...fullManaPool(), W: 1 } })
-
-    advanceTurnState(state)
-
-    expect(state.cards[0].tapped).toBe(true)
-    expect(state.manaPool.W).toBe(1)
-    expect(state.turn).toBe(3)
-  })
-
-  it('is a no-op on the initial state in tests', () => {
-    // Note: the caller (advancePhase in gameTurnPhases.ts) issues the draw
-    // itself; advanceTurnState only resets the turn-scoped state.
-    const state = makeState({ cards: [card({ id: 'grizzly', type: 'creature', zone: 'battlefield' })], manaPool: { ...fullManaPool(), W: 1 } })
-    const next = advanceTurnState(state)
-
-    expect(next.cards?.[0].tapped).toBe(false)
-    expect(next.manaPool).toEqual(fullManaPool())
-  })
-})
-
 
 describe('attachAuras', () => {
   const strong = { id: 'strong', name: 'Strong', zone: 'battlefield', type: 'creature', typeLine: '4/4', owner: 'player', enchantsCardId: undefined }

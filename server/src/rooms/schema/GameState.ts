@@ -94,6 +94,11 @@ export class PlayerState extends Schema {
   @type('number') positionX: number
   @type('number') positionY: number
   @type({ map: 'number' }) commanderDamage: MapSchema<number>
+  /** Poison counters (ten loses the game). */
+  @type('number') poisonCounters: number
+  /** Ring ladder: temptation count and the current Ring-bearer card id. */
+  @type('number') ringTemptations: number
+  @type('string') ringBearerCardId: string
 
   constructor(data?: Partial<PlayerState>) {
     super()
@@ -124,6 +129,9 @@ export class PlayerState extends Schema {
     this.positionX = data?.positionX ?? 0
     this.positionY = data?.positionY ?? 0
     this.commanderDamage = new MapSchema<number>()
+    this.poisonCounters = 0
+    this.ringTemptations = 0
+    this.ringBearerCardId = ''
   }
 }
 
@@ -137,6 +145,12 @@ export class GameState extends Schema {
   @type('boolean') combatActive: boolean
   @type(['string']) attackers: ArraySchema<string>
   @type(['string']) blockers: ArraySchema<string>
+  /** Turn-scoped attack compulsion (Bident/Kardur): victim must attack if able. */
+  @type('string') forceAttackVictimId: string
+  @type('number') forceAttackUntilTurn: number
+  /** Turn-scoped parity block ban (Twins of Discord); '' when inactive. */
+  @type('string') parityBanParity: string
+  @type('number') parityBanUntilTurn: number
   @type({ map: PlayerState }) players: MapSchema<PlayerState>
 
   constructor(roomId: string, gameMode: string, hostId: string) {
@@ -150,6 +164,10 @@ export class GameState extends Schema {
     this.combatActive = false
     this.attackers = new ArraySchema<string>()
     this.blockers = new ArraySchema<string>()
+    this.forceAttackVictimId = ''
+    this.forceAttackUntilTurn = 0
+    this.parityBanParity = ''
+    this.parityBanUntilTurn = 0
     this.players = new MapSchema<PlayerState>()
   }
 }

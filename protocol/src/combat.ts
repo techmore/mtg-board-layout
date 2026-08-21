@@ -99,11 +99,31 @@ export function canAttack(
 export function canBlock(
   card: { id: string; oracleText?: string; ownerId?: string; owner?: string },
   battlefield: Iterable<{ id: string; oracleText?: string; enchantsCardId?: string; ownerId?: string; owner?: string; typeLine?: string }> = [],
-  context: { defenderRadCounters?: number; handSize?: number } = {},
+  context: {
+    defenderRadCounters?: number
+    handSize?: number
+    /** Ring L1: the ATTACKER is its side's Ring-bearer — greater-power creatures can't block it. */
+    attackerIsRingBearer?: boolean
+    attackerPower?: number
+    blockerPower?: number
+    /** Parity block ban (Twins of Discord): blockers of the chosen MV parity can't block. */
+    parityBan?: 'odd' | 'even'
+    blockerManaValue?: number
+  } = {},
 ): boolean {
   const text = card.oracleText ?? ''
   const m = text.match(/can't\s+(?:be\s+)?blocked|can't\s+(?:attack\s+or\s+)?block/i)
   if (m && !hasConditionAfter(text, (m.index ?? 0) + m[0].length)) return false
+  // Ring L1: the attacking Ring-bearer can't be blocked by creatures with
+  // greater power (both powers must be supplied by the caller).
+  if (context.attackerIsRingBearer && context.blockerPower !== undefined && context.attackerPower !== undefined) {
+    if (context.blockerPower > context.attackerPower) return false
+  }
+  // Parity block ban: zero mana value counts as even.
+  if (context.parityBan && context.blockerManaValue !== undefined) {
+    const even = context.blockerManaValue % 2 === 0
+    if (even === (context.parityBan === 'even')) return false
+  }
   // Hand-size gate ("can't attack or block unless you have N or more cards in
   // hand") — see {@link canAttack}.
   const handGate = text.match(/can't (?:attack|block|attack or block) unless you have (?:(\d+)|(one|two|three|four|five|six|seven|eight|nine|ten)) or more cards in hand/i)

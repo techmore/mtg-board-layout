@@ -9,6 +9,7 @@ import { localCardImage } from '../data/localCardImages'
 import { cacheDeckImages } from '../services/cardImageCache'
 import { pickSpell, pickAttackers, pickCommanderCast } from './opponentAI'
 import { resolveAISpellAbilities, resolveAIAutoAbilities, resolveAITriggerInstances, resolveAIActivatedAbility } from './spellResolution'
+import { processSuspendedCards } from './triggerActions'
 
 type SetFn = (partial: GameState | Partial<GameState> | ((state: GameState) => Partial<GameState>)) => void
 
@@ -295,6 +296,8 @@ export function createOpponentAI(set: SetFn, get: () => GameState): Pick<GameSta
       }
       // The AI's upkeep step fires its own upkeep triggers ("your upkeep").
       get().emitGameEvent({ type: 'upkeep', owner: 'opponent' })
+      // Suspend ticking: the opponent's suspended cards lose a time counter.
+      processSuspendedCards(get, set, 'opponent')
 
       setTimeout(() => {
         const s = get()

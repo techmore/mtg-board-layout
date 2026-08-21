@@ -1,4 +1,4 @@
-import type { BoardCard, ManaColor, ManaLogEntry, ManaPool, PotentialManaSource } from '../types/card'
+import type { BoardCard, ManaColor, ManaLogEntry, ManaPool } from '../types/card'
 import { resolveCardRules } from '../data/cardRules'
 import { evaluateConditionalEntryTap } from '../data/cardFeatures'
 import { canPayManaCost, shuffle, spendManaForCost, getCardPower } from '../utils/misc'
@@ -309,24 +309,5 @@ export function generatedManaState(
   return {
     manaPool: { ...state.manaPool, [color]: state.manaPool[color] + amount },
     manaLog: [...state.manaLog, entry].slice(-250),
-  }
-}
-
-export function advanceTurnState(state: GameState): Partial<GameState> {
-  const cards = moveCastSpellsToGraveyard(state.cards).map((card) => {
-    if (card.zone === 'battlefield') return { ...card, tapped: false, damage: 0, deathtouchDamage: false, powerBoost: 0, toughnessBoost: 0 }
-    return card
-  })
-  return {
-    turn: state.turn + 1,
-    landPlaysThisTurn: 0,
-    playerSpellsCastThisTurn: 0,
-    opponentSpellsCastThisTurn: 0,
-    manaPool: emptyManaPool(),
-    potentialMana: [] as PotentialManaSource[],
-    cards,
-    drawNotice: null,
-    turnAnnouncement: null,
-    turnPrompt: null,
   }
 }

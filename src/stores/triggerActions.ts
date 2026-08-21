@@ -1698,13 +1698,29 @@ function applyTargetedEffect(get: () => GameState, set: (partial: Partial<GameSt
     }
     case 'suspended_sentence': {
       // Suspended Sentence: "Destroy target creature an opponent controls. That
-      // player loses 3 life." (The suspend re-cast isn't modeled.)
+      // player loses 3 life. Exile Suspended Sentence with three time counters
+      // on it." The suspend recast ticks at the owner's upkeep
+      // (processSuspendedCards) and free-recasts at zero.
       const target = state.cards.find((c) => c.id === cardId)
       if (target?.zone === 'battlefield') {
         get().moveCard(target.id, 'graveyard')
         const owner = (target.owner ?? 'player') as 'player' | 'opponent'
         if (owner === 'player') get().setLife(Math.max(0, get().lifeTotal - 3))
         else set({ opponentLifeTotal: Math.max(0, get().opponentLifeTotal - 3) })
+      }
+      const source = state.cards.find((c) => c.id === trigger.sourceCardId)
+      if (source) {
+        const word = source.oracleText?.match(/exile [^.]*?with (\w+) time counters/i)?.[1]
+        const amount = word ? ({ one: 1, two: 2, three: 3, four: 4, five: 5 }[word.toLowerCase()] ?? 3) : 3
+        // Base on fresh state — the destroy above already moved cards.
+        set({
+          cards: updateCard(get().cards, source.id, {
+            zone: 'exile',
+            revealed: true,
+            suspendTimeCounters: amount,
+          }),
+        })
+        useToastStore.getState().push(`${source.name} is suspended — exiled with ${amount} time counters.`, 'info')
       }
       break
     }
@@ -1869,8 +1885,49 @@ function applyTargetedEffect(get: () => GameState, set: (partial: Partial<GameSt
   get().checkStateBasedActions()
 }
 
-export function payWardImpl(get: () => GameState, set: (partial: Partial<GameState>) => void) {
+/**
+ * Suspend ticking (Suspended Sentence): at the beginning of the owner's upkeep,
+ * remove a time counter from each of their suspended cards. When the last is
+ * removed, cast it without paying its mana cost — deterministically destroying
+ * the strongest opposing creature and draining 3, which re-suspends it (the
+ * loop ends only when no legal target exists).
+ */
+export function processSuspendedCards(get: () => GameState, set: (partial: Partial<GameState>) => void, owner: 'player' | 'opponent') {
   const state = get()
+  const suspended = state.cards.filter((c) => c.zone === 'exile' && (c.owner ?? 'player') === owner && (c.suspendTimeCounters ?? 0) > 0)
+  for (const card of suspended) {
+    const remaining = (card.suspendTimeCounters ?? 0) - 1
+    if (remaining > 0) {
+      set({ cards: updateCard(get().cards, card.id, { suspendTimeCounters: remaining }) })
+      useToastStore.getState().push(`Suspend: ${card.name} — ${remaining} time counter(s) left.`, 'info')
+      continue
+    }
+    // Last counter removed: free-cast it. Find the strongest opposing creature.
+    const enemyOwner = owner === 'player' ? 'opponent' : 'player'
+    const target = [...get().cards]
+      .filter((c) => c.zone === 'battlefield' && c.type === 'creature' && (c.owner ?? 'player') === enemyOwner)
+      .sort((a, b) => getCardPower(b) - getCardPower(a))[0]
+    if (!target) {
+      // No legal target: the cast can't be made; leave it exiled at zero and
+      // retry on a later upkeep.
+      set({ cards: updateCard(get().cards, card.id, { suspendTimeCounters: 0 }) })
+      continue
+    }
+    const current = get()
+    get().moveCard(target.id, 'graveyard')
+    if (enemyOwner === 'player') get().setLife(Math.max(0, get().lifeTotal - 3))
+    else set({ opponentLifeTotal: Math.max(0, current.opponentLifeTotal - 3) })
+    const word = card.oracleText?.match(/exile [^.]*?with (\w+) time counters/i)?.[1]
+    const amount = word ? ({ one: 1, two: 2, three: 3, four: 4, five: 5 }[word.toLowerCase()] ?? 3) : 3
+    set({ cards: updateCard(get().cards, card.id, { suspendTimeCounters: amount }) })
+    useToastStore.getState().push(
+      `Suspend recast: ${card.name} destroys ${target.name}, drains 3, and suspends again with ${amount} time counters.`,
+      'info',
+    )
+  }
+}
+
+export function payWardImpl(get: () => GameState, set: (partial: Partial<GameState>) => void) {  const state = get()
   const prompt = state.wardPrompt
   if (!prompt) return
   const trigger = state.triggerStack.find((t) => t.id === prompt.triggerId)

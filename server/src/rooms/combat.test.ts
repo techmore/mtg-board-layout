@@ -115,6 +115,35 @@ describe('resolveCombat', () => {
   })
 })
 
+describe('combat options (ring bearer + parity ban)', () => {
+  it('Ring L1: a greater-power creature cannot block the Ring-bearer', () => {
+    const bearer = attacker('bearer', '2/2')
+    const big = defender('big', '3/3')
+    const small = defender('small', '1/1')
+    const players = playersOf({ a: [bearer], b: [big, small] })
+    // Both declared; only the 1/1 is a legal blocker — the 3/3's assignment is
+    // ignored, so it takes no damage and the bearer stays unblocked by it.
+    const result = resolveCombat([bearer], ['big', 'small'], players, 'a', 'team1', { ringBearerIds: ['bearer'] })
+    expect(result.cardDamage).toEqual([{ cardId: 'small', amount: 1 }, { cardId: 'bearer', amount: 1 }])
+    expect(result.deadIds).toEqual(['small'])
+    // Without the option both block and both die to the 2-power attack? No —
+    // damage splits lethal-first: big takes 2 (survives 3 toughness).
+    const plain = resolveCombat([attacker('bearer', '2/2')], ['big', 'small'], playersOf({ a: [attacker('bearer', '2/2')], b: [big, small] }), 'a', 'team1')
+    expect(plain.cardDamage.map((d) => d.cardId)).toContain('big')
+  })
+
+  it('parity ban filters blockers by mana value (zero counts as even)', () => {
+    const atk = attacker('atk', '2/2')
+    const even = { ...defender('even', '2/2'), manaCost: '{2}' }
+    const odd = { ...defender('odd', '2/2'), manaCost: '{3}' }
+    const zero = { ...defender('zero', '2/2'), manaCost: '' }
+    const players = playersOf({ a: [atk], b: [even, odd, zero] })
+    const result = resolveCombat([atk], ['even', 'odd', 'zero'], players, 'a', 'team1', { parityBan: 'even' })
+    // Only the odd-MV creature actually blocks/takes damage.
+    expect(result.cardDamage.filter((d) => d.cardId !== 'atk').map((d) => d.cardId)).toEqual(['odd'])
+  })
+})
+
 describe('damage accumulation', () => {
   it('a creature with prior damage dies when new damage reaches its toughness', () => {
     const bear = attacker('bear', '2/2', '')

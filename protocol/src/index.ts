@@ -179,6 +179,33 @@ export interface SetLifeAction {
   value: number
 }
 
+/** Ring temptation: increments the side's ladder and picks the strongest bearer. */
+export interface RingTemptAction {
+  type: 'ringTempt'
+}
+
+/** Poison counters added to a named player (ten loses the game). */
+export interface AddPoisonAction {
+  type: 'addPoison'
+  playerId: string
+  amount: number
+}
+
+/** Turn-scoped attack compulsion against a victim player. */
+export interface SetForceAttackAction {
+  type: 'setForceAttack'
+  victimPlayerId: string
+  /** Absolute room turn until which the compulsion lasts (inclusive). */
+  untilTurn: number
+}
+
+/** Turn-scoped parity block ban (Twins of Discord). */
+export interface SetParityBanAction {
+  type: 'setParityBan'
+  parity: 'odd' | 'even'
+  untilTurn: number
+}
+
 export interface ChatMessageAction {
   type: 'chatMessage'
   text: string
@@ -252,6 +279,10 @@ export type PlayerAction =
   | AddTokenCounterAction
   | RemoveTokenCounterAction
   | SetLifeAction
+  | RingTemptAction
+  | AddPoisonAction
+  | SetForceAttackAction
+  | SetParityBanAction
   | ChatMessageAction
   | ReshuffleAction
   | RedealAction
@@ -361,6 +392,11 @@ export interface RoomPlayerInfo {
   positionY: number
   /** Commander card id -> combat damage that commander has dealt to this player (21 loses). */
   commanderDamage: Record<string, number>
+  /** Poison counters (ten loses the game). */
+  poisonCounters: number
+  /** Ring ladder: temptation count + current Ring-bearer card id. */
+  ringTemptations: number
+  ringBearerCardId: string
 }
 
 // ═══════════════════════════════════════════════════════════════

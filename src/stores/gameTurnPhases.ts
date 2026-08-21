@@ -1,6 +1,7 @@
 import type { BoardCard } from '../types/card'
 import type { GameState } from './gameStore'
 import { emptyManaPool, moveCastSpellsToGraveyard, prepareCardPlay, pushUndo, withGraveyardIntake } from './gameRules'
+import { processSuspendedCards } from './triggerActions'
 
 type SetFn = (partial: GameState | Partial<GameState> | ((state: GameState) => Partial<GameState>)) => void
 
@@ -100,6 +101,8 @@ export function createTurnPhases(set: SetFn, get: () => GameState): Pick<GameSta
       switch (state.currentPhase) {
         case 'beginning': {
           get().emitGameEvent({ type: 'upkeep', owner: 'player' })
+          // Suspend ticking: the player's suspended cards lose a time counter.
+          processSuspendedCards(get, set, 'player')
           set((prev) => ({
             cards: prev.cards.map((c) =>
               (c.owner ?? 'player') === 'player' && c.zone === 'battlefield'

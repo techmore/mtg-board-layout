@@ -1,5 +1,13 @@
 # Project Loops
 
+> **Status note (2026-08-21):** the loops below are historical planning
+> documents. Phases 1–5 of the Universal Card Rules Roadmap are complete (see
+> `roadmap.txt` + `docs/AUDIT-2026-08.md` for current state: 558+ tests, one
+> remaining "other" ability). Phase 6 is partially done — shared combat logic
+> lives in `protocol/`, and solo-mechanic state (Ring, poison, force-attack,
+> parity ban) now syncs through the room schema with server-side enforcement;
+> client-side multiplayer controls for those mechanics are still open.
+
 ## Parser Gap Closure & Rules Sync
 
 Saved: 2026-08-20
