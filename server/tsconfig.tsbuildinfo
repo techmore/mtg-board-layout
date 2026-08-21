@@ -1,1 +1,0 @@
-{"root":["./src/index.ts","./src/rooms/GameRoom.test.ts","./src/rooms/GameRoom.ts","./src/rooms/combat.test.ts","./src/rooms/combat.ts","./src/rooms/gameRoomMessages.ts","./src/rooms/roomUtils.test.ts","./src/rooms/roomUtils.ts","./src/rooms/schema/GameState.ts"],"version":"5.9.3"}
