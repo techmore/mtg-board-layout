@@ -7,7 +7,7 @@ import { getCardTypeFeatures } from '../data/cardFeatures'
 import { getCachedCardRules, getCardRule, hasKeyword } from './cardRulesLoader'
 import { localCardImage } from '../data/localCardImages'
 import { cacheDeckImages } from '../services/cardImageCache'
-import { pickSpell, pickAttackers, pickCommanderCast } from './opponentAI'
+import { pickAttackers, pickCommanderCast } from './opponentAI'
 import { resolveAISpellAbilities, resolveAIAutoAbilities, resolveAITriggerInstances, resolveAIActivatedAbility } from './spellResolution'
 import { processSuspendedCards } from './triggerActions'
 
@@ -92,6 +92,84 @@ export function aiCastInstant(set: SetFn, get: () => GameState): boolean {
 
 /** Effects the AI is willing to activate on its planeswalkers. */
 const BENEFICIAL_EFFECTS = new Set(['create_token', 'draw_cards', 'gain_life', 'add_mana', 'destroy', 'deal_damage', 'exile', 'put_counter', 'proliferate', 'scry', 'become_copy'])
+
+// ── Spell-selection strategy (simple hard rules) ───────────────────────────
+
+export type SpellRole = 'ramp' | 'removal' | 'creature' | 'other'
+
+const REMOVAL_KINDS = new Set(['destroy', 'exile', 'deal_damage', 'destroy_equal_toughness', 'mass_sacrifice'])
+
+/** Classify a card's strategic role from its parsed rules. */
+export function classifySpellRole(card: Pick<BoardCard, 'type' | 'typeLine' | 'manaProduction'>, rule: { abilities: { effect: { kind: string } }[]; oracleText: string } | undefined): SpellRole {
+  const kinds = (rule?.abilities ?? []).map((a) => a.effect.kind)
+  if (kinds.some((kind) => REMOVAL_KINDS.has(kind))) return 'removal'
+  // Mana rocks and explicit mana/ramp abilities.
+  if (card.manaProduction && card.type !== 'creature') return 'ramp'
+  const text = rule?.oracleText ?? ''
+  if (kinds.includes('add_mana') || /\{T\}:\s*add\b/i.test(text) || /search your library for [\w\s-]{0,24}\bland\b/i.test(text)) return 'ramp'
+  if (card.type === 'creature') return 'creature'
+  return 'other'
+}
+
+export interface SpellPickContext {
+  turn: number
+  /** Highest power among the player's battlefield creatures (threat gauge). */
+  playerThreatPower: number
+}
+
+/**
+ * Hard-rule spell selection, replacing "first affordable card":
+ *   1. Never lead with an Aura when nothing is on the board to enchant.
+ *   2. Answer real threats (player's best creature power ≥ 4) with removal.
+ *   3. Early game (< 4 own lands out): ramp before development.
+ *   4. Otherwise develop the biggest affordable spell, creatures first on ties.
+ */
+export function pickSpellSmart(
+  hand: BoardCard[],
+  battlefield: BoardCard[],
+  manaPool: ManaPool,
+  rules: Record<string, import('../types/card').CardRuleEntry> | null,
+  context: SpellPickContext,
+): BoardCard | null {
+  const playable = hand.filter((c) => c.type !== 'land' && c.manaCost && canPayManaCost(manaPool, c.manaCost))
+  if (playable.length === 0) return null
+
+  const ownCreatures = battlefield.filter((c) => c.type === 'creature')
+  const castable = playable.filter((c) => {
+    // Auras with no legal host would die on entry — hold them.
+    if (c.type === 'enchantment' && /\baura\b/i.test(c.typeLine ?? '') && ownCreatures.length === 0) return false
+    return true
+  })
+  if (castable.length === 0) return null
+
+  const roleOf = (card: BoardCard): SpellRole => classifySpellRole(card, getCardRule(card.name, rules))
+
+  // 2. Removal answers a real threat.
+  if (context.playerThreatPower >= 4) {
+    const removal = castable.filter((c) => roleOf(c) === 'removal')
+    if (removal.length > 0) {
+      return [...removal].sort((a, b) => (b.manaValue ?? 0) - (a.manaValue ?? 0))[0]
+    }
+  }
+
+  // 3. Early ramp before development.
+  const ownLands = battlefield.filter((c) => c.type === 'land').length
+  if (ownLands < 4) {
+    const ramp = castable.filter((c) => roleOf(c) === 'ramp')
+    if (ramp.length > 0) {
+      return [...ramp].sort((a, b) => (a.manaValue ?? 0) - (b.manaValue ?? 0))[0]
+    }
+  }
+
+  // 4. Develop the biggest affordable spell; creatures win ties.
+  return [...castable].sort((a, b) => {
+    const mvDiff = (b.manaValue ?? 0) - (a.manaValue ?? 0)
+    if (mvDiff !== 0) return mvDiff
+    const aCreature = a.type === 'creature' ? 1 : 0
+    const bCreature = b.type === 'creature' ? 1 : 0
+    return bCreature - aCreature
+  })[0]
+}
 
 /**
  * Tap the AI's mana-producing creatures/artifacts ({T}: Add mana) and credit
@@ -354,7 +432,10 @@ export function createOpponentAI(set: SetFn, get: () => GameState): Pick<GameSta
             }
 
             const commanderCast = pickCommanderCast(oppCommand, manaPool)
-            const toCast = pickSpell(oppHand2, oppBattlefield, manaPool) ?? commanderCast?.card ?? null
+            const playerThreatPower = Math.max(0, ...get().cards
+              .filter((c) => (c.owner ?? 'player') === 'player' && c.zone === 'battlefield' && c.type === 'creature')
+              .map((c) => getCardPower(c)))
+            const toCast = pickSpellSmart(oppHand2, oppBattlefield, manaPool, getCachedCardRules(), { turn: get().turn, playerThreatPower }) ?? commanderCast?.card ?? null
             const castCost = toCast
               ? commanderCast && toCast.id === commanderCast.card.id ? commanderCast.cost : toCast.manaCost
               : undefined

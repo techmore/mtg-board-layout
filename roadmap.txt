@@ -1,13 +1,13 @@
 ═══════════════════════════════════════════════════════════════════
  MTG BOARD LAYOUT — ROADMAP
- Updated: 2026-08-21 (batch 28: Scourge extra combat phase + Star
-                       Athlete heuristic — NO KNOWN GAPS REMAIN)
+ Updated: 2026-08-21 (batch 29: AI spell-selection strategy — hard
+                       sequencing rules replace "first affordable")
 ═══════════════════════════════════════════════════════════════════
 
 CURRENT STATE
 ─────────────
   "Other" (unimplemented) abilities : 322 → 1   (99.7% recovered)
-  Root test suite                   : 476 → 601 passing
+  Root test suite                   : 476 → 610 passing
   Server test suite                 :  78 → 121 passing (65 in root run)
   Gates                             : tsc + oxlint + vitest + build all green
   Main bundle (gzip)                : 154 KB → ~95 KB
@@ -162,147 +162,61 @@ REMAINING KNOWN GAPS
   (the untap-all half works everywhere; the second wave resolves through the
   solo combat engine, like all effect-side mechanics).
 
-KEY FILES TOUCHED THIS ROUND (batch 28)
+OPTIONAL FUTURE POLISH (not gaps)
+─────────────────────────────────
+  - Per-deck AI strategy table: pickSpellSmart already accepts the rules DB;
+    a commander-keyed {priorityNames} config could hand-tune cast orders per
+    prebuilt deck (requires card-by-card study of each decklist).
+  - Client-side ability parsing for custom imported decks (parser is exported
+    and deterministic; wiring it into deck import would give arbitrary decks
+    the full trigger engine).
+
+KEY FILES TOUCHED THIS ROUND (batch 29)
 ───────────────────────────────────────
-  src/stores/gameCombatActions.ts  Scourge "additional combat phase": after a
-                                   combat where the untap-all fired, a second
-                                   wave follows — players declare again in an
-                                   auto-reopened combat; the AI's wave is picked
-                                   and resolved deterministically (pickAttackers
-                                   + pickBlockers + attack triggers) and cannot
-                                   chain (first-time-only trigger gate)
-  src/stores/triggerActions.ts     Star Athlete heuristic widened: tokens,
-                                   power-or-toughness ≤ 2 bodies, or MV ≤ 3 are
-                                   sacrificed instead of their controller
-                                   taking 5
-  src/stores/batchRegression.test.ts  5 new tests: player-side extra combat
-                                   reopen, AI deterministic second wave,
-                                   first-time-only no-chain, sacrifice-cheap,
-                                   keep-bomb-take-5
+  src/stores/gameOpponentAI.ts   classifySpellRole + pickSpellSmart: removal
+                                 answers real threats (player best power ≥ 4),
+                                 ramp before development while < 4 lands out,
+                                 biggest-affordable development with creature
+                                 tie-break, Auras held with no legal host;
+                                 wired into the AI's main-phase cast decision
+  src/stores/aiStrategy.test.ts  NEW — 9 tests (role classification + all four
+                                 selection rules + hold/null edge cases)
 
-KEY FILES TOUCHED PREVIOUS ROUNDS (batches 23-27)
+KEY FILES TOUCHED PREVIOUS ROUNDS (batches 23-28)
 ────────────────────────────────────────────────
+  Batch 28:
+  src/stores/gameCombatActions.ts   Scourge additional-combat-phase second wave
+                                    (player reopen / AI deterministic resolve)
+  src/stores/triggerActions.ts      Star Athlete heuristic widened
+
   Batch 27:
-  src/stores/triggerActions.ts      enable_graveyard_cast opens a player window
-                                    (AI still auto-casts); graveyardCastEligible
-                                    + castFromGraveyardImpl (exile+enqueue for
-                                    instants/sorceries, tapped ETB otherwise)
-  src/stores/gameStore.ts           graveyardCast state (+snapshot), new
-                                    castFromGraveyard action (undoable)
-  src/stores/gameTurnPhases.ts      window cleared at both handoffs + discard
-  src/stores/gameDeckActions.ts     loadDeck reset
-  src/components/Board/CardContextMenu.tsx  "Cast from graveyard" item when
-                                    the window is active and the card is
-                                    eligible (jump-start vs escape/unearth label)
+  src/stores/triggerActions.ts      enable_graveyard_cast player window;
+                                    graveyardCastEligible + castFromGraveyardImpl
+  src/stores/gameStore.ts           graveyardCast state (+snapshot) and action
+  src/stores/gameTurnPhases.ts      window cleared at handoffs
+  src/components/Board/CardContextMenu.tsx  "Cast from graveyard" menu item
 
-KEY FILES TOUCHED PREVIOUS ROUNDS (batches 23-26)
-────────────────────────────────────────────────
   Batch 26:
   src/components/Board/triggerUtils.ts   modalChoiceCount + groupModalRuns
-                                         (pure, tested)
-  src/components/Board/ModalPicker.tsx   NEW — grouped mode picker (chips,
-                                         choose-one/two limits, Skip all)
-  src/components/Board/TriggerStack.tsx  consecutive same-source optional runs
-                                         render as one picker
-  src/stores/spellResolution.ts          AI casts modal spells by picking the
-                                         deterministic first N modes instead of
-                                         firing every mode (kicker cards still
-                                         resolve everything)
-  src/components/Board/triggerUtils.test.ts  NEW — grouping tests
-  src/stores/batchRegression.test.ts     AI single-mode-pick test
-  src/components/Board/triggerUtils.ts   modalChoiceCount + groupModalRuns
-                                         (pure, tested)
-  src/components/Board/ModalPicker.tsx   NEW — grouped mode picker (chips,
-                                         choose-one/two limits, Skip all)
-  src/components/Board/TriggerStack.tsx  consecutive same-source optional runs
-                                         render as one picker
-  src/stores/spellResolution.ts          AI casts modal spells by picking the
-                                         deterministic first N modes instead of
-                                         firing every mode (kicker cards still
-                                         resolve everything)
-  src/components/Board/triggerUtils.test.ts  NEW — 6 grouping tests
-  src/stores/batchRegression.test.ts     AI single-mode-pick test
+  src/components/Board/ModalPicker.tsx   grouped mode picker
+  src/components/Board/TriggerStack.tsx  renders grouped runs as one decision
+  src/stores/spellResolution.ts     AI picks first N modes of its modals
 
-KEY FILES TOUCHED PREVIOUS ROUNDS (batches 23-25)
-────────────────────────────────────────────────
   Batch 25:
-  server/src/rooms/combat.ts        CombatResolution.sacrificeIds / lifeLoss,
-                                    Ring L3+L4 computation (pure, tested)
-  server/src/rooms/GameRoom.ts      L2 attack loot on declareAttackers
-                                    (drawCards + new discardOne), L3 graveyard
-                                    application, L4 life-loss application
-  src/pages/MultiplayerBoardPage.tsx  Poison group (+/-, lose-at-10 display),
-                                    Ring button + per-panel Ring/poison status,
-                                    forced-attack + parity-ban banners,
-                                    Curses group (force attack, odd/even ban)
-  server/src/rooms/GameRoom.test.ts 5 integration tests: ringTempt bearer pick,
-                                    L2 loot hand-count invariant, poison SBA,
-                                    forced-attack floor, parity-ban sync
-  server/src/rooms/combat.test.ts   L3/L4 unit tests incl. the L1-ladder
-                                    interaction with illegal blockers
-  src/types/card.ts                 BoardCard.suspendTimeCounters
-  src/stores/triggerActions.ts      suspended_sentence self-exile,
-                                    processSuspendedCards (upkeep tick +
-                                    deterministic free-recast)
-  src/stores/gameTurnPhases.ts      player-upkeep suspend tick
-  src/stores/gameOpponentAI.ts      AI-upkeep suspend tick
-  src/stores/gamePersistence.ts     SCHEMA_VERSION wrapper + legacy fallback
-  src/stores/gameRules.ts           advanceTurnState removed
-  protocol/src/combat.ts            canBlock context: attackerIsRingBearer /
-                                    parityBan (+ power / mana-value inputs)
-  protocol/src/index.ts             RoomPlayerInfo poison/ring fields;
-                                    ringTempt/addPoison/setForceAttack/
-                                    setParityBan actions
-  server/src/rooms/schema/GameState.ts  PlayerState poison+ring, room-level
-                                    forceAttack + parityBan state
-  server/src/rooms/GameRoom.ts      new action handlers, forced-attack floor,
-                                    combat options wiring, poison lose-at-10
-  server/src/rooms/combat.ts        CombatOptions (ringBearerIds/parityBan),
-                                    mana-value derivation
-  src/multiplayer/roomState.ts      snapshot exposes the new fields
-  vite.config.ts                    vitest/config defineConfig + dist exclude
+  server/src/rooms/combat.ts        Ring L3 sacrificeIds / L4 lifeLoss
+  server/src/rooms/GameRoom.ts      L2 attack loot; L3/L4 application
+  src/pages/MultiplayerBoardPage.tsx  poison/Ring UI, banners, Curses group
 
-KEY FILES TOUCHED PREVIOUS ROUNDS
-─────────────────────────────────
+  Batch 24:
+  src/stores/triggerActions.ts      suspend engine (processSuspendedCards)
+  src/stores/gamePersistence.ts     SCHEMA_VERSION wrapper
+  protocol/src/combat.ts            canBlock ring-L1/parity contexts
+  server/src/rooms/*                parity schema, handlers, enforcement
+
   Batch 23:
-  scripts/parse-card-rules.mjs      become_copy / copy_ability /
-                                    graveyard_intake_mill / monstrosity /
-                                    untap_self patterns, attach_target broaden,
-                                    leading-cost isActivated, residue filter,
-                                    exported parseCard + main guard
-  scripts/reparse-rules.mjs         NEW — offline rules regeneration
-  src/types/card.ts                 BoardCard.cloneOriginal
-  src/stores/gameStore.ts           graveyardIntake, lastResolvedAbility state
-  src/stores/gameRules.ts           graveyardIntakeDelta/withGraveyardIntake,
-                                    takeSnapshot intake
-  src/stores/triggerActions.ts      become_copy, copy_ability,
-                                    graveyard_intake_mill, monstrosity,
-                                    untap_self resolvers; x_pump experience/
-                                    team scope; lastResolvedAbility snapshot;
-                                    intake-counting mills
-  src/stores/gameTurnPhases.ts      clone restore in clearTurnBoosts (exported),
-                                    intake reset at handoff, rad/discard intake
-  src/stores/gameCardMovement.ts    moveCard intake chokepoint
-  src/stores/gameStateBasedActions.ts SBA-death intake chokepoint
-  src/components/Board/contextMenuActions.ts generic targeted-activation path
-  src/components/Board/triggerUtils.ts   labels for the new kinds
-  src/stores/spellResolution.ts     AI autoTarget become_copy ranking
-  src/stores/tailAbilities.test.ts  NEW — 11 engine tests
-  scripts/parse-card-rules.test.mjs NEW — parser tests
-  protocol/src/combat.ts            attackTax broaden, blockTax, hand-gate,
-                                    forestwalk, rad gate (canAttack/canBlock)
-  src/stores/gameCombatActions.ts   block tax, Ring L1–L4, parity ban,
-                                    Scourge, Kefnet-on-blocks, force-attack toast
-  src/stores/opponentAI.ts          mustAttack, Frodo must-block, parity/ring/
-                                    rad/hand-aware blocking
-  src/stores/gameOpponentAI.ts      forceAttack threading, AI Ring L2
-  src/stores/gameStore.ts           forceAttack, parityBan, scourgeUntapTurn,
-                                    ring, poisonCounters, keywordsStrippedUntil
-  src/types/card.ts                 manifestOriginal, originalType,
-                                    questCounters, reanimateOnDeathTurn,
-                                    exiledWithMV/exiledCardOwner
-  src/stores/triggerActions.ts      ~30 new effect-kind resolvers
-  src/stores/gameTurnPhases.ts      originalType revert at cleanup
-  scripts/parse-card-rules.mjs      COMPOUND_PATTERNS merge pass, ~40 new
-                                    patterns, param extraction, isStatic tweak
-  docs/AUDIT-2026-08.md             batches 20–21 documented
+  scripts/parse-card-rules.mjs      become_copy/copy_ability/
+                                    graveyard_intake_mill/monstrosity/
+                                    untap_self patterns, residue filter
+  scripts/reparse-rules.mjs         offline rules regeneration
+  src/stores/triggerActions.ts      clone overlay, ability copy, intake mill,
+                                    monstrosity, untap_self resolvers
