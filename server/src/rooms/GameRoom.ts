@@ -235,6 +235,13 @@ export class GameRoom extends Room<{ state: GameState }> {
         return
       }
       if (valid.length === 0) return
+      // Ring L2: "Whenever your Ring-bearer attacks, draw a card, then discard
+      // a card."
+      if (player.ringTemptations >= 2 && valid.includes(player.ringBearerCardId)) {
+        this.drawCards(player, 1)
+        this.discardOne(player)
+        this.emitEvent({ type: 'turnAnnouncement', playerId: player.id, playerName: player.name, text: `${player.name}'s Ring-bearer attacks — draw and discard` })
+      }
       this.state.combatActive = true
       this.state.attackers = new ArraySchema<string>(...valid)
       this.state.blockers = new ArraySchema<string>()
@@ -647,6 +654,16 @@ export class GameRoom extends Room<{ state: GameState }> {
     this.sendPrivateState(player)
   }
 
+  /** Discard the most recently drawn card (deterministic loot discard). */
+  private discardOne(player: PlayerState) {
+    const privateState = this.privateZones.get(player.playerId)
+    if (!privateState || privateState.hand.length === 0) return
+    const discarded = privateState.hand.pop()!
+    player.graveyard.push(cardToState({ ...discarded, zone: 'graveyard' as Zone, revealed: true }, 'graveyard'))
+    this.updateCounts(player)
+    this.sendPrivateState(player)
+  }
+
   private prepareOpeningHand(player: PlayerState) {
     const privateState = this.privateZones.get(player.playerId)
     if (!privateState) return
@@ -813,6 +830,13 @@ export class GameRoom extends Room<{ state: GameState }> {
         this.moveCardToZone(owner, blockerId, 'graveyard')
       }
     }
+    // Ring L3: blockers of a Ring-bearer are sacrificed at end of combat.
+    for (const blockerId of result.sacrificeIds) {
+      const owner = players.find((p) => p.battlefield.some((c) => c.id === blockerId))
+      if (owner && owner.battlefield.some((c) => c.id === blockerId)) {
+        this.moveCardToZone(owner, blockerId, 'graveyard')
+      }
+    }
     for (const hit of result.playerDamage) {
       const defender = players.find((p) => p.id === hit.defenderId)
       if (defender) {
@@ -837,6 +861,15 @@ export class GameRoom extends Room<{ state: GameState }> {
         }
         this.checkForGameEnd(defender)
       }
+    }
+
+    // Ring L4: each opponent of the bearer's controller loses 3 life (life
+    // loss, not combat damage — no commander tally).
+    for (const loss of result.lifeLoss) {
+      const victim = players.find((p) => p.id === loss.playerId)
+      if (!victim) continue
+      victim.lifeTotal = Math.max(0, victim.lifeTotal - loss.amount)
+      this.checkForGameEnd(victim)
     }
 
     state.combatActive = false

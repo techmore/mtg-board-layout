@@ -1,14 +1,14 @@
 ═══════════════════════════════════════════════════════════════════
  MTG BOARD LAYOUT — ROADMAP
- Updated: 2026-08-21 (batch 24: suspend engine, MP parity slice,
-                       regression tests, persistence versioning)
+ Updated: 2026-08-21 (batch 25: the multiplayer loop completed —
+                       effect-side Ring, UI controls, banners)
 ═══════════════════════════════════════════════════════════════════
 
 CURRENT STATE
 ─────────────
   "Other" (unimplemented) abilities : 322 → 1   (99.7% recovered)
-  Root test suite                   : 476 → 575 passing
-  Server test suite                 :  78 → 116 passing (60 in root run)
+  Root test suite                   : 476 → 585 passing
+  Server test suite                 :  78 → 121 passing (65 in root run)
   Gates                             : tsc + oxlint + vitest + build all green
   Main bundle (gzip)                : 154 KB → ~95 KB
 
@@ -122,15 +122,18 @@ SUGGESTED NEXT STEPS (post-roadmap)
   2. DONE (batch 23): Graveyard-intake chokepoint → Fraying Sanity.
   3. DONE (batch 23): Ability-instance copy engine → Abstruse Archaic.
   4. DONE (batch 23): Reconfigure/attach routing → Razorfield Ripper.
-  5. MOSTLY DONE (batch 24): Multiplayer parity — room schema now carries
-     per-player poisonCounters / ringTemptations / ringBearerCardId and
-     room-level forceAttack + parityBan; new protocol actions (ringTempt,
-     addPoison, setForceAttack, setParityBan); server combat feeds Ring-L1 +
-     parity-ban contexts into canBlock and enforces the forced-attack floor;
-     poison at ten ends the game; client snapshots expose all of it.
-     STILL OPEN: multiplayer UI controls to drive those actions, and
-     effect-side Ring L2/L3/L4 online (combat-legality is enforced;
-     draw-loot/blocker-sacrifice/drain are solo-only).
+  5. DONE (batches 24–25): Multiplayer parity — room schema carries per-player
+     poisonCounters / ringTemptations / ringBearerCardId and room-level
+     forceAttack + parityBan; protocol actions (ringTempt, addPoison,
+     setForceAttack, setParityBan); server combat feeds Ring-L1 + parity-ban
+     contexts into canBlock and enforces the forced-attack floor; poison at
+     ten ends the game; client snapshots expose all of it.
+     Batch 25 completed the loop: EFFECT-SIDE Ring online (L2 attack loot on
+     declaration via draw+discardOne; L3 blocker sacrifice + L4 drain-3
+     computed in the pure combat module and applied by GameRoom) and the
+     MULTIPLAYER UI (Ring button + level/bearer display on every player panel,
+     poison counters with ±10 SBA, force-attack/parity-ban banners for victims,
+     and a Curses group to manually drive card-driven states online).
   6. DONE (batch 24): Suspend engine — Suspended Sentence exiles itself with
      three time counters on resolve; ticks at the owner's upkeep
      (processSuspendedCards) and free-recasts (destroy+drain+re-suspend) at
@@ -154,7 +157,6 @@ BATCH 24 CLEANUPS
 
 REMAINING KNOWN GAPS (all documented, intentional)
 ──────────────────────────────────────────────────
-  - Multiplayer UI for the new mechanics (see #5) + effect-side Ring online.
   - Modal chooser UI: "Choose one —" modes auto-pick deterministically
     (toasted); player can already Resolve/Skip each mode on the stack.
   - Scourge's extra combat phase is not modeled (untap-all is).
@@ -163,8 +165,25 @@ REMAINING KNOWN GAPS (all documented, intentional)
     until-EOT window (toasted transparently).
   - Star Athlete: AI sacrifices only tokens/toughness≤2 creatures.
 
-KEY FILES TOUCHED THIS ROUND (batch 24)
+KEY FILES TOUCHED THIS ROUND (batch 25)
 ───────────────────────────────────────
+  server/src/rooms/combat.ts        CombatResolution.sacrificeIds / lifeLoss,
+                                    Ring L3+L4 computation (pure, tested)
+  server/src/rooms/GameRoom.ts      L2 attack loot on declareAttackers
+                                    (drawCards + new discardOne), L3 graveyard
+                                    application, L4 life-loss application
+  src/pages/MultiplayerBoardPage.tsx  Poison group (+/-, lose-at-10 display),
+                                    Ring button + per-panel Ring/poison status,
+                                    forced-attack + parity-ban banners,
+                                    Curses group (force attack, odd/even ban)
+  server/src/rooms/GameRoom.test.ts 5 integration tests: ringTempt bearer pick,
+                                    L2 loot hand-count invariant, poison SBA,
+                                    forced-attack floor, parity-ban sync
+  server/src/rooms/combat.test.ts   L3/L4 unit tests incl. the L1-ladder
+                                    interaction with illegal blockers
+
+KEY FILES TOUCHED PREVIOUS ROUNDS (batch 24)
+────────────────────────────────────────────
   src/types/card.ts                 BoardCard.suspendTimeCounters
   src/stores/triggerActions.ts      suspended_sentence self-exile,
                                     processSuspendedCards (upkeep tick +

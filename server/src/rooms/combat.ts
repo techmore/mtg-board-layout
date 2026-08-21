@@ -57,6 +57,10 @@ export interface CombatResolution {
   lifeGain: { ownerId: string; amount: number }[]
   /** attackerId -> assigned blocker ids (round-robin over declared attackers) */
   assignments: Record<string, string[]>
+  /** Ring L3: blockers of a Ring-bearer are sacrificed at end of combat */
+  sacrificeIds: string[]
+  /** Ring L4: each opponent loses 3 when the bearer deals combat damage to a player */
+  lifeLoss: { playerId: string; amount: number }[]
 }
 
 export function resolveCombat(
@@ -67,7 +71,7 @@ export function resolveCombat(
   attackerTeamId: string,
   options: CombatOptions = {},
 ): CombatResolution {
-  const result: CombatResolution = { cardDamage: [], deadIds: [], playerDamage: [], lifeGain: [], assignments: {} }
+  const result: CombatResolution = { cardDamage: [], deadIds: [], playerDamage: [], lifeGain: [], assignments: {}, sacrificeIds: [], lifeLoss: [] }
   const attackerIds = attackers.map((a) => a.id)
 
   // Opposing players: everyone except the attacker, and (in team modes with a
@@ -318,6 +322,27 @@ export function resolveCombat(
 
   for (const [cardId, amount] of damageTo) {
     if (amount > 0) result.cardDamage.push({ cardId, amount })
+  }
+
+  // Ring L3: "Whenever your Ring-bearer becomes blocked by a creature, that
+  // creature's controller sacrifices it at the end of combat." Only blockers
+  // that legally blocked count.
+  for (const attacker of attackers) {
+    if (!ringBearers.has(attacker.id)) continue
+    for (const blockerId of validBlockers.get(attacker.id) ?? []) {
+      if (!result.sacrificeIds.includes(blockerId)) result.sacrificeIds.push(blockerId)
+    }
+  }
+
+  // Ring L4: "Whenever your Ring-bearer deals combat damage to a player, each
+  // opponent loses 3 life." Life loss is not combat damage (no commander tally).
+  for (const attacker of attackers) {
+    if (!ringBearers.has(attacker.id)) continue
+    if (!result.playerDamage.some((hit) => hit.attackerId === attacker.id)) continue
+    for (const player of allPlayers) {
+      if (!isOpponent(player)) continue
+      result.lifeLoss.push({ playerId: player.id, amount: 3 })
+    }
   }
 
   return result

@@ -329,4 +329,90 @@ describe('GameRoom (integration)', () => {
     // The eliminated player's life stays at zero.
     expect(room.state.players.get(bobId)!.lifeTotal).toBe(0)
   })
+
+})
+
+describe('solo-mechanic parity (ring / poison / force attack)', () => {
+  function giveCreature(room: GameRoom, playerId: string, id: string, power: string) {
+    const [p, t] = power.split('/')
+    room.state.players.get(playerId)!.battlefield.push(cardToState({
+      id, scryfallId: id, name: id, imageUri: '', oracleText: '', zone: 'battlefield',
+      tapped: false, counters: 0, power: p, toughness: t, type: 'creature', typeLine: `Creature ${power}`,
+      subtypes: [], isBasicLand: false, commanderTax: 0, revealed: true,
+    }, 'battlefield'))
+  }
+
+  it('ringTempt increments the ladder and picks the strongest bearer', async () => {
+    const { room, alice, bob, aliceId } = await makeGame()
+    startAndActivate(room, alice, bob, alice)
+    giveCreature(room, aliceId, 'small', '1/1')
+    giveCreature(room, aliceId, 'big', '3/3')
+
+    dispatch(room, 'ringTempt', alice, {})
+    dispatch(room, 'ringTempt', alice, {})
+
+    const player = room.state.players.get(aliceId)!
+    expect(player.ringTemptations).toBe(2)
+    expect(player.ringBearerCardId).toBe('big')
+  })
+
+  it('Ring L2: the attacking Ring-bearer draws then discards (hand count unchanged)', async () => {
+    const { room, alice, bob, aliceId } = await makeGame()
+    startAndActivate(room, alice, bob, alice)
+    giveCreature(room, aliceId, 'bear3', '3/3')
+    dispatch(room, 'ringTempt', alice, {})
+    dispatch(room, 'ringTempt', alice, {})
+
+    const player = room.state.players.get(aliceId)!
+    const handBefore = player.handCount
+    const gyBefore = player.graveyard.length
+    dispatch(room, 'declareAttackers', alice, { attackerIds: ['bear3'] })
+
+    expect(room.state.combatActive).toBe(true)
+    expect(player.handCount).toBe(handBefore)
+    expect(player.graveyard.length).toBe(gyBefore + 1)
+  })
+
+  it('poison: ten counters lose the game, nine do not', async () => {
+    const { room, alice, bob, bobId } = await makeGame()
+    startAndActivate(room, alice, bob, alice)
+
+    dispatch(room, 'addPoison', alice, { playerId: bobId, amount: 9 })
+    expect(room.state.status).toBe('playing')
+    expect(room.state.players.get(bobId)!.poisonCounters).toBe(9)
+
+    dispatch(room, 'addPoison', alice, { playerId: bobId, amount: 1 })
+    expect(room.state.status).toBe('finished')
+  })
+
+  it('force attack: a compelled player with able creatures must declare at least one', async () => {
+    const { room, alice, bob, aliceId } = await makeGame()
+    startAndActivate(room, alice, bob, alice)
+    giveCreature(room, aliceId, 'bear3', '3/3')
+
+    // Compel the active player through their next turn.
+    dispatch(room, 'setForceAttack', bob, { victimPlayerId: aliceId, untilTurn: room.state.turn + 1 })
+    expect(room.state.forceAttackVictimId).toBe(aliceId)
+
+    // Declaring nobody is rejected while able creatures sit untapped.
+    dispatch(room, 'declareAttackers', alice, { attackerIds: [] })
+    expect(room.state.combatActive).toBe(false)
+
+    // Declaring a real attacker passes and clears the way for combat.
+    dispatch(room, 'declareAttackers', alice, { attackerIds: ['bear3'] })
+    expect(room.state.combatActive).toBe(true)
+  })
+
+  it('parity ban state syncs and is gated by turn', async () => {
+    const { room, alice, bob } = await makeGame()
+    startAndActivate(room, alice, bob, alice)
+
+    dispatch(room, 'setParityBan', alice, { parity: 'odd', untilTurn: room.state.turn })
+    expect(room.state.parityBanParity).toBe('odd')
+    expect(room.state.parityBanUntilTurn).toBe(room.state.turn)
+
+    // Invalid payloads are ignored.
+    dispatch(room, 'setParityBan', alice, { parity: 'both', untilTurn: room.state.turn })
+    expect(room.state.parityBanParity).toBe('odd')
+  })
 })
