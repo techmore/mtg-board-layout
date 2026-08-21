@@ -1,9 +1,11 @@
-import { afterEach, beforeEach, describe, expect, it } from 'vitest'
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { useGameStore } from './gameStore'
 import { primeCardRules } from './cardRulesLoader'
 import { clearTurnBoosts } from './gameTurnPhases'
 import { processSuspendedCards } from './triggerActions'
-import type { BoardCard, CardAbilityDef, ManaPool, TriggerInstance } from '../types/card'
+import { resolveAISpellAbilities } from './spellResolution'
+import { useToastStore } from './toastStore'
+import type { BoardCard, CardAbilityDef, CardRuleEntry, ManaPool, TriggerInstance } from '../types/card'
 
 const emptyManaPool = (): ManaPool => ({ W: 0, U: 0, B: 0, R: 0, G: 0, C: 0 })
 
@@ -306,5 +308,66 @@ describe('suspend engine (Suspended Sentence)', () => {
 
     expect(useGameStore.getState().cards.find((c) => c.id === 'mine')?.suspendTimeCounters).toBe(1)
     expect(useGameStore.getState().cards.find((c) => c.id === 'theirs')?.suspendTimeCounters).toBe(2)
+  })
+})
+
+describe('AI modal spells pick one mode', () => {
+  function modalRule(name: string): CardRuleEntry {
+    return {
+      cardName: name,
+      manaCost: '{1}{R}',
+      manaValue: 2,
+      typeLine: 'Instant',
+      cardType: 'instant',
+      subtypes: [],
+      keywords: [],
+      manaProduction: null,
+      entryTapRule: null,
+      conditionalEntryText: null,
+      oracleText: 'Choose one — Your creatures get +2/+0; or draw two cards.',
+      scryfallId: `sf-${name}`,
+      abilities: [
+        {
+          abilityType: 'spell',
+          triggerEvent: null,
+          triggerCondition: null,
+          isOptional: true,
+          cost: null,
+          targets: 0,
+          targetFilter: null,
+          effect: { kind: 'pump', params: { power: 2, toughness: 0, scope: 'own' } },
+        },
+        {
+          abilityType: 'spell',
+          triggerEvent: null,
+          triggerCondition: null,
+          isOptional: true,
+          cost: null,
+          targets: 0,
+          targetFilter: null,
+          effect: { kind: 'draw_cards', params: { amount: 2 } },
+        },
+      ],
+    }
+  }
+
+  it('resolves only the first mode and skips the rest', () => {
+    primeCardRules({ 'Fiery Choice': modalRule('Fiery Choice') })
+    const spell = boardCard({ id: 'ai-spell', name: 'Fiery Choice', typeLine: 'Instant', type: 'instant', zone: 'battlefield', owner: 'opponent' })
+    const aiLibraryCard = boardCard({ id: 'ai-lib', zone: 'library', owner: 'opponent', revealed: false })
+    useGameStore.setState({ cards: [spell, aiLibraryCard], opponentLifeTotal: 20 })
+    const push = vi.spyOn(useToastStore.getState(), 'push').mockImplementation(() => {})
+
+    resolveAISpellAbilities(
+      (partial) => useGameStore.setState(partial as never),
+      () => useGameStore.getState(),
+      spell,
+    )
+
+    // Exactly one mode fired (the pump — no cards drawn), the other skipped.
+    expect(useGameStore.getState().triggerStack).toHaveLength(0)
+    expect(useGameStore.getState().cards.find((c) => c.id === 'ai-lib')?.zone).toBe('library')
+    expect(push).toHaveBeenCalledWith(expect.stringContaining('chose 1 mode'), 'info')
+    push.mockRestore()
   })
 })

@@ -1,7 +1,8 @@
 import type { BoardCard, CardAbilityDef, TriggerEvent, TriggerInstance } from '../types/card'
 import type { GameState } from './gameStore'
 import { getCachedCardRules, getCardRule, hasKeyword } from './cardRulesLoader'
-import { targetsForEffect, filterMatch } from '../components/Board/triggerUtils'
+import { targetsForEffect, filterMatch, modalChoiceCount } from '../components/Board/triggerUtils'
+import { useToastStore } from './toastStore'
 
 type SetFn = (partial: GameState | Partial<GameState> | ((state: GameState) => Partial<GameState>)) => void
 
@@ -69,11 +70,24 @@ export function enqueueSpellAbilities(set: SetFn, _get: () => GameState, card: B
  */
 export function resolveAIAutoAbilities(set: SetFn, get: () => GameState, card: BoardCard, event: 'cast' | TriggerEvent) {
   const rule = getCardRule(card.name, getCachedCardRules())
-  const abilities = (rule?.abilities ?? []).filter((a) =>
+  let abilities = (rule?.abilities ?? []).filter((a) =>
     a.abilityType === 'spell'
       ? event === 'cast'
       : a.abilityType === 'triggered' && a.triggerEvent === event,
   )
+  // Modal spells ("Choose one/two —"): the AI resolves its deterministic pick
+  // instead of firing every mode. Kicker cards (all sentences optional but no
+  // choose clause) still resolve every ability.
+  const oracle = rule?.oracleText
+  const isModal = /\bchoose (one|two|three)\b/i.test(oracle ?? '')
+  if (event === 'cast' && isModal && abilities.length > 1 && abilities.every((a) => a.isOptional)) {
+    const take = Math.min(modalChoiceCount(oracle), abilities.length)
+    abilities = abilities.slice(0, take)
+    useToastStore.getState().push(
+      `${card.name}: the opponent chose ${take} mode${take > 1 ? 's' : ''}.`,
+      'info',
+    )
+  }
   for (const ability of abilities) {
     autoResolveInstance(set, get, card, ability)
   }

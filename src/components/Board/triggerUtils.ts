@@ -1,4 +1,60 @@
-import type { BoardCard } from '../../types/card'
+import type { BoardCard, TriggerInstance } from '../../types/card'
+
+/** How many modes a "Choose one/two/three —" card lets its controller pick. */
+export function modalChoiceCount(oracleText: string | undefined): number {
+  const m = oracleText?.match(/\bchoose (one|two|three)\b/i)
+  return m ? ({ one: 1, two: 2, three: 3 }[m[1].toLowerCase()] ?? 1) : 1
+}
+
+export interface ModalRun {
+  /** Trigger-instance ids in this group, in stack order. */
+  ids: string[]
+  sourceCardId: string
+  sourceCardName: string
+  /** Modes still awaiting a decision (never mid-targeting). */
+  instances: TriggerInstance[]
+  maxChoices: number
+}
+
+/**
+ * Group consecutive modal-mode instances ("Choose one/two —" spells parse as
+ * several optional abilities from the same source) so the stack can present
+ * them as one picker instead of independent Resolve/Skip rows.
+ */
+export function groupModalRuns(
+  stack: TriggerInstance[],
+  oracleTextOf: (sourceCardName: string) => string,
+): ModalRun[] {
+  const runs: ModalRun[] = []
+  let index = 0
+  while (index < stack.length - 1) {
+    const first = stack[index]
+    const second = stack[index + 1]
+    const eligible = (t: TriggerInstance) =>
+      t.ability.isOptional && t.selectedTargets === undefined
+    if (first.sourceCardId !== second.sourceCardId || !eligible(first) || !eligible(second)) {
+      index++
+      continue
+    }
+    const instances = [first, second]
+    let cursor = index + 2
+    while (cursor < stack.length) {
+      const next = stack[cursor]
+      if (next.sourceCardId !== first.sourceCardId || !eligible(next)) break
+      instances.push(next)
+      cursor++
+    }
+    runs.push({
+      ids: instances.map((t) => t.id),
+      sourceCardId: first.sourceCardId,
+      sourceCardName: first.sourceCardName,
+      instances,
+      maxChoices: Math.min(modalChoiceCount(oracleTextOf(first.sourceCardName)), instances.length),
+    })
+    index = cursor
+  }
+  return runs
+}
 
 export function targetsForEffect(kind: string, cards: BoardCard[]): BoardCard[] {
   if (kind === 'return_from_graveyard' || kind === 'cast_from_graveyard') {

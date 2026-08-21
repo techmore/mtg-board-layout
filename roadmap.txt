@@ -1,13 +1,13 @@
 ═══════════════════════════════════════════════════════════════════
  MTG BOARD LAYOUT — ROADMAP
- Updated: 2026-08-21 (batch 25: the multiplayer loop completed —
-                       effect-side Ring, UI controls, banners)
+ Updated: 2026-08-21 (batch 26: modal chooser UI + deterministic
+                       AI mode picks)
 ═══════════════════════════════════════════════════════════════════
 
 CURRENT STATE
 ─────────────
   "Other" (unimplemented) abilities : 322 → 1   (99.7% recovered)
-  Root test suite                   : 476 → 585 passing
+  Root test suite                   : 476 → 592 passing
   Server test suite                 :  78 → 121 passing (65 in root run)
   Gates                             : tsc + oxlint + vitest + build all green
   Main bundle (gzip)                : 154 KB → ~95 KB
@@ -157,16 +157,30 @@ BATCH 24 CLEANUPS
 
 REMAINING KNOWN GAPS (all documented, intentional)
 ──────────────────────────────────────────────────
-  - Modal chooser UI: "Choose one —" modes auto-pick deterministically
-    (toasted); player can already Resolve/Skip each mode on the stack.
   - Scourge's extra combat phase is not modeled (untap-all is).
   - Black Gate uses cantBeBlockedThisTurn (equivalent in solo 1v1).
   - Graveyard-cast mechanics fire immediately rather than granting a
     until-EOT window (toasted transparently).
   - Star Athlete: AI sacrifices only tokens/toughness≤2 creatures.
 
-KEY FILES TOUCHED THIS ROUND (batch 25)
+KEY FILES TOUCHED THIS ROUND (batch 26)
 ───────────────────────────────────────
+  src/components/Board/triggerUtils.ts   modalChoiceCount + groupModalRuns
+                                         (pure, tested)
+  src/components/Board/ModalPicker.tsx   NEW — grouped mode picker (chips,
+                                         choose-one/two limits, Skip all)
+  src/components/Board/TriggerStack.tsx  consecutive same-source optional runs
+                                         render as one picker
+  src/stores/spellResolution.ts          AI casts modal spells by picking the
+                                         deterministic first N modes instead of
+                                         firing every mode (kicker cards still
+                                         resolve everything)
+  src/components/Board/triggerUtils.test.ts  NEW — 6 grouping tests
+  src/stores/batchRegression.test.ts     AI single-mode-pick test
+
+KEY FILES TOUCHED PREVIOUS ROUNDS (batches 23-25)
+────────────────────────────────────────────────
+  Batch 25:
   server/src/rooms/combat.ts        CombatResolution.sacrificeIds / lifeLoss,
                                     Ring L3+L4 computation (pure, tested)
   server/src/rooms/GameRoom.ts      L2 attack loot on declareAttackers
@@ -181,9 +195,6 @@ KEY FILES TOUCHED THIS ROUND (batch 25)
                                     forced-attack floor, parity-ban sync
   server/src/rooms/combat.test.ts   L3/L4 unit tests incl. the L1-ladder
                                     interaction with illegal blockers
-
-KEY FILES TOUCHED PREVIOUS ROUNDS (batch 24)
-────────────────────────────────────────────
   src/types/card.ts                 BoardCard.suspendTimeCounters
   src/stores/triggerActions.ts      suspended_sentence self-exile,
                                     processSuspendedCards (upkeep tick +
