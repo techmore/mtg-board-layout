@@ -23,6 +23,19 @@ npm run server:start
 
 The client defaults to `ws://localhost:2567`. Set `VITE_COLYSEUS_URL` in a local `.env` file for a build-time default, or enter a hostname/IP/URL in the multiplayer screen for a runtime server. The server address is included in room invite links. See [docs/API.md](docs/API.md) for the room lifecycle, state visibility, actions, and events.
 
+### SQLite backup restore
+
+For local testing, restore a SQLite backup from a magnet link or `.torrent` file with the guarded CLI workflow:
+
+```sh
+npm run db:restore -- \
+  --source 'magnet:?xt=urn:btih:YOUR_INFO_HASH' \
+  --target "$PWD/.local/mtg.sqlite" \
+  --yes
+```
+
+It downloads into a temporary directory, validates the incoming database with `PRAGMA integrity_check`, and keeps a timestamped safety copy before replacing an existing target. Use `--dry-run` to validate without changing the target, or pass a local `.sqlite` file as `--source` to test the restore path without a torrent. See [docs/SQLITE-RESTORE.md](docs/SQLITE-RESTORE.md) for prerequisites and multi-file torrent usage.
+
 #### Production deployment
 
 - `PORT` — server port (default `2567`)
@@ -36,7 +49,7 @@ The client defaults to `ws://localhost:2567`. Set `VITE_COLYSEUS_URL` in a local
 ```sh
 npm run build
 npm run lint
-npm test          # vitest — 609 tests (rules, SBA, combat, triggers, undo, AI turns, deck import/persistence, per-deck smoke)
+npm test          # vitest — 617 tests (rules, SBA, combat, triggers, undo, AI turns, deck import/persistence, SQLite restore, per-deck smoke)
 npm --prefix server test  # vitest — 126 server tests (room lifecycle, private zones, combat, turn cleanup)
 npm audit --omit=dev
 ```

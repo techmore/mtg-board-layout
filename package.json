@@ -12,7 +12,8 @@
     "preview": "vite preview",
     "server:dev": "npm --prefix server run dev",
     "server:build": "npm --prefix server run build",
-    "server:start": "npm --prefix server run start"
+    "server:start": "npm --prefix server run start",
+    "db:restore": "node scripts/restore-sqlite-backup.mjs"
   },
   "dependencies": {
     "@colyseus/sdk": "^0.17.43",
