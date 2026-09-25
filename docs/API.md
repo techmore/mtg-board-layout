@@ -1,6 +1,6 @@
 # Multiplayer API
 
-The multiplayer implementation uses Colyseus over WebSocket. The browser connects to `VITE_COLYSEUS_URL` (default `ws://localhost:2567`) and joins the `game_room` room by its four-letter room code.
+The multiplayer implementation uses Colyseus over WebSocket. The browser connects to `VITE_COLYSEUS_URL` (default `ws://localhost:2567`) and joins the `game_room` room by its five-letter room code.
 
 The client also accepts a runtime server address. Enter a hostname, IP address, http(s) URL, or ws(s) URL in the multiplayer screen. The value is saved in local storage and included in the room invite URL, so players following the invite use the same room server. A bare host defaults to port 2567.
 
@@ -47,8 +47,8 @@ Clients send an action using its `type` as the Colyseus message name and the com
 | Action | Purpose |
 | --- | --- |
 | `ready`, `startGame` | Lobby readiness and host start |
-| `drawCards`, `playCard`, `moveCard`, `discardCard` | Private/public zone movement |
-| `declareAttackers`, `declareBlockers`, `resolveCombat` | Combat: the active player declares its own untapped creatures as attackers; each other player declares blockers (stored flat, assigned round-robin); resolution is server-authoritative with damage accumulation and keywords (flying/reach blocking, first strike/double strike order, trample overflow, lifelink, deathtouch, indestructible, vigilance), and win checks |
+| `drawCards`, `playCard`, `moveCard`, `discardCard` | Zone movement. `playCard` is required for spells and command-zone casts; generic `moveCard` can play only a land from hand, move public cards between public zones, or return a commander to command, and cannot read the library, move cards into hidden zones, or reanimate a card into the battlefield. |
+| `declareAttackers`, `declareBlockers`, `resolveCombat` | Combat: the active player declares legal creatures as attackers; each connected opposing defender must submit one blocker declaration (including an empty declaration), while teammates are excluded; the server aggregates declarations and resolves them round-robin with damage accumulation and keywords (flying/reach blocking, first strike/double strike order, trample overflow, lifelink, deathtouch, indestructible, vigilance), plus win checks |
 | `setPosition` | Updates the sender's bounded x/y seat position; Colyseus state re-broadcasts it to every room client |
 | `tapCard`, `addCounter`, `removeCounter`, `revealCard` | Card state changes |
 | `addMana`, `spendMana`, `clearManaPool`, `setLife` | Player resources |
@@ -64,12 +64,12 @@ The server validates action fields, zones, mana colors, text length, numeric ran
 
 ## Game rules enforced server-side
 
-- **Win condition**: `setLife` at or below 0 sets the room to `finished` and broadcasts `gameEnded` with the winning player and reason `life`. Drawing from an empty library broadcasts `gameEnded` with reason `library`.
+- **Win condition**: `setLife` at or below 0 sets the room to `finished` and broadcasts `gameEnded` with the winning player and reason `life`. Drawing the final library card is legal; attempting a later draw with no cards left broadcasts `gameEnded` with reason `library`.
 - **Land-drop limit**: `playCard` rejects a land from hand when the player has already played one this turn (an `error` event is sent to that client only).
 - **Commander tax**: playing from the command zone increments the card's `commanderTax` each time.
 - **Land override**: `overrideLandPlay` lets a player play a second land (moving it from hand to battlefield, incrementing the counter) and announces the turn end.
 - **Hand size**: ending a turn with more than 7 cards discards down to 7 into the public graveyard.
-- **Combat**: cards carry a `damage` field that accumulates across combats and clears on the owner's untap step; creatures die when damage reaches their toughness (or any deathtouch hit) unless indestructible. Keywords are read from the oracle text's first line.
+- **Combat**: only creatures can attack or block; attackers tap unless they have vigilance, blockers must be untapped, and the active player cannot resolve combat until every connected opposing defender has declared. Cards carry a `damage` field that accumulates across combats and clears during end-of-turn cleanup; the incoming active player's battlefield untaps at turn start. Creatures die when damage reaches their toughness (or any deathtouch hit) unless indestructible. Keywords are parsed from the full Oracle text.
 
 ## Server events
 

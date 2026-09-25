@@ -69,17 +69,5 @@ const gameServer = new Server({
 
 gameServer.define('game_room', GameRoom)
 
-async function shutdown() {
-  console.log('[MTG Server] Shutting down…')
-  try {
-    await gameServer.gracefullyShutdown()
-  } catch (err) {
-    console.error('[MTG Server] Shutdown error', err)
-  }
-  process.exit(0)
-}
-process.on('SIGINT', () => void shutdown())
-process.on('SIGTERM', () => void shutdown())
-
 gameServer.listen(PORT)
 console.log(`[MTG Server] Listening on ws://localhost:${PORT}`)

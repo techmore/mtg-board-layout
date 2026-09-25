@@ -30,6 +30,14 @@ function makeCards(opts: { library?: number; commanderPower?: string; allLands?:
   return cards
 }
 
+function makeBattlefieldCard(overrides: Partial<CardData> = {}): CardData {
+  return {
+    id: 'battlefield-card', scryfallId: 'battlefield-card', name: 'Creature', imageUri: '', oracleText: '', zone: 'battlefield',
+    tapped: false, counters: 0, damage: 0, power: '1', toughness: '1', type: 'creature', typeLine: 'Creature 1/1',
+    subtypes: [], isBasicLand: false, commanderTax: 0, revealed: true, isCommander: false, ...overrides,
+  }
+}
+
 interface RoomHarness {
   room: GameRoom
   alice: Client
@@ -86,6 +94,32 @@ function startAndActivate(room: GameRoom, host: Client, other: Client, active: C
   dispatch(room, 'startGame', host, {})
   expect(room.state.status).toBe('playing')
   room.state.activePlayerId = active.sessionId
+}
+
+interface FullTableHarness {
+  room: GameRoom
+  clients: Client[]
+}
+
+/** Create and start a four-seat table for the team and free-for-all modes. */
+async function makeFullGame(mode: '2v2' | '4ffa'): Promise<FullTableHarness> {
+  const room = new GameRoom()
+  room.presence = {
+    smembers: vi.fn().mockResolvedValue([] as string[]),
+    sadd: vi.fn().mockResolvedValue(1),
+  } as unknown as GameRoom['presence']
+  await room.onCreate({ gameMode: mode })
+
+  const clients = ['alice', 'bob', 'carol', 'dave'].map((name) => makeClient(`${name}-session`))
+  clients.forEach((client, index) => {
+    const name = ['Alice', 'Bob', 'Carol', 'Dave'][index]
+    room.onJoin(client, { playerId: name.toLowerCase(), playerName: name, deckId: `${name.toLowerCase()}-deck`, cards: makeCards() })
+  })
+  clients.slice(1).forEach((client) => dispatch(room, 'ready', client, {}))
+  dispatch(room, 'startGame', clients[0], {})
+  expect(room.state.status).toBe('playing')
+  room.state.activePlayerId = clients[0].sessionId
+  return { room, clients }
 }
 
 describe('GameRoom (integration)', () => {
@@ -152,6 +186,25 @@ describe('GameRoom (integration)', () => {
     expect(room.state.turn).toBe(3)
   })
 
+  it('clears combat damage during cleanup and untaps the incoming player', async () => {
+    const { room, alice, bob } = await makeGame()
+    startAndActivate(room, alice, bob, alice)
+    const alicePlayer = room.state.players.get(alice.sessionId)!
+    const bobPlayer = room.state.players.get(bob.sessionId)!
+    const aliceCard = makeBattlefieldCard({ id: 'alice:cleanup', tapped: true, damage: 2 })
+    const bobCard = makeBattlefieldCard({ id: 'bob:cleanup', tapped: true, damage: 1 })
+    alicePlayer.battlefield.push(cardToState(aliceCard, 'battlefield'))
+    bobPlayer.battlefield.push(cardToState(bobCard, 'battlefield'))
+
+    dispatch(room, 'endTurn', alice, {})
+
+    expect(room.state.activePlayerId).toBe(bob.sessionId)
+    expect(alicePlayer.battlefield[0]!.tapped).toBe(true)
+    expect(bobPlayer.battlefield[0]!.tapped).toBe(false)
+    expect(alicePlayer.battlefield[0]!.damage).toBe(0)
+    expect(bobPlayer.battlefield[0]!.damage).toBe(0)
+  })
+
   it('rejects library cards in playCard and moveCard (no tutoring)', async () => {
     const { room, alice, bob } = await makeGame()
     startAndActivate(room, alice, bob, alice)
@@ -170,6 +223,25 @@ describe('GameRoom (integration)', () => {
     expect(player.handCount).toBe(7)
 
     dispatch(room, 'moveCard', alice, { cardId: libraryCardId, zone: 'hand' })
+    expect(player.handCount).toBe(7)
+  })
+
+  it('does not let generic movement cast spells, reanimate cards, or bypass command-zone costs', async () => {
+    const { room, alice, bob } = await makeGame()
+    startAndActivate(room, alice, bob, alice)
+    const player = room.state.players.get(alice.sessionId)!
+    const handCard = capturedHand(alice).find((card) => card.type === 'creature')!
+    const commanderId = player.command[0]!.id
+    const graveyardCard = makeBattlefieldCard({ id: 'alice:graveyard-card', zone: 'graveyard' })
+    player.graveyard.push(cardToState(graveyardCard, 'graveyard'))
+
+    dispatch(room, 'moveCard', alice, { cardId: handCard.id, zone: 'battlefield' })
+    dispatch(room, 'moveCard', alice, { cardId: commanderId, zone: 'battlefield' })
+    dispatch(room, 'moveCard', alice, { cardId: graveyardCard.id, zone: 'battlefield' })
+
+    expect(player.battlefield.some((card) => card.id === handCard.id)).toBe(false)
+    expect(player.command.some((card) => card.id === commanderId)).toBe(true)
+    expect(player.graveyard.some((card) => card.id === graveyardCard.id)).toBe(true)
     expect(player.handCount).toBe(7)
   })
 
@@ -195,10 +267,42 @@ describe('GameRoom (integration)', () => {
     startAndActivate(room, alice, bob, alice)
     const player = room.state.players.get(alice.sessionId)!
 
-    // Opening hand leaves 1 card; the next draw empties the library.
+    // Drawing the final card is legal; the following attempted draw loses.
     expect(player.libraryCount).toBe(1)
     dispatch(room, 'drawCards', alice, { count: 1 })
+    expect(player.libraryCount).toBe(0)
+    expect(room.state.status).toBe('playing')
+    dispatch(room, 'drawCards', alice, { count: 1 })
     expect(room.state.status).toBe('finished')
+  })
+
+  it('accepts only creature attackers, taps them on declaration, and waits for blockers', async () => {
+    const { room, alice, bob } = await makeGame()
+    startAndActivate(room, alice, bob, alice)
+    const player = room.state.players.get(alice.sessionId)!
+    const artifact = makeBattlefieldCard({ id: 'alice:artifact', type: 'artifact', typeLine: 'Artifact' })
+    const creature = makeBattlefieldCard({ id: 'alice:attacker', power: '2', toughness: '2', typeLine: 'Creature 2/2' })
+    player.battlefield.push(cardToState(artifact, 'battlefield'))
+    player.battlefield.push(cardToState(creature, 'battlefield'))
+
+    dispatch(room, 'declareAttackers', alice, { attackerIds: [artifact.id] })
+    expect(room.state.combatActive).toBe(false)
+
+    dispatch(room, 'declareAttackers', alice, { attackerIds: [creature.id] })
+    expect(room.state.combatActive).toBe(true)
+    expect(player.battlefield.find((card) => card.id === creature.id)!.tapped).toBe(true)
+    dispatch(room, 'tapCard', alice, { cardId: creature.id })
+    dispatch(room, 'moveCard', alice, { cardId: creature.id, zone: 'graveyard' })
+    expect(player.battlefield.find((card) => card.id === creature.id)!.tapped).toBe(true)
+    expect(player.battlefield.some((card) => card.id === creature.id)).toBe(true)
+
+    // The active player cannot resolve until the defender explicitly declares
+    // blockers, including an empty declaration.
+    dispatch(room, 'resolveCombat', alice, {})
+    expect(room.state.combatActive).toBe(true)
+    dispatch(room, 'declareBlockers', bob, { blockerIds: [] })
+    dispatch(room, 'resolveCombat', alice, {})
+    expect(room.state.combatActive).toBe(false)
   })
 
   it('wins via 21 commander damage even while the defender has life left', async () => {
@@ -217,10 +321,72 @@ describe('GameRoom (integration)', () => {
     dispatch(room, 'declareAttackers', alice, { attackerIds: [commanderId] })
     expect(room.state.combatActive).toBe(true)
     dispatch(room, 'resolveCombat', alice, {})
+    expect(room.state.combatActive).toBe(true)
+    dispatch(room, 'declareBlockers', bob, { blockerIds: [] })
+    dispatch(room, 'resolveCombat', alice, {})
 
     expect(room.state.status).toBe('finished')
     const defender = room.state.players.get(bobId)!
     expect(defender.commanderDamage.get(commanderId)).toBeGreaterThanOrEqual(21)
+  })
+
+  it('requires each opposing 2v2 defender to declare, while ignoring teammates', async () => {
+    const { room, clients } = await makeFullGame('2v2')
+    const [alice, bob, carol, dave] = clients
+    const alicePlayer = room.state.players.get(alice.sessionId)!
+    const carolPlayer = room.state.players.get(carol.sessionId)!
+    const davePlayer = room.state.players.get(dave.sessionId)!
+    const attacker = makeBattlefieldCard({ id: 'alice:team-attacker', power: '2', toughness: '2', typeLine: 'Creature 2/2' })
+    alicePlayer.battlefield.push(cardToState(attacker, 'battlefield'))
+
+    expect(alicePlayer.teamId).toBe('team1')
+    expect(room.state.players.get(bob.sessionId)!.teamId).toBe('team1')
+    expect(carolPlayer.teamId).toBe('team2')
+    expect(davePlayer.teamId).toBe('team2')
+
+    dispatch(room, 'declareAttackers', alice, { attackerIds: [attacker.id] })
+    // Bob is a teammate, so this declaration is ignored and does not satisfy
+    // the opposing-defender gate.
+    dispatch(room, 'declareBlockers', bob, { blockerIds: [] })
+    dispatch(room, 'declareBlockers', carol, { blockerIds: [] })
+    dispatch(room, 'resolveCombat', alice, {})
+    expect(room.state.combatActive).toBe(true)
+
+    dispatch(room, 'declareBlockers', dave, { blockerIds: [] })
+    dispatch(room, 'resolveCombat', alice, {})
+    expect(room.state.combatActive).toBe(false)
+    expect(carolPlayer.lifeTotal).toBe(28)
+    expect(davePlayer.lifeTotal).toBe(28)
+  })
+
+  it('preserves blocker declarations from every defender in a 4-player free-for-all', async () => {
+    const { room, clients } = await makeFullGame('4ffa')
+    const [alice, bob, carol, dave] = clients
+    const alicePlayer = room.state.players.get(alice.sessionId)!
+    const bobPlayer = room.state.players.get(bob.sessionId)!
+    const carolPlayer = room.state.players.get(carol.sessionId)!
+    const attacker = makeBattlefieldCard({ id: 'alice:four-player-attacker', power: '4', toughness: '4', typeLine: 'Creature 4/4' })
+    const bobBlocker = makeBattlefieldCard({ id: 'bob:four-player-blocker', power: '1', toughness: '1', typeLine: 'Creature 1/1' })
+    const carolBlocker = makeBattlefieldCard({ id: 'carol:four-player-blocker', power: '1', toughness: '1', typeLine: 'Creature 1/1' })
+    alicePlayer.battlefield.push(cardToState(attacker, 'battlefield'))
+    bobPlayer.battlefield.push(cardToState(bobBlocker, 'battlefield'))
+    carolPlayer.battlefield.push(cardToState(carolBlocker, 'battlefield'))
+
+    dispatch(room, 'declareAttackers', alice, { attackerIds: [attacker.id] })
+    dispatch(room, 'resolveCombat', alice, {})
+    expect(room.state.combatActive).toBe(true)
+
+    dispatch(room, 'declareBlockers', bob, { blockerIds: [bobBlocker.id] })
+    dispatch(room, 'declareBlockers', carol, { blockerIds: [carolBlocker.id] })
+    dispatch(room, 'declareBlockers', dave, { blockerIds: [] })
+    expect([...room.state.blockers]).toEqual(expect.arrayContaining([bobBlocker.id, carolBlocker.id]))
+    expect(room.state.blockers).toHaveLength(2)
+
+    dispatch(room, 'resolveCombat', alice, {})
+    expect(room.state.combatActive).toBe(false)
+    expect(bobPlayer.graveyard.some((card) => card.id === bobBlocker.id)).toBe(true)
+    expect(carolPlayer.graveyard.some((card) => card.id === carolBlocker.id)).toBe(true)
+    expect(alicePlayer.battlefield.find((card) => card.id === attacker.id)!.damage).toBe(2)
   })
 
   it('keeps the player and private zones across an authenticated reconnect', async () => {

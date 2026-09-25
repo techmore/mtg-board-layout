@@ -5,7 +5,7 @@ import { ArraySchema } from '@colyseus/schema'
 import { registerGameRoomUtilityMessages, type GameRoomUtilityMessageContext } from './gameRoomMessages.js'
 import { resolveCombat } from './combat.js'
 import { canPayManaCost, spendManaForCost, type ManaColor, type ManaPool } from 'mtg-protocol/mana'
-import { canAttack, parsePower } from 'mtg-protocol/combat'
+import { canAttack, canBlock, parseKeywords, parsePower } from 'mtg-protocol/combat'
 import {
   OPENING_HAND_SIZE,
   VALID_MANA,
@@ -40,6 +40,8 @@ export class GameRoom extends Room<{ state: GameState }> {
   private readonly playerClients = new Map<string, Client>()
   /** playerId -> reconnect auth token, issued on first join. */
   private readonly authTokens = new Map<string, string>()
+  /** One declaration per connected opposing defender for the active combat. */
+  private readonly blockerDeclarations = new Map<string, string[]>()
 
   async generateRoomId(): Promise<string> {
     const currentIds = await this.presence.smembers(LOBBY_CHANNEL)
@@ -140,7 +142,7 @@ export class GameRoom extends Room<{ state: GameState }> {
       const player = this.requireTurnPlayer(client)
       const cardId = stringField(message, 'cardId')
       const card = player && cardId ? this.findPublicCard(player, cardId) : undefined
-      if (card) card.tapped = !card.tapped
+      if (card && !(this.state.combatActive && [...this.state.attackers].includes(card.id))) card.tapped = !card.tapped
     })
 
     this.onMessage('moveCard', (client, message) => {
@@ -150,13 +152,22 @@ export class GameRoom extends Room<{ state: GameState }> {
       if (!player || !cardId || !zone) return
       const card = this.findAnyCard(player, cardId)
       if (!card) return
-      // The generic move handler must not read or move library cards: deck
-      // manipulation is reserved for draw/search effects (a client could
-      // otherwise tutor any card into hand or the battlefield).
-      if (card.zone === 'library') return
-      // Lands moving to the battlefield still respect the one-land-per-turn
-      // rule — no bypassing it through the generic move handler.
-      if (zone === 'battlefield' && isLandCard(card) && card.zone === 'hand') {
+      if (this.state.combatActive && [...this.state.attackers].includes(cardId)) return
+      const sourceZone = card.zone as Zone
+      // Generic movement is deliberately narrower than an effect resolver:
+      // hidden zones and casting are handled by draw/discard/playCard. Public
+      // permanents can still be moved to public zones for board maintenance,
+      // but a generic move cannot reanimate a card or cast from command.
+      if (sourceZone === 'library' || zone === 'hand' || zone === 'library') return
+      if (sourceZone === 'command') return
+      if (sourceZone === 'hand' && (zone !== 'battlefield' || !isLandCard(card))) return
+      if (zone === 'battlefield' && sourceZone !== 'battlefield') return
+      if (zone === 'command' && (!card.isCommander || !['battlefield', 'graveyard', 'exile'].includes(sourceZone))) return
+      if (sourceZone === zone) return
+
+      // Lands moving from hand to the battlefield still respect the one-land-
+      // per-turn rule — no bypassing it through the generic move handler.
+      if (zone === 'battlefield' && sourceZone === 'hand') {
         if (player.landPlaysThisTurn >= 1) return
         player.landPlaysThisTurn++
       }
@@ -216,18 +227,24 @@ export class GameRoom extends Room<{ state: GameState }> {
       if (this.state.combatActive) return
       const ids: string[] = Array.isArray(message?.attackerIds) ? (message.attackerIds as unknown[]).filter((id): id is string => typeof id === 'string') : []
       const battlefield = new Set(player.battlefield.map((c) => c.id))
-      // Dedupe, and allow tapped creatures with vigilance to attack. Creatures
-      // with plain "can't attack" restrictions are ineligible.
+      // Only creatures can attack. Dedupe, allow tapped creatures with
+      // vigilance, and reject creatures with explicit attack restrictions.
       const valid = [...new Set(ids)].filter((id: string) => {
         if (!battlefield.has(id)) return false
         const card = player.battlefield.find((c) => c.id === id)
         if (!card) return false
-        if (card.type === 'creature' && !canAttack(card, player.battlefield)) return false
-        return !card.tapped || /\bvigilance\b/i.test(card.oracleText)
+        if (card.type !== 'creature') return false
+        if (!canAttack(card, player.battlefield)) return false
+        return !card.tapped || parseKeywords(card.oracleText).has('vigilance')
       })
       if (valid.length === 0) return
+      for (const id of valid) {
+        const card = player.battlefield.find((candidate) => candidate.id === id)
+        if (card && !parseKeywords(card.oracleText).has('vigilance')) card.tapped = true
+      }
       this.state.combatActive = true
       this.state.attackers = new ArraySchema<string>(...valid)
+      this.blockerDeclarations.clear()
       this.state.blockers = new ArraySchema<string>()
       this.emitEvent({ type: 'turnAnnouncement', playerId: player.id, playerName: player.name, text: `${player.name} attacks with ${valid.length} creature(s)` })
     })
@@ -241,18 +258,22 @@ export class GameRoom extends Room<{ state: GameState }> {
       if (!attacker) return
       if (attacker.teamId !== '' && player.teamId === attacker.teamId) return
       const ids: string[] = Array.isArray(message?.blockerIds) ? (message.blockerIds as unknown[]).filter((id): id is string => typeof id === 'string') : []
-      const battlefield = new Set(player.battlefield.map((c) => c.id))
-      // Tapped creatures can block (only attackers need to be untapped).
-      const valid = [...new Set(ids)].filter((id: string) => battlefield.has(id))
-      // Blockers are stored flat; resolveCombat assigns them round-robin to the
-      // declared attackers in declaration order.
-      this.state.blockers = new ArraySchema<string>(...valid)
+      const valid = [...new Set(ids)].filter((id: string) => {
+        const card = player.battlefield.find((candidate) => candidate.id === id)
+        return Boolean(card && card.type === 'creature' && !card.tapped && canBlock(card, player.battlefield))
+      })
+      // Store declarations by defender, then expose a deterministic aggregate
+      // for clients and the pure combat resolver. An empty list is meaningful:
+      // it declares that this defender has no blockers.
+      this.blockerDeclarations.set(player.id, valid)
+      this.rebuildBlockerState()
       this.emitEvent({ type: 'turnAnnouncement', playerId: player.id, playerName: player.name, text: `${player.name} declares ${valid.length} blocker(s)` })
     })
 
     this.onMessage('resolveCombat', (client) => {
       const player = this.getPlayer(client)
-      if (!player || !this.state.combatActive) return
+      if (!player || !this.state.combatActive || player.id !== this.state.activePlayerId) return
+      if (!this.allBlockersDeclared()) return
       this.resolveCombat()
     })
 
@@ -398,6 +419,7 @@ export class GameRoom extends Room<{ state: GameState }> {
     if (!player) return
     player.connected = false
     player.ready = false
+    this.blockerDeclarations.delete(player.id)
     if (this.state.status === 'waiting') {
       this.state.players.delete(client.sessionId)
       this.privateZones.delete(player.playerId)
@@ -410,20 +432,29 @@ export class GameRoom extends Room<{ state: GameState }> {
     // turn so the game keeps moving; they can still rejoin later.
     if (this.state.status === 'playing' && this.state.activePlayerId === player.id) {
       this.autoSkipTurn(player)
+    } else if (this.state.status === 'playing' && this.state.combatActive) {
+      this.rebuildBlockerState()
     }
   }
 
   /** Advance past a player whose turn can no longer be played (disconnected). */
   private autoSkipTurn(player: PlayerState) {
-    player.battlefield.forEach((card) => { card.tapped = false; card.damage = 0 })
+    this.clearTurnDamage()
     this.clearMana(player)
-    this.state.combatActive = false
-    this.state.attackers = new ArraySchema<string>()
-    this.state.blockers = new ArraySchema<string>()
-    const players = this.connectedPlayers().sort((a, b) => a.turnOrder - b.turnOrder)
+    player.landPlaysThisTurn = 0
+    this.clearCombatState()
+    const players = [...this.state.players.values()].sort((a, b) => a.turnOrder - b.turnOrder)
     const index = players.findIndex((candidate) => candidate.id === player.id)
-    const next = players[(index + 1) % players.length]
+    let next: PlayerState | undefined
+    for (let offset = 1; offset <= players.length; offset++) {
+      const candidate = players[(Math.max(index, -1) + offset) % players.length]
+      if (candidate?.connected) {
+        next = candidate
+        break
+      }
+    }
     if (!next) return
+    this.beginTurn(next)
     this.state.activePlayerId = next.id
     this.state.turn++
     this.emitEvent({ type: 'turnChanged', playerId: next.id, turnNumber: this.state.turn })
@@ -434,6 +465,7 @@ export class GameRoom extends Room<{ state: GameState }> {
     this.privateZones.clear()
     this.playerClients.clear()
     this.authTokens.clear()
+    this.blockerDeclarations.clear()
   }
 
   private getPlayer(client: Client): PlayerState | undefined {
@@ -449,6 +481,47 @@ export class GameRoom extends Room<{ state: GameState }> {
     const players: PlayerState[] = []
     this.state.players.forEach((player) => { if (player.connected) players.push(player) })
     return players
+  }
+
+  private eligibleBlockers(): PlayerState[] {
+    const attacker = this.state.players.get(this.state.activePlayerId)
+    if (!attacker) return []
+    return this.connectedPlayers()
+      .filter((player) => player.id !== attacker.id && (attacker.teamId === '' || player.teamId !== attacker.teamId))
+      .sort((a, b) => a.turnOrder - b.turnOrder)
+  }
+
+  private rebuildBlockerState() {
+    if (!this.state.combatActive) return
+    const ids = this.eligibleBlockers().flatMap((player) => this.blockerDeclarations.get(player.id) ?? [])
+    this.state.blockers = new ArraySchema<string>(...new Set(ids))
+  }
+
+  private allBlockersDeclared(): boolean {
+    return this.eligibleBlockers().every((player) => this.blockerDeclarations.has(player.id))
+  }
+
+  private clearCombatState() {
+    this.state.combatActive = false
+    this.state.attackers = new ArraySchema<string>()
+    this.state.blockers = new ArraySchema<string>()
+    this.blockerDeclarations.clear()
+  }
+
+  private clearTurnDamage() {
+    this.state.players.forEach((player) => {
+      player.battlefield.forEach((card) => { card.damage = 0 })
+    })
+  }
+
+  private beginTurn(player: PlayerState) {
+    player.battlefield.forEach((card) => { card.tapped = false })
+    player.landPlaysThisTurn = 0
+    this.clearMana(player)
+  }
+
+  private isOpponent(player: PlayerState, candidate: PlayerState): boolean {
+    return candidate.id !== player.id && (player.teamId === '' || candidate.teamId !== player.teamId)
   }
 
   private findPlayerByPlayerId(playerId: string): PlayerState | undefined {
@@ -545,22 +618,23 @@ export class GameRoom extends Room<{ state: GameState }> {
     }
   }
 
-  private drawCards(player: PlayerState, count: number) {
+  private drawCards(player: PlayerState, count: number, checkDeckOut = true) {
     const privateState = this.privateZones.get(player.playerId)
     if (!privateState) return
-    for (let i = 0; i < count && privateState.library.length > 0; i++) {
+    let drawn = 0
+    for (; drawn < count && privateState.library.length > 0; drawn++) {
       privateState.hand.push({ ...privateState.library.pop()!, zone: 'hand', revealed: false })
     }
     this.updateCounts(player)
     this.sendPrivateState(player)
 
-    // Deck-out: drawing from an empty library loses the game.
-    if (count > 0 && privateState.library.length === 0 && this.state.status === 'playing') {
+    // Deck-out occurs only when a draw was actually attempted with no card
+    // available. Drawing the final card is legal; the next attempted draw is
+    // the loss.
+    if (checkDeckOut && count > drawn && this.state.status === 'playing') {
       this.state.status = 'finished'
-      // Winners are the opponents (never the drawer's own 2v2 teammate);
-      // pick the first by turn order.
       const winners = this.connectedPlayers()
-        .filter((candidate) => candidate.id !== player.id && candidate.teamId !== player.teamId)
+        .filter((candidate) => this.isOpponent(player, candidate))
         .sort((a, b) => a.turnOrder - b.turnOrder)
       this.emitEvent({ type: 'gameEnded', winnerId: winners[0]?.id, reason: 'library' })
     }
@@ -583,7 +657,7 @@ export class GameRoom extends Room<{ state: GameState }> {
     if (!privateState) return
     privateState.library = shuffleArray([...privateState.library, ...privateState.hand])
     privateState.hand = []
-    this.drawCards(player, OPENING_HAND_SIZE)
+    this.drawCards(player, OPENING_HAND_SIZE, false)
   }
 
   private updateCounts(player: PlayerState) {
@@ -656,7 +730,7 @@ export class GameRoom extends Room<{ state: GameState }> {
     if (this.state.status !== 'playing' || eliminated.lifeTotal > 0) return
     this.state.status = 'finished'
     const winners = this.connectedPlayers()
-      .filter((candidate) => candidate.id !== eliminated.id && candidate.teamId !== eliminated.teamId)
+      .filter((candidate) => this.isOpponent(eliminated, candidate))
       .sort((a, b) => a.turnOrder - b.turnOrder)
     this.emitEvent({ type: 'gameEnded', winnerId: winners[0]?.id, reason: 'life' })
   }
@@ -676,6 +750,7 @@ export class GameRoom extends Room<{ state: GameState }> {
     const attackers = players.flatMap((p) =>
       p.battlefield.filter((c) => attackerIds.includes(c.id)).map((c) => ({
         id: c.id,
+        type: c.type,
         typeLine: c.typeLine,
         power: c.power,
         toughness: c.toughness,
@@ -697,6 +772,7 @@ export class GameRoom extends Room<{ state: GameState }> {
         teamId: p.teamId,
         battlefield: p.battlefield.map((c) => ({
           id: c.id,
+          type: c.type,
           typeLine: c.typeLine,
           power: c.power,
           toughness: c.toughness,
@@ -750,9 +826,7 @@ export class GameRoom extends Room<{ state: GameState }> {
           if (total >= 21 && this.state.status === 'playing') {
             this.state.status = 'finished'
             this.emitEvent({ type: 'gameEnded', winnerId: attackerOwner.id, reason: 'commanderDamage' })
-            this.state.combatActive = false
-            this.state.attackers = new ArraySchema<string>()
-            this.state.blockers = new ArraySchema<string>()
+            this.clearCombatState()
             return
           }
         }
@@ -760,9 +834,7 @@ export class GameRoom extends Room<{ state: GameState }> {
       }
     }
 
-    state.combatActive = false
-    state.attackers = new ArraySchema<string>()
-    state.blockers = new ArraySchema<string>()
+    this.clearCombatState()
     this.emitEvent({ type: 'turnAnnouncement', playerId: attackerIds[0] ?? '', playerName: '', text: 'Combat resolved' })
   }
 
@@ -771,16 +843,17 @@ export class GameRoom extends Room<{ state: GameState }> {
     if (!player) return
     // Ending the turn mid-combat would leave combatActive stuck forever.
     if (this.state.combatActive) return
-    player.battlefield.forEach((card) => { card.tapped = false; card.damage = 0 })
     player.landPlaysThisTurn = 0
     this.clearMana(player)
     this.drawCards(player, 1)
     this.discardDownToSeven(player)
     if (this.state.status !== 'playing') return
+    this.clearTurnDamage()
     const players = this.connectedPlayers().sort((a, b) => a.turnOrder - b.turnOrder)
     const index = players.findIndex((candidate) => candidate.id === player.id)
     const next = players[(index + 1) % players.length]
     if (!next) return
+    this.beginTurn(next)
     this.state.activePlayerId = next.id
     this.state.turn++
     this.emitEvent({ type: 'turnChanged', playerId: next.id, turnNumber: this.state.turn })

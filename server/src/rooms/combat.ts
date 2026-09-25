@@ -15,6 +15,8 @@ import { canBlock, computeStaticPump, getStaticKeywords, parseKeywords, parsePow
 
 export interface Combatant {
   id: string
+  /** Card type is optional for compatibility with the pure-math fixtures. */
+  type?: string
   typeLine: string
   power?: string
   toughness?: string
@@ -66,10 +68,10 @@ export function resolveCombat(
   // combatant's effective P/T, matching the client's combat math.
   const allBattlefield = allPlayers.flatMap((p) => p.battlefield)
   const pumpSources = allBattlefield.map((c) => ({
-    id: c.id, name: '', typeLine: c.typeLine, oracleText: c.oracleText, ownerId: c.ownerId, type: 'creature',
+    id: c.id, name: '', typeLine: c.typeLine, oracleText: c.oracleText, ownerId: c.ownerId, type: c.type ?? 'creature',
     enchantsCardId: c.enchantsCardId,
   }))
-  const pumpCard = (c: Combatant) => ({ id: c.id, typeLine: c.typeLine, ownerId: c.ownerId, type: 'creature' as const })
+  const pumpCard = (c: Combatant) => ({ id: c.id, typeLine: c.typeLine, ownerId: c.ownerId, type: c.type ?? 'creature' })
   const effectivePower = (c: Combatant) => parsePower(c) + computeStaticPump(pumpSources, pumpCard(c)).power
   const effectiveToughness = (c: Combatant) => parseToughness(c) + computeStaticPump(pumpSources, pumpCard(c)).toughness
 
@@ -101,6 +103,10 @@ export function resolveCombat(
     const valid = (assigned[attackerIds.indexOf(attacker.id)] ?? []).filter((blockerId) => {
       const blocker = findCard(blockerId)
       if (!blocker) return false
+      // GameRoom enforces this before resolution as well. Keeping the check in
+      // the pure resolver prevents a malformed fixture or future caller from
+      // turning an artifact/enchantment into a blocker.
+      if (blocker.type !== undefined && blocker.type !== 'creature') return false
       if ((attacker as unknown as { cantBeBlockedThisTurn?: boolean }).cantBeBlockedThisTurn) return false
       if (!canBlock(blocker, allBattlefield)) return false
       // Skulk: can't be blocked by creatures with greater power.
