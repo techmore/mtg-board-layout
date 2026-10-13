@@ -126,7 +126,14 @@ function assertSaneState(label: string) {
   const state = useGameStore.getState()
   expect(Number.isFinite(state.lifeTotal), `${label}: player life NaN\n${nanStack ?? ''}`).toBe(true)
   expect(Number.isFinite(state.opponentLifeTotal), `${label}: opponent life NaN\n${nanStack ?? ''}`).toBe(true)
-  expect(state.triggerStack.length, `${label}: trigger stack backed up`).toBeLessThan(20)
+  expect(state.triggerStack.length, `${label}: trigger stack backed up: ${describeStack(state)}`).toBeLessThan(20)
+}
+
+function describeStack(state: ReturnType<typeof useGameStore.getState>): string {
+  return state.triggerStack.slice(0, 8).map((t) => {
+    const src = state.cards.find((c) => c.id === t.sourceCardId)
+    return `${src?.name ?? t.sourceCardName}/${(src?.owner ?? 'player')}${t.ability.targets > 0 ? ` (targets ${t.selectedTargets?.length ?? 0}/${t.ability.targets})` : ''}:${t.ability.effect.kind}`
+  }).join(' | ')
 }
 
 /** Play like a real person: resolve/cancel the player's pending triggers. */

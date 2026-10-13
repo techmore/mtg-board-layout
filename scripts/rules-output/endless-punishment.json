@@ -392,10 +392,8 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "other",
-          "params": {
-            "description": "When the last is removed, you may cast it without paying its mana cost"
-          }
+          "kind": "static_noop",
+          "params": {}
         }
       }
     ],

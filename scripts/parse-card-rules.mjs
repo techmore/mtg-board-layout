@@ -613,6 +613,10 @@ const EFFECT_PATTERNS = [
   // "Activate only if you have N or more life" (Bilbo) — gated in the activated
   // menu.
   { kind: 'static_noop', regex: /\bactivate only if you have\b/i },
+  // Suspend recast ("When the last is removed, you may cast it without paying
+  // its mana cost") — implemented mechanically by processSuspendedCards; the
+  // residual parsed trigger would only toast.
+  { kind: 'static_noop', regex: /\bwhen the last is removed, you may cast it without paying\b/i },
   // "This .* can't be sacrificed" / "Mana abilities can't be copied/targeted".
   { kind: 'static_noop', regex: /\bcan't be sacrificed\b/i },
   { kind: 'static_noop', regex: /\bmana abilities can't be (copied|targeted)\b/i },

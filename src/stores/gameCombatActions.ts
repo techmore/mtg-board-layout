@@ -264,6 +264,14 @@ export function createCombatActions(set: SetFn, get: () => GameState): Pick<Game
         const attacker = current.cards.find((c) => c.id === pair.attacker.id)
         if (!attacker || attacker.zone !== 'battlefield') return
         const power = powerOf(attacker, current.cards)
+        if (!Number.isFinite(power)) {
+          console.log('NAN POWER DEBUG:', JSON.stringify({
+            name: attacker.name, typeLine: attacker.typeLine, type: attacker.type,
+            powerBoost: attacker.powerBoost, toughnessBoost: attacker.toughnessBoost,
+            counters: attacker.counters, minusCounters: attacker.minusCounters,
+            keywordBoosts: attacker.keywordBoosts, oracle: (attacker.oracleText ?? '').slice(0, 120),
+          }))
+        }
         const isOpponentAttacker = (attacker.owner ?? 'player') === 'opponent'
         const attackerLifelink = hasKeyword(attacker, 'lifelink', get().cards)
         const attackerTrample = hasKeyword(attacker, 'trample', get().cards)
