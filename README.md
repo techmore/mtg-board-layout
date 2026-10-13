@@ -23,6 +23,19 @@ npm run server:start
 
 The client defaults to `ws://localhost:2567`. Set `VITE_COLYSEUS_URL` in a local `.env` file for a build-time default, or enter a hostname/IP/URL in the multiplayer screen for a runtime server. The server address is included in room invite links. See [docs/API.md](docs/API.md) for the room lifecycle, state visibility, actions, and events.
 
+### SQLite backup restore
+
+For local testing, restore a SQLite backup from a magnet link or `.torrent` file with the guarded CLI workflow:
+
+```sh
+npm run db:restore -- \
+  --source 'magnet:?xt=urn:btih:YOUR_INFO_HASH' \
+  --target "$PWD/.local/mtg.sqlite" \
+  --yes
+```
+
+It downloads into a temporary directory, validates the incoming database with `PRAGMA integrity_check`, and keeps a timestamped safety copy before replacing an existing target. Use `--dry-run` to validate without changing the target, or pass a local `.sqlite` file as `--source` to test the restore path without a torrent. See [docs/SQLITE-RESTORE.md](docs/SQLITE-RESTORE.md) for prerequisites and multi-file torrent usage.
+
 #### Production deployment
 
 - `PORT` — server port (default `2567`)
@@ -36,7 +49,8 @@ The client defaults to `ws://localhost:2567`. Set `VITE_COLYSEUS_URL` in a local
 ```sh
 npm run build
 npm run lint
-npm test          # vitest — 435 tests (rules, SBA, combat, triggers, undo, AI turns, server combat, deck import/persistence, per-deck smoke)
+npm test          # vitest — 617 tests (rules, SBA, combat, triggers, undo, AI turns, deck import/persistence, SQLite restore, per-deck smoke)
+npm --prefix server test  # vitest — 126 server tests (room lifecycle, private zones, combat, turn cleanup)
 npm audit --omit=dev
 ```
 
@@ -53,7 +67,7 @@ npm audit --omit=dev
 - **Camera widget**: Draggable, resizable, croppable video preview — persisted position/size in localStorage
 - **Broadcast window**: OBS-ready public board popup (hand omitted, 16:9)
 - **Multiplayer rooms**: Colyseus-backed 1v1, 2v2, and four-player free-for-all rooms with server-authoritative turns and private hands
-- **Multiplayer combat**: Server-authoritative with damage accumulation (clears on untap), SBA deaths, and keywords (flying/reach blocking, first strike/double strike order, trample overflow, lifelink, deathtouch, indestructible, vigilance); cast from the command zone with commander tax; hand-size discard and deck-out loss; rematch button on game over
+- **Multiplayer combat**: Server-authoritative creature-only declarations with per-defender blocker gates, damage cleanup at turn transition, SBA deaths, and keywords (flying/reach blocking, first strike/double strike order, trample overflow, lifelink, deathtouch, indestructible, vigilance); cast from the command zone with commander tax; hand-size discard and deck-out loss; rematch button on game over
 - **Commander damage**: 21 points of commander damage (trample counted) loses the game; tracked per commander in the card inspector
 - **Turn timers**: Per-player accumulated turn time in solo and multiplayer; timers freeze when the game ends
 - **Custom backgrounds**: Upload, select, delete — stored as data URLs in localStorage
@@ -90,5 +104,5 @@ The browser button controls the public-output window and shows when it is active
 ## Known Issues
 
 - Backgrounds stored as data URLs in localStorage (~5MB limit)
-- Room codes (5 letters) are shareable invite codes; reconnect is protected by a server-issued auth token, but there is no per-IP rate limiting on room creation/join — add reverse-proxy rate limits before a very public deployment
+- Room codes (5 letters) are shareable invite codes; reconnect is protected by a server-issued auth token and the server limits connection attempts per IP, but a public deployment should still add reverse-proxy rate limits around room creation/join
 - Full priority system — partial: players get response windows when the AI casts spells (play an instant or pass); formal pass-priority rounds in every phase, response prompts for AI attacks, and multiplayer priority sync are not yet modeled.

@@ -118,7 +118,8 @@ export default function MultiplayerBoardPage() {
     ? state.players.filter((p) => p.teamId === winner.teamId).map((p) => p.name).join(' & ')
     : undefined
   const combatActive = state.combatActive && !finished
-  const opponentAttacking = combatActive && state.attackers.length > 0 && !isMyTurn
+  const activePlayer = state.players.find((player) => player.id === state.activePlayerId)
+  const opponentAttacking = combatActive && state.attackers.length > 0 && !isMyTurn && Boolean(activePlayer && (activePlayer.teamId === '' || activePlayer.teamId !== me.teamId))
   const myBlockedIds = state.blockers
   const adjustLife = (amount: number) => sendAction({ type: 'setLife', value: me.lifeTotal + amount })
   const moveSeat = (x: number, y: number) => sendAction({ type: 'setPosition', x: me.positionX + x, y: me.positionY + y })
@@ -233,7 +234,7 @@ export default function MultiplayerBoardPage() {
           </div>
         )}
         <CardRow
-          cards={me.battlefield}
+          cards={combatMode === 'none' ? me.battlefield : me.battlefield.filter((card) => card.type === 'creature')}
           empty="No permanents yet"
           onCard={(card) => {
             if (combatMode === 'attack' || combatMode === 'block') toggleCombatSelection(card.id)
@@ -376,13 +377,12 @@ export default function MultiplayerBoardPage() {
                 setCombatMode('none')
                 setCombatSelection([])
               }}
-              disabled={combatSelection.length === 0}
               style={primaryButtonStyle}
             >
-              Declare Blockers ({combatSelection.length})
+              {combatSelection.length === 0 ? 'Declare No Blockers' : `Declare Blockers (${combatSelection.length})`}
             </button>
           )}
-          {combatActive && (
+          {combatActive && isMyTurn && (
             <button
               onClick={() => { setCombatMode('none'); setCombatSelection([]); sendAction({ type: 'resolveCombat' }) }}
               style={smallButtonStyle}
