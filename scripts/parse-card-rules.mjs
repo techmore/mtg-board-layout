@@ -1031,7 +1031,22 @@ function parseAbilities(oracleText, typeLine) {
     return abilities
   }
 
-  const sentences = text.split(/[.;\n]/).map(s => s.trim()).filter(Boolean)
+  // Fabricate and Evolve carry their whole rules in reminder text, and that text contains full stops, so splitting
+  // on "." leaves an unclosed bracket and the reminder gets parsed as a real ability (with a junk condition such as
+  // "Flying"). Emit the correct trigger for each keyword explicitly and remove its reminder text before splitting.
+  const keywordTriggers = []
+  const fabricate = oracleText.match(/^Fabricate (\d+)/mi)
+  if (fabricate) {
+    keywordTriggers.push(mkAbility('triggered', { kind: 'create_token', params: { counterKind: '+1/+1', amount: Number(fabricate[1]), scope: 'all', tokenPower: 1, tokenToughness: 1, tokenName: 'artifact creature' } }, {
+      triggerEvent: 'etb', triggerCondition: 'this creature enters',
+    }))
+  }
+  if (/^Evolve\b/mi.test(oracleText)) {
+    keywordTriggers.push(mkAbility('triggered', { kind: 'put_counter', params: { counterKind: '+1/+1', amount: 1, scope: 'own' } }, {
+      triggerEvent: 'etb', triggerCondition: 'another creature you control enters',
+    }))
+  }
+  const sentences = text.replace(/\b(?:Fabricate \d+|Evolve)\s*\([^()]*\)/gi, ' ').split(/[.;\n]/).map(s => s.trim()).filter(Boolean)
 
   // ── Compound multi-sentence abilities ──
   // "Choose target X. <effect>" shapes resolve as ONE effect spanning several
@@ -1229,6 +1244,7 @@ function parseAbilities(oracleText, typeLine) {
     }
   }
 
+  abilities.push(...keywordTriggers)
   return abilities
 }
 
