@@ -19,6 +19,20 @@ function numericAmount(params: Record<string, unknown>): number {
   return typeof amount === 'number' && Number.isFinite(amount) && amount > 0 ? amount : 1
 }
 
+/**
+ * Pump amounts come from parsed rules as a number, a numeric string, or a symbolic X ("X", "-X"). Casting those
+ * straight to a number leaves a string, and `0 + "X"` is the string "0X", which turned power/toughness (and then
+ * life totals) into NaN. Anything that cannot be resolved counts as 0 so state is never corrupted.
+ */
+export function pumpValue(raw: unknown, x = 0): number {
+  if (typeof raw === 'number') return Number.isFinite(raw) ? raw : 0
+  if (typeof raw !== 'string') return 0
+  const symbolic = raw.trim().match(/^([+-]?)x$/i)
+  if (symbolic) return symbolic[1] === '-' ? -x : x
+  const parsed = parseInt(raw, 10)
+  return Number.isFinite(parsed) ? parsed : 0
+}
+
 export function resolveTrigger(get: () => GameState, set: (partial: Partial<GameState>) => void, triggerId: string) {
   const state = get()
   const trigger = state.triggerStack.find((t) => t.id === triggerId)
@@ -153,8 +167,8 @@ export function resolveTrigger(get: () => GameState, set: (partial: Partial<Game
         // With no explicit targets the parser encodes mass pumps ("all creatures
         // get +1/+1 until end of turn").
         if (trigger.ability.targets > 0) break
-        const power = (params.power as number) ?? 0
-        const toughness = (params.toughness as number) ?? 0
+        const power = pumpValue(params.power)
+        const toughness = pumpValue(params.toughness)
         const scope = (params.scope as string | undefined) ?? 'all'
         const source = state.cards.find((c) => c.id === trigger.sourceCardId)
         const sourceOwner = (source?.owner ?? 'player') === 'opponent' ? 'opponent' : 'player'
@@ -1848,8 +1862,8 @@ function applyTargetedEffect(get: () => GameState, set: (partial: Partial<GameSt
       break
     }
     case 'pump': {
-      const power = (params.power as number) ?? 0
-      const toughness = (params.toughness as number) ?? 0
+      const power = pumpValue(params.power)
+      const toughness = pumpValue(params.toughness)
       set({
         cards: state.cards.map((c) =>
           c.id === cardId
