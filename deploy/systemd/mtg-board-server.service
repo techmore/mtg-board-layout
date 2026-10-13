@@ -1,0 +1,18 @@
+# User unit (systemctl --user). Colyseus room server for multiplayer.
+# Runs through tsx: plain `node dist/index.js` fails because the shared mtg-protocol package ships .ts sources,
+# which Node will not load from node_modules.
+[Unit]
+Description=MTG Board multiplayer room server
+After=network.target
+
+[Service]
+WorkingDirectory=%h/mtg-board-layout/server
+Environment=PORT=2567
+# Browser origin(s) allowed to open rooms; comma-separated. Change to your real URL if you front this with a proxy.
+Environment=CORS_ORIGIN=http://10.20.0.117:4173
+ExecStart=/usr/bin/node node_modules/tsx/dist/cli.mjs src/index.ts
+Restart=on-failure
+RestartSec=5
+
+[Install]
+WantedBy=default.target
