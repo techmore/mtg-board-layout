@@ -9,6 +9,7 @@ import {
   registerCardTriggers,
   reindexTriggers,
   unregisterCardTriggers,
+  withResolvingEffect,
 } from './triggerEngine'
 
 function card(overrides: Partial<BoardCard> = {}): BoardCard {
@@ -471,5 +472,43 @@ describe('storm and first-spell conditions', () => {
     const afterResolve = useGameStore.getState().triggerStack
     // 1 copy of the spell ability enqueued (count 2 -> 1 copy) alongside the original.
     expect(afterResolve.filter((t) => t.ability.effect.kind === 'create_token')).toHaveLength(2)
+  })
+})
+
+describe('self-trigger and loop guards', () => {
+  const etb = (source: string) => buildTriggerInstances(
+    { type: 'etb', cardId: 'other', cardName: 'Other' }, [],
+    [card({ id: source, name: 'Source' }), card({ id: 'other', name: 'Other' })],
+  )
+
+  it('"this Vehicle enters" / "this Equipment enters" fire only for the source itself', () => {
+    for (const condition of ['this Vehicle enters', 'Flying When this Vehicle enters', 'this Equipment enters']) {
+      clearRegistry()
+      registerCardTriggers(card({ id: 'source', name: 'Source' }), conditionRules([conditionTrigger(condition, 'etb')]))
+      expect(etb('source').newTriggers, condition).toBe(0)
+      const self = buildTriggerInstances({ type: 'etb', cardId: 'source', cardName: 'Source' }, [], [card({ id: 'source', name: 'Source' })])
+      expect(self.newTriggers, condition).toBe(1)
+    }
+  })
+
+  it('a keyword-only condition ("Flying") is the card\'s own trigger, not any ETB or counter event', () => {
+    clearRegistry()
+    registerCardTriggers(card({ id: 'source', name: 'Angel' }), conditionRules([conditionTrigger('Flying', 'etb')]))
+    expect(etb('source').newTriggers).toBe(0)
+    const own = buildTriggerInstances({ type: 'etb', cardId: 'source', cardName: 'Angel' }, [], [card({ id: 'source', name: 'Angel' })])
+    expect(own.newTriggers).toBe(1)
+    const counter = buildTriggerInstances({ type: 'counter_placed', cardId: 'source', cardName: 'Angel', kind: '+1/+1' }, [], [card({ id: 'source', name: 'Angel' })])
+    expect(counter.newTriggers).toBe(0)
+  })
+
+  it('a counter-placing trigger is not re-triggered by the counter it places (no infinite loop)', () => {
+    clearRegistry()
+    const putCounter = { ...conditionTrigger('one or more counters are put on a creature you control', 'counter_placed'), effect: { kind: 'put_counter', params: { counterKind: '+1/+1', amount: 1, scope: 'own' } } } as CardAbilityDef
+    registerCardTriggers(card({ id: 'source', name: 'Overseer' }), conditionRules([putCounter]))
+    const event = { type: 'counter_placed', cardId: 'source', cardName: 'Overseer', kind: '+1/+1' } as const
+    const cards = [card({ id: 'source', name: 'Overseer' })]
+    expect(buildTriggerInstances(event, [], cards).newTriggers).toBe(1)
+    const during = withResolvingEffect('put_counter', () => buildTriggerInstances(event, [], cards))
+    expect(during.newTriggers).toBe(0)
   })
 })

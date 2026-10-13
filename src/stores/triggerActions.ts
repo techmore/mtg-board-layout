@@ -7,6 +7,7 @@ import { attachAuras, updateCard, withGraveyardIntake } from './gameRules'
 import { filterMatch } from '../components/Board/triggerUtils'
 import { enqueueSpellAbilities } from './spellResolution'
 import { useToastStore } from './toastStore'
+import { withResolvingEffect } from './triggerEngine'
 
 /** True when a trigger instance belongs to the AI (source card is opponent-owned). */
 function aiOwned(trigger: { sourceCardId: string }, state: { cards: { id: string; owner?: 'player' | 'opponent' }[] }): boolean {
@@ -34,6 +35,12 @@ export function pumpValue(raw: unknown, x = 0): number {
 }
 
 export function resolveTrigger(get: () => GameState, set: (partial: Partial<GameState>) => void, triggerId: string) {
+  const kind = get().triggerStack.find((t) => t.id === triggerId)?.ability.effect.kind
+  if (!kind) return resolveTriggerNow(get, set, triggerId)
+  return withResolvingEffect(kind, () => resolveTriggerNow(get, set, triggerId))
+}
+
+function resolveTriggerNow(get: () => GameState, set: (partial: Partial<GameState>) => void, triggerId: string) {
   const state = get()
   const trigger = state.triggerStack.find((t) => t.id === triggerId)
   if (!trigger) return

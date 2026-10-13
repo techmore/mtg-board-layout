@@ -12,6 +12,23 @@ export interface RegisteredTrigger {
 
 let triggerRegistry: RegisteredTrigger[] = []
 
+/**
+ * Effect kind of the trigger currently being resolved. A counter-placing trigger (Evolve, "whenever you put a
+ * counter on a creature you control, put another") must not be re-triggered by the very counter it just placed,
+ * otherwise the stack grows without bound.
+ */
+let resolvingEffectKind: string | null = null
+
+export function withResolvingEffect<T>(kind: string, run: () => T): T {
+  const previous = resolvingEffectKind
+  resolvingEffectKind = kind
+  try {
+    return run()
+  } finally {
+    resolvingEffectKind = previous
+  }
+}
+
 export function clearRegistry() {
   triggerRegistry = []
 }
@@ -111,7 +128,14 @@ export function triggerConditionMatches(
     if (/\banother\b/.test(cond) && sourceCard && eventCard.id === sourceCard.id) return false
     if (/\byou control\b/.test(cond) && sourceCard && (eventCard.owner ?? 'player') !== (sourceCard.owner ?? 'player')) return false
     if (/\b(?:an opponent|your opponents) controls?\b/.test(cond) && sourceCard && (eventCard.owner ?? 'player') === (sourceCard.owner ?? 'player')) return false
-    if (/\bthis (creature|enchantment|artifact|land|planeswalker|card)\b/.test(cond) && sourceCard && eventCard.id !== sourceCard.id) return false
+    if (/\bthis (creature|enchantment|artifact|land|planeswalker|card|vehicle|equipment|aura|saga|class|permanent|token|spacecraft|battle)\b/.test(cond) && sourceCard && eventCard.id !== sourceCard.id) return false
+    // The parser sometimes leaves only a keyword in the condition ("Flying" for Fabricate). Such a condition names
+    // no event subject, so the trigger is the card's own: it fires for the card itself and never for other
+    // cards entering or for counter events.
+    if (!/\b(enters?|dies|whenever|another|counters?|put|attacks?|cast|deals?)\b/.test(cond) && sourceCard) {
+      if (event.type === 'counter_placed') return false
+      if (event.type === 'etb' && eventCard.id !== sourceCard.id) return false
+    }
     if (sourceCard && cond.includes(sourceCard.name.toLowerCase()) && eventCard.id !== sourceCard.id) return false
     if (/\ba creature\b/.test(cond) && eventCard.type !== 'creature') return false
     if (/\ba land\b/.test(cond) && eventCard.type !== 'land') return false
@@ -146,6 +170,7 @@ export function buildTriggerInstances(
   }
   const newInstances: TriggerInstance[] = matching
     .filter((t) => {
+      if (event.type === 'counter_placed' && resolvingEffectKind === 'put_counter' && t.ability.effect.kind === 'put_counter') return false
       const sourceCard = cards?.find((c) => c.id === t.cardId)
       return triggerConditionMatches(t.ability.triggerCondition, event, sourceCard, eventCard)
     })
