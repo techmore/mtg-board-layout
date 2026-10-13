@@ -122,3 +122,42 @@ describe('parse-card-rules — post-roadmap tail shapes', () => {
     expect(sentence?.targetFilter).toContain('creature an opponent controls')
   })
 })
+
+describe('parse-card-rules — Fabricate and Evolve keyword triggers', () => {
+  const triggers = (card) => card.abilities.filter((a) => a.abilityType === 'triggered' && a.triggerEvent)
+
+  it('Fabricate is one self-only ETB trigger (no junk condition, no counter_placed event)', () => {
+    const card = parseCard(scryfall(
+      'Angel of Invention',
+      'Creature — Angel',
+      'Flying, vigilance, lifelink\nFabricate 2 (When this creature enters, put two +1/+1 counters on it or create two 1/1 colorless Servo artifact creature tokens.)\nOther creatures you control get +1/+1.',
+      '{3}{W}{W}',
+      5,
+    ))
+    const [fabricate, ...rest] = triggers(card)
+    expect(rest).toEqual([])
+    expect(fabricate.triggerEvent).toBe('etb')
+    expect(fabricate.triggerEvents).toBeUndefined()
+    expect(fabricate.triggerCondition).toBe('this creature enters')
+    expect(fabricate.effect.kind).toBe('create_token')
+    expect(fabricate.effect.params.amount).toBe(2)
+    // The anthem that used to be swallowed by the junk ability is parsed on its own.
+    expect(card.abilities.some((a) => a.abilityType === 'static' && a.effect.kind === 'pump')).toBe(true)
+  })
+
+  it('Evolve triggers when ANOTHER creature you control enters, not on counters or on itself', () => {
+    const card = parseCard(scryfall(
+      'Test Evolver',
+      'Creature — Beast',
+      'Evolve (Whenever a creature you control enters, if that creature has greater power or toughness than this creature, put a +1/+1 counter on this creature.)',
+      '{1}{G}',
+      2,
+    ))
+    const [evolve, ...rest] = triggers(card)
+    expect(rest).toEqual([])
+    expect(evolve.triggerEvent).toBe('etb')
+    expect(evolve.triggerEvents).toBeUndefined()
+    expect(evolve.triggerCondition).toBe('another creature you control enters')
+    expect(evolve.effect.kind).toBe('put_counter')
+  })
+})

@@ -892,12 +892,24 @@
     "abilities": [
       {
         "abilityType": "triggered",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "create_token",
+          "params": {
+            "tokenName": "a",
+            "amount": 1
+          }
+        }
+      },
+      {
+        "abilityType": "triggered",
         "triggerEvent": "etb",
-        "triggerEvents": [
-          "etb",
-          "counter_placed"
-        ],
-        "triggerCondition": "Evolve (Whenever a creature you control enters",
+        "triggerCondition": "another creature you control enters",
         "isOptional": false,
         "cost": null,
         "targets": 0,

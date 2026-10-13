@@ -6837,30 +6837,6 @@
     "conditionalEntryText": null,
     "abilities": [
       {
-        "abilityType": "triggered",
-        "triggerEvent": "etb",
-        "triggerEvents": [
-          "etb",
-          "counter_placed"
-        ],
-        "triggerCondition": "Fabricate 1 (When this creature enters",
-        "isOptional": true,
-        "cost": null,
-        "targets": 0,
-        "targetFilter": null,
-        "effect": {
-          "kind": "create_token",
-          "params": {
-            "counterKind": "+1/+1",
-            "amount": 1,
-            "scope": "all",
-            "tokenPower": 1,
-            "tokenToughness": 1,
-            "tokenName": "artifact creature"
-          }
-        }
-      },
-      {
         "abilityType": "activated",
         "triggerEvent": null,
         "triggerCondition": null,
@@ -6884,6 +6860,26 @@
         "effect": {
           "kind": "proliferate",
           "params": {}
+        }
+      },
+      {
+        "abilityType": "triggered",
+        "triggerEvent": "etb",
+        "triggerCondition": "this creature enters",
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "create_token",
+          "params": {
+            "counterKind": "+1/+1",
+            "amount": 1,
+            "scope": "all",
+            "tokenPower": 1,
+            "tokenToughness": 1,
+            "tokenName": "artifact creature"
+          }
         }
       }
     ],
@@ -8605,13 +8601,26 @@
     "conditionalEntryText": null,
     "abilities": [
       {
+        "abilityType": "static",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "pump",
+          "params": {
+            "power": 1,
+            "toughness": 1,
+            "scope": "others"
+          }
+        }
+      },
+      {
         "abilityType": "triggered",
         "triggerEvent": "etb",
-        "triggerEvents": [
-          "etb",
-          "counter_placed"
-        ],
-        "triggerCondition": "Flying",
+        "triggerCondition": "this creature enters",
         "isOptional": false,
         "cost": null,
         "targets": 0,
@@ -32069,12 +32078,24 @@
     "abilities": [
       {
         "abilityType": "triggered",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": null,
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "create_token",
+          "params": {
+            "tokenName": "a",
+            "amount": 1
+          }
+        }
+      },
+      {
+        "abilityType": "triggered",
         "triggerEvent": "etb",
-        "triggerEvents": [
-          "etb",
-          "counter_placed"
-        ],
-        "triggerCondition": "Evolve (Whenever a creature you control enters",
+        "triggerCondition": "another creature you control enters",
         "isOptional": false,
         "cost": null,
         "targets": 0,
