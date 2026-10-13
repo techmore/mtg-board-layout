@@ -21,6 +21,11 @@ export interface GameRoomState {
   combatActive: boolean
   attackers: string[]
   blockers: string[]
+  /** Turn-scoped attack compulsion (Bident/Kardur): victim must attack if able. */
+  forceAttackVictimId: string
+  forceAttackUntilTurn: number
+  /** Turn-scoped parity block ban (Twins of Discord); null when inactive. */
+  parityBan: { parity: 'odd' | 'even'; untilTurn: number } | null
 }
 
 export interface PrivateState {
@@ -139,6 +144,9 @@ export function extractPlayers(map: unknown): RoomPlayerInfo[] {
       positionX: typeof player.positionX === 'number' ? player.positionX : 0,
       positionY: typeof player.positionY === 'number' ? player.positionY : 0,
       commanderDamage: commanderDamageFromState(player.commanderDamage),
+      poisonCounters: typeof player.poisonCounters === 'number' ? player.poisonCounters : 0,
+      ringTemptations: typeof player.ringTemptations === 'number' ? player.ringTemptations : 0,
+      ringBearerCardId: typeof player.ringBearerCardId === 'string' ? player.ringBearerCardId : '',
     }]
   })
 }
@@ -157,6 +165,13 @@ export function createSnapshot(room: Room): GameRoomState {
     combatActive: state.combatActive === true,
     attackers: arrayValues(state.attackers).filter((id): id is string => typeof id === 'string'),
     blockers: arrayValues(state.blockers).filter((id): id is string => typeof id === 'string'),
+    forceAttackVictimId: typeof state.forceAttackVictimId === 'string' ? state.forceAttackVictimId : '',
+    forceAttackUntilTurn: typeof state.forceAttackUntilTurn === 'number' ? state.forceAttackUntilTurn : 0,
+    parityBan:
+      (state.parityBanParity === 'odd' || state.parityBanParity === 'even') &&
+      typeof state.parityBanUntilTurn === 'number'
+        ? { parity: state.parityBanParity, untilTurn: state.parityBanUntilTurn }
+        : null,
   }
 }
 

@@ -12,6 +12,7 @@
  */
 
 import { canBlock, computeStaticPump, getStaticKeywords, parseKeywords, parsePower, parseToughness } from 'mtg-protocol/combat'
+import { parseManaCost } from 'mtg-protocol/mana'
 
 export interface Combatant {
   id: string
@@ -27,9 +28,25 @@ export interface Combatant {
   tapped: boolean
   enchantsCardId?: string
   cantBeBlockedThisTurn?: boolean
+  /** Mana cost string — mana value is derived for parity-ban blocking. */
+  manaCost?: string
 }
 
-export { parseKeywords, parsePower, parseToughness }
+export { parseKeywords, parsePower, parsePower as parseManaValue, parseToughness }
+
+export interface CombatOptions {
+  /** Ring L1: attacker ids that are their side's Ring-bearer (temptations ≥ 1). */
+  ringBearerIds?: string[]
+  /** Parity block ban (Twins of Discord): blockers of this MV parity can't block. */
+  parityBan?: 'odd' | 'even'
+}
+
+/** Mana value from a cost string ({2}{W} → 3); hybrid symbols count generic. */
+function manaValueOf(manaCost: string | undefined): number {
+  if (!manaCost) return 0
+  const parsed = parseManaCost(manaCost)
+  return parsed.generic + parsed.colored.reduce((sum, entry) => sum + entry.count, 0)
+}
 
 export interface CombatResolution {
   /** damage to add to each involved card (attacker or blocker) */
@@ -42,6 +59,10 @@ export interface CombatResolution {
   lifeGain: { ownerId: string; amount: number }[]
   /** attackerId -> assigned blocker ids (round-robin over declared attackers) */
   assignments: Record<string, string[]>
+  /** Ring L3: blockers of a Ring-bearer are sacrificed at end of combat */
+  sacrificeIds: string[]
+  /** Ring L4: each opponent loses 3 when the bearer deals combat damage to a player */
+  lifeLoss: { playerId: string; amount: number }[]
 }
 
 export function resolveCombat(
@@ -50,8 +71,9 @@ export function resolveCombat(
   allPlayers: { id: string; teamId: string; battlefield: Combatant[] }[],
   attackerOwnerId: string,
   attackerTeamId: string,
+  options: CombatOptions = {},
 ): CombatResolution {
-  const result: CombatResolution = { cardDamage: [], deadIds: [], playerDamage: [], lifeGain: [], assignments: {} }
+  const result: CombatResolution = { cardDamage: [], deadIds: [], playerDamage: [], lifeGain: [], assignments: {}, sacrificeIds: [], lifeLoss: [] }
   const attackerIds = attackers.map((a) => a.id)
 
   // Opposing players: everyone except the attacker, and (in team modes with a
@@ -98,8 +120,10 @@ export function resolveCombat(
   // creatures. (Applied by the caller before resolution is ideal, but we
   // enforce here for robustness: an illegal blocker assignment is ignored.)
   const validBlockers = new Map<string, string[]>()
+  const ringBearers = new Set(options.ringBearerIds ?? [])
   for (const attacker of attackers) {
     const aKeywords = keywordsFor(attacker)
+    const attackerIsBearer = ringBearers.has(attacker.id)
     const valid = (assigned[attackerIds.indexOf(attacker.id)] ?? []).filter((blockerId) => {
       const blocker = findCard(blockerId)
       if (!blocker) return false
@@ -108,7 +132,13 @@ export function resolveCombat(
       // turning an artifact/enchantment into a blocker.
       if (blocker.type !== undefined && blocker.type !== 'creature') return false
       if ((attacker as unknown as { cantBeBlockedThisTurn?: boolean }).cantBeBlockedThisTurn) return false
-      if (!canBlock(blocker, allBattlefield)) return false
+      if (!canBlock(blocker, allBattlefield, {
+        attackerIsRingBearer: attackerIsBearer,
+        attackerPower: parsePower(attacker),
+        blockerPower: parsePower(blocker),
+        parityBan: options.parityBan,
+        blockerManaValue: manaValueOf(blocker.manaCost),
+      })) return false
       // Skulk: can't be blocked by creatures with greater power.
       if (aKeywords.has('skulk') && parsePower(blocker) > parsePower(attacker)) return false
       if (aKeywords.has('flying')) {
@@ -298,6 +328,27 @@ export function resolveCombat(
 
   for (const [cardId, amount] of damageTo) {
     if (amount > 0) result.cardDamage.push({ cardId, amount })
+  }
+
+  // Ring L3: "Whenever your Ring-bearer becomes blocked by a creature, that
+  // creature's controller sacrifices it at the end of combat." Only blockers
+  // that legally blocked count.
+  for (const attacker of attackers) {
+    if (!ringBearers.has(attacker.id)) continue
+    for (const blockerId of validBlockers.get(attacker.id) ?? []) {
+      if (!result.sacrificeIds.includes(blockerId)) result.sacrificeIds.push(blockerId)
+    }
+  }
+
+  // Ring L4: "Whenever your Ring-bearer deals combat damage to a player, each
+  // opponent loses 3 life." Life loss is not combat damage (no commander tally).
+  for (const attacker of attackers) {
+    if (!ringBearers.has(attacker.id)) continue
+    if (!result.playerDamage.some((hit) => hit.attackerId === attacker.id)) continue
+    for (const player of allPlayers) {
+      if (!isOpponent(player)) continue
+      result.lifeLoss.push({ playerId: player.id, amount: 3 })
+    }
   }
 
   return result

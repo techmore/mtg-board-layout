@@ -115,6 +115,87 @@ describe('resolveCombat', () => {
   })
 })
 
+describe('combat options (ring bearer + parity ban)', () => {
+  it('Ring L1: a greater-power creature cannot block the Ring-bearer', () => {
+    const bearer = attacker('bearer', '2/2')
+    const big = defender('big', '3/3')
+    const small = defender('small', '1/1')
+    const players = playersOf({ a: [bearer], b: [big, small] })
+    // Both declared; only the 1/1 is a legal blocker — the 3/3's assignment is
+    // ignored, so it takes no damage and the bearer stays unblocked by it.
+    const result = resolveCombat([bearer], ['big', 'small'], players, 'a', 'team1', { ringBearerIds: ['bearer'] })
+    expect(result.cardDamage).toEqual([{ cardId: 'small', amount: 1 }, { cardId: 'bearer', amount: 1 }])
+    expect(result.deadIds).toEqual(['small'])
+    // Without the option both block and both die to the 2-power attack? No —
+    // damage splits lethal-first: big takes 2 (survives 3 toughness).
+    const plain = resolveCombat([attacker('bearer', '2/2')], ['big', 'small'], playersOf({ a: [attacker('bearer', '2/2')], b: [big, small] }), 'a', 'team1')
+    expect(plain.cardDamage.map((d) => d.cardId)).toContain('big')
+  })
+
+  it('parity ban filters blockers by mana value (zero counts as even)', () => {
+    const atk = attacker('atk', '2/2')
+    const even = { ...defender('even', '2/2'), manaCost: '{2}' }
+    const odd = { ...defender('odd', '2/2'), manaCost: '{3}' }
+    const zero = { ...defender('zero', '2/2'), manaCost: '' }
+    const players = playersOf({ a: [atk], b: [even, odd, zero] })
+    const result = resolveCombat([atk], ['even', 'odd', 'zero'], players, 'a', 'team1', { parityBan: 'even' })
+    // Only the odd-MV creature actually blocks/takes damage.
+    expect(result.cardDamage.filter((d) => d.cardId !== 'atk').map((d) => d.cardId)).toEqual(['odd'])
+  })
+})
+
+describe('combat options (Ring L3/L4 effects)', () => {
+  it('L3: blockers that block the Ring-bearer are sacrificed at end of combat', () => {
+    // Equal power keeps the block legal under L1; extra toughness lets the
+    // blocker survive the exchange so L3 is what removes it.
+    const bearer = attacker('bearer', '2/2')
+    const blocker = defender('blocker', '2/3')
+    const players = playersOf({ a: [bearer], b: [blocker] })
+    const result = resolveCombat([bearer], ['blocker'], players, 'a', 'team1', { ringBearerIds: ['bearer'] })
+    // The bearer dies to the blocker's 2 damage; the blocker survives the
+    // exchange (takes 2 of 3 toughness) but L3 takes it.
+    expect(result.deadIds).toEqual(['bearer'])
+    expect(result.sacrificeIds).toEqual(['blocker'])
+  })
+
+  it('L3: an unblocked Ring-bearer sacrifices nothing', () => {
+    const bearer = attacker('bearer', '2/2')
+    const players = playersOf({ a: [bearer], b: [] })
+    const result = resolveCombat([bearer], [], players, 'a', 'team1', { ringBearerIds: ['bearer'] })
+    expect(result.sacrificeIds).toEqual([])
+  })
+
+  it('L4: a Ring-bearer dealing combat damage drains each opponent 3', () => {
+    const bearer = attacker('bearer', '2/2')
+    const players = playersOf({ a: [bearer], b: [] })
+    const result = resolveCombat([bearer], [], players, 'a', 'team1', { ringBearerIds: ['bearer'] })
+    expect(result.playerDamage).toEqual([{ attackerId: 'bearer', defenderId: 'b', amount: 2 }])
+    expect(result.lifeLoss).toEqual([{ playerId: 'b', amount: 3 }])
+  })
+
+  it('L4: no drain when the bearer is blocked and deals no player damage', () => {
+    const bearer = attacker('bearer', '2/2')
+    const blocker = defender('blocker', '2/3')
+    const players = playersOf({ a: [bearer], b: [blocker] })
+    const result = resolveCombat([bearer], ['blocker'], players, 'a', 'team1', { ringBearerIds: ['bearer'] })
+    expect(result.playerDamage).toEqual([])
+    expect(result.lifeLoss).toEqual([])
+  })
+
+  it('L1+L3 together: an illegal greater-power blocker neither blocks nor dies', () => {
+    const bearer = attacker('bearer', '2/2')
+    const big = defender('big', '5/5')
+    const small = defender('small', '1/1')
+    const players = playersOf({ a: [bearer], b: [big, small] })
+    const result = resolveCombat([bearer], ['big', 'small'], players, 'a', 'team1', { ringBearerIds: ['bearer'] })
+    // big was never a legal blocker: untouched, not sacrificed. small blocked,
+    // died in combat — L3 is redundant for it.
+    expect(result.cardDamage.find((d) => d.cardId === 'big')).toBeUndefined()
+    expect(result.sacrificeIds).toEqual(['small'])
+    expect(result.deadIds).toEqual(['small'])
+  })
+})
+
 describe('damage accumulation', () => {
   it('a creature with prior damage dies when new damage reaches its toughness', () => {
     const bear = attacker('bear', '2/2', '')

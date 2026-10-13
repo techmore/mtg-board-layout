@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { COMBAT_KEYWORDS, canBlock, computeStaticPump, parseKeywords, parsePower, parseToughness } from './combat'
+import { COMBAT_KEYWORDS, canBlock, computeStaticPump, getStaticKeywords, parseKeywords, parsePower, parseToughness } from './combat'
 
 describe('parseKeywords', () => {
   it('finds keywords on the first line', () => {
@@ -105,5 +105,36 @@ describe('canBlock conditional self-restrictions', () => {
     expect(canBlock(nightkin, [], { defenderRadCounters: 0 })).toBe(true)
     expect(canBlock(nightkin, [], { defenderRadCounters: 2 })).toBe(false)
     expect(canBlock(nightkin)).toBe(true)
+  })
+
+  it('never throws on hostile regex input from card text', () => {
+    // A static-grant sentence whose tribal subject contains RegExp
+    // metacharacters must not crash keyword resolution.
+    const weird = { id: 'w', typeLine: 'Creature — Nightmare', oracleText: 'Other creatures you control have first strike. (it\u2019s a nightmare.)', ownerId: 'a' }
+    const card = { id: 'c', typeLine: 'Creature — Nightmare', ownerId: 'a' }
+    expect(() => getStaticKeywords([weird], card)).not.toThrow()
+  })
+
+  it('Ring L1: the attacking Ring-bearer can\'t be blocked by greater power', () => {
+    // The gate keys off the ATTACKER's bearer status, passed via context.
+    const blocker = { id: 'blk', typeLine: 'Creature', oracleText: '' }
+    expect(canBlock(blocker, [], { attackerIsRingBearer: true, attackerPower: 2, blockerPower: 3 })).toBe(false)
+    // Equal or smaller power blocks fine.
+    expect(canBlock(blocker, [], { attackerIsRingBearer: true, attackerPower: 2, blockerPower: 2 })).toBe(true)
+    expect(canBlock(blocker, [], { attackerIsRingBearer: true, attackerPower: 2, blockerPower: 1 })).toBe(true)
+    // Without the context (not a bearer) any power blocks.
+    expect(canBlock(blocker, [], { attackerPower: 2, blockerPower: 3 })).toBe(true)
+  })
+
+  it('parity block ban: blockers of the banned mana-value parity can\'t block', () => {
+    const blocker = { id: 'blk', typeLine: 'Creature', oracleText: '' }
+    // Zero mana value counts as even.
+    expect(canBlock(blocker, [], { parityBan: 'even', blockerManaValue: 0 })).toBe(false)
+    expect(canBlock(blocker, [], { parityBan: 'even', blockerManaValue: 4 })).toBe(false)
+    expect(canBlock(blocker, [], { parityBan: 'even', blockerManaValue: 3 })).toBe(true)
+    expect(canBlock(blocker, [], { parityBan: 'odd', blockerManaValue: 3 })).toBe(false)
+    expect(canBlock(blocker, [], { parityBan: 'odd', blockerManaValue: 2 })).toBe(true)
+    // No ban context → everything blocks.
+    expect(canBlock(blocker, [], { blockerManaValue: 4 })).toBe(true)
   })
 })

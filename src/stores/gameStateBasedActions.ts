@@ -1,6 +1,6 @@
 import type { BoardCard, Zone } from '../types/card'
 import type { GameState } from './gameStore'
-import { pushUndo, attachAuras, isAura, isEquipment } from './gameRules'
+import { pushUndo, attachAuras, isAura, isEquipment, withGraveyardIntake } from './gameRules'
 import { getCardToughness } from '../utils/misc'
 import { hasKeyword, computeStaticPump } from './cardRulesLoader'
 
@@ -58,6 +58,7 @@ export function createStateBasedActions(set: SetFn, get: () => GameState): Pick<
       set((prev) => ({
         ...pushUndo(prev),
         cards: updatedCards,
+        ...withGraveyardIntake(state, updatedCards),
         turnAnnouncement: {
           id: Date.now(),
           text: dead.length === 1 ? `${dead[0].name} died` : `${dead.length} creatures died`,

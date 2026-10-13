@@ -229,15 +229,30 @@ export class GameRoom extends Room<{ state: GameState }> {
       const battlefield = new Set(player.battlefield.map((c) => c.id))
       // Only creatures can attack. Dedupe, allow tapped creatures with
       // vigilance, and reject creatures with explicit attack restrictions.
+      const ableCreature = (card: CardState): boolean =>
+        card.type === 'creature' && canAttack(card, player.battlefield) && (!card.tapped || parseKeywords(card.oracleText).has('vigilance'))
       const valid = [...new Set(ids)].filter((id: string) => {
         if (!battlefield.has(id)) return false
         const card = player.battlefield.find((c) => c.id === id)
         if (!card) return false
-        if (card.type !== 'creature') return false
-        if (!canAttack(card, player.battlefield)) return false
-        return !card.tapped || parseKeywords(card.oracleText).has('vigilance')
+        return ableCreature(card)
       })
+      // Attack compulsion (Bident of Thassa / Kardur, synced via setForceAttack):
+      // a forced victim with any able creature must attack with at least one.
+      const forced =
+        this.state.forceAttackVictimId === player.id && this.state.forceAttackUntilTurn >= this.state.turn
+      if (forced && valid.length === 0 && player.battlefield.some((c) => ableCreature(c))) {
+        client.send('error', { type: 'error', message: 'Your creatures must attack this turn if able.' })
+        return
+      }
       if (valid.length === 0) return
+      // Ring L2: "Whenever your Ring-bearer attacks, draw a card, then discard
+      // a card."
+      if (player.ringTemptations >= 2 && valid.includes(player.ringBearerCardId)) {
+        this.drawCards(player, 1)
+        this.discardOne(player)
+        this.emitEvent({ type: 'turnAnnouncement', playerId: player.id, playerName: player.name, text: `${player.name}'s Ring-bearer attacks — draw and discard` })
+      }
       for (const id of valid) {
         const card = player.battlefield.find((candidate) => candidate.id === id)
         if (card && !parseKeywords(card.oracleText).has('vigilance')) card.tapped = true
@@ -315,6 +330,66 @@ export class GameRoom extends Room<{ state: GameState }> {
 
     this.onMessage('addTokenCounter', (client, message) => this.changeTokenCounter(client, message, 1))
     this.onMessage('removeTokenCounter', (client, message) => this.changeTokenCounter(client, message, -1))
+
+    // ── Solo-mechanic parity: Ring ladder, poison, attack compulsion, parity ban ──
+    // The Ring tempts you: increment the side's ladder and pick (or keep) the
+    // strongest creature as the Ring-bearer.
+    this.onMessage('ringTempt', (client) => {
+      const player = this.getPlayer(client)
+      if (!player || this.state.status !== 'playing') return
+      player.ringTemptations++
+      const bearer = [...player.battlefield]
+        .filter((c) => c.type === 'creature')
+        .sort((a, b) => parsePower(b) - parsePower(a))[0]
+      player.ringBearerCardId = bearer?.id ?? ''
+      this.emitEvent({
+        type: 'turnAnnouncement',
+        playerId: player.id,
+        playerName: player.name,
+        text: `The Ring tempts ${player.name} (${player.ringTemptations})`,
+      })
+    })
+
+    // Poison counters: ten loses the game.
+    this.onMessage('addPoison', (client, message) => {
+      const player = this.getPlayer(client)
+      const targetId = stringField(message, 'playerId')
+      const amount = numberField(message, 'amount')
+      if (!player || !targetId || amount === undefined || !Number.isInteger(amount)) return
+      const target = this.state.players.get(targetId)
+      if (!target) return
+      target.poisonCounters = Math.max(0, Math.min(99, target.poisonCounters + amount))
+      if (target.poisonCounters >= 10 && this.state.status === 'playing') {
+        this.state.status = 'finished'
+        const winners = this.connectedPlayers()
+          .filter((candidate) => candidate.id !== target.id && candidate.teamId !== target.teamId)
+          .sort((a, b) => a.turnOrder - b.turnOrder)
+        this.emitEvent({ type: 'gameEnded', winnerId: winners[0]?.id, reason: 'poison' })
+      }
+    })
+
+    // Turn-scoped attack compulsion ("creatures your opponents control attack
+    // this turn if able").
+    this.onMessage('setForceAttack', (client, message) => {
+      const player = this.getPlayer(client)
+      const victimId = stringField(message, 'victimPlayerId')
+      const untilTurn = numberField(message, 'untilTurn')
+      if (!player || !victimId || untilTurn === undefined || !Number.isInteger(untilTurn)) return
+      if (!this.state.players.has(victimId)) return
+      this.state.forceAttackVictimId = victimId
+      this.state.forceAttackUntilTurn = Math.max(this.state.turn, untilTurn)
+    })
+
+    // Turn-scoped parity block ban ("choose odd or even — creatures with mana
+    // value of that quality can't block this turn").
+    this.onMessage('setParityBan', (client, message) => {
+      const player = this.getPlayer(client)
+      const parity = isRecord(message) && (message.parity === 'odd' || message.parity === 'even') ? message.parity : null
+      const untilTurn = numberField(message, 'untilTurn')
+      if (!player || !parity || untilTurn === undefined || !Number.isInteger(untilTurn)) return
+      this.state.parityBanParity = parity
+      this.state.parityBanUntilTurn = Math.max(this.state.turn, untilTurn)
+    })
 
   }
 
@@ -652,6 +727,16 @@ export class GameRoom extends Room<{ state: GameState }> {
     this.sendPrivateState(player)
   }
 
+  /** Discard the most recently drawn card (deterministic loot discard). */
+  private discardOne(player: PlayerState) {
+    const privateState = this.privateZones.get(player.playerId)
+    if (!privateState || privateState.hand.length === 0) return
+    const discarded = privateState.hand.pop()!
+    player.graveyard.push(cardToState({ ...discarded, zone: 'graveyard' as Zone, revealed: true }, 'graveyard'))
+    this.updateCounts(player)
+    this.sendPrivateState(player)
+  }
+
   private prepareOpeningHand(player: PlayerState) {
     const privateState = this.privateZones.get(player.playerId)
     if (!privateState) return
@@ -761,9 +846,14 @@ export class GameRoom extends Room<{ state: GameState }> {
         tapped: c.tapped,
         enchantsCardId: c.enchantsCardId,
         cantBeBlockedThisTurn: c.cantBeBlockedThisTurn,
+        manaCost: c.manaCost,
       })),
     )
     const attackerOwner = players.find((p) => p.battlefield.some((c) => c.id === attackerIds[0]))
+    // Ring L1 + parity-ban block gates, synced through the room state.
+    const bearerOwner = players.find((p) => p.ringBearerCardId && attackerIds.includes(p.ringBearerCardId))
+    const ringBearerIds = bearerOwner && bearerOwner.ringTemptations >= 1 ? [bearerOwner.ringBearerCardId] : []
+    const parityBanActive = state.parityBanParity !== '' && state.parityBanUntilTurn >= state.turn
     const result = resolveCombat(
       attackers,
       [...state.blockers],
@@ -783,10 +873,15 @@ export class GameRoom extends Room<{ state: GameState }> {
           tapped: c.tapped,
           enchantsCardId: c.enchantsCardId,
         cantBeBlockedThisTurn: c.cantBeBlockedThisTurn,
+          manaCost: c.manaCost,
         })),
       })),
       attackerOwner?.id ?? '',
       attackerOwner?.teamId ?? '',
+      {
+        ringBearerIds,
+        parityBan: parityBanActive ? (state.parityBanParity as 'odd' | 'even') : undefined,
+      },
     )
 
     // Apply accumulated damage to surviving cards.
@@ -807,6 +902,13 @@ export class GameRoom extends Room<{ state: GameState }> {
       if (owner) {
         const card = owner.battlefield.find((c) => c.id === blockerId)
         if (card) card.damage = 0
+        this.moveCardToZone(owner, blockerId, 'graveyard')
+      }
+    }
+    // Ring L3: blockers of a Ring-bearer are sacrificed at end of combat.
+    for (const blockerId of result.sacrificeIds) {
+      const owner = players.find((p) => p.battlefield.some((c) => c.id === blockerId))
+      if (owner && owner.battlefield.some((c) => c.id === blockerId)) {
         this.moveCardToZone(owner, blockerId, 'graveyard')
       }
     }
@@ -832,6 +934,15 @@ export class GameRoom extends Room<{ state: GameState }> {
         }
         this.checkForGameEnd(defender)
       }
+    }
+
+    // Ring L4: each opponent of the bearer's controller loses 3 life (life
+    // loss, not combat damage — no commander tally).
+    for (const loss of result.lifeLoss) {
+      const victim = players.find((p) => p.id === loss.playerId)
+      if (!victim) continue
+      victim.lifeTotal = Math.max(0, victim.lifeTotal - loss.amount)
+      this.checkForGameEnd(victim)
     }
 
     this.clearCombatState()

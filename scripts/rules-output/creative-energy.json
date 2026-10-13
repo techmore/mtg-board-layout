@@ -896,7 +896,7 @@
           "kind": "x_pump",
           "params": {
             "x_source": "energy",
-            "toughness": "+X",
+            "toughness": "x",
             "power": "x"
           }
         }
@@ -910,10 +910,8 @@
         "targets": 1,
         "targetFilter": "creature you control",
         "effect": {
-          "kind": "other",
-          "params": {
-            "description": "(Pay {2} or {E}{E}{E}: Attach to target creature you control"
-          }
+          "kind": "attach_target",
+          "params": {}
         }
       }
     ],
@@ -935,19 +933,6 @@
     "entryTapRule": null,
     "conditionalEntryText": null,
     "abilities": [
-      {
-        "abilityType": "triggered",
-        "triggerEvent": "cast",
-        "triggerCondition": "(Whenever you cast a creature spell",
-        "isOptional": true,
-        "cost": null,
-        "targets": 0,
-        "targetFilter": null,
-        "effect": {
-          "kind": "copy_spell",
-          "params": {}
-        }
-      },
       {
         "abilityType": "triggered",
         "triggerEvent": null,
@@ -1518,34 +1503,6 @@
             "amount": 1
           }
         }
-      },
-      {
-        "abilityType": "triggered",
-        "triggerEvent": null,
-        "triggerCondition": null,
-        "isOptional": false,
-        "cost": null,
-        "targets": 0,
-        "targetFilter": null,
-        "effect": {
-          "kind": "scry",
-          "params": {
-            "amount": 1
-          }
-        }
-      },
-      {
-        "abilityType": "activated",
-        "triggerEvent": null,
-        "triggerCondition": null,
-        "isOptional": false,
-        "cost": "{T}",
-        "targets": 0,
-        "targetFilter": null,
-        "effect": {
-          "kind": "add_mana",
-          "params": {}
-        }
       }
     ],
     "oracleText": "This land enters tapped.\nWhen this land enters, scry 1. (Look at the top card of your library. You may put that card on the bottom.)\n{T}: Add {W} or {U}.",
@@ -1863,22 +1820,6 @@
     "entryTapRule": null,
     "conditionalEntryText": null,
     "abilities": [
-      {
-        "abilityType": "triggered",
-        "triggerEvent": "attack",
-        "triggerCondition": "(Whenever a creature with myriad attacks",
-        "isOptional": true,
-        "cost": null,
-        "targets": 0,
-        "targetFilter": null,
-        "effect": {
-          "kind": "create_token",
-          "params": {
-            "tokenName": "a",
-            "amount": 1
-          }
-        }
-      },
       {
         "abilityType": "triggered",
         "triggerEvent": null,
@@ -2344,23 +2285,6 @@
             "tokenName": "artifact creature"
           }
         }
-      },
-      {
-        "abilityType": "static",
-        "triggerEvent": null,
-        "triggerCondition": null,
-        "isOptional": false,
-        "cost": null,
-        "targets": 0,
-        "targetFilter": null,
-        "effect": {
-          "kind": "pump",
-          "params": {
-            "power": 1,
-            "toughness": 1,
-            "scope": "others"
-          }
-        }
       }
     ],
     "oracleText": "Flying, vigilance, lifelink\nFabricate 2 (When this creature enters, put two +1/+1 counters on it or create two 1/1 colorless Servo artifact creature tokens.)\nOther creatures you control get +1/+1.",
@@ -2672,11 +2596,11 @@
         }
       },
       {
-        "abilityType": "triggered",
+        "abilityType": "activated",
         "triggerEvent": null,
         "triggerCondition": null,
         "isOptional": false,
-        "cost": null,
+        "cost": "{2}{U}",
         "targets": 0,
         "targetFilter": null,
         "effect": {
@@ -2864,34 +2788,6 @@
             "amount": 1
           }
         }
-      },
-      {
-        "abilityType": "triggered",
-        "triggerEvent": null,
-        "triggerCondition": null,
-        "isOptional": false,
-        "cost": null,
-        "targets": 0,
-        "targetFilter": null,
-        "effect": {
-          "kind": "scry",
-          "params": {
-            "amount": 1
-          }
-        }
-      },
-      {
-        "abilityType": "activated",
-        "triggerEvent": null,
-        "triggerCondition": null,
-        "isOptional": false,
-        "cost": "{T}",
-        "targets": 0,
-        "targetFilter": null,
-        "effect": {
-          "kind": "add_mana",
-          "params": {}
-        }
       }
     ],
     "oracleText": "This land enters tapped.\nWhen this land enters, scry 1. (Look at the top card of your library. You may put that card on the bottom.)\n{T}: Add {R} or {W}.",
@@ -2974,34 +2870,6 @@
           "params": {
             "amount": 1
           }
-        }
-      },
-      {
-        "abilityType": "triggered",
-        "triggerEvent": null,
-        "triggerCondition": null,
-        "isOptional": false,
-        "cost": null,
-        "targets": 0,
-        "targetFilter": null,
-        "effect": {
-          "kind": "scry",
-          "params": {
-            "amount": 1
-          }
-        }
-      },
-      {
-        "abilityType": "activated",
-        "triggerEvent": null,
-        "triggerCondition": null,
-        "isOptional": false,
-        "cost": "{T}",
-        "targets": 0,
-        "targetFilter": null,
-        "effect": {
-          "kind": "add_mana",
-          "params": {}
         }
       }
     ],
@@ -3639,23 +3507,7 @@
     "manaProduction": null,
     "entryTapRule": null,
     "conditionalEntryText": null,
-    "abilities": [
-      {
-        "abilityType": "spell",
-        "triggerEvent": null,
-        "triggerCondition": null,
-        "isOptional": false,
-        "cost": null,
-        "targets": 0,
-        "targetFilter": null,
-        "effect": {
-          "kind": "draw_cards",
-          "params": {
-            "amount": 2
-          }
-        }
-      }
-    ],
+    "abilities": [],
     "oracleText": "({U/P} can be paid with either {U} or 2 life.)\nDraw two cards, then proliferate. (Choose any number of permanents and/or players, then give each another counter of each kind already there.)",
     "scryfallId": "29ad5bb3-927d-41d0-a000-3826ea117e52"
   },

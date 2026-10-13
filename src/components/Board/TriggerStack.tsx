@@ -1,5 +1,8 @@
 import { useGameStore } from '../../stores/gameStore'
+import { getCachedCardRules, getCardRule } from '../../stores/cardRulesLoader'
 import { TriggerItem } from './TriggerItem'
+import { ModalPicker } from './ModalPicker'
+import { groupModalRuns, type ModalRun } from './triggerUtils'
 import { Modal } from '../ui/Modal'
 import { Button } from '../ui/Button'
 
@@ -19,6 +22,12 @@ export function TriggerStack() {
 
   if (triggerStack.length === 0) return null
 
+  // Consecutive optional modes from one source ("Choose one —" spells) render
+  // as a single grouped decision instead of independent rows.
+  const modalRuns = groupModalRuns(triggerStack, (sourceCardName) =>
+    getCardRule(sourceCardName, getCachedCardRules())?.oracleText ?? '')
+  const groupedIds = new Set(modalRuns.flatMap((run: ModalRun) => run.ids))
+
   return (
     <Modal open onClose={clearTriggerStack} title={`Triggers (${triggerStack.length})`} accent="#79c0ff" width={480}>
       <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: 12 }}>
@@ -27,21 +36,27 @@ export function TriggerStack() {
         </Button>
       </div>
       <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-        {triggerStack.map((trigger) => (
-          <TriggerItem
-            key={trigger.id}
-            trigger={trigger}
-            cards={cards}
-            resolveTrigger={resolveTrigger}
-            selectTarget={selectTarget}
-            skipTrigger={skipTrigger}
-            toggleProliferateTarget={toggleProliferateTarget}
-            confirmProliferate={confirmProliferate}
-            toggleScryTarget={toggleScryTarget}
-            confirmScry={confirmScry}
-            confirmSearchLibrary={confirmSearchLibrary}
-            selectSearchLibraryTarget={selectSearchLibraryTarget}
-          />
+        {triggerStack.map((trigger) => {
+          if (groupedIds.has(trigger.id)) return null
+          return (
+            <TriggerItem
+              key={trigger.id}
+              trigger={trigger}
+              cards={cards}
+              resolveTrigger={resolveTrigger}
+              selectTarget={selectTarget}
+              skipTrigger={skipTrigger}
+              toggleProliferateTarget={toggleProliferateTarget}
+              confirmProliferate={confirmProliferate}
+              toggleScryTarget={toggleScryTarget}
+              confirmScry={confirmScry}
+              confirmSearchLibrary={confirmSearchLibrary}
+              selectSearchLibraryTarget={selectSearchLibraryTarget}
+            />
+          )
+        })}
+        {modalRuns.map((run) => (
+          <ModalPicker key={run.ids.join('|')} run={run} resolveTrigger={resolveTrigger} skipTrigger={skipTrigger} />
         ))}
       </div>
     </Modal>

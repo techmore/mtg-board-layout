@@ -17,35 +17,6 @@
     "conditionalEntryText": null,
     "abilities": [
       {
-        "abilityType": "triggered",
-        "triggerEvent": "etb",
-        "triggerCondition": "(If you cast a spell for its evoke cost",
-        "isOptional": false,
-        "cost": null,
-        "targets": 0,
-        "targetFilter": null,
-        "effect": {
-          "kind": "static_noop",
-          "params": {}
-        }
-      },
-      {
-        "abilityType": "triggered",
-        "triggerEvent": "sacrifice",
-        "triggerCondition": ") Whenever you sacrifice a nontoken Elemental",
-        "isOptional": false,
-        "cost": null,
-        "targets": 0,
-        "targetFilter": null,
-        "effect": {
-          "kind": "create_token",
-          "params": {
-            "tokenName": "a",
-            "amount": 1
-          }
-        }
-      },
-      {
         "abilityType": "static",
         "triggerEvent": null,
         "triggerCondition": null,
@@ -96,22 +67,6 @@
     "entryTapRule": null,
     "conditionalEntryText": null,
     "abilities": [
-      {
-        "abilityType": "triggered",
-        "triggerEvent": "attack",
-        "triggerCondition": "(Whenever it attacks",
-        "isOptional": true,
-        "cost": null,
-        "targets": 0,
-        "targetFilter": null,
-        "effect": {
-          "kind": "create_token",
-          "params": {
-            "tokenName": "a",
-            "amount": 1
-          }
-        }
-      },
       {
         "abilityType": "triggered",
         "triggerEvent": null,
@@ -1065,19 +1020,6 @@
     "conditionalEntryText": null,
     "abilities": [
       {
-        "abilityType": "activated",
-        "triggerEvent": null,
-        "triggerCondition": null,
-        "isOptional": false,
-        "cost": "{T}",
-        "targets": 0,
-        "targetFilter": null,
-        "effect": {
-          "kind": "add_mana",
-          "params": {}
-        }
-      },
-      {
         "abilityType": "static",
         "triggerEvent": null,
         "triggerCondition": null,
@@ -1392,21 +1334,6 @@
       {
         "abilityType": "triggered",
         "triggerEvent": "etb",
-        "triggerCondition": ") When this creature enters",
-        "isOptional": false,
-        "cost": null,
-        "targets": 0,
-        "targetFilter": null,
-        "effect": {
-          "kind": "destroy",
-          "params": {
-            "targetHint": "target nonartifact"
-          }
-        }
-      },
-      {
-        "abilityType": "triggered",
-        "triggerEvent": "etb",
         "triggerCondition": "If you do",
         "isOptional": false,
         "cost": null,
@@ -1434,23 +1361,7 @@
     "manaProduction": null,
     "entryTapRule": null,
     "conditionalEntryText": null,
-    "abilities": [
-      {
-        "abilityType": "spell",
-        "triggerEvent": null,
-        "triggerCondition": null,
-        "isOptional": false,
-        "cost": null,
-        "targets": 1,
-        "targetFilter": "creature",
-        "effect": {
-          "kind": "exile",
-          "params": {
-            "targetHint": "target creature"
-          }
-        }
-      }
-    ],
+    "abilities": [],
     "oracleText": "Changeling (This card is every creature type.)\nExile target creature. Its controller creates a 1/1 colorless Shapeshifter creature token with changeling.",
     "scryfallId": "8f2fb3c6-af75-47a3-9f97-521872c32890"
   },
@@ -1767,21 +1678,6 @@
         "abilityType": "triggered",
         "triggerEvent": "cast",
         "triggerCondition": "that mana is spent to cast a creature spell that shares a creature type with your commander",
-        "isOptional": false,
-        "cost": null,
-        "targets": 0,
-        "targetFilter": null,
-        "effect": {
-          "kind": "scry",
-          "params": {
-            "amount": 1
-          }
-        }
-      },
-      {
-        "abilityType": "triggered",
-        "triggerEvent": null,
-        "triggerCondition": null,
         "isOptional": false,
         "cost": null,
         "targets": 0,
@@ -2260,11 +2156,11 @@
         }
       },
       {
-        "abilityType": "triggered",
-        "triggerEvent": "attack",
-        "triggerCondition": "{2}{R}{G}: Until end of turn",
+        "abilityType": "activated",
+        "triggerEvent": null,
+        "triggerCondition": null,
         "isOptional": false,
-        "cost": null,
+        "cost": "{2}{R}{G}",
         "targets": 0,
         "targetFilter": null,
         "effect": {
@@ -2785,22 +2681,6 @@
             "tokenToughness": 1,
             "tokenName": "Shapeshifter creature",
             "amount": 3
-          }
-        }
-      },
-      {
-        "abilityType": "triggered",
-        "triggerEvent": null,
-        "triggerCondition": null,
-        "isOptional": false,
-        "cost": null,
-        "targets": 0,
-        "targetFilter": null,
-        "effect": {
-          "kind": "create_token",
-          "params": {
-            "tokenName": "a",
-            "amount": 1
           }
         }
       },
@@ -3452,21 +3332,6 @@
           "kind": "static_restriction",
           "params": {}
         }
-      },
-      {
-        "abilityType": "triggered",
-        "triggerEvent": "etb",
-        "triggerCondition": ") Vivid — When this creature enters",
-        "isOptional": false,
-        "cost": null,
-        "targets": 0,
-        "targetFilter": null,
-        "effect": {
-          "kind": "lose_life",
-          "params": {
-            "amount": "X"
-          }
-        }
       }
     ],
     "oracleText": "Menace (This creature can't be blocked except by two or more creatures.)\nVivid — When this creature enters, each opponent loses X life and you gain X life, where X is the number of colors among permanents you control.",
@@ -3926,40 +3791,6 @@
           "kind": "static_keyword",
           "params": {}
         }
-      },
-      {
-        "abilityType": "triggered",
-        "triggerEvent": null,
-        "triggerCondition": null,
-        "isOptional": false,
-        "cost": null,
-        "targets": 0,
-        "targetFilter": null,
-        "effect": {
-          "kind": "deal_damage",
-          "params": {
-            "amount": 1
-          }
-        }
-      },
-      {
-        "abilityType": "triggered",
-        "triggerEvent": "etb",
-        "triggerEvents": [
-          "etb",
-          "card_drawn"
-        ],
-        "triggerCondition": ") Whenever a creature you control with power 4 or greater enters",
-        "isOptional": false,
-        "cost": null,
-        "targets": 0,
-        "targetFilter": null,
-        "effect": {
-          "kind": "draw_cards",
-          "params": {
-            "amount": 4
-          }
-        }
       }
     ],
     "oracleText": "When this enchantment enters, if you control a creature with power 4 or greater, draw a card.\nCreatures you control have trample. (Each of those creatures can deal excess combat damage to the player or planeswalker it's attacking.)\nWhenever a creature you control with power 4 or greater enters, draw a card.",
@@ -4044,19 +3875,6 @@
             "tokenName": "Shapeshifter creature",
             "amount": "X"
           }
-        }
-      },
-      {
-        "abilityType": "activated",
-        "triggerEvent": null,
-        "triggerCondition": null,
-        "isOptional": false,
-        "cost": "{T}",
-        "targets": 0,
-        "targetFilter": null,
-        "effect": {
-          "kind": "add_mana",
-          "params": {}
         }
       }
     ],

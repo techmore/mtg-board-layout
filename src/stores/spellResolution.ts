@@ -1,7 +1,8 @@
 import type { BoardCard, CardAbilityDef, TriggerEvent, TriggerInstance } from '../types/card'
 import type { GameState } from './gameStore'
 import { getCachedCardRules, getCardRule, hasKeyword } from './cardRulesLoader'
-import { targetsForEffect, filterMatch } from '../components/Board/triggerUtils'
+import { targetsForEffect, filterMatch, modalChoiceCount } from '../components/Board/triggerUtils'
+import { useToastStore } from './toastStore'
 
 type SetFn = (partial: GameState | Partial<GameState> | ((state: GameState) => Partial<GameState>)) => void
 
@@ -17,6 +18,10 @@ function autoTarget(kind: string, params: Record<string, unknown> | undefined, c
   const harmful = ['destroy', 'exile', 'deal_damage', 'fight', 'sacrifice'].includes(kind) ||
     (kind === 'pump' && (power < 0 || toughness < 0)) ||
     (kind === 'put_counter' && (params?.amount === -1 || String(params?.counterKind ?? '').includes('-1/-1')))
+  // Cloning copies the biggest body on the battlefield (either side).
+  if (kind === 'become_copy') {
+    return [...candidates].sort((a, b) => getPower(b) + getToughness(b) - (getPower(a) + getToughness(a)))[0] ?? null
+  }
   const preferredOwner: 'player' | 'opponent' = harmful ? 'player' : 'opponent'
   const ranked = [...candidates].sort((a, b) => {
     const aScore = (a.owner ?? 'player') === preferredOwner ? 1 : 0
@@ -33,6 +38,10 @@ function autoTarget(kind: string, params: Record<string, unknown> | undefined, c
 
 function getToughness(card: BoardCard): number {
   return parseInt(card.typeLine?.match(/\/(\d+)/)?.[1] ?? '0', 10) + (card.toughnessBoost ?? 0) + (card.counters ?? 0)
+}
+
+function getPower(card: BoardCard): number {
+  return parseInt(card.typeLine?.match(/(\d+)\//)?.[1] ?? '0', 10) + (card.powerBoost ?? 0) + (card.counters ?? 0)
 }
 
 /** Push a cast card's parsed spell abilities onto the trigger stack for manual resolution. */
@@ -61,11 +70,24 @@ export function enqueueSpellAbilities(set: SetFn, _get: () => GameState, card: B
  */
 export function resolveAIAutoAbilities(set: SetFn, get: () => GameState, card: BoardCard, event: 'cast' | TriggerEvent) {
   const rule = getCardRule(card.name, getCachedCardRules())
-  const abilities = (rule?.abilities ?? []).filter((a) =>
+  let abilities = (rule?.abilities ?? []).filter((a) =>
     a.abilityType === 'spell'
       ? event === 'cast'
       : a.abilityType === 'triggered' && a.triggerEvent === event,
   )
+  // Modal spells ("Choose one/two —"): the AI resolves its deterministic pick
+  // instead of firing every mode. Kicker cards (all sentences optional but no
+  // choose clause) still resolve every ability.
+  const oracle = rule?.oracleText
+  const isModal = /\bchoose (one|two|three)\b/i.test(oracle ?? '')
+  if (event === 'cast' && isModal && abilities.length > 1 && abilities.every((a) => a.isOptional)) {
+    const take = Math.min(modalChoiceCount(oracle), abilities.length)
+    abilities = abilities.slice(0, take)
+    useToastStore.getState().push(
+      `${card.name}: the opponent chose ${take} mode${take > 1 ? 's' : ''}.`,
+      'info',
+    )
+  }
   for (const ability of abilities) {
     autoResolveInstance(set, get, card, ability)
   }

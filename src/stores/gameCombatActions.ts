@@ -1,11 +1,12 @@
 import type { BoardCard } from '../types/card'
 import type { GameState } from './gameStore'
-import { pickBlockers } from './opponentAI'
+import { pickBlockers, pickAttackers } from './opponentAI'
 import { getCardPower, getCardToughness } from '../utils/misc'
 import { hasKeyword, computeStaticPump } from './cardRulesLoader'
 import { attackTax, blockTax, canAttack, canBlock } from 'mtg-protocol/combat'
 import { canPayManaCost, spendManaForCost } from 'mtg-protocol/mana'
 import { aiCastInstant } from './gameOpponentAI'
+import { resolveAIAutoAbilities } from './spellResolution'
 import { useToastStore } from './toastStore'
 
 type SetFn = (partial: GameState | Partial<GameState> | ((state: GameState) => Partial<GameState>)) => void
@@ -458,6 +459,41 @@ export function createCombatActions(set: SetFn, get: () => GameState): Pick<Game
               get().moveCard(blockerId, 'graveyard')
             }
           }
+        }
+      }
+
+      // Scourge of the Throne: "An additional combat phase occurs after this
+      // phase." The untap-all above already marked scourgeUntapTurn, so the
+      // second combat cannot chain a third (its own trigger is first-time-only).
+      if (untapAllAttackers) {
+        const attackedAsAI = pairs.some((p) => (p.attacker.owner ?? 'player') === 'opponent')
+        if (attackedAsAI) {
+          // Deterministic second wave for the AI: pick attackers, auto-block,
+          // resolve immediately.
+          const current = get()
+          const oppBattlefield = current.cards.filter((c) => (c.owner ?? 'player') === 'opponent' && c.zone === 'battlefield')
+          const playerDefenders = current.cards.filter((c) => (c.owner ?? 'player') === 'player' && c.zone === 'battlefield')
+          const secondWave = pickAttackers(oppBattlefield, current.turn, playerDefenders, current.lifeTotal, current.commanderDamage, false)
+          useToastStore.getState().push(
+            secondWave.length > 0
+              ? `⚔ Extra combat phase — the opponent attacks again with ${secondWave.length} creature(s)!`
+              : '⚔ Extra combat phase — the opponent has no attackers.',
+            'info',
+          )
+          if (secondWave.length > 0) {
+            const blockers2 = pickBlockers(secondWave, playerDefenders, current.cards, current.turn, current.lifeTotal, current.commanderDamage, current.radCounters, current.parityBan, current.ring)
+            set({ combatState: { active: true, attackers: secondWave, blockers: blockers2 } })
+            for (const id of secondWave) {
+              const attacker = get().cards.find((c) => c.id === id)
+              if (attacker) resolveAIAutoAbilities(set, get, attacker, 'attack')
+            }
+            get().resolveCombat()
+            return
+          }
+        } else {
+          useToastStore.getState().push('⚔ Extra combat phase — declare attackers again!', 'info')
+          set({ combatState: { active: true, attackers: [], blockers: {} } })
+          return
         }
       }
 

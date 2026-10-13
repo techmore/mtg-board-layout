@@ -1,13 +1,14 @@
 ═══════════════════════════════════════════════════════════════════
  MTG BOARD LAYOUT — ROADMAP
- Updated: 2026-08-21 (batches 20–22: the four-category completion push)
+ Updated: 2026-08-21 (batch 29: AI spell-selection strategy — hard
+                       sequencing rules replace "first affordable")
 ═══════════════════════════════════════════════════════════════════
 
 CURRENT STATE
 ─────────────
-  "Other" (unimplemented) abilities : 322 → 5   (98% recovered)
-  Root test suite                   : 476 → 599 passing
-  Server test suite                 :  78 → 116 passing
+  "Other" (unimplemented) abilities : 322 → 1   (99.7% recovered)
+  Root test suite                   : 476 → 610 passing
+  Server test suite                 :  78 → 121 passing (65 in root run)
   Gates                             : tsc + oxlint + vitest + build all green
   Main bundle (gzip)                : 154 KB → ~95 KB
 
@@ -68,26 +69,40 @@ THE FOUR CATEGORIES — STATUS
 
 REMAINING TAIL — 5 ABILITIES (each needs a designed feature)
 ────────────────────────────────────────────────────────────
-  1. Razorfield Ripper — "(Pay {2} or {E}{E}{E}: Attach …"
-     Reconfigure alternative-cost shape defeats isActivated's cost parser.
-     Fix: normalize leading-paren alt-costs ("Pay X or Y:") before cost
-     parsing, then route to the existing attach_target resolver.
-  2. Abstruse Archaic — "{1}, {T}: Copy target activated or triggered
-     ability you control from a colorless source."
-     Needs ability-instance copying: re-enqueue a chosen resolved ability.
-     Approach: snapshot last-resolved TriggerInstance per source and
-     re-enqueue it with sourceCardId swapped.
-  3. Mirage Mirror — "{2}: becomes a copy of target …"
-     Copy-permanent: needs a clone overlay (typeLine/name/oracleText swap +
-     restore at EOT, like manifestOriginal). Medium UI + state work.
-  4. Suspended Sentence — suspend recast ("When the last is removed…").
-     Main destroy+drain resolves; full suspend needs time-counter state +
-     upkeep ticking + free-cast. Low priority (reminder text only).
-  5. Fraying Sanity — "enchanted player mills X, X = cards put into their
-     graveyard from anywhere this turn."
-     Needs a graveyard-intake counter incremented at every zone→graveyard
-     transition (deaths, mills, discards, sacrifices) — one chokepoint
-     helper in gameCardMovement + SBA would cover it.
+  STATUS AFTER BATCH 23 — 4 of 5 DONE:
+    [DONE] 1. Razorfield Ripper — reconfigure cost already parses ("{2}, Pay 3
+          {E}"); "Attach to target creature you control" now routes to the
+          existing attach_target resolver; player activation flows through the
+          shared targeting UI (ward/hexproof guards included).
+    [DONE] 2. Abstruse Archaic — ability-instance copy engine: every resolved
+          trigger snapshots into lastResolvedAbility; copy_ability re-enqueues
+          the last same-side colorless-source ability this turn (deterministic
+          auto-target when the copied ability needs one).
+    [DONE] 3. Mirage Mirror — clone overlay: become_copy swaps name/typeLine/
+          subtypes/oracleText/manaProduction and stores cloneOriginal;
+          clearTurnBoosts restores it at the handoff. Rules lookups follow the
+          copied name, so the copied permanent's abilities work.
+    [TODO] 4. Suspended Sentence — suspend recast ("When the last is
+          removed…"). Main destroy+drain resolves; full suspend needs
+          time-counter state + upkeep ticking + free-cast. Low priority
+          (reminder text only). NOW THE LAST remaining "other" ability.
+    [DONE] 5. Fraying Sanity — graveyard-intake chokepoint:
+          graveyardIntakeDelta() counts zone→graveyard transitions at moveCard,
+          SBA deaths, end-step discard, rad mill and all mill resolvers;
+          graveyard_intake_mill mills the enchanted side X at end step.
+
+BONUS CLEANUPS IN BATCH 23 (discovered while re-parsing)
+───────────────────────────────────────────────────────────────
+  - isActivated now recognizes bare leading-cost activations ("{2}: …",
+    "{3}: Untap this artifact") → Basalt Monolith untap_self works.
+  - Monstrosity activations ("{5}: Monstrosity 5") put N +1/+1 counters.
+  - Azlask {W}{U}{B}{R}{G}: team +X/+X from experience counters (x_pump
+    gained x_source=experience + own_creatures scope).
+  - Reminder-text residue filter: fragments left over from sentence-splitting
+    inside parentheticals ("…it becomes monstrous)") no longer invent dead
+    abilities (~260 junk abilities removed across all decks).
+  - scripts/reparse-rules.mjs re-parses stored oracle text offline (no Scryfall
+    fetch); parseCard exported with a main-guard.
 
 KNOWN APPROXIMATIONS (documented, intentional)
 ──────────────────────────────────────────────
@@ -103,31 +118,105 @@ KNOWN APPROXIMATIONS (documented, intentional)
 
 SUGGESTED NEXT STEPS (post-roadmap)
 ───────────────────────────────────
-  1. Mirage Mirror clone overlay (highest player-visible value left).
-  2. Graveyard-intake chokepoint → Fraying Sanity + future death-matters.
-  3. Ability-instance copy engine → Abstruse Archaic + "copy ability" family.
-  4. Reconfigure cost normalization → Razorfield Ripper.
-  5. Multiplayer parity: sync ring/poison/forceAttack/parityBan through the
-     room protocol so solo-only mechanics work online.
-  6. Regression tests for the new resolvers (ring ladder, compound parsing,
-     animate revert, partner tutor) — engines are green but under-tested.
+  1. DONE (batch 23): Mirage Mirror clone overlay.
+  2. DONE (batch 23): Graveyard-intake chokepoint → Fraying Sanity.
+  3. DONE (batch 23): Ability-instance copy engine → Abstruse Archaic.
+  4. DONE (batch 23): Reconfigure/attach routing → Razorfield Ripper.
+  5. DONE (batches 24–25): Multiplayer parity — room schema carries per-player
+     poisonCounters / ringTemptations / ringBearerCardId and room-level
+     forceAttack + parityBan; protocol actions (ringTempt, addPoison,
+     setForceAttack, setParityBan); server combat feeds Ring-L1 + parity-ban
+     contexts into canBlock and enforces the forced-attack floor; poison at
+     ten ends the game; client snapshots expose all of it.
+     Batch 25 completed the loop: EFFECT-SIDE Ring online (L2 attack loot on
+     declaration via draw+discardOne; L3 blocker sacrifice + L4 drain-3
+     computed in the pure combat module and applied by GameRoom) and the
+     MULTIPLAYER UI (Ring button + level/bearer display on every player panel,
+     poison counters with ±10 SBA, force-attack/parity-ban banners for victims,
+     and a Curses group to manually drive card-driven states online).
+  6. DONE (batch 24): Suspend engine — Suspended Sentence exiles itself with
+     three time counters on resolve; ticks at the owner's upkeep
+     (processSuspendedCards) and free-recasts (destroy+drain+re-suspend) at
+     zero; stays exiled when no legal target exists.
+  7. Regression tests: batch 23 added tailAbilities.test.ts + parser tests;
+     batch 24 added batchRegression.test.ts (Ring L1–L4 ladder, partner tutor,
+     animate revert, suspend lifecycle), compound-merge parser tests, protocol
+     canBlock context tests, server combat options tests, persistence
+     versioning tests.
 
-KEY FILES TOUCHED THIS ROUND
-────────────────────────────
-  protocol/src/combat.ts            attackTax broaden, blockTax, hand-gate,
-                                    forestwalk, rad gate (canAttack/canBlock)
-  src/stores/gameCombatActions.ts   block tax, Ring L1–L4, parity ban,
-                                    Scourge, Kefnet-on-blocks, force-attack toast
-  src/stores/opponentAI.ts          mustAttack, Frodo must-block, parity/ring/
-                                    rad/hand-aware blocking
-  src/stores/gameOpponentAI.ts      forceAttack threading, AI Ring L2
-  src/stores/gameStore.ts           forceAttack, parityBan, scourgeUntapTurn,
-                                    ring, poisonCounters, keywordsStrippedUntil
-  src/types/card.ts                 manifestOriginal, originalType,
-                                    questCounters, reanimateOnDeathTurn,
-                                    exiledWithMV/exiledCardOwner
-  src/stores/triggerActions.ts      ~30 new effect-kind resolvers
-  src/stores/gameTurnPhases.ts      originalType revert at cleanup
-  scripts/parse-card-rules.mjs      COMPOUND_PATTERNS merge pass, ~40 new
-                                    patterns, param extraction, isStatic tweak
-  docs/AUDIT-2026-08.md             batches 20–21 documented
+BATCH 24 CLEANUPS
+─────────────────
+  - Persistence schema versioning: saves are wrapped as {schemaVersion, state};
+    unknown future versions reset instead of misreading; legacy unversioned
+    saves still load (tested).
+  - Dead code removed: advanceTurnState (+ its tests).
+  - vitest excludes server/dist (a server build no longer double-runs its
+    tests); node_modules/mtg-protocol copies replaced with symlinks so
+    protocol edits propagate without reinstalling.
+  - LOOPS.md marked historical with a current-state banner.
+
+REMAINING KNOWN GAPS
+────────────────────
+  None. Every documented approximation has been implemented (batches 23–28).
+  The only trace of the old tail: Scourge's extra combat is solo-only online
+  (the untap-all half works everywhere; the second wave resolves through the
+  solo combat engine, like all effect-side mechanics).
+
+OPTIONAL FUTURE POLISH (not gaps)
+─────────────────────────────────
+  - Per-deck AI strategy table: pickSpellSmart already accepts the rules DB;
+    a commander-keyed {priorityNames} config could hand-tune cast orders per
+    prebuilt deck (requires card-by-card study of each decklist).
+  - Client-side ability parsing for custom imported decks (parser is exported
+    and deterministic; wiring it into deck import would give arbitrary decks
+    the full trigger engine).
+
+KEY FILES TOUCHED THIS ROUND (batch 29)
+───────────────────────────────────────
+  src/stores/gameOpponentAI.ts   classifySpellRole + pickSpellSmart: removal
+                                 answers real threats (player best power ≥ 4),
+                                 ramp before development while < 4 lands out,
+                                 biggest-affordable development with creature
+                                 tie-break, Auras held with no legal host;
+                                 wired into the AI's main-phase cast decision
+  src/stores/aiStrategy.test.ts  NEW — 9 tests (role classification + all four
+                                 selection rules + hold/null edge cases)
+
+KEY FILES TOUCHED PREVIOUS ROUNDS (batches 23-28)
+────────────────────────────────────────────────
+  Batch 28:
+  src/stores/gameCombatActions.ts   Scourge additional-combat-phase second wave
+                                    (player reopen / AI deterministic resolve)
+  src/stores/triggerActions.ts      Star Athlete heuristic widened
+
+  Batch 27:
+  src/stores/triggerActions.ts      enable_graveyard_cast player window;
+                                    graveyardCastEligible + castFromGraveyardImpl
+  src/stores/gameStore.ts           graveyardCast state (+snapshot) and action
+  src/stores/gameTurnPhases.ts      window cleared at handoffs
+  src/components/Board/CardContextMenu.tsx  "Cast from graveyard" menu item
+
+  Batch 26:
+  src/components/Board/triggerUtils.ts   modalChoiceCount + groupModalRuns
+  src/components/Board/ModalPicker.tsx   grouped mode picker
+  src/components/Board/TriggerStack.tsx  renders grouped runs as one decision
+  src/stores/spellResolution.ts     AI picks first N modes of its modals
+
+  Batch 25:
+  server/src/rooms/combat.ts        Ring L3 sacrificeIds / L4 lifeLoss
+  server/src/rooms/GameRoom.ts      L2 attack loot; L3/L4 application
+  src/pages/MultiplayerBoardPage.tsx  poison/Ring UI, banners, Curses group
+
+  Batch 24:
+  src/stores/triggerActions.ts      suspend engine (processSuspendedCards)
+  src/stores/gamePersistence.ts     SCHEMA_VERSION wrapper
+  protocol/src/combat.ts            canBlock ring-L1/parity contexts
+  server/src/rooms/*                parity schema, handlers, enforcement
+
+  Batch 23:
+  scripts/parse-card-rules.mjs      become_copy/copy_ability/
+                                    graveyard_intake_mill/monstrosity/
+                                    untap_self patterns, residue filter
+  scripts/reparse-rules.mjs         offline rules regeneration
+  src/stores/triggerActions.ts      clone overlay, ability copy, intake mill,
+                                    monstrosity, untap_self resolvers

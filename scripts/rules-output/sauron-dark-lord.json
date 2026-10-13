@@ -638,21 +638,6 @@
             "amount": 1
           }
         }
-      },
-      {
-        "abilityType": "triggered",
-        "triggerEvent": null,
-        "triggerCondition": null,
-        "isOptional": false,
-        "cost": null,
-        "targets": 0,
-        "targetFilter": null,
-        "effect": {
-          "kind": "scry",
-          "params": {
-            "amount": 1
-          }
-        }
       }
     ],
     "oracleText": "This land enters tapped.\n{T}: Add one mana of any color in your commander's color identity. When that mana is spent to cast a creature spell that shares a creature type with your commander, scry 1. (Look at the top card of your library. You may put that card on the bottom.)",
@@ -1236,23 +1221,6 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "put_counter",
-          "params": {
-            "counterKind": "+1/+1",
-            "amount": 1,
-            "scope": "own"
-          }
-        }
-      },
-      {
-        "abilityType": "triggered",
-        "triggerEvent": null,
-        "triggerCondition": null,
-        "isOptional": false,
-        "cost": null,
-        "targets": 0,
-        "targetFilter": null,
-        "effect": {
           "kind": "create_token",
           "params": {
             "tokenPower": 0,
@@ -1400,11 +1368,11 @@
     "conditionalEntryText": null,
     "abilities": [
       {
-        "abilityType": "static",
+        "abilityType": "activated",
         "triggerEvent": null,
         "triggerCondition": null,
         "isOptional": false,
-        "cost": null,
+        "cost": "{2}{U}",
         "targets": 0,
         "targetFilter": null,
         "effect": {
@@ -1424,23 +1392,6 @@
           "kind": "deal_damage",
           "params": {
             "amount": 1
-          }
-        }
-      },
-      {
-        "abilityType": "triggered",
-        "triggerEvent": null,
-        "triggerCondition": null,
-        "isOptional": false,
-        "cost": null,
-        "targets": 0,
-        "targetFilter": null,
-        "effect": {
-          "kind": "put_counter",
-          "params": {
-            "counterKind": "+1/+1",
-            "amount": 3,
-            "scope": "own"
           }
         }
       },
@@ -1628,23 +1579,6 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "put_counter",
-          "params": {
-            "counterKind": "+1/+1",
-            "amount": "X",
-            "scope": "own"
-          }
-        }
-      },
-      {
-        "abilityType": "triggered",
-        "triggerEvent": null,
-        "triggerCondition": null,
-        "isOptional": false,
-        "cost": null,
-        "targets": 0,
-        "targetFilter": null,
-        "effect": {
           "kind": "create_token",
           "params": {
             "tokenPower": 0,
@@ -1652,19 +1586,6 @@
             "tokenName": "Army creature",
             "amount": 1
           }
-        }
-      },
-      {
-        "abilityType": "triggered",
-        "triggerEvent": null,
-        "triggerCondition": null,
-        "isOptional": false,
-        "cost": null,
-        "targets": 0,
-        "targetFilter": null,
-        "effect": {
-          "kind": "static_keyword",
-          "params": {}
         }
       }
     ],
@@ -1732,11 +1653,11 @@
         }
       },
       {
-        "abilityType": "triggered",
+        "abilityType": "activated",
         "triggerEvent": null,
         "triggerCondition": null,
         "isOptional": false,
-        "cost": null,
+        "cost": "{X}{1}{B}",
         "targets": 1,
         "targetFilter": "creature card with mana value X exiled with Shelob onto the battlefield tapped under your control",
         "effect": {
@@ -1776,24 +1697,6 @@
         "targetFilter": null,
         "effect": {
           "kind": "static_restriction",
-          "params": {}
-        }
-      },
-      {
-        "abilityType": "triggered",
-        "triggerEvent": "etb",
-        "triggerEvents": [
-          "etb",
-          "cast",
-          "graveyard"
-        ],
-        "triggerCondition": ") When this creature enters",
-        "isOptional": true,
-        "cost": null,
-        "targets": 0,
-        "targetFilter": null,
-        "effect": {
-          "kind": "cast_from_graveyard",
           "params": {}
         }
       },
@@ -1847,19 +1750,6 @@
             },
             "thenIfNotPaid": false
           }
-        }
-      },
-      {
-        "abilityType": "triggered",
-        "triggerEvent": null,
-        "triggerCondition": null,
-        "isOptional": false,
-        "cost": null,
-        "targets": 0,
-        "targetFilter": null,
-        "effect": {
-          "kind": "search_library",
-          "params": {}
         }
       }
     ],
@@ -1969,23 +1859,6 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "put_counter",
-          "params": {
-            "counterKind": "+1/+1",
-            "amount": "X",
-            "scope": "own"
-          }
-        }
-      },
-      {
-        "abilityType": "triggered",
-        "triggerEvent": null,
-        "triggerCondition": null,
-        "isOptional": false,
-        "cost": null,
-        "targets": 0,
-        "targetFilter": null,
-        "effect": {
           "kind": "create_token",
           "params": {
             "tokenPower": 0,
@@ -2014,11 +1887,11 @@
     "conditionalEntryText": null,
     "abilities": [
       {
-        "abilityType": "static",
+        "abilityType": "activated",
         "triggerEvent": null,
         "triggerCondition": null,
         "isOptional": false,
-        "cost": null,
+        "cost": "{R}",
         "targets": 0,
         "targetFilter": null,
         "effect": {
@@ -2088,19 +1961,6 @@
             "amount": 1,
             "scope": "all"
           }
-        }
-      },
-      {
-        "abilityType": "triggered",
-        "triggerEvent": "attack",
-        "triggerCondition": ") Whenever this creature attacks for the first time each turn",
-        "isOptional": false,
-        "cost": null,
-        "targets": 0,
-        "targetFilter": null,
-        "effect": {
-          "kind": "static_noop",
-          "params": {}
         }
       }
     ],
@@ -2284,21 +2144,6 @@
             "amount": "X"
           }
         }
-      },
-      {
-        "abilityType": "triggered",
-        "triggerEvent": null,
-        "triggerCondition": null,
-        "isOptional": false,
-        "cost": null,
-        "targets": 1,
-        "targetFilter": "artifact s",
-        "effect": {
-          "kind": "destroy",
-          "params": {
-            "targetHint": "target artifacts"
-          }
-        }
       }
     ],
     "oracleText": "Trample\nCycling {X}{2}{R} ({X}{2}{R}, Discard this card: Draw a card.)\nWhen you cycle this card, destroy up to X target artifacts.",
@@ -2364,22 +2209,6 @@
             "amount": 3
           }
         }
-      },
-      {
-        "abilityType": "triggered",
-        "triggerEvent": null,
-        "triggerCondition": null,
-        "isOptional": false,
-        "cost": null,
-        "targets": 0,
-        "targetFilter": null,
-        "effect": {
-          "kind": "create_token",
-          "params": {
-            "tokenName": "Treasure",
-            "amount": 2
-          }
-        }
       }
     ],
     "oracleText": "Trample, haste\nWhen The Balrog of Moria dies, you may exile it. When you do, for each opponent, exile up to one target creature that player controls.\nCycling {3}{R} ({3}{R}, Discard this card: Draw a card.)\nWhen you cycle this card, create two Treasure tokens.",
@@ -2434,38 +2263,7 @@
     "manaProduction": null,
     "entryTapRule": null,
     "conditionalEntryText": null,
-    "abilities": [
-      {
-        "abilityType": "spell",
-        "triggerEvent": null,
-        "triggerCondition": null,
-        "isOptional": false,
-        "cost": null,
-        "targets": 0,
-        "targetFilter": null,
-        "effect": {
-          "kind": "scry",
-          "params": {
-            "amount": 1
-          }
-        }
-      },
-      {
-        "abilityType": "spell",
-        "triggerEvent": null,
-        "triggerCondition": null,
-        "isOptional": false,
-        "cost": null,
-        "targets": 0,
-        "targetFilter": null,
-        "effect": {
-          "kind": "draw_cards",
-          "params": {
-            "amount": 1
-          }
-        }
-      }
-    ],
+    "abilities": [],
     "oracleText": "Surveil 1. (Look at the top card of your library. You may put it into your graveyard.)\nDraw a card.",
     "scryfallId": "4f28e706-c488-4525-ad8a-977a5fa77f80"
   },
@@ -2867,23 +2665,6 @@
         "targets": 0,
         "targetFilter": null,
         "effect": {
-          "kind": "put_counter",
-          "params": {
-            "counterKind": "+1/+1",
-            "amount": "X",
-            "scope": "own"
-          }
-        }
-      },
-      {
-        "abilityType": "spell",
-        "triggerEvent": null,
-        "triggerCondition": null,
-        "isOptional": false,
-        "cost": null,
-        "targets": 0,
-        "targetFilter": null,
-        "effect": {
           "kind": "create_token",
           "params": {
             "tokenPower": 0,
@@ -2891,19 +2672,6 @@
             "tokenName": "Army creature",
             "amount": 1
           }
-        }
-      },
-      {
-        "abilityType": "spell",
-        "triggerEvent": null,
-        "triggerCondition": null,
-        "isOptional": false,
-        "cost": null,
-        "targets": 0,
-        "targetFilter": null,
-        "effect": {
-          "kind": "exile",
-          "params": {}
         }
       }
     ],
@@ -2947,23 +2715,6 @@
           "kind": "amass",
           "params": {
             "amount": 2
-          }
-        }
-      },
-      {
-        "abilityType": "spell",
-        "triggerEvent": null,
-        "triggerCondition": null,
-        "isOptional": false,
-        "cost": null,
-        "targets": 0,
-        "targetFilter": null,
-        "effect": {
-          "kind": "put_counter",
-          "params": {
-            "counterKind": "+1/+1",
-            "amount": 2,
-            "scope": "own"
           }
         }
       },
@@ -3427,23 +3178,6 @@
             "amount": 3
           }
         }
-      },
-      {
-        "abilityType": "spell",
-        "triggerEvent": null,
-        "triggerCondition": null,
-        "isOptional": false,
-        "cost": null,
-        "targets": 0,
-        "targetFilter": null,
-        "effect": {
-          "kind": "pump",
-          "params": {
-            "power": -2,
-            "toughness": -2,
-            "scope": "all"
-          }
-        }
       }
     ],
     "oracleText": "Destroy all creatures. They can't be regenerated. Draw a card for each creature destroyed this way.\nCycling {3}{B}{B} ({3}{B}{B}, Discard this card: Draw a card.)\nWhen you cycle this card, all creatures get -2/-2 until end of turn.",
@@ -3590,6 +3324,19 @@
         "targetFilter": null,
         "effect": {
           "kind": "add_mana",
+          "params": {}
+        }
+      },
+      {
+        "abilityType": "activated",
+        "triggerEvent": null,
+        "triggerCondition": null,
+        "isOptional": false,
+        "cost": "{3}",
+        "targets": 0,
+        "targetFilter": null,
+        "effect": {
+          "kind": "untap_self",
           "params": {}
         }
       }
@@ -3815,22 +3562,6 @@
         }
       },
       {
-        "abilityType": "triggered",
-        "triggerEvent": "attack",
-        "triggerCondition": ") Whenever enchanted creature attacks",
-        "isOptional": false,
-        "cost": null,
-        "targets": 0,
-        "targetFilter": null,
-        "effect": {
-          "kind": "create_token",
-          "params": {
-            "tokenName": "Treasure",
-            "amount": 1
-          }
-        }
-      },
-      {
         "abilityType": "activated",
         "triggerEvent": null,
         "triggerCondition": null,
@@ -3895,24 +3626,6 @@
     "entryTapRule": null,
     "conditionalEntryText": null,
     "abilities": [
-      {
-        "abilityType": "triggered",
-        "triggerEvent": null,
-        "triggerCondition": null,
-        "isOptional": false,
-        "cost": null,
-        "targets": 0,
-        "targetFilter": null,
-        "effect": {
-          "kind": "create_token",
-          "params": {
-            "tokenPower": 3,
-            "tokenToughness": 3,
-            "tokenName": "Wraith creature",
-            "amount": 1
-          }
-        }
-      },
       {
         "abilityType": "triggered",
         "triggerEvent": null,

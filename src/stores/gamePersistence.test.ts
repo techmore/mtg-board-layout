@@ -86,6 +86,31 @@ describe('loadPersistedGameState', () => {
     expect(loadPersistedGameState()).toEqual(defaultGameState)
   })
 
+  it('wraps saves in a versioned payload and loads the current version back', () => {
+    persistGameState(baseState())
+    const raw = JSON.parse(storage.getItem(STORAGE_KEY) ?? '{}')
+    expect(raw.schemaVersion).toBe(1)
+    expect(typeof raw.state).toBe('object')
+    // The round-trip through the versioned wrapper is transparent.
+    expect(loadPersistedGameState().lifeTotal).toBe(25)
+  })
+
+  it('resets when the saved schema version is unknown (forward protection)', () => {
+    const future = { schemaVersion: 999, state: { lifeTotal: 7, cards: [] } }
+    storage.setItem(STORAGE_KEY, JSON.stringify(future))
+    const warn = vi.spyOn(console, 'warn').mockImplementation(() => {})
+    expect(loadPersistedGameState()).toEqual(defaultGameState)
+    warn.mockRestore()
+  })
+
+  it('still loads legacy unversioned saves (pre-versioning baseline)', () => {
+    const state = baseState()
+    // A save made before versioning stored the state object directly.
+    storage.setItem(STORAGE_KEY, JSON.stringify(state))
+    expect(loadPersistedGameState().lifeTotal).toBe(25)
+    expect(loadPersistedGameState().cards).toHaveLength(1)
+  })
+
   it('drops invalid cards and keeps valid ones', () => {
     const state = baseState()
     state.cards.push({

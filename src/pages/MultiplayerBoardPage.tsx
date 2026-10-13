@@ -218,6 +218,16 @@ export default function MultiplayerBoardPage() {
             ⚔ DEFEND — click your creatures to block ({state.attackers.length} attacking)
           </div>
         )}
+        {state.forceAttackVictimId === me.id && state.forceAttackUntilTurn >= state.turn && !finished && (
+          <div style={{ ...combatBannerStyle, background: 'rgba(248,81,73,0.1)', borderColor: 'rgba(248,81,73,0.4)', color: '#ffa198' }}>
+            ⚔ Compelled to attack — your creatures must attack this turn if able
+          </div>
+        )}
+        {state.parityBan && state.parityBan.untilTurn >= state.turn && !finished && (
+          <div style={{ ...combatBannerStyle, background: 'rgba(163,113,247,0.12)', borderColor: 'rgba(163,113,247,0.45)', color: '#d2a8ff' }}>
+            🎲 Parity ban — mana value {state.parityBan.parity} creatures can't block this turn
+          </div>
+        )}
         {combatMode === 'attack' && (
           <div style={{ ...combatBannerStyle, background: 'rgba(88,166,255,0.12)', borderColor: 'rgba(88,166,255,0.5)', color: '#79c0ff' }}>
             Click creatures to declare as attackers ({combatSelection.length} selected)
@@ -265,6 +275,52 @@ export default function MultiplayerBoardPage() {
           <strong>Life {me.lifeTotal}</strong>
           <button onClick={() => adjustLife(-1)} style={smallButtonStyle}>−</button>
           <button onClick={() => adjustLife(1)} style={smallButtonStyle}>+</button>
+        </div>
+        <div style={controlGroupStyle}>
+          <strong title="Poison counters — ten loses the game">Poison {me.poisonCounters}/10</strong>
+          <button
+            onClick={() => sendAction({ type: 'addPoison', playerId: me.id, amount: -1 })}
+            disabled={me.poisonCounters <= 0}
+            style={smallButtonStyle}
+          >−</button>
+          <button onClick={() => sendAction({ type: 'addPoison', playerId: me.id, amount: 1 })} style={{ ...smallButtonStyle, color: me.poisonCounters >= 7 ? '#ff7b72' : undefined }}>+</button>
+        </div>
+        <div style={controlGroupStyle}>
+          <strong title="The Ring tempts you — each level grants a bonus to your Ring-bearer">Ring {me.ringTemptations}</strong>
+          <button
+            onClick={() => sendAction({ type: 'ringTempt' })}
+            disabled={finished || state.status !== 'playing'}
+            style={smallButtonStyle}
+          >
+            The Ring tempts you
+          </button>
+        </div>
+        <div style={controlGroupStyle}>
+          <strong title="Manual triggers for card effects ('creatures your opponents control attack this turn if able', 'choose odd or even…')">Curses</strong>
+          <button
+            title="Your opponents' creatures must attack their next turn if able"
+            onClick={() => {
+              for (const opponent of opponents) {
+                sendAction({ type: 'setForceAttack', victimPlayerId: opponent.id, untilTurn: state.turn + 1 })
+              }
+            }}
+            disabled={finished || opponents.length === 0 || state.status !== 'playing'}
+            style={smallButtonStyle}
+          >
+            Force attack
+          </button>
+          <button
+            title="Creatures with odd mana value can't block this turn"
+            onClick={() => sendAction({ type: 'setParityBan', parity: 'odd', untilTurn: state.turn })}
+            disabled={finished || state.status !== 'playing'}
+            style={smallButtonStyle}
+          >Odd</button>
+          <button
+            title="Creatures with even mana value can't block this turn"
+            onClick={() => sendAction({ type: 'setParityBan', parity: 'even', untilTurn: state.turn })}
+            disabled={finished || state.status !== 'playing'}
+            style={smallButtonStyle}
+          >Even</button>
         </div>
         <div style={controlGroupStyle}>
           <strong>Mana</strong>
@@ -454,6 +510,9 @@ function PlayerPanel({ player, opponent, active, onZoom, myTeamId }: { player: R
   const is2v2 = player.teamId === 'team1' || player.teamId === 'team2'
   const sameTeam = is2v2 && myTeamId !== undefined && myTeamId === player.teamId
   const maxCommanderDamage = Math.max(0, ...Object.values(player.commanderDamage ?? {}))
+  const bearer = player.ringTemptations > 0 && player.ringBearerCardId
+    ? player.battlefield.find((card) => card.id === player.ringBearerCardId)
+    : undefined
   return <div style={{ ...positionedPanelStyle(player.positionX, player.positionY), outline: active ? '2px solid #58a6ff' : undefined, outlineOffset: -2 }}>
     <div style={{ display: 'flex', justifyContent: 'space-between', gap: 12, alignItems: 'center' }}>
       <strong>
@@ -462,18 +521,36 @@ function PlayerPanel({ player, opponent, active, onZoom, myTeamId }: { player: R
       </strong>
       <span style={mutedStyle}>Life {player.lifeTotal} · Hand {player.handCount}</span>
     </div>
-    {maxCommanderDamage > 0 && (
-      <div style={{ ...mutedStyle, marginTop: 4 }}>
-        <span
-          title="Highest commander damage dealt to this player (21 loses)"
-          style={{
-            color: maxCommanderDamage >= 18 ? '#ff7b72' : '#ffd33d',
-            fontWeight: 700,
-            fontSize: '0.68rem',
-          }}
-        >
-          CD {maxCommanderDamage}/21
-        </span>
+    {(maxCommanderDamage > 0 || player.poisonCounters > 0 || player.ringTemptations > 0) && (
+      <div style={{ display: 'flex', gap: 10, marginTop: 4, flexWrap: 'wrap' }}>
+        {maxCommanderDamage > 0 && (
+          <span
+            title="Highest commander damage dealt to this player (21 loses)"
+            style={{
+              color: maxCommanderDamage >= 18 ? '#ff7b72' : '#ffd33d',
+              fontWeight: 700,
+              fontSize: '0.68rem',
+            }}
+          >
+            CD {maxCommanderDamage}/21
+          </span>
+        )}
+        {player.poisonCounters > 0 && (
+          <span
+            title="Poison counters — ten loses the game"
+            style={{ color: player.poisonCounters >= 7 ? '#ff7b72' : '#a371f7', fontWeight: 700, fontSize: '0.68rem' }}
+          >
+            ☠ Poison {player.poisonCounters}/10
+          </span>
+        )}
+        {player.ringTemptations > 0 && (
+          <span
+            title={`The Ring tempts this side (level ${player.ringTemptations})${bearer ? ` — Ring-bearer: ${bearer.name}` : ''}`}
+            style={{ color: '#ffd33d', fontWeight: 700, fontSize: '0.68rem' }}
+          >
+            💍 Ring {player.ringTemptations}{bearer ? ` · ${bearer.name}` : ''}
+          </span>
+        )}
       </div>
     )}
     <CardRow cards={player.battlefield} empty="No permanents" onZoom={onZoom} />

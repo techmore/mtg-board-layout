@@ -1,6 +1,6 @@
 import type { BoardCard } from '../types/card'
 import type { GameState } from './gameStore'
-import { pushUndo, prepareCardPlay, generatedManaState, attachAuras, isAura } from './gameRules'
+import { pushUndo, prepareCardPlay, generatedManaState, attachAuras, isAura, withGraveyardIntake } from './gameRules'
 import { getCardPower } from '../utils/misc'
 
 type SetFn = (partial: GameState | Partial<GameState> | ((state: GameState) => Partial<GameState>)) => void
@@ -61,7 +61,8 @@ export function createCardMovement(set: SetFn, get: () => GameState): Pick<GameS
           }
         }
 
-        return { ...undo, manaPool: nextManaPool, cards: attachAuras(applyUpdated(state.cards), { deferUnattached: true }), landPlaysThisTurn: nextLandPlaysThisTurn }
+        const nextCards = attachAuras(applyUpdated(state.cards), { deferUnattached: true })
+        return { ...undo, manaPool: nextManaPool, cards: nextCards, landPlaysThisTurn: nextLandPlaysThisTurn, ...withGraveyardIntake(state, nextCards) }
       })
       // Player aura entry: let the player choose what the aura enchants.
       if (zone === 'battlefield' && cardBefore && isAura(cardBefore)) {

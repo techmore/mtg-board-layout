@@ -102,23 +102,6 @@
             "amount": 1
           }
         }
-      },
-      {
-        "abilityType": "static",
-        "triggerEvent": null,
-        "triggerCondition": null,
-        "isOptional": false,
-        "cost": null,
-        "targets": 0,
-        "targetFilter": null,
-        "effect": {
-          "kind": "pump",
-          "params": {
-            "power": 5,
-            "toughness": 5,
-            "scope": "all"
-          }
-        }
       }
     ],
     "oracleText": "Lifelink (Damage dealt by this creature also causes you to gain that much life.)\nAs long as you have 30 or more life, this creature gets +5/+5 and has flying.",
@@ -153,23 +136,6 @@
           "kind": "gain_life",
           "params": {
             "amount": 1
-          }
-        }
-      },
-      {
-        "abilityType": "triggered",
-        "triggerEvent": "counter_placed",
-        "triggerCondition": ") Whenever you gain life",
-        "isOptional": false,
-        "cost": null,
-        "targets": 0,
-        "targetFilter": null,
-        "effect": {
-          "kind": "put_counter",
-          "params": {
-            "counterKind": "+1/+1",
-            "amount": 1,
-            "scope": "own"
           }
         }
       }
@@ -214,11 +180,11 @@
         }
       },
       {
-        "abilityType": "static",
+        "abilityType": "activated",
         "triggerEvent": null,
         "triggerCondition": null,
         "isOptional": false,
-        "cost": null,
+        "cost": "{3}{W}{W}{W}",
         "targets": 0,
         "targetFilter": null,
         "effect": {
@@ -359,38 +325,6 @@
           "kind": "deal_damage",
           "params": {
             "amount": 1
-          }
-        }
-      },
-      {
-        "abilityType": "triggered",
-        "triggerEvent": null,
-        "triggerCondition": null,
-        "isOptional": false,
-        "cost": null,
-        "targets": 0,
-        "targetFilter": null,
-        "effect": {
-          "kind": "gain_life",
-          "params": {
-            "amount": 1
-          }
-        }
-      },
-      {
-        "abilityType": "static",
-        "triggerEvent": null,
-        "triggerCondition": null,
-        "isOptional": false,
-        "cost": null,
-        "targets": 0,
-        "targetFilter": null,
-        "effect": {
-          "kind": "pump",
-          "params": {
-            "power": 1,
-            "toughness": 1,
-            "scope": "own"
           }
         }
       }
@@ -1349,34 +1283,6 @@
             "amount": 1
           }
         }
-      },
-      {
-        "abilityType": "triggered",
-        "triggerEvent": null,
-        "triggerCondition": null,
-        "isOptional": false,
-        "cost": null,
-        "targets": 0,
-        "targetFilter": null,
-        "effect": {
-          "kind": "scry",
-          "params": {
-            "amount": 1
-          }
-        }
-      },
-      {
-        "abilityType": "activated",
-        "triggerEvent": null,
-        "triggerCondition": null,
-        "isOptional": false,
-        "cost": "{T}",
-        "targets": 0,
-        "targetFilter": null,
-        "effect": {
-          "kind": "add_mana",
-          "params": {}
-        }
       }
     ],
     "oracleText": "This land enters tapped.\nWhen this land enters, scry 1. (Look at the top card of your library. You may put that card on the bottom.)\n{T}: Add {W} or {U}.",
@@ -2235,21 +2141,7 @@
     "manaProduction": null,
     "entryTapRule": null,
     "conditionalEntryText": null,
-    "abilities": [
-      {
-        "abilityType": "triggered",
-        "triggerEvent": null,
-        "triggerCondition": null,
-        "isOptional": false,
-        "cost": null,
-        "targets": 0,
-        "targetFilter": null,
-        "effect": {
-          "kind": "destroy",
-          "params": {}
-        }
-      }
-    ],
+    "abilities": [],
     "oracleText": "You may pay {W} and tap four untapped creatures you control with flying rather than pay this spell's mana cost.\nFlying, lifelink\nOther creatures you control with flying have indestructible. (Damage and effects that say \"destroy\" don't destroy them.)",
     "scryfallId": "729ee848-6c27-4202-b2bc-605f45209468"
   },
@@ -2321,11 +2213,11 @@
         }
       },
       {
-        "abilityType": "triggered",
+        "abilityType": "activated",
         "triggerEvent": null,
         "triggerCondition": null,
         "isOptional": false,
-        "cost": null,
+        "cost": "{4}{G}{G}",
         "targets": 0,
         "targetFilter": null,
         "effect": {
@@ -2369,21 +2261,6 @@
         "effect": {
           "kind": "sacrifice",
           "params": {}
-        }
-      },
-      {
-        "abilityType": "triggered",
-        "triggerEvent": "etb",
-        "triggerCondition": ") When this creature enters",
-        "isOptional": false,
-        "cost": null,
-        "targets": 1,
-        "targetFilter": "creature card from your graveyard to the battlefield",
-        "effect": {
-          "kind": "return_from_graveyard",
-          "params": {
-            "zone": "battlefield"
-          }
         }
       }
     ],
@@ -2991,24 +2868,6 @@
         "effect": {
           "kind": "put_counter",
           "params": {}
-        }
-      },
-      {
-        "abilityType": "triggered",
-        "triggerEvent": null,
-        "triggerCondition": null,
-        "isOptional": false,
-        "cost": null,
-        "targets": 0,
-        "targetFilter": null,
-        "effect": {
-          "kind": "create_token",
-          "params": {
-            "tokenPower": 4,
-            "tokenToughness": 4,
-            "tokenName": "Angel creature",
-            "amount": 1
-          }
         }
       }
     ],
