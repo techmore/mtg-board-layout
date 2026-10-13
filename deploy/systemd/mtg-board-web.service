@@ -8,7 +8,7 @@ After=network.target mtg-board-server.service
 [Service]
 WorkingDirectory=%h/mtg-board-layout
 ExecStart=/usr/bin/node node_modules/vite/bin/vite.js preview --host 0.0.0.0 --port 4173 --strictPort
-Restart=on-failure
+Restart=always
 RestartSec=5
 
 [Install]
