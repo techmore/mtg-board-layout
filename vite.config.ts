@@ -6,7 +6,8 @@ export default defineConfig({
   plugins: [react()],
   test: {
     // The server's compiled output (npm run server:build) mirrors its src tests;
-    // only the TypeScript sources should run.
-    exclude: ['**/node_modules/**', '**/dist/**'],
+    // only the TypeScript sources should run. The server suite needs its own
+    // dependencies (`npm --prefix server ci`) and runs via `npm run test:server`.
+    exclude: ['**/node_modules/**', '**/dist/**', 'server/**'],
   },
 })
