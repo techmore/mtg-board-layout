@@ -1,4 +1,4 @@
-import { execFileSync } from 'node:child_process'
+import { execFileSync, spawnSync } from 'node:child_process'
 import { mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
@@ -11,6 +11,12 @@ import {
   selectSqliteCandidate,
   validateSqliteFile,
 } from './restore-sqlite-backup.mjs'
+
+// The restore workflow shells out to the sqlite3 CLI. Tests that build or
+// inspect real databases are skipped (not failed) on hosts without it so a
+// fresh checkout stays green; CI installs sqlite3 and runs them.
+const sqlite3Available = spawnSync('sqlite3', ['-version'], { stdio: 'ignore' }).status === 0
+const itWithSqlite = sqlite3Available ? it : it.skip
 
 const temporaryDirectories = []
 
@@ -68,14 +74,14 @@ describe('SQLite restore CLI', () => {
     ])
   })
 
-  it('validates a SQLite database with sqlite3 integrity_check', () => {
+  itWithSqlite('validates a SQLite database with sqlite3 integrity_check', () => {
     const directory = makeTemporaryDirectory()
     const database = makeDatabase(directory, 'incoming.sqlite', 'incoming')
 
     expect(validateSqliteFile(database)).toMatchObject({ ok: true, integrity: 'ok' })
   })
 
-  it('selects the only valid SQLite file from a torrent staging directory', () => {
+  itWithSqlite('selects the only valid SQLite file from a torrent staging directory', () => {
     const directory = makeTemporaryDirectory()
     const database = makeDatabase(directory, 'nested-backup.sqlite', 'incoming')
     writeFileSync(join(directory, 'not-a-database.db'), 'not sqlite')
@@ -83,7 +89,7 @@ describe('SQLite restore CLI', () => {
     expect(selectSqliteCandidate(directory)).toMatchObject({ path: database, ok: true })
   })
 
-  it('requires --file when a download contains multiple valid databases', () => {
+  itWithSqlite('requires --file when a download contains multiple valid databases', () => {
     const directory = makeTemporaryDirectory()
     makeDatabase(directory, 'first.sqlite', 'first')
     makeDatabase(directory, 'second.sqlite', 'second')
@@ -94,7 +100,7 @@ describe('SQLite restore CLI', () => {
     )
   })
 
-  it('backs up and atomically replaces an existing target', () => {
+  itWithSqlite('backs up and atomically replaces an existing target', () => {
     const directory = makeTemporaryDirectory()
     const incoming = makeDatabase(directory, 'incoming.sqlite', 'incoming')
     const target = makeDatabase(directory, 'target.sqlite', 'old')
@@ -107,7 +113,7 @@ describe('SQLite restore CLI', () => {
     expect(validateSqliteFile(target).ok).toBe(true)
   })
 
-  it('does not modify a target during a dry run', () => {
+  itWithSqlite('does not modify a target during a dry run', () => {
     const directory = makeTemporaryDirectory()
     const incoming = makeDatabase(directory, 'incoming.sqlite', 'incoming')
     const target = makeDatabase(directory, 'target.sqlite', 'old')
@@ -120,7 +126,7 @@ describe('SQLite restore CLI', () => {
     expect(queryValue(target)).toBe('old')
   })
 
-  it('does not overwrite a pre-existing safety backup path', () => {
+  itWithSqlite('does not overwrite a pre-existing safety backup path', () => {
     const directory = makeTemporaryDirectory()
     const incoming = makeDatabase(directory, 'incoming.sqlite', 'incoming')
     const target = makeDatabase(directory, 'target.sqlite', 'old')

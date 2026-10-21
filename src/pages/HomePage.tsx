@@ -101,8 +101,12 @@ export default function HomePage() {
           <input
             value={joinId}
             onChange={(e) => setJoinId(e.target.value.toUpperCase())}
-            placeholder="Room Code (e.g. XKCD)"
-            maxLength={4}
+            placeholder="Room Code (e.g. XKCDQ)"
+            maxLength={5}
+            aria-label="Room code"
+            autoCapitalize="characters"
+            autoCorrect="off"
+            spellCheck={false}
             style={{
               flex: 1,
               padding: '12px 14px',

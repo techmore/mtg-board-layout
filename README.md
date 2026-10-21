@@ -47,12 +47,15 @@ It downloads into a temporary directory, validates the incoming database with `P
 ## Checks
 
 ```sh
-npm run build
-npm run lint
-npm test          # vitest — 617 tests (rules, SBA, combat, triggers, undo, AI turns, deck import/persistence, SQLite restore, per-deck smoke)
-npm --prefix server test  # vitest — 126 server tests (room lifecycle, private zones, combat, turn cleanup)
+npm run build             # tsc -b && vite build
+npm run lint              # oxlint
+npm test                  # vitest — client, protocol, and script tests (rules, SBA, combat, triggers, undo, AI turns, deck import/persistence, SQLite restore, per-deck smoke)
+npm run test:server       # vitest — room server tests (room lifecycle, private zones, combat, turn cleanup); needs `npm --prefix server install` first
+npm run check             # all of the above in one go
 npm audit --omit=dev
 ```
+
+The six SQLite-restore tests shell out to the `sqlite3` CLI and are skipped (not failed) when it is not installed. GitHub Actions (`.github/workflows/ci.yml`) runs typecheck, lint, both test suites, and the production build on every push and pull request.
 
 ## Features
 
