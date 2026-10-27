@@ -9,10 +9,14 @@ concurrency:
   group: ci-${{ github.ref }}
   cancel-in-progress: true
 
+permissions:
+  contents: read
+
 jobs:
   client:
     name: Client (typecheck, lint, test, build)
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -21,7 +25,7 @@ jobs:
           cache: npm
           cache-dependency-path: package-lock.json
       - name: Install sqlite3 (restore-script tests)
-        run: sudo apt-get update -qq && sudo apt-get install -y -qq sqlite3
+        run: sudo apt-get -o Acquire::Retries=5 update -qq && sudo apt-get -o Acquire::Retries=5 install -y -qq sqlite3
       - run: npm ci
       - run: npx tsc -b
       - run: npm run lint
@@ -31,6 +35,7 @@ jobs:
   server:
     name: Room server (build, test)
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
